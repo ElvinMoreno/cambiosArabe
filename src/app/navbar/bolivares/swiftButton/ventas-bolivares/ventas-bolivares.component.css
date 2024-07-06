@@ -1,0 +1,69 @@
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto auto auto auto;
+  gap: 10px;
+  padding: 20px;
+}
+
+.compras {
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: end;
+}
+
+.ventas {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: start;
+}
+
+.administrador {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.ventas-bolivares {
+  grid-column: 1;
+  grid-row: 3;
+}
+
+.agregar-venta {
+  grid-column: 2;
+  grid-row: 4;
+  justify-self: end;
+}
+
+.filtro {
+  grid-column: 2;
+  grid-row: 5;
+  justify-self: end;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.btn-agregar {
+  background-color: #4a90e2;
+  color: white;
+}
+
+.btn-filtro {
+  background-color: #f0f0f0;
+}
+
+label {
+  font-size: 14px;
+  color: #666;
+}
+
+h2 {
+  font-size: 24px;
+  color: #4a90e2;
+  margin: 0;
+}
