@@ -1,14 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { MatTabGroup, MatTab } from '@angular/material/tabs';
-import { Router, RouterOutlet, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'navbar-polania',
   standalone: true,
   imports: [
     MatTabGroup,
-    MatTab,
-    RouterOutlet
+    MatTab
   ],
   templateUrl: './navbar-polania.component.html',
   styleUrl: './navbar-polania.component.css'
