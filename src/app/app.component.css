@@ -1,7 +1,7 @@
 .sidenav-container {
   height: 100vh;
   display: flex;
-  flex-direction: column;
+  background-color: #EBEEF8; /* Color de fondo del contenedor */
 }
 
 mat-sidenav-container {
@@ -17,19 +17,23 @@ mat-sidenav-container {
   display: flex;
   flex-direction: column;
   flex: 1;
-  height: 100%;
+  height: 100vh;
+  background-color: white; /* Color de fondo del área de contenido */
 }
 
-.toolbar {
-  flex-shrink: 0;
-  background-color: antiquewhite;
+.padding-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  background-color: #EBEEF8; /* Color de fondo del área de padding */
 }
 
 .content-area {
   flex: 1;
+  background-color: #FFFFFF; /* Color de fondo del contenido */
+  padding: 1rem; /* Ajusta el padding interno si es necesario */
   overflow-y: auto;
-  padding: 20px;
-  background-color: #EBEEF8;
 }
 
 @media (max-width: 768px) {
@@ -38,7 +42,7 @@ mat-sidenav-container {
     max-width: 250px;
   }
 
-  .content-area {
+  .padding-area {
     padding: 10px;
   }
 }

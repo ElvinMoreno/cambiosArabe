@@ -1,0 +1,92 @@
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto auto auto auto;
+  gap: 10px;
+  padding: 20px;
+}
+
+.administrador {
+  grid-column: 1;
+  grid-row: 2;
+  margin-bottom: -1rem;
+
+}
+
+.ventas-bolivares {
+  grid-column: 1;
+  grid-row: 3;
+}
+
+.agregar-venta {
+  grid-column: 1;
+  grid-row: 4;
+  justify-self: first baseline;
+  margin-top: -0.6rem;
+}
+
+.filtro {
+  grid-column: 2;
+  grid-row: 5;
+  justify-self: end;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.btn-agregar {
+  background-color: #4a90e2;
+  color: white;
+}
+
+.btn-filtro {
+  background-color: #f0f0f0;
+}
+
+.admin {
+  font-size: 1.1rem;
+  color: #666;
+  font-weight: bold;
+}
+
+h2 {
+  font-size: 2rem;
+  color: #4a90e2;
+  margin: 0;
+  font-weight: bold;
+}
+
+/* Tabla estilos */
+.column{
+  background: blue;
+
+}
+
+:host ::ng-deep .custom-header-cell {
+  background-color: #4a90e2 !important ;
+  color: white;
+  font-family: Arial, Helvetica, sans-serif ;
+
+}
+
+.table-container {
+  padding-right: 3rem !important;
+  padding-left: 3rem !important;
+}
+
+.centered-table {
+  padding: auto;
+}
+
+.custom-table {
+  max-width: 100%;
+}
+
+
+
+

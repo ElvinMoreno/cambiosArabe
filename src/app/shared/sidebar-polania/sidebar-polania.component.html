@@ -1,5 +1,5 @@
 <div class="arriba">
-<span class="material-symbols-outlined">
+<span class="material-symbols-outlined person-sp">
   person</span>
 <p class="nUsuario">Nombre de usuario</p>
 </div>
@@ -9,58 +9,43 @@
 <mat-nav-list class="sidebar-nav-list">
 
 
-  <a mat-list-item routerLink="/index">
+  <a mat-list-item [routerLink]="'/index'">
     <span class="entry">
       <mat-icon class="home">home</mat-icon>
-      <span>Index</span>
+      <span class="text" >Index</span>
     </span>
   </a>
-
-
-  <a mat-list-item routerLink="/cajas">
-    <span class="entry">
-      <mat-icon class="cajas">inbox</mat-icon>
-      <span>Cajas</span>
-    </span>
-  </a>
-
-
-  <a mat-list-item routerLink="/citas">
-    <span class="entry">
-      <mat-icon class="citas">event</mat-icon>
-      <span>Citas</span>
-    </span>
-  </a>
-
-
-  <a mat-list-item routerLink="/historial">
-    <span class="entry">
-      <mat-icon class="historial">history</mat-icon>
-      <span>Historial</span>
-    </span>
-  </a>
-
 
   <a mat-list-item routerLink="/operaciones">
     <span class="entry">
-      <mat-icon class="operaciones">build</mat-icon>
-      <span>Operaciones</span>
+      <mat-icon class="material-symbols-outlined">
+        widgets
+        </mat-icon>
+      <span class="text">Operaciones</span>
     </span>
   </a>
 
-
-  <a mat-list-item routerLink="/verificacion">
+  <a mat-list-item routerLink="/test">
     <span class="entry">
-      <mat-icon class="verificacion">check_circle</mat-icon>
-      <span>Verificación</span>
+      <mat-icon class="material-symbols-outlined">
+        assignment
+        </mat-icon>
+      <span class="text">Test</span>
+    </span>
+  </a>
+   <a mat-list-item routerLink="/cajas">
+    <span class="entry">
+      <mat-icon class="cajas">inbox</mat-icon>
+      <span class="text" >Caja</span>
     </span>
   </a>
 
-
-  <a mat-list-item routerLink="/clientes">
+  <a mat-list-item [routerLink]="'/configuracion'">
     <span class="entry">
-      <mat-icon class="clientes">people</mat-icon>
-      <span>Clientes</span>
+      <mat-icon class="material-symbols-outlined">
+        settings
+        </mat-icon>
+      <span class="text">Configuraciones</span>
     </span>
   </a>
 </mat-nav-list>
