@@ -11,6 +11,8 @@ import { Login } from '../interfaces/login';
 })
 export class AccesoService {
 
+  
+
   private http=inject(HttpClient);
   private baseUrl:string=appsetting.apiUrl;
 
@@ -21,6 +23,10 @@ export class AccesoService {
   }
 
   login(objeto:Login):Observable <ResponseAcceso>{
+    console.log('Enviando datos de login:', objeto);
     return this.http.post<ResponseAcceso>(`${this.baseUrl}auth/login`,objeto)
+  }
+  isAuthenticated(): boolean {
+    return !!localStorage.getItem('token');
   }
 }

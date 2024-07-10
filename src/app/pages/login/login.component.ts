@@ -1,4 +1,5 @@
 import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { AccesoService } from '../../services/acceso.service';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -15,7 +16,7 @@ import {MatButtonModule} from '@angular/material/button';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,CommonModule
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
@@ -41,7 +42,8 @@ export class LoginComponent {
 
     this.accesoService.login(objeto).subscribe({
       next:(data)=>{
-        if(data.isSuccess){
+        console.log('Respuesta de la API:', data);
+        if(data.statusCode===200){
           localStorage.setItem("token",data.token)
           this.router.navigate(['inicio'])
         }else{

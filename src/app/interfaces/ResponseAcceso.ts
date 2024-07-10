@@ -1,4 +1,4 @@
 export interface ResponseAcceso{
-    isSuccess:boolean,
+    statusCode:200,
     token:string
 }
