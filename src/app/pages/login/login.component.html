@@ -1,0 +1,18 @@
+<div class="card-container">
+    <mat-card>
+      <mat-card-title>Login</mat-card-title>
+      <form [formGroup]="formLogin" (ngSubmit)="iniciarSesion()">
+        <mat-form-field appearance="fill">
+          <mat-label>Username</mat-label>
+          <input matInput formControlName="username">
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Password</mat-label>
+          <input matInput type="password" formControlName="password">
+        </mat-form-field>
+        <button mat-raised-button color="primary" type="submit" (click)="iniciarSesion()">iniciarSesion</button>
+        <button mat-button color="accent" type="button" (click)="registro()">Register</button>
+      </form>
+    </mat-card>
+  </div>
+  
