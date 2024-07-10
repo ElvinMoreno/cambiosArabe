@@ -1,21 +1,20 @@
 <div class="grid-container">
-<div class="administrador">
-  <label class="admin">ADMINISTRADOR</label>
-</div>
-<div class="ventas-bolivares">
-  <h2>Ventas de Bolívares</h2>
-</div>
-<div class="agregar-venta">
-  <button mat-flat-button class="btn btn-agregar">Agregar Venta</button>
-</div>
-<div class="filtro">
-  <button mat-raised-button class="btn-filtro">Filtro</button>
-</div>
+  <div class="administrador">
+    <label class="admin">ADMINISTRADOR</label>
+  </div>
+  <div class="ventas-bolivares">
+    <h2>Ventas de Bolívares</h2>
+  </div>
+  <div class="agregar-venta">
+    <button mat-flat-button class="btn btn-agregar" (click)="openDialog()">Agregar Venta</button>
+  </div>
+  <div class="filtro">
+    <button mat-raised-button class="btn-filtro">Filtro</button>
+  </div>
 </div>
 
 <div class="table-container centered-table">
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 custom-table">
-
     <!-- Nombre Cliente Column -->
     <ng-container matColumnDef="nombreCliente">
       <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Nombre Cliente </th>
@@ -56,4 +55,3 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
 </div>
-

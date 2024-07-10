@@ -2,13 +2,14 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
+import { BancolombiaComponent } from '../../../formulario/bancolombia/bancolombia.component';
 
 
 
 @Component({
   selector: 'compras-bolivares',
   standalone: true,
-  imports: [MatButtonModule,MatTableModule,CommonModule],
+  imports: [MatButtonModule,MatTableModule,CommonModule, BancolombiaComponent],
   templateUrl: './compras-bolivares.component.html',
   styleUrl: './compras-bolivares.component.css'
 })
@@ -20,4 +21,5 @@ export class ComprasBolivaresComponent {
 
   displayedColumns: string[] = ['nombreCliente', 'cuenta', 'transferenciaBolivares', 'conversion', 'tasa', 'detalles'];
   dataSource = this.ELEMENT_DATA;
+
 }
