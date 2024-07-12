@@ -4,7 +4,7 @@ import { MatToolbar } from '@angular/material/toolbar';
 import { MatIcon } from '@angular/material/icon';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { MatNavList } from '@angular/material/list';
-import { MatDivider } from '@angular/material/divider';
+import { MatDivider, MatDividerModule } from '@angular/material/divider';
 
 
 @Component({
@@ -17,7 +17,8 @@ import { MatDivider } from '@angular/material/divider';
     RouterOutlet,
     MatNavList,
     MatDivider,
-    RouterModule
+    RouterModule,
+    MatDividerModule
   ],
   templateUrl: './sidebar-polania.component.html',
   styleUrls: ['./sidebar-polania.component.css']

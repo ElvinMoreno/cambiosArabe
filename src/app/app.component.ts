@@ -1,23 +1,36 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet } from '@angular/router';
 import { SidebarPolaniaComponent } from './shared/sidebar-polania/sidebar-polania.component';
-import { ContentPolaniaComponent } from './shared/content-polania/content-polania.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { FormControl, FormsModule, ReactiveFormsModule, Validator } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { AccesoService } from './services/acceso.service';
+
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet,
+  imports: [
+    RouterOutlet,
+    MatSidenavModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatInputModule,
+    MatFormFieldModule,
+    CommonModule,
     SidebarPolaniaComponent,
-    MatSidenavModule, FormsModule, ReactiveFormsModule,MatInputModule,MatFormFieldModule
   ],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
   title = 'entrada-Bolivares';
- ;
+
+  private accesoService = inject(AccesoService);
+
+  isAuthenticated() {
+    return this.accesoService.isAuthenticated();
+  }
 }

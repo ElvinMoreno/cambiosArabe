@@ -1,11 +1,13 @@
 import { Routes } from '@angular/router';
-
-
-import { BolivaresComponent } from './index/bolivares/bolivares.component';
-import { CajaComponent } from './index/caja/caja.component';
-import { EfectivoComponent } from './index/efectivo/efectivo.component';
-import { NavbarComponent } from './index/navbar/navbar.component';
+import { BolivaresComponent } from './index/principal/bolivares/bolivares.component';
+import { CajaComponent } from './index/principal/caja/caja.component';
+import { EfectivoComponent } from './index/principal/efectivo/efectivo.component';
+import { LoginComponent } from './pages/login/login.component';
+import { RegistroComponent } from './pages/registro/registro.component';
 import { DescripcionComponent } from './configuraciones/descripcion/descripcion.component';
+import { ContentPolaniaComponent } from './shared/content-polania/content-polania.component';
+import { AuthGuard } from './guards/auth.guard';
+import { PrincipalComponent } from './index/principal/principal.component';
 import { CuentaBancariaComponent } from './cuentaBancaria/cuenta-bancaria/cuenta-bancaria.component';
 import { DetalleDavidplataComponent } from './cuentaBancaria/detalle-Cuenta/detalle-davidplata/detalle-davidplata.component';
 import { DetalleBancolombia1Component } from './cuentaBancaria/detalle-Cuenta/detalle-bancolombia1/detalle-bancolombia1.component';
@@ -14,23 +16,33 @@ import { DetalleMovimientoDavidplataComponent } from './cuentaBancaria/detalle-C
 export const routes: Routes = [
   {
     path: '',
-    component: NavbarComponent,
-    children: [
-      { path: 'bolivares', component: BolivaresComponent },
-      { path: 'adicionales', component: CajaComponent },
-      { path: 'efectivo', component: EfectivoComponent },
-      { path: '', redirectTo: 'bolivares', pathMatch: 'full' }
-    ]
+    redirectTo: 'login',
+    pathMatch: 'full'
   },
-  { path: 'configuracion', component: DescripcionComponent },
+  {
+    path: 'login',
+    component: LoginComponent
+  },
+  {
+    path: 'registro',
+    component: RegistroComponent
+  },
   {
     path: 'index',
-    component: NavbarComponent,
+    component: ContentPolaniaComponent,
+    canActivate: [AuthGuard],
     children: [
-      { path: 'bolivares', component: BolivaresComponent },
-      { path: 'adicionales', component: CajaComponent },
-      { path: 'efectivo', component: EfectivoComponent },
-      { path: '', redirectTo: 'bolivares', pathMatch: 'full' }
+      {
+        path: '',
+        component: PrincipalComponent,
+        children: [
+          { path: 'bolivares', component: BolivaresComponent },
+          { path: 'adicionales', component: CajaComponent },
+          { path: 'efectivo', component: EfectivoComponent },
+          { path: '', redirectTo: 'bolivares', pathMatch: 'full' }
+        ]
+      },
+      { path: 'configuracion', component: DescripcionComponent }
     ]
   },
   {

@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { BancolombiaComponent } from '../../../formulario/bancolombia/bancolombia.component';
+import { BancolombiaComponent } from '../../../../formulario/bancolombia/bancolombia.component';
 
 @Component({
   selector: 'ventas-bolivares',
