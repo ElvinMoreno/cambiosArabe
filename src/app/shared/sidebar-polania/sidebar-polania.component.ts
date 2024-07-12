@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { MatDrawerMode, MatSidenavModule } from '@angular/material/sidenav';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbar } from '@angular/material/toolbar';
 import { MatIcon } from '@angular/material/icon';
-import { RouterOutlet } from '@angular/router';
+import { RouterModule, RouterOutlet } from '@angular/router';
 import { MatNavList } from '@angular/material/list';
-import { MatDivider } from '@angular/material/divider';
+import { MatDivider, MatDividerModule } from '@angular/material/divider';
 
 
 @Component({
@@ -17,7 +16,9 @@ import { MatDivider } from '@angular/material/divider';
     MatIcon,
     RouterOutlet,
     MatNavList,
-    MatDivider
+    MatDivider,
+    RouterModule,
+    MatDividerModule
   ],
   templateUrl: './sidebar-polania.component.html',
   styleUrls: ['./sidebar-polania.component.css']

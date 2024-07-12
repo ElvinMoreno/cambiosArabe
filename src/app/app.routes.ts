@@ -1,18 +1,44 @@
 import { Routes } from '@angular/router';
-import { BolivaresComponent } from './navbar/bolivares/bolivares.component';
-import { BancolombiaComponent } from './navbar/bancolombia/bancolombia.component';
-import { CajaComponent } from './navbar/caja/caja.component';
+import { BolivaresComponent } from './index/principal/bolivares/bolivares.component';
+import { CajaComponent } from './index/principal/caja/caja.component';
+import { EfectivoComponent } from './index/principal/efectivo/efectivo.component';
 import { LoginComponent } from './pages/login/login.component';
 import { RegistroComponent } from './pages/registro/registro.component';
-import { InicioComponent } from './pages/inicio/inicio.component';
+import { DescripcionComponent } from './configuraciones/descripcion/descripcion.component';
 import { AuthGuard } from './guards/auth.guard';
+import { ContentPolaniaComponent } from './shared/content-polania/content-polania.component';
+import { PrincipalComponent } from './index/principal/principal.component';
 
 export const routes: Routes = [
-  {path:"login",component:LoginComponent},
-  {path:"registro",component:RegistroComponent},
-  {path:"inicio",component:InicioComponent,canActivate: [AuthGuard]},
-  {path: 'bolivares', component:BolivaresComponent, canActivate: [AuthGuard]},
-  {path: 'bancolombia', component:BancolombiaComponent, canActivate: [AuthGuard]},
-  {path: 'cajas', component:CajaComponent, canActivate: [AuthGuard]},
-  { path: '', redirectTo: '/login', pathMatch: 'full' }
+  {
+    path: '',
+    redirectTo: 'login',
+    pathMatch: 'full'
+  },
+  {
+    path: 'login',
+    component: LoginComponent
+  },
+  {
+    path: 'registro',
+    component: RegistroComponent
+  },
+  {
+    path: 'index',
+    component: ContentPolaniaComponent,
+    canActivate: [AuthGuard],
+    children: [
+      {
+        path: '',
+        component: PrincipalComponent,
+        children: [
+          { path: 'bolivares', component: BolivaresComponent },
+          { path: 'adicionales', component: CajaComponent },
+          { path: 'efectivo', component: EfectivoComponent },
+          { path: '', redirectTo: 'bolivares', pathMatch: 'full' }
+        ]
+      },
+      { path: 'configuracion', component: DescripcionComponent }
+    ]
+  }
 ];

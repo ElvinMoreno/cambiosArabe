@@ -1,16 +1,9 @@
 <ng-container *ngIf="isAuthenticated(); else loginTemplate">
-  <mat-sidenav-container class="sidenav-container">
-    <mat-sidenav mode="side" opened class="sidebar">
-      <sidebar-polania></sidebar-polania>
-    </mat-sidenav>
-    <mat-sidenav-content class="main-content">
-      <navbar-polania></navbar-polania>
-      <div class="content-area">
-        <router-outlet></router-outlet>
-      </div>
-    </mat-sidenav-content>
-  </mat-sidenav-container>
+  <router-outlet></router-outlet>
 </ng-container>
 <ng-template #loginTemplate>
   <router-outlet></router-outlet>
 </ng-template>
+
+
+

@@ -1,0 +1,26 @@
+<div class="grid-container">
+  <div class="compras">
+    <button mat-raised-button
+            class="btn"
+            [class.btn-dark]="vistaActual === 'entradas'"
+            [class.btn-light]="vistaActual !== 'entradas'"
+            (click)="cambiarVista('entradas')">
+      Entradas
+    </button>
+  </div>
+  <div class="ventas">
+    <button mat-raised-button
+            class="btn"
+            [class.btn-dark]="vistaActual === 'salidas'"
+            [class.btn-light]="vistaActual !== 'salidas'"
+            (click)="cambiarVista('salidas')">
+      Salidas
+    </button>
+  </div>
+</div>
+
+<ng-container [ngSwitch]="vistaActual">
+  <entradas *ngSwitchCase="'entradas'" ></entradas>
+  <salidas *ngSwitchCase="'salidas'"></salidas>
+
+</ng-container>

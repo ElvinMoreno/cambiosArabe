@@ -1,0 +1,78 @@
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.right-align {
+  justify-self: first baseline;
+}
+.left-align {
+  justify-self: end;
+}
+button {
+  padding: 5px 10px;
+}
+
+.admmin{
+  font-size: 1.1rem;
+  color: #666;
+  font-weight: bold;
+
+}
+h2 {
+  font-size: 2rem;
+  color: #4a90e2;
+  margin: 0;
+  font-weight: bold;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.btn-descripcion {
+  background-color: #4a90e2;
+  color: white;
+}
+
+.espac-h2{
+  margin-bottom: -0.8rem;
+}
+
+.btn-desc{
+  background-color: #000000 !important;
+  color: white !important;
+}
+
+
+/* tabla css */
+.column{
+  background: blue;
+
+}
+
+:host ::ng-deep .custom-header-cell {
+  background-color: #4a90e2 !important ;
+  color: white;
+  font-family: Arial, Helvetica, sans-serif ;
+
+}
+
+.table-container {
+  padding-top: 3rem !important;
+  padding-right: 9rem !important;
+  padding-left: 9rem !important;
+}
+
+.centered-table {
+  padding: auto;
+}
+
+.custom-table {
+  max-width: 100%;
+}
+
