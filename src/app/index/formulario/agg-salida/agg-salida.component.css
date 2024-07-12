@@ -44,6 +44,10 @@ h2 {
   flex-direction: column;
 }
 
+.form-group-textarea {
+  grid-column: span 2;
+}
+
 label {
   margin-bottom: 3px;
   font-size: 12px;
@@ -53,7 +57,7 @@ label {
   color: red;
 }
 
-input, select {
+input, select, textarea {
   width: 100%;
   padding: 6px;
   border: 1px solid #ccc;
@@ -62,7 +66,11 @@ input, select {
   font-size: 12px;
 }
 
-input.ng-invalid.ng-touched, select.ng-invalid.ng-touched {
+textarea {
+  resize: none;
+}
+
+input.ng-invalid.ng-touched, select.ng-invalid.ng-touched, textarea.ng-invalid.ng-touched {
   border-color: red;
 }
 
@@ -100,7 +108,7 @@ input.ng-invalid.ng-touched, select.ng-invalid.ng-touched {
   font-weight: 300;
 }
 
-.has-error input, .has-error select {
+.has-error input, .has-error select, .has-error textarea {
   border-color: red;
 }
 
@@ -108,10 +116,10 @@ label {
   font-size: 1rem;
 }
 
-option{
+option {
   font-size: 1rem;
 }
 
-input {
+input, textarea {
   font-size: 1rem;
 }

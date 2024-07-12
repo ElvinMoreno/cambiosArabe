@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
+import { AggEntradaComponent } from '../../../formulario/agg-entrada/agg-entrada.component';
 
 @Component({
   selector: 'entradas',
@@ -18,4 +20,21 @@ export class EntradasComponent {
 
   displayedColumns: string[] = ['nombreCliente', 'cuenta', 'transferenciaBolivares', 'conversion', 'tasa', 'detalles'];
   dataSource = this.ELEMENT_DATA;
+
+  constructor(public dialog: MatDialog) {}
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open(AggEntradaComponent, {
+      width: '600px'
+    });
+
+    dialogRef.componentInstance.confirmar.subscribe((data: any) => {
+      // Lógica para manejar los datos de la nueva entrada
+      console.log(data);
+    });
+
+    dialogRef.componentInstance.cancelar.subscribe(() => {
+      dialogRef.close();
+    });
+  }
 }

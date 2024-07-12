@@ -1,0 +1,98 @@
+<div class="boton-cuentas-bancarias">
+  <div class="container">
+    <div *ngIf="mostrarBotones" class="button-align">
+      <button mat-stroked-button class="btn btn-desc">Cuentas Bancarias</button>
+    </div>
+    <div *ngIf="mostrarBotones" class="left-align">
+      <button mat-stroked-button class="btn btn-desc">Detalles de cuenta</button>
+    </div>
+    <div>
+      <div class="right-align espac-h2">
+        <label class="admin">ADMINISTRADOR</label>
+      </div>
+      <div></div>
+      <div class="right-align">
+        <h2 class="desc">Cuentas Bancarias</h2>
+      </div>
+      <div></div>
+      <div></div>
+    </div>
+  </div>
+</div>
+
+<div [ngClass]="{'card-container': true, 'no-botones': !mostrarBotones}">
+  <mat-card class="example-card" appearance="outlined" (click)="navegar('detalle-davidplata')">
+    <mat-card-content class="contentDavidPlata">
+      <div class="card-grid">
+        <div class="grid-item grid-item-1-1">
+          <p>Usuario cuenta</p>
+        </div>
+        <div class="grid-item grid-item-1-2">
+          <p>Cupos: #</p>
+        </div>
+        <div class="grid-item grid-item-2-1">
+          <p>Saldo Actual</p>
+        </div>
+        <div class="grid-item grid-item-3-1">
+          <p>$ 5'000.000</p>
+        </div>
+        <div class="grid-item grid-item-4-1">
+          <p>Daviplata</p>
+        </div>
+        <div class="grid-item grid-item-4-2">
+          <mat-icon>insert_chart_outlined</mat-icon>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="example-card" appearance="outlined" (click)="navegar('detalle-bancolombia1')">
+    <mat-card-content class="contentAmarillo">
+      <div class="card-grid">
+        <div class="grid-item grid-item-1-1">
+          <p>Usuario cuenta</p>
+        </div>
+        <div class="grid-item grid-item-1-2">
+          <p>Cupos: #</p>
+        </div>
+        <div class="grid-item grid-item-2-1">
+          <p>Saldo Actual</p>
+        </div>
+        <div class="grid-item grid-item-3-1">
+          <p>$ 5'000.000</p>
+        </div>
+        <div class="grid-item grid-item-4-1">
+          <p>BanColombia</p>
+        </div>
+        <div class="grid-item grid-item-4-2">
+          <mat-icon>insert_chart_outlined</mat-icon>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="example-card" appearance="outlined" (click)="navegar('/detalle-bancolombia2')">
+    <mat-card-content class="contentAmarillo">
+      <div class="card-grid">
+        <div class="grid-item grid-item-1-1">
+          <p>Usuario cuenta</p>
+        </div>
+        <div class="grid-item grid-item-1-2">
+          <p>Cupos: #</p>
+        </div>
+        <div class="grid-item grid-item-2-1">
+          <p>Saldo Actual</p>
+        </div>
+        <div class="grid-item grid-item-3-1">
+          <p>$ 5'000.000</p>
+        </div>
+        <div class="grid-item grid-item-4-1">
+          <p>BanColombia</p>
+        </div>
+        <div class="grid-item grid-item-4-2">
+          <mat-icon>insert_chart_outlined</mat-icon>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

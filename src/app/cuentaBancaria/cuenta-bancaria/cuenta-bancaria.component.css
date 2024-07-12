@@ -1,0 +1,155 @@
+body {
+  font-size: 2vw;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.button-align {
+  justify-self: center;
+}
+
+.right-align {
+  justify-self: start;
+}
+
+.left-align {
+  justify-self: center;
+}
+
+button {
+  padding: 5px 10px;
+}
+
+.admin {
+  font-size: 1.1rem;
+  color: #666;
+  font-weight: bold;
+}
+
+h2 {
+  font-size: 2rem;
+  color: #4a90e2;
+  margin: 0;
+  font-weight: bold;
+}
+
+.btn {
+  padding-left: 3rem;
+  padding-right: 3rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.espac-h2 {
+  margin-top: 1rem;
+}
+
+.btn-desc {
+  background-color: white !important;
+  color: #1B1A26 !important;
+  margin-bottom: 1rem;
+  border: 1px solid #000000;
+}
+
+/* Estilo card */
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.no-botones .container {
+  grid-template-rows: auto auto auto; /* Ajusta las filas cuando los botones no se muestran */
+}
+
+.example-card {
+  width: 48%; /* Ajusta este valor según tus necesidades */
+  margin-bottom: 20px;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  color: white;
+  font-family: "IBM Plex Sans", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.grid-item {
+  padding: 5px; /* Reducido el padding dentro de las grid-items */
+}
+
+.grid-item-1-1 {
+  grid-column: 1;
+  grid-row: 1;
+  margin-top: -0.7rem;
+}
+
+.grid-item-1-2 {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  margin-top: -0.7rem;
+}
+
+.grid-item-2-1 {
+  grid-column: 1;
+  grid-row: 2;
+  font-size: 1.5rem; /* Ajustado el tamaño de la fuente */
+  font-weight: bold;
+  margin-bottom: -1rem;
+}
+
+.grid-item-3-1 {
+  grid-column: 1;
+  grid-row: 3;
+  font-size: 1.7rem; /* Ajustado el tamaño de la fuente */
+}
+
+.grid-item-4-1 {
+  grid-column: 1;
+  grid-row: 4;
+  margin-bottom: -1rem;
+}
+
+.grid-item-4-2 {
+  grid-column: 2;
+  grid-row: 4;
+  text-align: right;
+  margin-bottom: -1rem;
+}
+
+.settings-icon {
+  vertical-align: middle;
+}
+
+.contentDavidPlata {
+  background-color: #FF6D6D;
+}
+
+.contentAmarillo {
+  background-color: #FFE65D;
+}
+
+mat-card-content {
+  padding: 10px; /* Ajustado el padding dentro del contenido del card */
+  border-radius: 0.5rem;
+}
+
+mat-divider {
+  background-color: rgba(255, 255, 255, 0.2); /* Color del divider ajustado para mejor visibilidad */
+  margin: 10px 0; /* Ajustado el margen de los dividers */
+}
+
+mat-card {
+  border-radius: 0.5rem;
+  cursor: pointer;
+}

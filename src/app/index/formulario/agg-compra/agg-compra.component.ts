@@ -1,13 +1,32 @@
-import { Component, EventEmitter, Inject, Output } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-agg-compra',
   standalone: true,
-  imports: [],
+  imports: [
+    CommonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    ReactiveFormsModule,
+    MatIconModule
+  ],
   templateUrl: './agg-compra.component.html',
-  styleUrl: './agg-compra.component.css'
+  styleUrls: ['./agg-compra.component.css']
 })
 export class AggCompraComponent {
   @Output() cancelar = new EventEmitter<void>();
@@ -19,31 +38,26 @@ export class AggCompraComponent {
 
   constructor(
     private fb: FormBuilder,
-    public dialogRef: MatDialogRef<AggCompraComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    public dialogRef: MatDialogRef<AggCompraComponent>
   ) {
     this.form = this.fb.group({
-      nombreCuenta: ['', Validators.required],
+      nombre: ['', Validators.required],
       fecha: ['', Validators.required],
-      tipoCuenta: ['', Validators.required],
-      tipoPago: ['', Validators.required],
-      Tasa: ['', Validators.required],
-      conversionAutomatico: ['', Validators.required],
+      tipoCuentaEntrada: ['', Validators.required],
+      tasa: ['', Validators.required],
+      conversionAutomatica: ['', Validators.required],
       cantidadBolivares: ['', Validators.required]
     });
   }
 
-
-
   onConfirmar() {
     if (this.form.valid) {
       this.confirmar.emit(this.form.value);
-      this.dialogRef.close(this.form.value); // Close the dialog with the form value
     }
   }
 
   onCancelar() {
     this.cancelar.emit();
-    this.dialogRef.close(); // Close the dialog without returning any value
+    this.dialogRef.close();
   }
 }
