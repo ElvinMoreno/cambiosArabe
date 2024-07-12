@@ -3,7 +3,8 @@ import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
-import { AggEntradaComponent } from '../../../formulario/agg-entrada/agg-entrada.component';
+import { AggEntradaComponent } from '../../../../formulario/agg-entrada/agg-entrada.component';
+
 
 @Component({
   selector: 'entradas',
@@ -24,17 +25,17 @@ export class EntradasComponent {
   constructor(public dialog: MatDialog) {}
 
   openDialog(): void {
-    const dialogRef = this.dialog.open(AggEntradaComponent, {
-      width: '600px'
-    });
+  const dialogRef = this.dialog.open<AggEntradaComponent>(AggEntradaComponent, {
+    width: '600px'
+  });
 
-    dialogRef.componentInstance.confirmar.subscribe((data: any) => {
-      // Lógica para manejar los datos de la nueva entrada
-      console.log(data);
-    });
+  dialogRef.componentInstance.confirmar.subscribe((data: any) => {
+    // Lógica para manejar los datos de la nueva entrada
+    console.log(data);
+  });
 
-    dialogRef.componentInstance.cancelar.subscribe(() => {
-      dialogRef.close();
-    });
-  }
+  dialogRef.componentInstance.cancelar.subscribe(() => {
+    dialogRef.close();
+  });
+}
 }

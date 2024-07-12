@@ -42,7 +42,8 @@ export const routes: Routes = [
           { path: '', redirectTo: 'bolivares', pathMatch: 'full' }
         ]
       },
-      { path: 'configuracion', component: DescripcionComponent }
+      { path: 'configuracion', component: DescripcionComponent },
+      { path: 'detalle-davidplata', component: DetalleDavidplataComponent },
     ]
   },
   {

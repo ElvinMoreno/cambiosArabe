@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
-import { AggSalidaComponent } from '../../../formulario/agg-salida/agg-salida.component';
+import { AggSalidaComponent } from '../../../../formulario/agg-salida/agg-salida.component';
 
 @Component({
   selector: 'salidas',

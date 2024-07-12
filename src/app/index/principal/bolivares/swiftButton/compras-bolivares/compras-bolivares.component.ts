@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
+import { AggCompraComponent } from '../../../../formulario/agg-compra/agg-compra.component';
 
 
 
@@ -20,5 +22,18 @@ export class ComprasBolivaresComponent {
 
   displayedColumns: string[] = ['nombreCliente', 'cuenta', 'transferenciaBolivares', 'conversion', 'tasa', 'detalles'];
   dataSource = this.ELEMENT_DATA;
+  constructor(public dialog: MatDialog) {}
 
+  openDialog(): void {
+    const dialogRef = this.dialog.open(AggCompraComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.log('Compra confirmada:', result);
+        // Aquí puedes manejar el resultado, como agregar la nueva compra a la tabla
+      } else {
+        console.log('Compra cancelada');
+      }
+    });
+  }
 }
