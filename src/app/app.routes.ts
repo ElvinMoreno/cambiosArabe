@@ -13,6 +13,7 @@ import { DetalleDavidplataComponent } from './cuentaBancaria/detalle-Cuenta/deta
 import { DetalleBancolombia1Component } from './cuentaBancaria/detalle-Cuenta/detalle-bancolombia1/detalle-bancolombia1.component';
 import { DetalleBancolombia2Component } from './cuentaBancaria/detalle-Cuenta/detalle-bancolombia2/detalle-bancolombia2.component';
 import { DetalleMovimientoDavidplataComponent } from './cuentaBancaria/detalle-Cuenta/detalle-davidplata/detalle-movimiento/detalle-movimiento-davidplata/detalle-movimiento-davidplata.component';
+
 export const routes: Routes = [
   {
     path: '',
@@ -44,18 +45,12 @@ export const routes: Routes = [
       },
       { path: 'configuracion', component: DescripcionComponent },
       { path: 'detalle-davidplata', component: DetalleDavidplataComponent },
+      {
+        path: 'cuentaBancaria', component: CuentaBancariaComponent
+      },
+      { path: 'detalle-bancolombia1', component: DetalleBancolombia1Component },
+      { path: 'detalle-bancolombia2', component: DetalleBancolombia2Component },
+      { path: 'detalle-movimiento-davidplata', component: DetalleMovimientoDavidplataComponent }
     ]
-  },
-  {
-    path: 'cuentaBancaria',
-    component: CuentaBancariaComponent,
-
-  },
-
-  { path: 'detalle-davidplata', component: DetalleDavidplataComponent },
-  { path: 'detalle-bancolombia1', component: DetalleBancolombia1Component },
-   { path: 'detalle-bancolombia2', component: DetalleBancolombia2Component },
-   { path: 'detalle-movimiento-davidplata',
-    component:DetalleMovimientoDavidplataComponent}
-
+  }
 ];
