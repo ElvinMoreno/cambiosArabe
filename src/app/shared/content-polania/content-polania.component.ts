@@ -7,14 +7,18 @@ import { CommonModule } from '@angular/common';
 import { SidebarPolaniaComponent } from '../sidebar-polania/sidebar-polania.component';
 import { NavbarComponent } from '../../index/principal/navbar/navbar.component';
 
+
 @Component({
   selector: 'content-polania',
   standalone: true,
   imports: [
-    RouterOutlet,CommonModule,MatSidenavModule,
+    RouterOutlet,
+    CommonModule,
+    MatSidenavModule,
     MatIconModule,
     MatListModule,
-    SidebarPolaniaComponent, NavbarComponent
+    SidebarPolaniaComponent, 
+    NavbarComponent
   ],
   templateUrl: './content-polania.component.html',
   styleUrl: './content-polania.component.css'
