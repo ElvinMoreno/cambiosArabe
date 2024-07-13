@@ -21,13 +21,17 @@ body {
   justify-self: center;
 }
 
+.extrem-align {
+  justify-self: end;
+}
+
 button {
   padding: 5px 10px;
 }
 
 .admin {
   font-size: 1.1rem;
-  color: #666;
+  color: #000000;
   font-weight: bold;
 }
 
@@ -58,53 +62,22 @@ h2 {
   border: 1px solid #000000;
 }
 
-/* segundo container */
-.container2 {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(300px, 150px)); /* Reducido el ancho máximo */
-  gap: 20px; /* Reducido el espacio entre columnas */
-  justify-content: center; /* Centra las columnas en el contenedor */
-  padding: 10px;
+.btn2{
+  padding-left: 3rem;
+  padding-right: 3rem;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+.btn-entrada{
+  background-color: white !important;
+  color: #1B1A26 !important;
 }
 
-.card {
-  background: transparent;
-  box-shadow: none;
-}
+.btn-grup2{
+  background-color: white !important;
+  color: #1B1A26 !important;
 
-mat-card-content {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background-color: #5E94FF;
-  border-radius: 0.5rem;
-  padding: 8px; /* Reducido el padding */
-  height: 80px; /* Altura fija para todas las cards */
-  box-sizing: border-box;
-}
-
-.card-title {
-  font-family: "IBM Plex Sans", sans-serif;
-  font-weight: 700;
-  font-style: normal;
-  font-size: 1.2rem; /* Reducido el tamaño de fuente */
-  margin-bottom: 4px;
-  color: white;
-  text-align: center;
-  margin-bottom: 0.5rem;
-}
-
-.card-amount {
-  font-size: 2rem; /* Reducido el tamaño de fuente */
-  color: white;
-  text-align: center;
-}
-
-@media (max-width: 500px) {
-  .container2 {
-    grid-template-columns: 1fr;
-  }
 }
 
 /* boton filtro */
@@ -113,9 +86,8 @@ mat-card-content {
   display: flex;
   justify-content: flex-end; /* Mueve el botón al extremo derecho */
   padding: 10px; /* Espacio alrededor del contenedor */
-  padding-right: 3rem;
+  padding-right: 6rem;
 }
-
 /* tabla estilos */
 .column{
   background: blue;
@@ -130,8 +102,8 @@ mat-card-content {
 }
 
 .table-container {
-  padding-right: 3rem !important;
-  padding-left: 3rem !important;
+  padding-right: 6rem !important;
+  padding-left: 6rem !important;
 }
 
 .centered-table {

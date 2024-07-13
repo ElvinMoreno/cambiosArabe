@@ -1,0 +1,31 @@
+<div class="boton-cuentas-bancarias">
+  <div class="container">
+    <div class="button-align">
+      <button mat-stroked-button class="btn btn-desc" (click)="navegar('/index/cuentaBancaria')">
+        Cuentas Bancarias
+      </button>
+    </div>
+    <div class="left-align">
+      <button mat-stroked-button class="btn btn-desc">Detalles de cuenta</button>
+    </div>
+    <div class="extrem-align">
+      <button mat-raised-button class="btn"
+              [ngClass]="{'btn-dark': vistaActual === 'entradas', 'btn-light': vistaActual !== 'entradas'}"
+              (click)="cambiarVista('entradas')">
+        Entradas
+      </button>
+    </div>
+    <div>
+      <button mat-raised-button class="btn"
+              [ngClass]="{'btn-dark': vistaActual === 'salidas', 'btn-light': vistaActual !== 'salidas'}"
+              (click)="cambiarVista('salidas')">
+        Salidas
+      </button>
+    </div>
+  </div>
+</div>
+
+<ng-container [ngSwitch]="vistaActual">
+  <entrada-bancolombia2 *ngSwitchCase="'entradas'"></entrada-bancolombia2>
+  <salida-bancolombia2 *ngSwitchCase="'salidas'"></salida-bancolombia2>
+</ng-container>
