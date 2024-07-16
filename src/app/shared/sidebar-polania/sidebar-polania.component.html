@@ -1,60 +1,72 @@
 <div class="arriba">
-<span class="material-symbols-outlined person-sp">
-  person</span>
-<p class="nUsuario">Nombre de usuario</p>
+  <span class="material-symbols-outlined person-sp">person</span>
+  <p class="nUsuario">Nombre de usuario</p>
 </div>
 <mat-divider></mat-divider>
 
-
 <mat-nav-list class="sidebar-nav-list">
-
-
-  <a mat-list-item [routerLink]="'/index'">
+  <a mat-list-item [routerLink]="'/index'" routerLinkActive="active">
     <span class="entry">
       <mat-icon class="home">home</mat-icon>
-      <span class="text" >Index</span>
+      <span class="text">Index</span>
     </span>
   </a>
 
-  <a mat-list-item routerLink="/index/operaciones">
+  <a mat-list-item [routerLink]="'/index/operaciones'" routerLinkActive="active">
     <span class="entry">
-      <mat-icon class="material-symbols-outlined">
-        widgets
-        </mat-icon>
+      <mat-icon class="material-symbols-outlined">widgets</mat-icon>
       <span class="text">Operaciones</span>
     </span>
   </a>
 
-  <a mat-list-item routerLink="/index/test">
+  <a mat-list-item [routerLink]="'/index/test'" routerLinkActive="active">
     <span class="entry">
-      <mat-icon class="material-symbols-outlined">
-        assignment
-        </mat-icon>
+      <mat-icon class="material-symbols-outlined">assignment</mat-icon>
       <span class="text">Test</span>
     </span>
   </a>
-   <a mat-list-item routerLink="/index/cajas">
+
+  <a mat-list-item [routerLink]="'/index/cajas'" routerLinkActive="active">
     <span class="entry">
       <mat-icon class="cajas">inbox</mat-icon>
-      <span class="text" >Caja</span>
+      <span class="text">Caja</span>
     </span>
   </a>
 
-  <a mat-list-item [routerLink]="'/index/configuracion'">
+  <a mat-list-item [routerLink]="'/index/configuracion'" routerLinkActive="active">
     <span class="entry">
-      <mat-icon class="material-symbols-outlined">
-        settings
-        </mat-icon>
+      <mat-icon class="material-symbols-outlined">settings</mat-icon>
       <span class="text">Configuraciones</span>
     </span>
   </a>
 
-  <a mat-list-item [routerLink]="'/index/cuentaBancaria'">
+  <a mat-list-item [routerLink]="'/index/cuentaBancaria'" routerLinkActive="active">
     <span class="entry">
-      <span class="material-symbols-outlined">
-        account_balance
-        </span>
+      <mat-icon class="material-symbols-outlined">account_balance</mat-icon>
       <span class="text">Cuentas Bancos</span>
     </span>
   </a>
 </mat-nav-list>
+
+
+
+
+
+<div class="sidenav" [ngClass]="collapsad ? 'sidenav-collapsed':''">
+  <div class="logo-container">
+    <button class="logo"></button>
+    <div class="logo-text" *ngIf="collapsad">Multisrepuestos Polania</div>
+    <button class="btn-close" *ngIf="collapsad">
+      <i class="fal fa-times close-icon"></i>
+    </button>
+  </div>
+
+  <ul class="sidenav-nav">
+    <li class="sidenav-nav-item" *ngFor="let data of navData">
+      <a class="sidenav-nav-link" [routerLink]="[data.routerLink]">
+        <i class="sidenav-link-icon" [class]="data.icon"></i>
+        <span class="sidenav-link-text" *ngIf="collapsad">{{data.label}}</span>
+      </a>
+    </li>
+  </ul>
+</div>
