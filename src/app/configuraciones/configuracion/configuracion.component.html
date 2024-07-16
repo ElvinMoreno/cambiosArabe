@@ -1,0 +1,25 @@
+  <div class="container">
+    <div class="extrem-align">
+      <button mat-raised-button class="btn"
+        [ngClass]="{'btn-dark': vistaActual === 'descripcion',
+        'btn-light': vistaActual !== 'descripcion'}"
+        (click)="cambiarVista('descripcion')">
+        Descripcion
+        </button>
+      </div>
+    <div >
+      <button mat-raised-button class="btn"
+      [ngClass]="{'btn-dark': vistaActual === 'gastos',
+      'btn-light': vistaActual !== 'gastos'}"
+      (click)="cambiarVista('gastos')">
+      Gastos
+      </button>
+    </div>
+ </div>
+
+
+
+  <ng-container [ngSwitch]="vistaActual">
+    <descripcion *ngSwitchCase="'descripcion'"></descripcion>
+    <gastos *ngSwitchCase="'gastos'"></gastos>
+  </ng-container>

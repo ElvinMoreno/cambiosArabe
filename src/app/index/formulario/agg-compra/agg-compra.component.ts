@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, formatDate } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -10,6 +10,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogRef } from '@angular/material/dialog';
+import { CompraserviceService } from './interface/compraservice.service';
+import { ResponseAcceso } from '../../../interfaces/ResponseAcceso';
 
 @Component({
   selector: 'app-agg-compra',
@@ -28,31 +30,55 @@ import { MatDialogRef } from '@angular/material/dialog';
   templateUrl: './agg-compra.component.html',
   styleUrls: ['./agg-compra.component.css']
 })
-export class AggCompraComponent {
+export class AggCompraComponent implements OnInit {
+
   @Output() cancelar = new EventEmitter<void>();
-  @Output() confirmar = new EventEmitter<any>();
-
   form: FormGroup;
-  currentLabel = 'Cantidad bolívares';
-  currentType = 'number';
+  token: string = '';
 
-  constructor(
-    private fb: FormBuilder,
-    public dialogRef: MatDialogRef<AggCompraComponent>
-  ) {
+  constructor(private fb: FormBuilder, private compraService: CompraserviceService, private dialogRef: MatDialogRef<AggCompraComponent>) {
     this.form = this.fb.group({
-      nombre: ['', Validators.required],
-      fecha: ['', Validators.required],
-      tipoCuentaEntrada: ['', Validators.required],
-      tasa: ['', Validators.required],
-      conversionAutomatica: ['', Validators.required],
-      cantidadBolivares: ['', Validators.required]
+      proveedorId: ['', Validators.required],
+      fechaCompra: ['', Validators.required],
+      cuentaBancariaBs: ['', Validators.required],
+      cuentaBancariaPesos: ['', Validators.required],
+      metodoPagoId: ['', Validators.required],
+      tasaCompra: ['', Validators.required],
+      montoBs: ['', Validators.required],
+      referencia: ['', Validators.required]
     });
   }
 
-  onConfirmar() {
+  ngOnInit(): void {
+    // Asignar el token desde algún lugar (ej. almacenamiento local, servicio, etc.)
+    const responseAcceso: ResponseAcceso = { statusCode: 200, token: 'your-token-here' };
+    this.token = responseAcceso.token;
+  }
+
+  onConfirmar(): void {
     if (this.form.valid) {
-      this.confirmar.emit(this.form.value);
+      const formValue = this.form.value;
+
+      // Convertir los valores del formulario al formato requerido por el backend
+      const compra = {
+        cuentaBancariaBs: formValue.cuentaBancariaBs,
+        cuentaBancariaPesos: formValue.cuentaBancariaPesos,
+        proveedorId: formValue.proveedorId,
+        metodoPagoId: formValue.metodoPagoId,
+        tasaCompra: formValue.tasaCompra,
+        montoBs: formValue.montoBs,
+        fechaCompra: formatDate(formValue.fechaCompra, 'yyyy-MM-ddTHH:mm:ss', 'en-US'),
+        referencia: formValue.referencia
+      };
+
+      this.compraService.saveCompraBs(compra, this.token).subscribe(() => {
+        // Manejo de la respuesta exitosa
+        console.log('Compra registrada con éxito');
+        this.dialogRef.close();
+      }, error => {
+        // Manejo de errores
+        console.error('Error al registrar la compra', error);
+      });
     }
   }
 
@@ -61,3 +87,4 @@ export class AggCompraComponent {
     this.dialogRef.close();
   }
 }
+
