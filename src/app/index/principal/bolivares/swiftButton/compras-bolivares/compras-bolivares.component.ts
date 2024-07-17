@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
-import { AggCompraComponent } from '../../../../formulario/agg-compra/agg-compra.component';
 import { CommonModule } from '@angular/common';
 
 import { CompraBsDTO } from '../../../../../interfaces/compra-bs-dto';
 import { CompraService } from '../../../../../services/compra.service';
-
+import { AggCompraComponent } from '../../../../formulario/agg-compra/agg-compra.component';
+import { DetallesCompraComponent } from './modal-detalles/detalles-compra/detalles-compra.component';
 
 @Component({
   selector: 'compras-bolivares',
@@ -28,19 +28,14 @@ export class ComprasBolivaresComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log('Initializing component and loading purchases');  // Log de depuración
     this.loadCompras();
   }
 
   loadCompras(): void {
     this.compraService.getCompras().subscribe(
       (data: CompraBsDTO[]) => {
-        console.log('Data received from backend:', data);  // Log de depuración
-
         this.ELEMENT_DATA = data;
-        this.dataSource = [...this.ELEMENT_DATA]; // Actualizar el dataSource
-
-        console.log('Data source updated:', this.dataSource);  // Log de depuración
+        this.dataSource = [...this.ELEMENT_DATA];
       },
       (error) => {
         console.error('Error al obtener las compras:', error);
@@ -53,11 +48,15 @@ export class ComprasBolivaresComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        console.log('Compra confirmada:', result);
-        this.loadCompras(); // Recargar la lista de compras
-      } else {
-        console.log('Compra cancelada');
+        this.loadCompras();
       }
+    });
+  }
+
+  openDetallesDialog(id: number): void {
+    this.dialog.open(DetallesCompraComponent, {
+      data: { id: id },
+      width: '600px',
     });
   }
 }

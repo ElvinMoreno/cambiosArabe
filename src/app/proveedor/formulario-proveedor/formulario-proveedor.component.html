@@ -1,0 +1,26 @@
+<div class="modal-overlay">
+  <div class="modal-content">
+    <h2>Agregar Proveedor</h2>
+    <div class="separator"></div>
+    <form [formGroup]="form" (ngSubmit)="onConfirmar()">
+      <div class="form-grid">
+        <div class="form-group" [ngClass]="{'has-error': form.get('nombre')?.invalid && form.get('nombre')?.touched}">
+          <label for="nombre">Nombre <span class="required">*</span></label>
+          <input id="nombre" type="text" formControlName="nombre">
+        </div>
+        <div class="form-group" [ngClass]="{'has-error': form.get('deuda')?.invalid && form.get('deuda')?.touched}">
+          <label for="deuda">Deuda <span class="required">*</span></label>
+          <input id="deuda" type="number" formControlName="deuda">
+        </div>
+        <div class="form-group" [ngClass]="{'has-error': form.get('abono')?.invalid && form.get('abono')?.touched}">
+          <label for="abono">Abono <span class="required">*</span></label>
+          <input id="abono" type="number" formControlName="abono">
+        </div>
+      </div>
+      <div class="button-group">
+        <button type="submit" class="btn-confirmar">Confirmar Proveedor</button>
+        <button type="button" class="btn-cancelar" (click)="onCancelar()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>

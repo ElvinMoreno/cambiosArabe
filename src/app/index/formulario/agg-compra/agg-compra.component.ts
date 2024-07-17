@@ -10,8 +10,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogRef } from '@angular/material/dialog';
-import { CompraserviceService } from './interface/compraservice.service';
 import { ResponseAcceso } from '../../../interfaces/ResponseAcceso';
+import { CompraService } from '../../../services/compra.service';
 
 @Component({
   selector: 'app-agg-compra',
@@ -25,7 +25,8 @@ import { ResponseAcceso } from '../../../interfaces/ResponseAcceso';
     MatDatepickerModule,
     MatNativeDateModule,
     ReactiveFormsModule,
-    MatIconModule
+    MatIconModule,
+
   ],
   templateUrl: './agg-compra.component.html',
   styleUrls: ['./agg-compra.component.css']
@@ -36,7 +37,7 @@ export class AggCompraComponent implements OnInit {
   form: FormGroup;
   token: string = '';
 
-  constructor(private fb: FormBuilder, private compraService: CompraserviceService, private dialogRef: MatDialogRef<AggCompraComponent>) {
+  constructor(private fb: FormBuilder, private compraService: CompraService, private dialogRef: MatDialogRef<AggCompraComponent>) {
     this.form = this.fb.group({
       proveedorId: ['', Validators.required],
       fechaCompra: ['', Validators.required],
@@ -71,14 +72,14 @@ export class AggCompraComponent implements OnInit {
         referencia: formValue.referencia
       };
 
-      this.compraService.saveCompraBs(compra, this.token).subscribe(() => {
-        // Manejo de la respuesta exitosa
-        console.log('Compra registrada con éxito');
-        this.dialogRef.close();
-      }, error => {
-        // Manejo de errores
-        console.error('Error al registrar la compra', error);
-      });
+      // this.compraService.saveCompraBs(compra, this.token).subscribe(() => {
+      //   // Manejo de la respuesta exitosa
+      //   console.log('Compra registrada con éxito');
+      //   this.dialogRef.close();
+      // }, error => {
+      //   // Manejo de errores
+      //   console.error('Error al registrar la compra', error);
+      // });
     }
   }
 

@@ -6,7 +6,7 @@ export const navbarData = [
         label: 'Casa'
     },
     {
-        routerLink:'proveedor',
+        routerLink:'proveedores',
         icon:'fa-solid fa-address-book',
         label: 'Proveedor'
     },
