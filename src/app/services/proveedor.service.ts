@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, catchError, throwError } from 'rxjs';
-import { CompraBsDTO } from '../interfaces/compra-bs-dto';
+import { Proveedor } from '../interfaces/proveedor';
 import { appsetting } from '../settings/appsetting';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CompraService {
-  private apiUrl = `${appsetting.apiUrl}compras`;
+export class ProveedorService {
+  private apiUrl = `${appsetting.apiUrl}proveedores`;
 
   constructor(private http: HttpClient) { }
 
@@ -23,17 +23,17 @@ export class CompraService {
     });
   }
 
-  getCompras(): Observable<CompraBsDTO[]> {
+  getAllProveedores(): Observable<Proveedor[]> {
     const headers = this.getHeaders();
-    return this.http.get<CompraBsDTO[]>(`${this.apiUrl}/index`, { headers })
+    return this.http.get<Proveedor[]>(this.apiUrl, { headers })
       .pipe(
         catchError(this.handleError)
       );
   }
 
-  getCompraById(id: number): Observable<CompraBsDTO> {
+  createProveedor(proveedor: Proveedor): Observable<Proveedor> {
     const headers = this.getHeaders();
-    return this.http.get<CompraBsDTO>(`${this.apiUrl}/index/${id}`, { headers })
+    return this.http.post<Proveedor>(this.apiUrl, proveedor, { headers })
       .pipe(
         catchError(this.handleError)
       );

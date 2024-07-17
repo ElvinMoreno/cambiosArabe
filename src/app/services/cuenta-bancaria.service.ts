@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, catchError, throwError } from 'rxjs';
-import { CompraBsDTO } from '../interfaces/compra-bs-dto';
+import { CuentaBancaria } from '../interfaces/cuenta-bancaria';
 import { appsetting } from '../settings/appsetting';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CompraService {
-  private apiUrl = `${appsetting.apiUrl}compras`;
+export class CuentaBancariaService {
+  private apiUrl = `${appsetting.apiUrl}cuentas`;
 
   constructor(private http: HttpClient) { }
 
@@ -23,17 +23,9 @@ export class CompraService {
     });
   }
 
-  getCompras(): Observable<CompraBsDTO[]> {
+  getAllCuentasBancarias(): Observable<CuentaBancaria[]> {
     const headers = this.getHeaders();
-    return this.http.get<CompraBsDTO[]>(`${this.apiUrl}/index`, { headers })
-      .pipe(
-        catchError(this.handleError)
-      );
-  }
-
-  getCompraById(id: number): Observable<CompraBsDTO> {
-    const headers = this.getHeaders();
-    return this.http.get<CompraBsDTO>(`${this.apiUrl}/index/${id}`, { headers })
+    return this.http.get<CuentaBancaria[]>(this.apiUrl, { headers })
       .pipe(
         catchError(this.handleError)
       );

@@ -21,73 +21,23 @@
 </div>
 
 <div [ngClass]="{'card-container': true, 'no-botones': !mostrarBotones}">
-  <mat-card class="example-card" appearance="outlined" (click)="navegar('/index/detalle-davidplata')">
+  <mat-card *ngFor="let cuenta of cuentasBancarias" class="example-card" appearance="outlined">
     <mat-card-content class="contentDavidPlata">
       <div class="card-grid">
         <div class="grid-item grid-item-1-1">
-          <p>Usuario cuenta</p>
+          <p>{{ cuenta.nombreCuenta }}</p>
         </div>
         <div class="grid-item grid-item-1-2">
-          <p>Cupos: #</p>
+          <p>Cupos: {{ cuenta.cupos }}</p>
         </div>
         <div class="grid-item grid-item-2-1">
           <p>Saldo Actual</p>
         </div>
         <div class="grid-item grid-item-3-1">
-          <p>$ 5'000.000</p>
+          <p>$ {{ cuenta.monto | number:'1.2-2' }}</p>
         </div>
         <div class="grid-item grid-item-4-1">
-          <p>Daviplata</p>
-        </div>
-        <div class="grid-item grid-item-4-2">
-          <mat-icon>insert_chart_outlined</mat-icon>
-        </div>
-      </div>
-    </mat-card-content>
-  </mat-card>
-
-  <mat-card class="example-card" appearance="outlined" (click)="navegar('/index/detalle-bancolombia1')">
-    <mat-card-content class="contentAmarillo">
-      <div class="card-grid">
-        <div class="grid-item grid-item-1-1">
-          <p>Usuario cuenta</p>
-        </div>
-        <div class="grid-item grid-item-1-2">
-          <p>Cupos: #</p>
-        </div>
-        <div class="grid-item grid-item-2-1">
-          <p>Saldo Actual</p>
-        </div>
-        <div class="grid-item grid-item-3-1">
-          <p>$ 5'000.000</p>
-        </div>
-        <div class="grid-item grid-item-4-1">
-          <p>BanColombia</p>
-        </div>
-        <div class="grid-item grid-item-4-2">
-          <mat-icon>insert_chart_outlined</mat-icon>
-        </div>
-      </div>
-    </mat-card-content>
-  </mat-card>
-
-  <mat-card class="example-card" appearance="outlined" (click)="navegar('/index/detalle-bancolombia2')">
-    <mat-card-content class="contentAmarillo">
-      <div class="card-grid">
-        <div class="grid-item grid-item-1-1">
-          <p>Usuario cuenta</p>
-        </div>
-        <div class="grid-item grid-item-1-2">
-          <p>Cupos: #</p>
-        </div>
-        <div class="grid-item grid-item-2-1">
-          <p>Saldo Actual</p>
-        </div>
-        <div class="grid-item grid-item-3-1">
-          <p>$ 5'000.000</p>
-        </div>
-        <div class="grid-item grid-item-4-1">
-          <p>BanColombia</p>
+          <p>{{ cuenta.nombreBanco }}</p>
         </div>
         <div class="grid-item grid-item-4-2">
           <mat-icon>insert_chart_outlined</mat-icon>
