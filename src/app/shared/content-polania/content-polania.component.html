@@ -1,20 +1,5 @@
-<mat-sidenav-container class="sidenav-container">
-  <mat-sidenav #sidenav mode="side" [(opened)]="opened" class="sidebar">
-    <sidebar-polania></sidebar-polania>
-  </mat-sidenav>
-
-  <mat-sidenav-content class="main-content">
-    <mat-toolbar color="primary">
-      <button mat-icon-button (click)="sidenav.toggle()">
-        <mat-icon>menu</mat-icon>
-      </button>
-      <span>Nombre de Aplicación</span>
-    </mat-toolbar>
-    <div class="padding-area">
-      <div class="content-area">
-        <router-outlet></router-outlet>
-      </div>
-    </div>
-  </mat-sidenav-content>
-</mat-sidenav-container>
-
+<sidebar-polania (onToggleSideNav)="onToggleSideNav($event)"></sidebar-polania>
+<app-body-side-nav
+  [collapsed]="isSideNavCollapsed"
+  [screenWidth]="screenWidth"
+></app-body-side-nav>

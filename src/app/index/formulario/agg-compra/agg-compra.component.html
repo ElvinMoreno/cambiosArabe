@@ -1,35 +1,41 @@
+<!-- agg-compra.component.html -->
 <div class="modal-overlay">
   <div class="modal-content">
     <h2>Agregar Compra</h2>
     <div class="separator"></div>
     <form [formGroup]="form" (ngSubmit)="onConfirmar()">
       <div class="form-grid">
-        <div class="form-group" [ngClass]="{'has-error': form.get('nombre')?.invalid && form.get('nombre')?.touched}">
-          <label for="nombre">Nombre <span class="required">*</span></label>
-          <input id="nombre" type="text" formControlName="nombre">
+        <div class="form-group" [ngClass]="{'has-error': form.get('proveedorId')?.invalid && form.get('proveedorId')?.touched}">
+          <label for="proveedorId">Proveedor <span class="required">*</span></label>
+          <input id="proveedorId" type="number" formControlName="proveedorId">
         </div>
-        <div class="form-group" [ngClass]="{'has-error': form.get('fecha')?.invalid && form.get('fecha')?.touched}">
-          <label for="fecha">Fecha <span class="required">*</span></label>
-          <input id="fecha" type="date" formControlName="fecha">
+        <div class="form-group" [ngClass]="{'has-error': form.get('fechaCompra')?.invalid && form.get('fechaCompra')?.touched}">
+          <label for="fechaCompra">Fecha <span class="required">*</span></label>
+          <input id="fechaCompra" type="datetime-local" formControlName="fechaCompra">
         </div>
-        <div class="form-group" [ngClass]="{'has-error': form.get('tipoCuentaEntrada')?.invalid && form.get('tipoCuentaEntrada')?.touched}">
-          <label for="tipoCuentaEntrada">Tipo de cuenta entrada <span class="required">*</span></label>
-          <select id="tipoCuentaEntrada" formControlName="tipoCuentaEntrada">
-            <option value="tipo1">Tipo 1</option>
-            <option value="tipo2">Tipo 2</option>
-          </select>
+        <div class="form-group" [ngClass]="{'has-error': form.get('cuentaBancariaBs')?.invalid && form.get('cuentaBancariaBs')?.touched}">
+          <label for="cuentaBancariaBs">Cuenta bancaria Bs <span class="required">*</span></label>
+          <input id="cuentaBancariaBs" type="number" formControlName="cuentaBancariaBs">
         </div>
-        <div class="form-group" [ngClass]="{'has-error': form.get('tasa')?.invalid && form.get('tasa')?.touched}">
-          <label for="tasa">Tasa <span class="required">*</span></label>
-          <input id="tasa" type="number" formControlName="tasa">
+        <div class="form-group" [ngClass]="{'has-error': form.get('cuentaBancariaPesos')?.invalid && form.get('cuentaBancariaPesos')?.touched}">
+          <label for="cuentaBancariaPesos">Cuenta bancaria Pesos <span class="required">*</span></label>
+          <input id="cuentaBancariaPesos" type="number" formControlName="cuentaBancariaPesos">
         </div>
-        <div class="form-group" [ngClass]="{'has-error': form.get('conversionAutomatica')?.invalid && form.get('conversionAutomatica')?.touched}">
-          <label for="conversionAutomatica">Conversión automática <span class="required">*</span></label>
-          <input id="conversionAutomatica" type="text" formControlName="conversionAutomatica">
+        <div class="form-group" [ngClass]="{'has-error': form.get('metodoPagoId')?.invalid && form.get('metodoPagoId')?.touched}">
+          <label for="metodoPagoId">Método de Pago <span class="required">*</span></label>
+          <input id="metodoPagoId" type="number" formControlName="metodoPagoId">
         </div>
-        <div class="form-group" [ngClass]="{'has-error': form.get('cantidadBolivares')?.invalid && form.get('cantidadBolivares')?.touched}">
-          <label for="cantidadBolivares">{{ currentLabel }} <span class="required">*</span></label>
-          <input id="cantidadBolivares" [type]="currentType" formControlName="cantidadBolivares">
+        <div class="form-group" [ngClass]="{'has-error': form.get('tasaCompra')?.invalid && form.get('tasaCompra')?.touched}">
+          <label for="tasaCompra">Tasa <span class="required">*</span></label>
+          <input id="tasaCompra" type="number" formControlName="tasaCompra">
+        </div>
+        <div class="form-group" [ngClass]="{'has-error': form.get('montoBs')?.invalid && form.get('montoBs')?.touched}">
+          <label for="montoBs">Monto en Bolívares <span class="required">*</span></label>
+          <input id="montoBs" type="number" formControlName="montoBs">
+        </div>
+        <div class="form-group" [ngClass]="{'has-error': form.get('referencia')?.invalid && form.get('referencia')?.touched}">
+          <label for="referencia">Referencia <span class="required">*</span></label>
+          <input id="referencia" type="text" formControlName="referencia">
         </div>
       </div>
       <div class="button-group">

@@ -60,6 +60,10 @@ h2 {
   font-weight: bold;
 }
 
+.icon{
+  cursor: pointer;
+}
+
 /* tabla estilos */
 .column{
   background: blue;

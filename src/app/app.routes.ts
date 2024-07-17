@@ -4,7 +4,7 @@ import { CajaComponent } from './index/principal/caja/caja.component';
 import { EfectivoComponent } from './index/principal/efectivo/efectivo.component';
 import { LoginComponent } from './pages/login/login.component';
 import { RegistroComponent } from './pages/registro/registro.component';
-import { DescripcionComponent } from './configuraciones/descripcion/descripcion.component';
+import { DescripcionComponent } from './configuraciones/configuracion/switchbutton/descripcion/descripcion.component';
 import { ContentPolaniaComponent } from './shared/content-polania/content-polania.component';
 import { AuthGuard } from './guards/auth.guard';
 import { PrincipalComponent } from './index/principal/principal.component';
@@ -14,6 +14,8 @@ import { DetalleBancolombia1Component } from './cuentaBancaria/detalle-Cuenta/de
 import { DetalleBancolombia2Component } from './cuentaBancaria/detalle-Cuenta/detalle-bancolombia2/detalle-bancolombia2.component';
 import { DetalleMovimientoDavidplataComponent } from './cuentaBancaria/detalle-Cuenta/detalle-davidplata/detalle-movimiento/detalle-movimiento-davidplata/detalle-movimiento-davidplata.component';
 import { DetalleMovimientoBancolombia1Component } from './cuentaBancaria/detalle-Cuenta/detalle-bancolombia1/detalle-movimiento/detalle-movimiento-bancolombia1/detalle-movimiento-bancolombia1.component';
+import { DetalleMovimientoBancolombia2Component } from './cuentaBancaria/detalle-Cuenta/detalle-bancolombia2/detalle-movimiento/detalle-movimiento-bancolombia2/detalle-movimiento-bancolombia2.component';
+import { ConfiguracionComponent } from './configuraciones/configuracion/configuracion.component';
 
 export const routes: Routes = [
   {
@@ -44,7 +46,7 @@ export const routes: Routes = [
           { path: '', redirectTo: 'bolivares', pathMatch: 'full' }
         ]
       },
-      { path: 'configuracion', component: DescripcionComponent },
+      { path: 'configuracion', component: ConfiguracionComponent },
       { path: 'detalle-davidplata', component: DetalleDavidplataComponent },
       {
         path: 'cuentaBancaria', component: CuentaBancariaComponent
@@ -53,7 +55,7 @@ export const routes: Routes = [
       { path: 'detalle-bancolombia2', component: DetalleBancolombia2Component },
       { path: 'detalle-movimiento-davidplata', component: DetalleMovimientoDavidplataComponent },
       { path: 'detalle-movimiento-bancolombia1', component: DetalleMovimientoBancolombia1Component},
-      {path: 'detalle-movimiento-bancolombia2', component: DetalleBancolombia2Component}
+      {path: 'detalle-movimiento-bancolombia2', component: DetalleMovimientoBancolombia2Component}
     ]
   }
 ];

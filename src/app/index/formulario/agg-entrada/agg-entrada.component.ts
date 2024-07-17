@@ -53,8 +53,8 @@ export class AggEntradaComponent {
     }
   }
 
-  onCancelar() {
-    this.cancelar.emit();
-    this.dialogRef.close();
-  }
+        onCancelar() {
+          this.cancelar.emit();
+          this.dialogRef.close();
+        }
 }

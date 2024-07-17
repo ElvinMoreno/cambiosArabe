@@ -5,6 +5,7 @@
 }
 .right-align {
   justify-self: first baseline;
+  margin-bottom: 1rem;
 }
 .left-align {
   justify-self: end;
@@ -32,6 +33,14 @@ h2 {
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
+  padding-left: 4rem;
+  padding-right: 4rem;
+}
+
+.button-group{
+  display: flex;
+  gap: 4rem;
+  margin-bottom: 1rem;
 }
 
 .btn-descripcion {
@@ -41,11 +50,6 @@ h2 {
 
 .espac-h2{
   margin-bottom: -0.8rem;
-}
-
-.btn-desc{
-  background-color: #000000 !important;
-  color: white !important;
 }
 
 
