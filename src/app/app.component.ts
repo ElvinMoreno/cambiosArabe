@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet } from '@angular/router';
 import { SidebarPolaniaComponent } from './shared/sidebar-polania/sidebar-polania.component';
@@ -27,6 +27,7 @@ import { AccesoService } from './services/acceso.service';
 })
 export class AppComponent {
   title = 'entrada-Bolivares';
+
 
   private accesoService = inject(AccesoService);
 
