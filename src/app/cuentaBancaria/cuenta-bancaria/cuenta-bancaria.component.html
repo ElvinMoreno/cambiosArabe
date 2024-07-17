@@ -1,10 +1,10 @@
 <div class="boton-cuentas-bancarias">
   <div class="container">
-    <div *ngIf="mostrarBotones" class="button-align">
-      <button mat-stroked-button class="btn btn-desc">Cuentas Bancarias</button>
+    <div class="button-align">
+      <button mat-stroked-button class="btn btn-desc">Cuentas Colombianas</button>
     </div>
-    <div *ngIf="mostrarBotones" class="left-align">
-      <button mat-stroked-button class="btn btn-desc">Detalles de cuenta</button>
+    <div  class="left-align">
+      <button mat-stroked-button class="btn btn-desc">Cuentas Venezolanas</button>
     </div>
     <div>
       <div class="right-align espac-h2">
@@ -18,31 +18,4 @@
       <div></div>
     </div>
   </div>
-</div>
-
-<div [ngClass]="{'card-container': true, 'no-botones': !mostrarBotones}">
-  <mat-card *ngFor="let cuenta of cuentasBancarias" class="example-card" appearance="outlined">
-    <mat-card-content class="contentDavidPlata">
-      <div class="card-grid">
-        <div class="grid-item grid-item-1-1">
-          <p>{{ cuenta.nombreCuenta }}</p>
-        </div>
-        <div class="grid-item grid-item-1-2">
-          <p>Cupos: {{ cuenta.cupos }}</p>
-        </div>
-        <div class="grid-item grid-item-2-1">
-          <p>Saldo Actual</p>
-        </div>
-        <div class="grid-item grid-item-3-1">
-          <p>$ {{ cuenta.monto | number:'1.2-2' }}</p>
-        </div>
-        <div class="grid-item grid-item-4-1">
-          <p>{{ cuenta.nombreBanco }}</p>
-        </div>
-        <div class="grid-item grid-item-4-2">
-          <mat-icon>insert_chart_outlined</mat-icon>
-        </div>
-      </div>
-    </mat-card-content>
-  </mat-card>
 </div>
