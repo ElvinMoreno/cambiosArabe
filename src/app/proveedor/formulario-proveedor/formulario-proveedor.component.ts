@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
-
+import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -11,6 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ProveedorService } from '../../services/proveedor.service';
 import { Proveedor } from '../../interfaces/proveedor';
+import { ConfirmarAccionComponent } from '../../confirmar-accion/confirmar-accion.component';
 
 @Component({
   selector: 'app-formulario-proveedor',
@@ -34,7 +34,8 @@ export class FormularioProveedorComponent {
   constructor(
     private fb: FormBuilder,
     private proveedorService: ProveedorService,
-    public dialogRef: MatDialogRef<FormularioProveedorComponent>
+    public dialogRef: MatDialogRef<FormularioProveedorComponent>,
+    public dialog: MatDialog
   ) {
     this.form = this.fb.group({
       nombre: ['', Validators.required],
@@ -44,6 +45,24 @@ export class FormularioProveedorComponent {
   }
 
   onConfirmar(): void {
+    if (this.form.valid) {
+      const dialogRef = this.dialog.open(ConfirmarAccionComponent, {
+        width: '300px',
+        data: {
+          accion: 'Agregar Proveedor',
+          message: '¿Estás seguro de que deseas agregar este proveedor?'
+        }
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.createProveedor();
+        }
+      });
+    }
+  }
+
+  createProveedor(): void {
     if (this.form.valid) {
       const newProveedor: Proveedor = {
         ...this.form.value,

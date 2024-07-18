@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, catchError, throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { CuentaBancaria } from '../interfaces/cuenta-bancaria';
 import { appsetting } from '../settings/appsetting';
 
@@ -29,6 +30,60 @@ export class CuentaBancariaService {
       .pipe(
         catchError(this.handleError)
       );
+  }
+
+  getCuentasVenezolanas(): Observable<CuentaBancaria[]> {
+    const headers = this.getHeaders();
+    return this.http.get<CuentaBancaria[]>(`${this.apiUrl}/venezolanas`, { headers })
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  getCuentasColombianas(): Observable<CuentaBancaria[]> {
+    const headers = this.getHeaders();
+    return this.http.get<CuentaBancaria[]>(`${this.apiUrl}/colombiana`, { headers })
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  createCuentaBancaria(cuentaBancaria: CuentaBancaria): Observable<CuentaBancaria> {
+    const headers = this.getHeaders();
+    return this.http.post<CuentaBancaria>(this.apiUrl, cuentaBancaria, { headers })
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  updateCuentaBancaria(id: number, cuentaBancaria: Partial<CuentaBancaria>): Observable<CuentaBancaria> {
+    const headers = this.getHeaders();
+
+    // Obtén la cuenta bancaria existente para conservar el valor de tipocuenta
+    return this.getAllCuentasBancarias().pipe(
+      map(cuentas => cuentas.find(cuenta => cuenta.id === id)),
+      switchMap(existingCuenta => {
+        if (!existingCuenta) {
+          return throwError(new Error('Cuenta bancaria no encontrada.'));
+        }
+
+        // Crear el cuerpo de la petición para la actualización
+        const updateData = {
+          nombreBanco: cuentaBancaria.nombreBanco,
+          nombreCuenta: cuentaBancaria.nombreCuenta,
+          monto: cuentaBancaria.monto,
+          numCuenta: cuentaBancaria.numCuenta,
+          limiteCB: cuentaBancaria.limiteCB,
+          limiteMonto: cuentaBancaria.limiteMonto,
+          tipocuenta: existingCuenta.tipocuenta  // Conservar el tipocuenta existente
+        };
+
+        return this.http.put<CuentaBancaria>(`${this.apiUrl}/${id}`, updateData, { headers })
+          .pipe(
+            catchError(this.handleError)
+          );
+      })
+    );
   }
 
   private handleError(error: any) {

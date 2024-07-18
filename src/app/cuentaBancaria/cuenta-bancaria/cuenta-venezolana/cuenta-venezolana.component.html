@@ -1,8 +1,6 @@
 <div [ngClass]="{'card-container': true}">
-  <mat-card *ngFor="let cuenta of cuentasBancarias"
-            [ngClass]="{'contentAmarillo': cuenta.nombreCuenta !== 'davidplata', 'contentDavidPlata': cuenta.nombreCuenta === 'davidplata'}"
-            class="example-card" appearance="outlined">
-    <mat-card-content>
+  <mat-card *ngFor="let cuenta of cuentasBancarias" class="example-card" appearance="outlined">
+    <mat-card-content class="contentDavidPlata">
       <div class="card-grid">
         <div class="grid-item grid-item-1-1">
           <p>{{ cuenta.nombreCuenta }}</p>

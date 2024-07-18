@@ -2,7 +2,9 @@
 .card-container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: center; /* Centrar las tarjetas en el contenedor */
+  gap: 20px; /* Reducir el espacio entre columnas */
+  padding: 10px; /* Añadido padding para mayor espacio alrededor */
 }
 
 .no-botones .container {
@@ -10,8 +12,8 @@
 }
 
 .example-card {
-  width: 48%; /* Ajusta este valor según tus necesidades */
-  margin-bottom: 20px;
+  width: 40%; /* Reducido el tamaño del card */
+  margin-bottom: 10px; /* Ajustado el margen inferior */
 }
 
 .card-grid {
@@ -24,47 +26,53 @@
 }
 
 .grid-item {
-  padding: 5px; /* Reducido el padding dentro de las grid-items */
+  padding: 4px; /* Reducido el padding dentro de las grid-items */
 }
 
 .grid-item-1-1 {
   grid-column: 1;
   grid-row: 1;
-  margin-top: -0.7rem;
+  margin-top: -0.5rem;
 }
 
 .grid-item-1-2 {
   grid-column: 2;
   grid-row: 1;
   justify-self: end;
-  margin-top: -0.7rem;
+  margin-top: -0.5rem;
 }
 
 .grid-item-2-1 {
   grid-column: 1;
   grid-row: 2;
-  font-size: 1.5rem; /* Ajustado el tamaño de la fuente */
+  font-size: 1.3rem; /* Ajustado el tamaño de la fuente */
   font-weight: bold;
-  margin-bottom: -1rem;
+  margin-bottom: -0.8rem;
+}
+
+.grid-item-2-2 {
+  grid-column: 2;
+  grid-row: 2;
+  justify-self: end;
 }
 
 .grid-item-3-1 {
   grid-column: 1;
   grid-row: 3;
-  font-size: 1.7rem; /* Ajustado el tamaño de la fuente */
+  font-size: 1.5rem; /* Ajustado el tamaño de la fuente */
 }
 
 .grid-item-4-1 {
   grid-column: 1;
   grid-row: 4;
-  margin-bottom: -1rem;
+  margin-bottom: -0.8rem;
 }
 
 .grid-item-4-2 {
   grid-column: 2;
   grid-row: 4;
   text-align: right;
-  margin-bottom: -1rem;
+  margin-bottom: -0.8rem;
 }
 
 .settings-icon {
@@ -80,13 +88,13 @@
 }
 
 mat-card-content {
-  padding: 10px; /* Ajustado el padding dentro del contenido del card */
+  padding: 8px; /* Ajustado el padding dentro del contenido del card */
   border-radius: 0.5rem;
 }
 
 mat-divider {
   background-color: rgba(255, 255, 255, 0.2); /* Color del divider ajustado para mejor visibilidad */
-  margin: 10px 0; /* Ajustado el margen de los dividers */
+  margin: 8px 0; /* Ajustado el margen de los dividers */
 }
 
 mat-card {

@@ -4,5 +4,4 @@ export interface TipoCuentaBancaria {
   id: number;
   nombre: string;
   divisa: string;
-  cuentasBancarias: CuentaBancaria[];
 }

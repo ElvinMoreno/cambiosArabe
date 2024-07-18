@@ -1,0 +1,51 @@
+<div class="modal-overlay">
+  <div class="modal-content">
+    <h2>Actualizar Cuenta Bancaria</h2>
+    <div class="separator"></div>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="nombreBanco">Banco</label>
+          <input id="nombreBanco" type="text" formControlName="nombreBanco" readonly>
+        </div>
+        <div class="form-group">
+          <label for="nombreCuenta">Nombre Cuenta</label>
+          <input id="nombreCuenta" type="text" formControlName="nombreCuenta" readonly>
+        </div>
+        <div class="form-group" [ngClass]="{'has-error': form.get('monto')?.invalid && form.get('monto')?.touched}">
+          <label for="monto">Saldo Actual</label>
+          <input id="monto" type="number" formControlName="monto">
+          <div *ngIf="form.get('monto')?.invalid && form.get('monto')?.touched" class="error-message">
+            <span *ngIf="form.get('monto')?.errors?.['required']">El saldo actual es obligatorio.</span>
+            <span *ngIf="form.get('monto')?.errors?.['min']">El saldo actual debe ser mayor o igual a 0.</span>
+          </div>
+        </div>
+        <div class="form-group" [ngClass]="{'has-error': form.get('limiteCB')?.invalid && form.get('limiteCB')?.touched}">
+          <label for="limiteCB">Cupos Retiros</label>
+          <input id="limiteCB" type="number" formControlName="limiteCB">
+          <div *ngIf="form.get('limiteCB')?.invalid && form.get('limiteCB')?.touched" class="error-message">
+            <span *ngIf="form.get('limiteCB')?.errors?.['required']">Los cupos de retiros son obligatorios.</span>
+            <span *ngIf="form.get('limiteCB')?.errors?.['min']">Los cupos de retiros deben ser mayor o igual a 0.</span>
+          </div>
+        </div>
+        <div class="form-group" [ngClass]="{'has-error': form.get('limiteMonto')?.invalid && form.get('limiteMonto')?.touched}">
+          <label for="limiteMonto">Capacidad Cuenta</label>
+          <input id="limiteMonto" type="number" formControlName="limiteMonto">
+          <div *ngIf="form.get('limiteMonto')?.invalid && form.get('limiteMonto')?.touched" class="error-message">
+            <span *ngIf="form.get('limiteMonto')?.errors?.['required']">La capacidad de la cuenta es obligatoria.</span>
+            <span *ngIf="form.get('limiteMonto')?.errors?.['min']">La capacidad de la cuenta debe ser mayor o igual a 0.</span>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+      <div class="button-group">
+        <button type="submit" class="btn-confirmar" [disabled]="form.invalid || isLoading">
+          {{ isLoading ? 'Actualizando...' : 'Confirmar' }}
+        </button>
+        <button type="button" class="btn-cancelar" (click)="onCancelar()" [disabled]="isLoading">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -3,13 +3,13 @@ import { Component, OnInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDialog } from '@angular/material/dialog';
 import { CuentaBancaria } from '../../../interfaces/cuenta-bancaria';
 import { CuentaBancariaService } from '../../../services/cuenta-bancaria.service';
 import { ActualizarCuentaBancariaComponent } from '../actualizar-cuenta-bancaria/actualizar-cuenta-bancaria.component';
-import { MatDialog } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-cuenta-colombiana',
+  selector: 'app-cuenta-venezolana',
   standalone: true,
   imports: [
     MatCardModule,
@@ -17,28 +17,29 @@ import { MatDialog } from '@angular/material/dialog';
     MatDividerModule,
     CommonModule
   ],
-  templateUrl: './cuenta-colombiana.component.html',
-  styleUrls: ['./cuenta-colombiana.component.css']
+  templateUrl: './cuenta-venezolana.component.html',
+  styleUrls: ['./cuenta-venezolana.component.css']
 })
-export class CuentaColombianaComponent implements OnInit {
+export class CuentaVenezolanaComponent implements OnInit {
   cuentasBancarias: CuentaBancaria[] = [];
 
   constructor(private cuentaBancariaService: CuentaBancariaService, public dialog: MatDialog) {}
 
   ngOnInit(): void {
-    this.loadCuentasColombianas();
+    this.loadCuentasVenezolanas();
   }
 
-  loadCuentasColombianas(): void {
-    this.cuentaBancariaService.getCuentasColombianas().subscribe(
+  loadCuentasVenezolanas(): void {
+    this.cuentaBancariaService.getCuentasVenezolanas().subscribe(
       (data: CuentaBancaria[]) => {
         this.cuentasBancarias = data;
       },
       (error) => {
-        console.error('Error al obtener las cuentas bancarias colombianas:', error);
+        console.error('Error al obtener las cuentas bancarias venezolanas:', error);
       }
     );
   }
+
   openActualizarModal(cuenta: CuentaBancaria): void {
     const dialogRef = this.dialog.open(ActualizarCuentaBancariaComponent, {
       width: '600px',
@@ -47,7 +48,7 @@ export class CuentaColombianaComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.loadCuentasColombianas();  // Recargar la lista después de actualizar
+        this.loadCuentasVenezolanas();  // Recargar la lista después de actualizar
       }
     });
   }

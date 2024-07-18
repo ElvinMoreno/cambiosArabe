@@ -1,10 +1,18 @@
 <div class="boton-cuentas-bancarias">
   <div class="container">
     <div class="button-align">
-      <button mat-stroked-button class="btn btn-desc">Cuentas Colombianas</button>
+      <button mat-stroked-button class="btn"
+        [ngClass]="{'btn-active': vistaActual === 'cuentaC', 'btn-inactive': vistaActual !== 'cuentaC'}"
+        (click)="cambiarVista('cuentaC')">
+        Cuentas Colombianas
+      </button>
     </div>
-    <div  class="left-align">
-      <button mat-stroked-button class="btn btn-desc">Cuentas Venezolanas</button>
+    <div class="left-align">
+      <button mat-stroked-button class="btn"
+        [ngClass]="{'btn-active': vistaActual === 'cuentaV', 'btn-inactive': vistaActual !== 'cuentaV'}"
+        (click)="cambiarVista('cuentaV')">
+        Cuentas Venezolanas
+      </button>
     </div>
     <div>
       <div class="right-align espac-h2">
@@ -19,3 +27,11 @@
     </div>
   </div>
 </div>
+<div class="agregar-proveedor">
+  <button mat-flat-button class="btn2 btn-agregar" (click)="openCrearCuentaBancaria()">Nueva Cuenta Bancaria</button>
+</div>
+
+<ng-container [ngSwitch]="vistaActual">
+  <app-cuenta-colombiana *ngSwitchCase="'cuentaC'"></app-cuenta-colombiana>
+  <app-cuenta-venezolana *ngSwitchCase="'cuentaV'"></app-cuenta-venezolana>
+</ng-container>
