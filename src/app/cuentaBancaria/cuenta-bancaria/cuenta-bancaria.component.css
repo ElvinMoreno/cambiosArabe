@@ -104,6 +104,8 @@ body {
   font-size: 2vw;
 }
 
+/* estilo contenedor */
+
 .container {
   display: grid;
   grid-template-columns: 1fr 1fr;

@@ -32,6 +32,13 @@ export class CrearCuentaBancariaComponent implements OnInit {
     { id: 1, nombre: 'Pesos', divisa: 'Pesos' },
     { id: 2, nombre: 'Bolívar', divisa: 'Bolívar' }
   ];
+  bancos = [
+    'Banco de Venezuela',
+    'BBVA',
+    'Banesco',
+    'Banco Mercantil'
+  ];
+  otroBancoSeleccionado = false;
   isLoading = false;
   errorMessage: string | null = null;
 
@@ -42,7 +49,8 @@ export class CrearCuentaBancariaComponent implements OnInit {
   ) {
     this.form = this.fb.group({
       tipocuenta: [null, Validators.required],
-      nombreBanco: ['', Validators.required],
+      bancoSeleccionado: [null, Validators.required],
+      otroBanco: [''],
       nombreCuenta: ['', Validators.required],
       monto: [0, [Validators.required, Validators.min(0)]],
       numCuenta: [0, Validators.required],
@@ -51,7 +59,17 @@ export class CrearCuentaBancariaComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.form.get('bancoSeleccionado')?.valueChanges.subscribe(value => {
+      this.otroBancoSeleccionado = value === 'Otro';
+      if (this.otroBancoSeleccionado) {
+        this.form.get('otroBanco')?.setValidators([Validators.required]);
+      } else {
+        this.form.get('otroBanco')?.clearValidators();
+      }
+      this.form.get('otroBanco')?.updateValueAndValidity();
+    });
+  }
 
   onConfirmar(): void {
     if (this.form.valid) {
@@ -62,7 +80,7 @@ export class CrearCuentaBancariaComponent implements OnInit {
       const nuevaCuenta: CuentaBancaria = {
         id: 0,  // Se asume que el ID será generado por el backend
         tipocuenta: formValue.tipocuenta,
-        nombreBanco: formValue.nombreBanco,
+        nombreBanco: this.otroBancoSeleccionado ? formValue.otroBanco : formValue.bancoSeleccionado,
         nombreCuenta: formValue.nombreCuenta,
         monto: formValue.monto,
         numCuenta: formValue.numCuenta,
@@ -70,8 +88,6 @@ export class CrearCuentaBancariaComponent implements OnInit {
         limiteMonto: formValue.limiteMonto,
         divisa: formValue.tipocuenta.divisa
       };
-
-
 
       this.cuentaBancariaService.createCuentaBancaria(nuevaCuenta)
         .pipe(

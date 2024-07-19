@@ -1,37 +1,56 @@
-body {
-  font-size: 2vw;
-}
-
 .container {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
   margin-bottom: 1rem;
 }
 
-.right-align {
-  justify-self: start;
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px; /* Ajusta este valor según la separación deseada */
+  margin-bottom: 1rem;
+}
+
+button {
+  padding: 5px 10px;
+}
+
+.admin {
+  font-size: 1.1rem;
+  color: #666;
+  font-weight: bold;
+}
+
+h2 {
+  font-size: 2rem;
+  color: #4a90e2;
+  margin: 0;
+  font-weight: bold;
 }
 
 .btn {
+  flex: 1;
+  max-width: 200px;
   padding-left: 3rem;
   padding-right: 3rem;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
+  text-align: center;
 }
 
-.btn-dark {
-  background-color: #333;
-  color: white;
+.btn-active {
+  background-color: #5E94FF;
+  color: white !important;
+  margin-bottom: 1rem;
 }
 
-.btn-light {
-  background-color: #f0f0f0;
-  color: #333;
+.btn-inactive {
+  background-color: white;
+  color: black;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
 }
 
-button {
-  padding: 5px 10px;
+.espac-h2 {
+  margin-top: 1rem;
 }

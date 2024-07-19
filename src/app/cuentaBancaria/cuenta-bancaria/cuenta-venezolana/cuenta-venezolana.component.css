@@ -1,23 +1,19 @@
 /* Estilo card */
 .card-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-}
-
-.no-botones .container {
-  grid-template-rows: auto auto auto; /* Ajusta las filas cuando los botones no se muestran */
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Dividir en 3 columnas */
+  gap: 20px; /* Espacio entre las tarjetas */
+  justify-content: center; /* Centrar las tarjetas en el contenedor */
+  padding: 10px; /* Añadido padding para mayor espacio alrededor */
 }
 
 .example-card {
-  width: 48%; /* Ajusta este valor según tus necesidades */
-  margin-bottom: 20px;
+  margin-bottom: 10px; /* Ajusta este valor según tus necesidades */
 }
 
 .card-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  color: white;
   font-family: "IBM Plex Sans", sans-serif;
   font-weight: 700;
   font-style: normal;
@@ -77,12 +73,24 @@
   vertical-align: middle;
 }
 
-.contentDavidPlata {
-  background-color: #FF6D6D;
+.banco-venezuela {
+  background-color: #FD1A1A;
+  color: white;
 }
 
-.contentAmarillo {
-  background-color: #FFE65D;
+.bbva, .banesco {
+  background-color: white;
+  color: #298AEB;
+}
+
+.banco-mercantil {
+  background-color: #419CF8;
+  color: white;
+}
+
+.default {
+  background-color: white;
+  color: black;
 }
 
 mat-card-content {

@@ -1,9 +1,9 @@
 /* Estilo card */
 .card-container {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Dividir en 3 columnas */
+  gap: 20px; /* Espacio entre las tarjetas */
   justify-content: center; /* Centrar las tarjetas en el contenedor */
-  gap: 20px; /* Reducir el espacio entre columnas */
   padding: 10px; /* Añadido padding para mayor espacio alrededor */
 }
 
@@ -12,14 +12,13 @@
 }
 
 .example-card {
-  width: 40%; /* Reducido el tamaño del card */
   margin-bottom: 10px; /* Ajustado el margen inferior */
 }
 
 .card-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  color: white;
+  color: black;
   font-family: "IBM Plex Sans", sans-serif;
   font-weight: 700;
   font-style: normal;

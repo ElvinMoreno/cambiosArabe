@@ -10,9 +10,16 @@
             <option *ngFor="let tipo of tiposCuenta" [ngValue]="tipo">{{ tipo.nombre }}</option>
           </select>
         </div>
-        <div class="form-group" [ngClass]="{'has-error': form.get('nombreBanco')?.invalid && form.get('nombreBanco')?.touched}">
-          <label for="nombreBanco">Banco <span class="required">*</span></label>
-          <input id="nombreBanco" type="text" formControlName="nombreBanco">
+        <div class="form-group" [ngClass]="{'has-error': form.get('bancoSeleccionado')?.invalid && form.get('bancoSeleccionado')?.touched}">
+          <label for="bancoSeleccionado">Banco <span class="required">*</span></label>
+          <select id="bancoSeleccionado" formControlName="bancoSeleccionado">
+            <option *ngFor="let banco of bancos" [value]="banco">{{ banco }}</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
+        <div class="form-group" *ngIf="otroBancoSeleccionado" [ngClass]="{'has-error': form.get('otroBanco')?.invalid && form.get('otroBanco')?.touched}">
+          <label for="otroBanco">Nombre del Banco <span class="required">*</span></label>
+          <input id="otroBanco" type="text" formControlName="otroBanco">
         </div>
         <div class="form-group" [ngClass]="{'has-error': form.get('nombreCuenta')?.invalid && form.get('nombreCuenta')?.touched}">
           <label for="nombreCuenta">Nombre de la Cuenta <span class="required">*</span></label>

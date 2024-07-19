@@ -1,25 +1,25 @@
 .container {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-.right-align {
-  justify-self: first baseline;
   margin-bottom: 1rem;
 }
-.left-align {
-  justify-self: end;
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px; /* Ajusta este valor según la separación deseada */
+  margin-bottom: 1rem;
 }
+
 button {
   padding: 5px 10px;
 }
 
-.admmin{
+.admin {
   font-size: 1.1rem;
   color: #666;
   font-weight: bold;
-
 }
+
 h2 {
   font-size: 2rem;
   color: #4a90e2;
@@ -27,56 +27,93 @@ h2 {
   font-weight: bold;
 }
 
+.left-align {
+  justify-self: end;
+}
+
+
 .btn {
+  flex: 1;
+  max-width: 200px;
+  padding-left: 3rem;
+  padding-right: 3rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  text-align: center;
+}
+
+.btn-active {
+  background-color: #5E94FF;
+  color: white !important;
+  margin-bottom: 1rem;
+}
+
+.btn-inactive {
+  background-color: white;
+  color: black;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+}
+
+.espac-h2 {
+  margin-top: 1rem;
+}
+
+.btn-agregar {
+  background-color: #4a90e2;
+  color: white;
+}
+
+.btn2 {
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
-  padding-left: 4rem;
-  padding-right: 4rem;
-}
-
-.button-group{
-  display: flex;
-  gap: 4rem;
-  margin-bottom: 1rem;
-}
-
-.btn-descripcion {
-  background-color: #4a90e2;
-  color: white;
-}
-
-.espac-h2{
-  margin-bottom: -0.8rem;
 }
 
 
 /* tabla css */
-.column{
-  background: blue;
-
-}
-
 :host ::ng-deep .custom-header-cell {
-  background-color: #4a90e2 !important ;
+  background-color: #4a90e2 !important;
   color: white;
-  font-family: Arial, Helvetica, sans-serif ;
-
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: center;
 }
 
 .table-container {
-  padding-top: 3rem !important;
-  padding-right: 9rem !important;
-  padding-left: 9rem !important;
-}
-
-.centered-table {
-  padding: auto;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-top: 1rem;
 }
 
 .custom-table {
-  max-width: 100%;
+  width: 55%;
+  min-width: 300px;
+  max-width: 800px;
+  margin: auto;
+  text-align: center;
 }
+
+.centered-cell {
+  text-align: center;
+}
+
+.new-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  /* background-color: #f0f0f0; */
+  margin-top: 10px;
+}
+
+.new-row input {
+  flex-grow: 1;
+  margin: 0 10px;
+}
+
+
 

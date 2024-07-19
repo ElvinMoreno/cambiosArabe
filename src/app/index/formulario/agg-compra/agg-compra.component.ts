@@ -10,8 +10,12 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogRef } from '@angular/material/dialog';
-import { ResponseAcceso } from '../../../interfaces/ResponseAcceso';
+import { MetodoPagoService } from '../../../services/metodo-pago.service';
+import { CuentaBancariaService } from '../../../services/cuenta-bancaria.service';
+import { ProveedorService } from '../../../services/proveedor.service';
+import { TasaService } from '../../../services/tasa.service';
 import { CompraService } from '../../../services/compra.service';
+import { CompraBsDTO } from '../../../interfaces/compra-bs-dto';
 
 @Component({
   selector: 'app-agg-compra',
@@ -26,60 +30,134 @@ import { CompraService } from '../../../services/compra.service';
     MatNativeDateModule,
     ReactiveFormsModule,
     MatIconModule,
-
   ],
   templateUrl: './agg-compra.component.html',
   styleUrls: ['./agg-compra.component.css']
 })
 export class AggCompraComponent implements OnInit {
-
   @Output() cancelar = new EventEmitter<void>();
   form: FormGroup;
   token: string = '';
+  metodosPago: any[] = [];
+  cuentasVenezolanas: any[] = [];
+  cuentasColombianas: any[] = [];
+  proveedores: any[] = [];
+  tasaCompra: number = 0;
+  errorMessage: string = '';
+  currentDate: string = '';
 
-  constructor(private fb: FormBuilder, private compraService: CompraService, private dialogRef: MatDialogRef<AggCompraComponent>) {
+  constructor(
+    private fb: FormBuilder,
+    private compraService: CompraService,
+    private metodoPagoService: MetodoPagoService,
+    private cuentaBancariaService: CuentaBancariaService,
+    private proveedorService: ProveedorService,
+    private tasaService: TasaService,
+    private dialogRef: MatDialogRef<AggCompraComponent>
+  ) {
     this.form = this.fb.group({
-      proveedorId: ['', Validators.required],
-      fechaCompra: ['', Validators.required],
-      cuentaBancariaBs: ['', Validators.required],
-      cuentaBancariaPesos: ['', Validators.required],
-      metodoPagoId: ['', Validators.required],
-      tasaCompra: ['', Validators.required],
-      montoBs: ['', Validators.required],
-      referencia: ['', Validators.required]
+      proveedorId: ['', [Validators.required]],
+      fechaCompra: ['', [Validators.required]],
+      cuentaBancariaBs: ['', [Validators.required]],
+      cuentaBancariaPesos: ['', [Validators.required]],
+      metodoPagoId: ['', [Validators.required]],
+      tasaCompra: [{value: '', disabled: true}, [Validators.required]],
+      montoBs: ['', [Validators.required, Validators.min(0)]],
+      referencia: ['', [Validators.required]],
     });
+    this.currentDate = new Date().toISOString().substring(0, 16);
   }
 
   ngOnInit(): void {
-    // Asignar el token desde algún lugar (ej. almacenamiento local, servicio, etc.)
-    const responseAcceso: ResponseAcceso = { statusCode: 200, token: 'your-token-here' };
+    this.cargarDatos();
+    this.form.patchValue({ fechaCompra: this.currentDate });
+  }
+
+  cargarDatos(): void {
+    const responseAcceso = { statusCode: 200, token: 'your-token-here' };
     this.token = responseAcceso.token;
+
+    this.metodoPagoService.getAllMetodosPago().subscribe({
+      next: (data: any[]) => this.metodosPago = data,
+      error: (error) => console.error('Error al cargar los métodos de pago', error)
+    });
+
+    this.cuentaBancariaService.getCuentasVenezolanas().subscribe({
+      next: (data: any[]) => this.cuentasVenezolanas = data,
+      error: (error) => console.error('Error al cargar las cuentas venezolanas', error)
+    });
+
+    this.cuentaBancariaService.getCuentasColombianas().subscribe({
+      next: (data: any[]) => this.cuentasColombianas = data,
+      error: (error) => console.error('Error al cargar las cuentas colombianas', error)
+    });
+
+    this.proveedorService.getAllProveedores().subscribe({
+      next: (data: any[]) => this.proveedores = data,
+      error: (error) => console.error('Error al cargar los proveedores', error)
+    });
+
+    this.cargarTasaCompra();
+  }
+
+  cargarTasaCompra(): void {
+    this.tasaService.getAllTasas().subscribe({
+      next: (data: any[]) => {
+        const today = new Date().toISOString().split('T')[0];
+        const tasaHoy = data.find(tasa => {
+          if (tasa.fechaTasa) {
+            const tasaFecha = new Date(tasa.fechaTasa).toISOString().split('T')[0];
+            return tasaFecha === today;
+          }
+          return false;
+        });
+        if (tasaHoy) {
+          this.tasaCompra = tasaHoy.tasaCompra ?? 0;
+          this.form.patchValue({ tasaCompra: this.tasaCompra });
+        } else {
+          console.error('No se encontró tasa para la fecha actual');
+          this.tasaCompra = 0;
+        }
+      },
+      error: (error) => {
+        console.error('Error al cargar las tasas', error);
+        this.tasaCompra = 0;
+      }
+    });
   }
 
   onConfirmar(): void {
     if (this.form.valid) {
-      const formValue = this.form.value;
+      const formValue = this.form.getRawValue(); // Obtiene todos los valores, incluyendo los deshabilitados
 
-      // Convertir los valores del formulario al formato requerido por el backend
-      const compra = {
-        cuentaBancariaBs: formValue.cuentaBancariaBs,
-        cuentaBancariaPesos: formValue.cuentaBancariaPesos,
-        proveedorId: formValue.proveedorId,
-        metodoPagoId: formValue.metodoPagoId,
-        tasaCompra: formValue.tasaCompra,
-        montoBs: formValue.montoBs,
-        fechaCompra: formatDate(formValue.fechaCompra, 'yyyy-MM-ddTHH:mm:ss', 'en-US'),
-        referencia: formValue.referencia
+      console.log('Formulario válido. Valores del formulario:', formValue);
+
+      const compra: CompraBsDTO = {
+        cuentaBancariaBsId: parseInt(formValue.cuentaBancariaBs, 10),
+        cuentaBancariaPesosId: parseInt(formValue.cuentaBancariaPesos, 10),
+        proveedorId: parseInt(formValue.proveedorId, 10),
+        metodoPagoId: parseInt(formValue.metodoPagoId, 10),
+        tasaCompra: parseFloat(formValue.tasaCompra),
+        montoBs: parseFloat(formValue.montoBs),
+        fechaCompra: formValue.fechaCompra ? new Date(formValue.fechaCompra).toISOString() : new Date().toISOString(),
+        referencia: formValue.referencia,
       };
 
-      // this.compraService.saveCompraBs(compra, this.token).subscribe(() => {
-      //   // Manejo de la respuesta exitosa
-      //   console.log('Compra registrada con éxito');
-      //   this.dialogRef.close();
-      // }, error => {
-      //   // Manejo de errores
-      //   console.error('Error al registrar la compra', error);
-      // });
+      console.log('Datos a enviar:', compra);
+
+      this.compraService.newCompraBs(compra).subscribe({
+        next: (response) => {
+          console.log('Compra registrada con éxito', response);
+          this.dialogRef.close();
+        },
+        error: (error) => {
+          console.error('Error al registrar la compra', error);
+          this.errorMessage = 'Ocurrió un error al registrar la compra. Inténtelo nuevamente.';
+        }
+      });
+    } else {
+      console.error('Formulario inválido:', this.form.errors);
+      this.errorMessage = 'Por favor, complete todos los campos requeridos.';
     }
   }
 
@@ -88,4 +166,3 @@ export class AggCompraComponent implements OnInit {
     this.dialogRef.close();
   }
 }
-

@@ -2,14 +2,16 @@
   <div class="container">
     <div class="button-align">
       <button mat-stroked-button class="btn"
-        [ngClass]="{'btn-active': vistaActual === 'cuentaC', 'btn-inactive': vistaActual !== 'cuentaC'}"
+        [ngClass]="{'btn-active': vistaActual === 'cuentaC',
+        'btn-inactive': vistaActual !== 'cuentaC'}"
         (click)="cambiarVista('cuentaC')">
         Cuentas Colombianas
       </button>
     </div>
     <div class="left-align">
       <button mat-stroked-button class="btn"
-        [ngClass]="{'btn-active': vistaActual === 'cuentaV', 'btn-inactive': vistaActual !== 'cuentaV'}"
+        [ngClass]="{'btn-active': vistaActual === 'cuentaV',
+        'btn-inactive': vistaActual !== 'cuentaV'}"
         (click)="cambiarVista('cuentaV')">
         Cuentas Venezolanas
       </button>
