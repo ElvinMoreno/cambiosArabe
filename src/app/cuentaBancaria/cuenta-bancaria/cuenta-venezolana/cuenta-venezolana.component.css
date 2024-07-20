@@ -1,23 +1,24 @@
 /* Estilo card */
 .card-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-}
-
-.no-botones .container {
-  grid-template-rows: auto auto auto; /* Ajusta las filas cuando los botones no se muestran */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Adaptar columnas automáticamente */
+  gap: 20px; /* Espacio entre las tarjetas */
+  justify-content: center; /* Centrar las tarjetas en el contenedor */
+  padding: 10px; /* Añadido padding para mayor espacio alrededor */
 }
 
 .example-card {
-  width: 48%; /* Ajusta este valor según tus necesidades */
-  margin-bottom: 20px;
+  margin-bottom: 10px; /* Ajusta este valor según tus necesidades */
+  transition: transform 0.3s ease; /* Añade una transición para la transformación */
+}
+
+.example-card:hover {
+  transform: scale(1.05); /* Aumenta ligeramente el tamaño al hacer hover */
 }
 
 .card-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  color: white;
   font-family: "IBM Plex Sans", sans-serif;
   font-weight: 700;
   font-style: normal;
@@ -77,12 +78,29 @@
   vertical-align: middle;
 }
 
-.contentDavidPlata {
-  background-color: #FF6D6D;
+.banco-venezuela {
+  background-color: #FD1A1A;
+  color: white;
 }
 
-.contentAmarillo {
-  background-color: #FFE65D;
+.bbva {
+  background-color: #298AEB;
+  color: white;
+}
+
+.banesco {
+  background-color: #298AEB;
+  color: white;
+}
+
+.banco-mercantil {
+  background-color: #419CF8;
+  color: white;
+}
+
+.default {
+  background-color: white;
+  color: black;
 }
 
 mat-card-content {
@@ -98,4 +116,21 @@ mat-divider {
 mat-card {
   border-radius: 0.5rem;
   cursor: pointer;
+}
+
+/* Media query for responsive design */
+@media (max-width: 768px) {
+  .card-container {
+    grid-template-columns: 1fr; /* Una columna en pantallas pequeñas */
+    padding: 5px;
+  }
+
+  .card-grid {
+    grid-template-columns: 1fr; /* Una columna en pantallas pequeñas */
+    text-align: center;
+  }
+
+  .example-card {
+    width: 100%; /* Asegura que las tarjetas ocupen todo el ancho en pantallas pequeñas */
+  }
 }

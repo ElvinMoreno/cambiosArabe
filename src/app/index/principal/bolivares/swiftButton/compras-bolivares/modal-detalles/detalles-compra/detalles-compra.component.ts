@@ -5,12 +5,15 @@ import { CompraService } from '../../../../../../../services/compra.service';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { catchError, finalize } from 'rxjs/operators';
+import { MatInputModule } from '@angular/material/input';
+import { MatNativeDateModule } from '@angular/material/core'; 
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { of } from 'rxjs';
 
 @Component({
   selector: 'app-detalles-compra',
   standalone: true,
-  imports: [MatDialogModule, CommonModule, MatButtonModule],
+  imports: [MatDialogModule, CommonModule, MatButtonModule,MatInputModule,MatNativeDateModule,MatDatepickerModule],
   templateUrl: './detalles-compra.component.html',
   styleUrls: ['./detalles-compra.component.css']
 })

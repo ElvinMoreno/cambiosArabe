@@ -12,7 +12,6 @@ import {MatIconModule} from '@angular/material/icon';
 interface SideNavToggle{
   screenWidth:number;
   collapsed:boolean;
-
 }
 
 @Component({
@@ -35,33 +34,35 @@ interface SideNavToggle{
 })
 
 export class SidebarPolaniaComponent implements OnInit{
-
-  @Output() onToggleSideNav:EventEmitter<SideNavToggle> = new EventEmitter();
+ @Output() onToggleSideNav: EventEmitter<SideNavToggle> = new EventEmitter();
   collapsad = false;
-  screenWidth =0;
+  screenWidth = 0;
   navData = navbarData;
+  isMobile = false;
 
-  @HostListener('window:resize',['$event'])
-  onResize(event: any){
-    this.screenWidth=window.innerWidth;
-    if(this.screenWidth <= 767){
-      this.collapsad=false;
-      this.onToggleSideNav.emit({collapsed: this.collapsad, screenWidth: this.screenWidth});
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.screenWidth = window.innerWidth;
+    this.isMobile = this.screenWidth <= 768;
+    if (this.isMobile) {
+      this.collapsad = false;
+      this.onToggleSideNav.emit({ collapsed: this.collapsad, screenWidth: this.screenWidth });
     }
   }
 
   ngOnInit(): void {
-    this.screenWidth = window.innerHeight;
+    this.screenWidth = window.innerWidth;
+    this.isMobile = this.screenWidth <= 768;
   }
 
-  toggleCollapse():void{
-    this.collapsad=!this.collapsad;
-    this.onToggleSideNav.emit({collapsed: this.collapsad, screenWidth: this.screenWidth});
+  toggleCollapse(): void {
+    this.collapsad = !this.collapsad;
+    this.onToggleSideNav.emit({ collapsed: this.collapsad, screenWidth: this.screenWidth });
   }
-    
-  closeSidenav():void{
+
+  closeSidenav(): void {
     this.collapsad = false;
-    this.onToggleSideNav.emit({collapsed: this.collapsad, screenWidth: this.screenWidth});
+    this.onToggleSideNav.emit({ collapsed: this.collapsad, screenWidth: this.screenWidth });
   }
 
 }

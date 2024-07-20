@@ -12,8 +12,14 @@
 }
 
 .example-card {
-  width: 40%; /* Reducido el tamaño del card */
+  width: 100%; /* Ancho completo por defecto */
+  max-width: 500px; /* Ajusta este valor según tus necesidades */
   margin-bottom: 10px; /* Ajustado el margen inferior */
+  transition: box-shadow 0.3s ease;
+}
+
+.example-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .card-grid {
@@ -100,4 +106,35 @@ mat-divider {
 mat-card {
   border-radius: 0.5rem;
   cursor: pointer;
+}
+
+/* Media query for responsive design */
+@media (max-width: 768px) {
+  body {
+    font-size: 4vw;
+  }
+
+  .card-container {
+    flex-direction: column; /* Coloca las tarjetas en columna en pantallas pequeñas */
+    align-items: center;
+  }
+
+  .example-card {
+    width: 100%; /* Asegura que las tarjetas ocupen todo el ancho en pantallas pequeñas */
+    margin-bottom: 20px;
+  }
+
+  .card-grid {
+    grid-template-columns: 1fr; /* Una columna en pantallas pequeñas */
+    text-align: center;
+  }
+
+  .grid-item-1-2, .grid-item-2-2, .grid-item-4-2 {
+    justify-self: center; /* Centra los elementos en pantallas pequeñas */
+  }
+
+  /* Ocultar ciertos elementos en pantallas pequeñas */
+  .grid-item-1-2, .grid-item-2-2, .grid-item-4-2 {
+    display: none;
+  }
 }

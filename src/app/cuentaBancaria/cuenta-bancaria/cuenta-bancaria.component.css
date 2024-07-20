@@ -1,3 +1,97 @@
+body {
+  font-size: 16px; /* Ajuste general de tamaño de fuente */
+}
+
+.boton-cuentas-bancarias .container {
+  display: flex;
+  flex-direction: column; /* Cambiar a columna para mejor alineación */
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 1rem;
+}
+
+.buttons-container {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap; /* Permitir que los botones se ajusten en varias filas si es necesario */
+}
+
+.titles-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.button-align, .left-align, .right-align {
+  display: flex;
+  justify-content: center;
+}
+
+button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn {
+  padding-left: 3rem;
+  padding-right: 3rem;
+}
+
+.btn-active {
+  background-color: #5E94FF;
+  color: white !important;
+  margin-bottom: 1rem;
+}
+
+.btn-inactive {
+  background-color: white;
+  color: black;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+}
+
+.admin {
+  font-size: 1.2rem;
+  color: #666;
+  font-weight: bold;
+}
+
+h2.desc {
+  font-size: 2.5rem;
+  color: #4a90e2;
+  margin: 0;
+  font-weight: bold;
+}
+
+.espac-h2 {
+  margin-top: 1rem;
+}
+
+.agregar-proveedor {
+  display: flex;
+  justify-content: flex-end; /* Mueve el botón al extremo derecho */
+  padding: 10px; /* Espacio alrededor del contenedor */
+  padding-right: 3rem;
+}
+
+.btn-agregar {
+  background-color: #4a90e2;
+  color: white;
+}
+
+.btn2 {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
 /* Estilo card */
 .card-container {
   display: flex;
@@ -100,91 +194,58 @@ mat-card {
   cursor: pointer;
 }
 
-body {
-  font-size: 2vw;
-}
+/* Media query for responsive design */
+@media (max-width: 768px) {
+  body {
+    font-size: 4vw;
+  }
 
-.container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 1rem;
-}
+  .boton-cuentas-bancarias .container {
+    flex-direction: column; /* Coloca los botones en columna en pantallas pequeñas */
+    align-items: center;
+    gap: 15px;
+  }
 
-.button-align {
-  justify-self: center;
-}
+  .button-align, .left-align, .right-align {
+    width: 100%; /* Asegura que los botones ocupen todo el ancho */
+    justify-content: center;
+  }
 
-.right-align {
-  justify-self: start;
-}
+  .btn {
+    width: 100%; /* Asegura que los botones ocupen todo el ancho */
+    max-width: 200px;
+  }
 
-.left-align {
-  justify-self: center;
-}
+  .agregar-proveedor {
+    justify-content: center; /* Centra el botón en dispositivos móviles */
+    padding-right: 0; /* Reset padding */
+  }
 
-button {
-  padding: 5px 10px;
-}
+  .grid-container {
+    grid-template-columns: 1fr; /* Una columna en pantallas pequeñas */
+    gap: 15px;
+    padding: 10px;
+  }
 
-.admin {
-  font-size: 1.1rem;
-  color: #666;
-  font-weight: bold;
-}
+  .example-card {
+    width: 100%; /* Asegura que las tarjetas ocupen todo el ancho en pantallas pequeñas */
+    margin-bottom: 20px;
+  }
 
-h2 {
-  font-size: 2rem;
-  color: #4a90e2;
-  margin: 0;
-  font-weight: bold;
-}
+  .card-grid {
+    grid-template-columns: 1fr; /* Una columna en pantallas pequeñas */
+    text-align: center;
+  }
 
-.btn {
-  padding-left: 3rem;
-  padding-right: 3rem;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-}
+  .home-icon {
+    margin-bottom: 10px;
+  }
 
-.btn-active {
-  background-color: #5E94FF;
-  color: white !important;
-  margin-bottom: 1rem;
-}
+  .card-content {
+    align-items: center;
+  }
 
-.btn-inactive {
-  background-color: white;
-  color: black;
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
-}
-
-.espac-h2 {
-  margin-top: 1rem;
-}
-
-
-/* boton agregar */
-
-.agregar-proveedor {
-  display: flex;
-  justify-content: flex-end; /* Mueve el botón al extremo derecho */
-  padding: 10px; /* Espacio alrededor del contenedor */
-  padding-right: 3rem;
-}
-
-
-.btn-agregar {
-  background-color: #4a90e2;
-  color: white;
-}
-
-.btn2 {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
+  h2.desc {
+    text-align: center;
+  }
 }

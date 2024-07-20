@@ -1,6 +1,6 @@
   <div class="container">
     <div class="extrem-align">
-      <button mat-raised-button class="btn"
+      <button mat-raised-button class="btn-descripcion"
         [ngClass]="{'btn-dark': vistaActual === 'descripcion',
         'btn-light': vistaActual !== 'descripcion'}"
         (click)="cambiarVista('descripcion')">
@@ -8,7 +8,7 @@
         </button>
       </div>
     <div >
-      <button mat-raised-button class="btn"
+      <button mat-raised-button class="btn-gastos"
       [ngClass]="{'btn-dark': vistaActual === 'gastos',
       'btn-light': vistaActual !== 'gastos'}"
       (click)="cambiarVista('gastos')">

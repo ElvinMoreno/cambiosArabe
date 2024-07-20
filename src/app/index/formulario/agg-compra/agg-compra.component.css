@@ -8,6 +8,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
+  overflow: auto;
 }
 
 .modal-content {
@@ -17,13 +19,17 @@
   max-width: 600px;
   width: 100%;
   box-sizing: border-box;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  margin: 20px; /* Añadir margen para espacios pequeños */
+  max-height: 90vh; /* Limitar altura máxima */
+  overflow-y: auto; /* Permitir desplazamiento vertical */
 }
 
 h2 {
   text-align: center;
   margin-bottom: 10px;
   font-size: 2rem;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 
 .separator {
@@ -35,7 +41,7 @@ h2 {
 
 .form-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
 
@@ -45,8 +51,10 @@ h2 {
 }
 
 label {
-  margin-bottom: 3px;
-  font-size: 12px;
+  margin-bottom: 5px;
+  font-size: 1rem;
+  color: #333;
+  min-height: 20px; /* Ensure consistent height for labels */
 }
 
 .required {
@@ -55,11 +63,21 @@ label {
 
 input, select {
   width: 100%;
-  padding: 6px;
+  padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
-  font-size: 12px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+input::placeholder {
+  color: #aaa;
+}
+
+input:focus, select:focus {
+  border-color: #5E94FF;
+  outline: none;
 }
 
 input.ng-invalid.ng-touched, select.ng-invalid.ng-touched {
@@ -68,50 +86,50 @@ input.ng-invalid.ng-touched, select.ng-invalid.ng-touched {
 
 .button-group {
   display: flex;
-  justify-content: center;
-  margin-top: 15px;
-  gap: 3rem;
+  justify-content: space-between;
+  margin-top: 20px;
 }
 
 .btn-confirmar, .btn-cancelar {
-  padding: 8px 16px;
+  padding: 10px 20px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 12px;
-  width: 100%;
-  max-width: 200px;
+  font-size: 1rem;
+  width: 45%;
   text-align: center;
+  transition: background-color 0.3s ease;
 }
 
 .btn-confirmar {
   background-color: #5E94FF;
   color: white;
-  font-size: 1rem;
-  font-family: "Poppins", sans-serif;
-  font-weight: 300;
+}
+
+.btn-confirmar:hover {
+  background-color: #3a6eb9;
 }
 
 .btn-cancelar {
   background-color: #ff5e5e;
   color: white;
-  font-size: 1rem;
-  font-family: "Poppins", sans-serif;
-  font-weight: 300;
+}
+
+.btn-cancelar:hover {
+  background-color: #cc4c4c;
 }
 
 .has-error input, .has-error select {
   border-color: red;
 }
 
-label {
-  font-size: 1rem;
-}
-
-option{
-  font-size: 1rem;
-}
-
-input {
-  font-size: 1rem;
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .modal-content {
+    margin: 10px; /* Ajuste de margen en dispositivos móviles */
+    width: calc(100% - 20px); /* Evitar desbordamiento en dispositivos móviles */
+  }
 }

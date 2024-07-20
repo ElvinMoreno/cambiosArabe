@@ -1,29 +1,32 @@
 body {
-  font-size: 2vw;
+  font-size: 16px; /* Ajuste general de tamaño de fuente */
 }
 
 .container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   margin-bottom: 1rem;
+  justify-content: center; /* Centra horizontalmente los botones */
+  align-items: center; /* Centra verticalmente los botones */
 }
 
-.right-align {
-  justify-self: start;
-}
-
-.btn {
-  padding-left: 3rem;
-  padding-right: 3rem;
+button {
+  padding: 10px 20px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-descripcion, .btn-gastos {
+  padding-left: 3rem;
+  padding-right: 3rem;
 }
 
 .btn-dark {
-  background-color: #333;
+  background-color: #333333;
   color: white;
 }
 
@@ -32,6 +35,11 @@ body {
   color: #333;
 }
 
-button {
-  padding: 5px 10px;
+/* Media query for responsive design */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column; /* Coloca los botones en columna en pantallas pequeñas */
+    gap: 15px;
+    align-items: center; /* Centra los botones verticalmente */
+  }
 }
