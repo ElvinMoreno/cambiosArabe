@@ -1,14 +1,5 @@
 <div class="card-container">
-  <mat-card *ngFor="let cuenta of cuentasBancarias" 
-            class="example-card" 
-            [ngClass]="{
-              'banco-venezuela': cuenta.nombreBanco === 'Banco de Venezuela', 
-              'bbva': cuenta.nombreBanco === 'BBVA', 
-              'banesco': cuenta.nombreBanco === 'Banesco',
-              'banco-mercantil': cuenta.nombreBanco === 'Banco Mercantil', 
-              'default': cuenta.nombreBanco !== 'Banco de Venezuela' && cuenta.nombreBanco !== 'BBVA' && cuenta.nombreBanco !== 'Banesco' && cuenta.nombreBanco !== 'Banco Mercantil'
-            }"
-            appearance="outlined">
+  <mat-card *ngFor="let cuenta of cuentasBancarias" [ngClass]="getCardClass(cuenta.nombreBanco!)" class="example-card" appearance="outlined">
     <mat-card-content>
       <div class="card-grid">
         <div class="grid-item grid-item-1-1">

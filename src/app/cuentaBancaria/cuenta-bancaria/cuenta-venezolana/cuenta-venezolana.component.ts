@@ -52,4 +52,18 @@ export class CuentaVenezolanaComponent implements OnInit {
       }
     });
   }
+
+   getCardClass(nombreBanco: string): string {
+    switch (nombreBanco) {
+      case 'Banco de Venezuela':
+        return 'banco-venezuela';
+      case 'BBVA':
+      case 'Banesco':
+        return 'bbva';
+      case 'Banco Mercantil':
+        return 'banco-mercantil';
+      default:
+        return 'default';
+    }
+  }
 }

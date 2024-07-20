@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, catchError, throwError } from 'rxjs';
-import { CompraBsDTO } from '../interfaces/compra-bs-dto';
+import { Tasa } from '../interfaces/tasa';
 import { appsetting } from '../settings/appsetting';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CompraService {
-  private apiUrl = `${appsetting.apiUrl}compras`;
+export class TasaService {
+  private apiUrl = `${appsetting.apiUrl}api/tasas`;
 
   constructor(private http: HttpClient) { }
 
@@ -23,25 +23,9 @@ export class CompraService {
     });
   }
 
-  getCompras(): Observable<CompraBsDTO[]> {
+  getAllTasas(): Observable<Tasa[]> {
     const headers = this.getHeaders();
-    return this.http.get<CompraBsDTO[]>(`${this.apiUrl}/index`, { headers })
-      .pipe(
-        catchError(this.handleError)
-      );
-  }
-
-  getCompraById(id: number): Observable<CompraBsDTO> {
-    const headers = this.getHeaders();
-    return this.http.get<CompraBsDTO>(`${this.apiUrl}/index/${id}`, { headers })
-      .pipe(
-        catchError(this.handleError)
-      );
-  }
-
-  newCompraBs(dto: CompraBsDTO): Observable<void> {
-    const headers = this.getHeaders();
-    return this.http.post<void>(`${this.apiUrl}`, dto, { headers })
+    return this.http.get<Tasa[]>(this.apiUrl, { headers })
       .pipe(
         catchError(this.handleError)
       );

@@ -10,29 +10,19 @@ body {
   align-items: center; /* Centra verticalmente los elementos */
 }
 
-.button-align {
-  justify-self: start;
-}
-
-.right-align {
-  justify-self: end;
-}
-
-.left-align {
-  justify-self: center;
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px; /* Ajusta este valor según la separación deseada */
+  margin-bottom: 1rem;
 }
 
 button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  padding: 5px 10px;
 }
 
 .admin {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: #666;
   font-weight: bold;
 }
@@ -44,9 +34,30 @@ h2.desc {
   font-weight: bold;
 }
 
-.btn1 {
+
+
+.btn {
+  flex: 1;
+  max-width: 200px;
   padding-left: 3rem;
   padding-right: 3rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  text-align: center;
+}
+
+.btn-active {
+  background-color: #5E94FF;
+  color: white !important;
+  margin-bottom: 1rem;
+}
+
+.btn-inactive {
+  background-color: white;
+  color: black;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
 }
 
 .espac-h2 {
@@ -78,6 +89,15 @@ h2.desc {
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
+}
+
+
+/* tabla css */
+:host ::ng-deep .custom-header-cell {
+  background-color: #4a90e2 !important;
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: center;
 }
 
 /* Tabla estilos */

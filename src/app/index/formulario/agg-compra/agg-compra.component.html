@@ -6,27 +6,39 @@
       <div class="form-grid">
         <div class="form-group" [ngClass]="{'has-error': form.get('proveedorId')?.invalid && form.get('proveedorId')?.touched}">
           <label for="proveedorId">Proveedor <span class="required">*</span></label>
+
           <input id="proveedorId" type="number" formControlName="proveedorId" placeholder="Ingrese ID del proveedor">
+
+          <select id="proveedorId" formControlName="proveedorId">
+            <option *ngFor="let proveedor of proveedores" [value]="proveedor.id">{{ proveedor.nombre }}</option>
+          </select>
+
         </div>
         <div class="form-group" [ngClass]="{'has-error': form.get('fechaCompra')?.invalid && form.get('fechaCompra')?.touched}">
           <label for="fechaCompra">Fecha <span class="required">*</span></label>
-          <input id="fechaCompra" type="datetime-local" formControlName="fechaCompra">
+          <input id="fechaCompra" type="datetime-local" formControlName="fechaCompra" [value]="currentDate" readonly>
         </div>
         <div class="form-group" [ngClass]="{'has-error': form.get('cuentaBancariaBs')?.invalid && form.get('cuentaBancariaBs')?.touched}">
           <label for="cuentaBancariaBs">Cuenta bancaria Bs <span class="required">*</span></label>
-          <input id="cuentaBancariaBs" type="number" formControlName="cuentaBancariaBs" placeholder="Ingrese cuenta bancaria en Bs">
+          <select id="cuentaBancariaBs" formControlName="cuentaBancariaBs">
+            <option *ngFor="let cuenta of cuentasVenezolanas" [value]="cuenta.id">{{ cuenta.nombreBanco }}</option>
+          </select>
         </div>
         <div class="form-group" [ngClass]="{'has-error': form.get('cuentaBancariaPesos')?.invalid && form.get('cuentaBancariaPesos')?.touched}">
           <label for="cuentaBancariaPesos">Cuenta bancaria Pesos <span class="required">*</span></label>
-          <input id="cuentaBancariaPesos" type="number" formControlName="cuentaBancariaPesos" placeholder="Ingrese cuenta bancaria en Pesos">
+          <select id="cuentaBancariaPesos" formControlName="cuentaBancariaPesos">
+            <option *ngFor="let cuenta of cuentasColombianas" [value]="cuenta.id">{{ cuenta.nombreBanco }}</option>
+          </select>
         </div>
         <div class="form-group" [ngClass]="{'has-error': form.get('metodoPagoId')?.invalid && form.get('metodoPagoId')?.touched}">
           <label for="metodoPagoId">Método de Pago <span class="required">*</span></label>
-          <input id="metodoPagoId" type="number" formControlName="metodoPagoId" placeholder="Ingrese ID del método de pago">
+          <select id="metodoPagoId" formControlName="metodoPagoId">
+            <option *ngFor="let metodo of metodosPago" [value]="metodo.id">{{ metodo.tipopago }}</option>
+          </select>
         </div>
         <div class="form-group" [ngClass]="{'has-error': form.get('tasaCompra')?.invalid && form.get('tasaCompra')?.touched}">
           <label for="tasaCompra">Tasa <span class="required">*</span></label>
-          <input id="tasaCompra" type="number" formControlName="tasaCompra" placeholder="Ingrese la tasa de compra">
+
         </div>
         <div class="form-group" [ngClass]="{'has-error': form.get('montoBs')?.invalid && form.get('montoBs')?.touched}">
           <label for="montoBs">Monto en Bolívares <span class="required">*</span></label>
@@ -38,8 +50,8 @@
         </div>
       </div>
       <div class="button-group">
-        <button type="submit" class="btn-confirmar">Confirmar Compra</button>
         <button type="button" class="btn-cancelar" (click)="onCancelar()">Cancelar</button>
+        <button type="submit" class="btn-confirmar">Confirmar</button>
       </div>
     </form>
   </div>

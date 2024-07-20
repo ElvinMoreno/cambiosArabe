@@ -1,36 +1,46 @@
 <div class="container">
-  <div class="right-align">
-  </div>
-  <div></div>
   <div class="right-align espac-h2">
-      <label class="admmin">ADMINISTRADOR</label>
+    <label class="admin">ADMINISTRADOR</label>
   </div>
-  <div></div>
-  <div class="right-align ">
-      <h2 class="desc">Descripciones</h2>
+  <div class="right-align">
+    <h2 class="desc">Descripciones</h2>
   </div>
-  <div></div>
-  <div></div>
   <div class="left-align">
-      <button mat-flat-button class="btn btn-descripcion">Nueva descripción</button>
+    <button mat-flat-button class="btn2 btn-agregar" (click)="nuevaDescripcion()">
+      {{ isNewRow ? 'Cerrar' : 'Nueva descripción' }}
+    </button>
   </div>
 </div>
-<div class="table-container centered-table">
+<div class="table-container">
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 custom-table">
-
-    <!-- Número Column -->
-    <ng-container matColumnDef="numero">
-      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Número </th>
-      <td mat-cell *matCellDef="let element"> {{element.numero}} </td>
+    <!-- ID Column -->
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef class="custom-header-cell centered-cell"> ID </th>
+      <td mat-cell *matCellDef="let element" class="centered-cell"> {{element.id}} </td>
     </ng-container>
 
-    <!-- Descripción Column -->
-    <ng-container matColumnDef="descripcion">
-      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Descripción </th>
-      <td mat-cell *matCellDef="let element"> {{element.descripcion}} </td>
+    <!-- Texto Column -->
+    <ng-container matColumnDef="texto">
+      <th mat-header-cell *matHeaderCellDef class="custom-header-cell centered-cell"> Descripción </th>
+      <td mat-cell *matCellDef="let element" class="centered-cell"> {{element.texto}} </td>
     </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    <!-- Action Column -->
+    <ng-container matColumnDef="acciones">
+      <th mat-header-cell *matHeaderCellDef class="custom-header-cell centered-cell"> Acciones </th>
+      <td mat-cell *matCellDef="let element" class="centered-cell"></td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns" class="centered-cell"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="centered-cell"></tr>
   </table>
+
+  <!-- New Row for Adding Description -->
+  <div *ngIf="isNewRow" class="new-row">
+    <span class="centered-cell">{{newDescripcion.id}}</span>
+    <input matInput placeholder="Nueva descripción" [(ngModel)]="newDescripcion.texto" class="centered-cell">
+    <button mat-icon-button color="primary" (click)="guardarDescripcion()" class="centered-cell">
+      <mat-icon>check</mat-icon>
+    </button>
+  </div>
 </div>

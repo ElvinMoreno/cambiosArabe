@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, catchError, throwError } from 'rxjs';
-import { CompraBsDTO } from '../interfaces/compra-bs-dto';
+import { Descripcion } from '../interfaces/descripcion';
 import { appsetting } from '../settings/appsetting';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CompraService {
-  private apiUrl = `${appsetting.apiUrl}compras`;
+export class DescripcionService {
+  private apiUrl = `${appsetting.apiUrl}descripciones`;
 
   constructor(private http: HttpClient) { }
 
@@ -23,25 +23,17 @@ export class CompraService {
     });
   }
 
-  getCompras(): Observable<CompraBsDTO[]> {
+  getAllDescripciones(): Observable<Descripcion[]> {
     const headers = this.getHeaders();
-    return this.http.get<CompraBsDTO[]>(`${this.apiUrl}/index`, { headers })
+    return this.http.get<Descripcion[]>(this.apiUrl, { headers })
       .pipe(
         catchError(this.handleError)
       );
   }
 
-  getCompraById(id: number): Observable<CompraBsDTO> {
+  createDescripcion(descripcion: Descripcion): Observable<Descripcion> {
     const headers = this.getHeaders();
-    return this.http.get<CompraBsDTO>(`${this.apiUrl}/index/${id}`, { headers })
-      .pipe(
-        catchError(this.handleError)
-      );
-  }
-
-  newCompraBs(dto: CompraBsDTO): Observable<void> {
-    const headers = this.getHeaders();
-    return this.http.post<void>(`${this.apiUrl}`, dto, { headers })
+    return this.http.post<Descripcion>(this.apiUrl, descripcion, { headers })
       .pipe(
         catchError(this.handleError)
       );
