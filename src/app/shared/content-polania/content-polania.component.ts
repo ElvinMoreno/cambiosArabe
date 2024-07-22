@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { CommonModule } from '@angular/common';
 import { SidebarPolaniaComponent } from '../sidebar-polania/sidebar-polania.component';
-import { NavbarComponent } from '../../index/principal/navbar/navbar.component';
+
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { style } from '@angular/animations';
 import { BodySideNavComponent } from '../body-side-nav/body-side-nav.component';
@@ -25,7 +25,6 @@ interface SideNavToggle{
     MatIconModule,
     MatListModule,
     SidebarPolaniaComponent, 
-    NavbarComponent, 
     MatToolbarModule,
     BodySideNavComponent
   ],

@@ -8,8 +8,10 @@ import { RouterOutlet, RouterModule } from '@angular/router';
 @Component({
   selector: 'app-principal',
   standalone: true,
-  imports: [EfectivoComponent,NavbarComponent,
-    CajaComponent,BolivaresComponent,
+  imports: [EfectivoComponent,
+    NavbarComponent,
+    CajaComponent,
+    BolivaresComponent,
     RouterModule,RouterOutlet],
   templateUrl: './principal.component.html',
   styleUrl: './principal.component.css'

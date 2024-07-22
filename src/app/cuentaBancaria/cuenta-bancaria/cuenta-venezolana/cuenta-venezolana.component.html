@@ -1,4 +1,4 @@
-<div [ngClass]="{'card-container': true}">
+<div class="card-container">
   <mat-card *ngFor="let cuenta of cuentasBancarias" [ngClass]="getCardClass(cuenta.nombreBanco!)" class="example-card" appearance="outlined">
     <mat-card-content>
       <div class="card-grid">

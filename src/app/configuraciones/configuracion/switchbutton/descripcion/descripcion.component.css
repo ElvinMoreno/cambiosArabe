@@ -1,6 +1,13 @@
-.container {
+body {
+  font-size: 16px; /* Ajuste general de tamaño de fuente */
+}
+
+.boton-cuentas-bancarias .container {
   display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
   margin-bottom: 1rem;
+  align-items: center; /* Centra verticalmente los elementos */
 }
 
 .button-container {
@@ -20,16 +27,13 @@ button {
   font-weight: bold;
 }
 
-h2 {
+h2.desc {
   font-size: 2rem;
   color: #4a90e2;
   margin: 0;
   font-weight: bold;
 }
 
-.left-align {
-  justify-self: end;
-}
 
 
 .btn {
@@ -60,6 +64,20 @@ h2 {
   margin-top: 1rem;
 }
 
+.btn-desc {
+  background-color: #1B1A26 !important;
+  color: white !important;
+  margin-bottom: 1rem;
+  border: 1px solid #000000;
+}
+
+.agregar-proveedor {
+  display: flex;
+  justify-content: flex-end; /* Mueve el botón al extremo derecho */
+  padding: 10px; /* Espacio alrededor del contenedor */
+  padding-right: 3rem;
+}
+
 .btn-agregar {
   background-color: #4a90e2;
   color: white;
@@ -82,38 +100,87 @@ h2 {
   text-align: center;
 }
 
+/* Tabla estilos */
 .table-container {
-  width: 100%;
   display: flex;
   justify-content: center;
-  padding-top: 1rem;
+  padding: 1rem;
+  margin-top: 20px;
+}
+
+.centered-table {
+  width: 100%;
+  overflow-x: auto; /* Permite el desplazamiento horizontal */
 }
 
 .custom-table {
-  width: 55%;
-  min-width: 300px;
-  max-width: 800px;
-  margin: auto;
+  width: 100%;
+  max-width: 100%;
+  border-collapse: collapse;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.custom-table th, .custom-table td {
   text-align: center;
+  padding: 12px;
+  border: 1px solid #ddd;
 }
 
-.centered-cell {
-  text-align: center;
+.custom-table th {
+  background-color: #4a90e2;
+  color: white;
+  font-weight: bold;
 }
 
-.new-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  /* background-color: #f0f0f0; */
-  margin-top: 10px;
+/* Media query for responsive design */
+@media (max-width: 768px) {
+  .boton-cuentas-bancarias .container {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    justify-items: center; /* Centra los elementos horizontalmente */
+  }
+
+  .button-align, .right-align, .left-align {
+    justify-self: center; /* Centra los elementos dentro de sus celdas */
+  }
+
+  .btn1, .btn2 {
+    width: 100%;
+    max-width: 200px;
+    text-align: center;
+  }
+
+  .agregar-proveedor {
+    justify-content: center; /* Centra el botón en dispositivos móviles */
+    padding-right: 0; /* Reset padding */
+  }
+
+  .table-container {
+    padding: 0.5rem;
+    overflow-x: auto; /* Permite el desplazamiento horizontal */
+  }
+
+  .custom-table {
+    width: 100%;
+    display: block; /* Asegura que la tabla sea desplazable */
+    overflow-x: auto;
+    white-space: nowrap; /* Evita el ajuste automático de líneas */
+  }
+
+  .custom-table th, .custom-table td {
+    display: table-cell;
+    text-align: center;
+    padding: 8px;
+    border: 1px solid #ddd;
+  }
+
+  .custom-table th {
+    background-color: #4a90e2;
+    color: white;
+  }
+
+  .custom-table td {
+    padding-left: 8px;
+  }
 }
-
-.new-row input {
-  flex-grow: 1;
-  margin: 0 10px;
-}
-
-
-

@@ -1,18 +1,21 @@
 /* Estilo card */
 .card-container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Dividir en 3 columnas */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Adaptar columnas automáticamente */
   gap: 20px; /* Espacio entre las tarjetas */
   justify-content: center; /* Centrar las tarjetas en el contenedor */
   padding: 10px; /* Añadido padding para mayor espacio alrededor */
 }
 
-.no-botones .container {
-  grid-template-rows: auto auto auto; /* Ajusta las filas cuando los botones no se muestran */
+.example-card {
+  width: 100%; /* Ancho completo por defecto */
+  max-width: 500px; /* Ajusta este valor según tus necesidades */
+  margin-bottom: 10px; /* Ajustado el margen inferior */
+  transition: box-shadow 0.3s ease;
 }
 
-.example-card {
-  margin-bottom: 10px; /* Ajustado el margen inferior */
+.example-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .card-grid {
@@ -99,4 +102,31 @@ mat-divider {
 mat-card {
   border-radius: 0.5rem;
   cursor: pointer;
+}
+
+/* Media query for responsive design */
+@media (max-width: 768px) {
+  .card-container {
+    grid-template-columns: 1fr; /* Una columna en pantallas pequeñas */
+    padding: 5px;
+  }
+
+  .card-grid {
+    grid-template-columns: 1fr; /* Una columna en pantallas pequeñas */
+    text-align: center;
+  }
+
+  .example-card {
+    width: 100%; /* Asegura que las tarjetas ocupen todo el ancho en pantallas pequeñas */
+    margin-bottom: 20px;
+  }
+
+  .grid-item-1-2, .grid-item-2-2, .grid-item-4-2 {
+    justify-self: center; /* Centra los elementos en pantallas pequeñas */
+  }
+
+  /* Ocultar ciertos elementos en pantallas pequeñas */
+  .grid-item-1-2, .grid-item-2-2, .grid-item-4-2 {
+    display: none;
+  }
 }

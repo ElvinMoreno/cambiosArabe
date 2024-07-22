@@ -1,15 +1,22 @@
+
+
 .login-container {
     display: flex;
     justify-content: center;
+    text-align: center;
     align-items: center;
     height: 100vh;
-    background-color: #f0f2f5;
+    background-color: #38bdab;
+    
   }
   
   .login-card {
     padding: 20px;
-    max-width: 400px;
+    max-width: 30rem;
+    max-height: 90rem;
     width: 100%;
+    height: 50%;
+    margin: 1rem;
   }
   
   .login-title {
@@ -17,7 +24,8 @@
     color: #5E94FF;
   }
   
-  .full-width {
+  
+.full-width {
     width: 100%;
     margin-bottom: 15px;
   }
@@ -25,4 +33,24 @@
   .mat-form-field-appearance-fill .mat-form-field-flex {
     background-color: white;
   }
-  
+
+::ng-deep mat-card-title.login-title {
+    font-size: 2rem; /* Ajusta el tamaño según tus necesidades */
+    font-weight: bold; /* Opcional */
+    line-height: 1.5; /* Opcional */
+}
+::ng-deep .login-title-underline {
+  border-bottom: 0.2rem solid #5E94FF; /* Línea azul debajo del título */
+  margin-bottom: 8px; /* Espacio entre la línea y el subtítulo */
+  border-radius: 2rem;
+}
+::ng-deep .login-subtitle {
+  display: block;
+  margin: 1.5rem; /* Espacio entre la línea y el subtítulo */
+  font-size: 1.2rem; /* Ajusta el tamaño según tus necesidades */
+  color: grey; /* Ajusta el color según tus necesidades */
+}
+
+
+
+

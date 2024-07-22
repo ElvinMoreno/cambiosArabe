@@ -1,4 +1,4 @@
-<div [ngClass]="{'card-container': true}">
+<div class="card-container">
   <mat-card *ngFor="let cuenta of cuentasBancarias"
             [ngClass]="{'contentAmarillo': cuenta.nombreCuenta !== 'davidplata', 'contentDavidPlata': cuenta.nombreCuenta === 'davidplata'}"
             class="example-card" appearance="outlined">

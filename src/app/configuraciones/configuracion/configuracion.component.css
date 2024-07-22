@@ -1,8 +1,20 @@
-.container {
-  display: grid;
-  margin-bottom: 1rem;
+
+body {
+  font-size: 16px; /* Ajuste general de tamaño de fuente */
 }
 
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 1rem;
+  justify-content: center; /* Centra horizontalmente los botones */
+  align-items: center; /* Centra verticalmente los botones */
+}
+
+
+button {
+  padding: 10px 20px;
 .button-container {
   display: flex;
   justify-content: center;
@@ -36,13 +48,23 @@ h2 {
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
-  text-align: center;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
+.btn-descripcion, .btn-gastos {
+  padding-left: 3rem;
+  padding-right: 3rem;
+}
+
+.btn-dark {
+  background-color: #333333;
+  color: white;
+  text-align: center;
+}
 .btn-active {
   background-color: #5E94FF;
   color: white !important;
-  margin-bottom: 1rem;
+
 }
 
 .btn-inactive {
@@ -51,6 +73,18 @@ h2 {
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
 }
 
+
+/* Media query for responsive design */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column; /* Coloca los botones en columna en pantallas pequeñas */
+    gap: 15px;
+    align-items: center; /* Centra los botones verticalmente */
+  }
+
 .espac-h2 {
   margin-top: 1rem;
+
+}
+}
 }

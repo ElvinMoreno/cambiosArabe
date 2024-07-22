@@ -1,14 +1,43 @@
 <h2 mat-dialog-title>Detalles de la Compra</h2>
 <mat-dialog-content *ngIf="compra">
-  <p><strong>Proveedor:</strong> {{ compra.proveedor }}</p>
-  <p><strong>Método de Pago:</strong> {{ compra.metodoPago }}</p>
-  <p><strong>Cuenta Bancaria Bs:</strong> {{ compra.cuentaBancariaBs }}</p>
-  <p><strong>Cuenta Bancaria Pesos:</strong> {{ compra.cuentaBancariaPesos }}</p>
-  <p><strong>Fecha de Compra:</strong> {{ compra.fechaCompra | date:'short' }}</p>
-  <p><strong>Referencia:</strong> {{ compra.referencia }}</p>
-  <p><strong>Monto Bs:</strong> {{ compra.montoBs }}</p>
-  <p><strong>Precio:</strong> {{ compra.precio }}</p>
-  <p><strong>Tasa de Compra:</strong> {{ compra.tasaCompra }}</p>
+  <table class="details-table">
+    <tr>
+      <td><strong>Proveedor:</strong></td>
+      <td>{{ compra.proveedor }}</td>
+    </tr>
+    <tr>
+      <td><strong>Método de Pago:</strong></td>
+      <td>{{ compra.metodoPago }}</td>
+    </tr>
+    <tr>
+      <td><strong>Cuenta Bancaria Bs:</strong></td>
+      <td>{{ compra.cuentaBancariaBs }}</td>
+    </tr>
+    <tr>
+      <td><strong>Cuenta Bancaria Pesos:</strong></td>
+      <td>{{ compra.cuentaBancariaPesos }}</td>
+    </tr>
+    <tr>
+      <td><strong>Fecha de Compra:</strong></td>
+      <td>{{ compra.fechaCompra | date:'short' }}</td>
+    </tr>
+    <tr>
+      <td><strong>Referencia:</strong></td>
+      <td>{{ compra.referencia }}</td>
+    </tr>
+    <tr>
+      <td><strong>Monto Bs:</strong></td>
+      <td>{{ compra.montoBs }}</td>
+    </tr>
+    <tr>
+      <td><strong>Precio:</strong></td>
+      <td>{{ compra.precio }}</td>
+    </tr>
+    <tr>
+      <td><strong>Tasa de Compra:</strong></td>
+      <td>{{ compra.tasaCompra }}</td>
+    </tr>
+  </table>
 </mat-dialog-content>
 <mat-dialog-actions>
   <button mat-button (click)="close()">Cerrar</button>
