@@ -46,6 +46,10 @@ export class ComprasBolivaresComponent implements OnInit {
   openDialog(): void {
     const dialogRef = this.dialog.open(AggCompraComponent);
 
+    dialogRef.componentInstance.compraCreada.subscribe(() => {
+      this.loadCompras(); // Recargar compras cuando se crea una nueva
+    });
+
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.loadCompras();

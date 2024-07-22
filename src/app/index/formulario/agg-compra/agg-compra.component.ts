@@ -16,6 +16,7 @@ import { ProveedorService } from '../../../services/proveedor.service';
 import { TasaService } from '../../../services/tasa.service';
 import { CompraService } from '../../../services/compra.service';
 import { CompraBsDTO } from '../../../interfaces/compra-bs-dto';
+import { DescripcionService } from '../../../services/descripcion.service';
 
 @Component({
   selector: 'app-agg-compra',
@@ -36,12 +37,14 @@ import { CompraBsDTO } from '../../../interfaces/compra-bs-dto';
 })
 export class AggCompraComponent implements OnInit {
   @Output() cancelar = new EventEmitter<void>();
+  @Output() compraCreada = new EventEmitter<void>(); // Nuevo EventEmitter
   form: FormGroup;
   token: string = '';
   metodosPago: any[] = [];
   cuentasVenezolanas: any[] = [];
   cuentasColombianas: any[] = [];
   proveedores: any[] = [];
+  descripciones: any[] = []; // Añadir descripciones
   tasaCompra: number = 0;
   errorMessage: string = '';
   currentDate: string = '';
@@ -53,6 +56,7 @@ export class AggCompraComponent implements OnInit {
     private cuentaBancariaService: CuentaBancariaService,
     private proveedorService: ProveedorService,
     private tasaService: TasaService,
+    private descripcionService: DescripcionService, // Inyectar DescripcionService
     private dialogRef: MatDialogRef<AggCompraComponent>
   ) {
     this.form = this.fb.group({
@@ -61,9 +65,10 @@ export class AggCompraComponent implements OnInit {
       cuentaBancariaBs: ['', [Validators.required]],
       cuentaBancariaPesos: ['', [Validators.required]],
       metodoPagoId: ['', [Validators.required]],
-      tasaCompra: [{value: '', disabled: true}, [Validators.required]],
+      descripcionId: ['', [Validators.required]], // Añadir este campo
+      tasaCompra: [{ value: '', disabled: true }, [Validators.required]],
       montoBs: ['', [Validators.required, Validators.min(0)]],
-      referencia: ['', [Validators.required]],
+      referencia: ['', [Validators.required]]
     });
     this.currentDate = new Date().toISOString().substring(0, 16);
   }
@@ -95,6 +100,11 @@ export class AggCompraComponent implements OnInit {
     this.proveedorService.getAllProveedores().subscribe({
       next: (data: any[]) => this.proveedores = data,
       error: (error) => console.error('Error al cargar los proveedores', error)
+    });
+
+    this.descripcionService.getAllDescripciones().subscribe({ // Cargar descripciones
+      next: (data: any[]) => this.descripciones = data,
+      error: (error) => console.error('Error al cargar las descripciones', error)
     });
 
     this.cargarTasaCompra();
@@ -137,10 +147,11 @@ export class AggCompraComponent implements OnInit {
         cuentaBancariaPesosId: parseInt(formValue.cuentaBancariaPesos, 10),
         proveedorId: parseInt(formValue.proveedorId, 10),
         metodoPagoId: parseInt(formValue.metodoPagoId, 10),
+        descripcionId: parseInt(formValue.descripcionId, 10), // Añadir este campo
         tasaCompra: parseFloat(formValue.tasaCompra),
         montoBs: parseFloat(formValue.montoBs),
         fechaCompra: formValue.fechaCompra ? new Date(formValue.fechaCompra).toISOString() : new Date().toISOString(),
-        referencia: formValue.referencia,
+        referencia: formValue.referencia
       };
 
       console.log('Datos a enviar:', compra);
@@ -149,6 +160,7 @@ export class AggCompraComponent implements OnInit {
         next: (response) => {
           console.log('Compra registrada con éxito', response);
           this.dialogRef.close();
+          this.compraCreada.emit(); // Emitir evento cuando se crea una compra
         },
         error: (error) => {
           console.error('Error al registrar la compra', error);
@@ -161,7 +173,7 @@ export class AggCompraComponent implements OnInit {
     }
   }
 
-  onCancelar() {
+  onCancelar(): void {
     this.cancelar.emit();
     this.dialogRef.close();
   }
