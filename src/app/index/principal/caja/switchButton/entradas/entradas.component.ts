@@ -29,10 +29,10 @@ export class EntradasComponent {
     width: '600px'
   });
 
-  dialogRef.componentInstance.confirmar.subscribe((data: any) => {
-    // Lógica para manejar los datos de la nueva entrada
-    console.log(data);
-  });
+  // dialogRef.componentInstance.confirmar.subscribe((data: any) => {
+  //   // Lógica para manejar los datos de la nueva entrada
+  //   console.log(data);
+  // });
 
   dialogRef.componentInstance.cancelar.subscribe(() => {
     dialogRef.close();

@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, catchError, map, throwError } from 'rxjs';
-import { Tasa } from '../interfaces/tasa';
+import { Observable, catchError, throwError } from 'rxjs';
+import { VentaBs } from '../interfaces/venta-bs';
 import { appsetting } from '../settings/appsetting';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TasaService {
-  private apiUrl = `${appsetting.apiUrl}api/tasas`;
+export class VentaBsService {
+  private apiUrl = `${appsetting.apiUrl}venta`;
 
   constructor(private http: HttpClient) { }
 
@@ -23,29 +23,12 @@ export class TasaService {
     });
   }
 
-  getAllTasas(): Observable<Tasa[]> {
+  getAllVentasBs(): Observable<VentaBs[]> {
     const headers = this.getHeaders();
-    return this.http.get<Tasa[]>(this.apiUrl, { headers })
+    return this.http.get<VentaBs[]>(this.apiUrl, { headers })
       .pipe(
         catchError(this.handleError)
       );
-  }
-
-  getTasaDelDia(): Observable<Tasa | null> {
-    const headers = this.getHeaders();
-    return this.http.get<Tasa[]>(this.apiUrl, { headers }).pipe(
-      map((tasas: Tasa[]) => {
-        const today = new Date().toISOString().split('T')[0];
-        return tasas.find(tasa => {
-          if (tasa.fechaTasa) {
-            const tasaFecha = new Date(tasa.fechaTasa).toISOString().split('T')[0];
-            return tasaFecha === today;
-          }
-          return false;
-        }) || null;
-      }),
-      catchError(this.handleError)
-    );
   }
 
   private handleError(error: any) {

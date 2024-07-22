@@ -5,6 +5,7 @@ export interface Cliente{
     nombre:string,
     apellido:string,
     permitirCredito:boolean,
+    cedula: string,
     credito?:Credito,
     ventasBs?:VentaBs
 }

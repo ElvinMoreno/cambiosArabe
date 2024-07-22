@@ -1,16 +1,24 @@
 
-<div class="container">
-  <div class="button-container">
-    <button mat-stroked-button class="btn"
-      [ngClass]="{'btn-active': vistaActual === 'descripcion', 'btn-inactive': vistaActual !== 'descripcion'}"
-      (click)="cambiarVista('descripcion')">
-      Descripción
-    </button>
-    <button mat-stroked-button class="btn"
-      [ngClass]="{'btn-active': vistaActual === 'gastos', 'btn-inactive': vistaActual !== 'gastos'}"
-      (click)="cambiarVista('gastos')">
-      Gastos
-    </button>
+<div class="boton-cuentas-bancarias">
+  <div class="container">
+    <div class="buttons-container">
+      <div class="button-align">
+        <button mat-stroked-button class="btn"
+          [ngClass]="{'btn-active': vistaActual === 'descripcion',
+          'btn-inactive': vistaActual !== 'descripcion'}"
+          (click)="cambiarVista('descripcion')">
+          Cuentas Colombianas
+        </button>
+      </div>
+      <div class="left-align">
+        <button mat-stroked-button class="btn"
+          [ngClass]="{'btn-active': vistaActual === 'gastos',
+          'btn-inactive': vistaActual !== 'gastos'}"
+          (click)="cambiarVista('gastos')">
+          Cuentas Venezolanascccccccccccccccccccccccccccccccccccc
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 

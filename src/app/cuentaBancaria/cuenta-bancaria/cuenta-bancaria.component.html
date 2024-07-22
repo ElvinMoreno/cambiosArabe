@@ -3,27 +3,22 @@
     <div class="buttons-container">
       <div class="button-align">
         <button mat-stroked-button class="btn"
-          [ngClass]="{'btn-active': vistaActual === 'cuentaC', 'btn-inactive': vistaActual !== 'cuentaC'}"
+          [ngClass]="{'btn-active': vistaActual === 'cuentaC',
+          'btn-inactive': vistaActual !== 'cuentaC'}"
           (click)="cambiarVista('cuentaC')">
-          Cuentas Colombianas
+          Colombianas
         </button>
       </div>
       <div class="left-align">
         <button mat-stroked-button class="btn"
-          [ngClass]="{'btn-active': vistaActual === 'cuentaV', 'btn-inactive': vistaActual !== 'cuentaV'}"
+          [ngClass]="{'btn-active': vistaActual === 'cuentaV',
+          'btn-inactive': vistaActual !== 'cuentaV'}"
           (click)="cambiarVista('cuentaV')">
-          Cuentas Venezolanas
+          Venezolanas
         </button>
       </div>
     </div>
-    <div class="titles-container">
-      <div class="right-align espac-h2">
-        <label class="admin">ADMINISTRADOR</label>
-      </div>
-      <div class="right-align">
-        <h2 class="desc">Cuentas Bancarias</h2>
-      </div>
-    </div>
+
   </div>
 </div>
 
