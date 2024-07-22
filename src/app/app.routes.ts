@@ -16,7 +16,7 @@ import { DetalleMovimientoDavidplataComponent } from './cuentaBancaria/detalle-C
 import { DetalleMovimientoBancolombia1Component } from './cuentaBancaria/detalle-Cuenta/detalle-bancolombia1/detalle-movimiento/detalle-movimiento-bancolombia1/detalle-movimiento-bancolombia1.component';
 import { DetalleMovimientoBancolombia2Component } from './cuentaBancaria/detalle-Cuenta/detalle-bancolombia2/detalle-movimiento/detalle-movimiento-bancolombia2/detalle-movimiento-bancolombia2.component';
 import { ConfiguracionComponent } from './configuraciones/configuracion/configuracion.component';
-import { ProveedorComponent } from './proveedor/proveedor.component';
+import { UsuariosComponent } from './usuarios/usuarios.component';
 
 export const routes: Routes = [
   {
@@ -57,7 +57,7 @@ export const routes: Routes = [
       { path: 'detalle-movimiento-davidplata', component: DetalleMovimientoDavidplataComponent },
       { path: 'detalle-movimiento-bancolombia1', component: DetalleMovimientoBancolombia1Component},
       {path: 'detalle-movimiento-bancolombia2', component: DetalleMovimientoBancolombia2Component},
-      {path: 'proveedores', component: ProveedorComponent}
+      {path: 'proveedores', component: UsuariosComponent}
     ]
   }
 ];

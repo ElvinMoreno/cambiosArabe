@@ -1,6 +1,10 @@
+import { Credito } from "./credito";
+import { VentaBs } from "./venta-bs";
+
 export interface Cliente{
-    idCliente:number,
     nombre:string,
     apellido:string,
-    permitirCredito:boolean
+    permitirCredito:boolean,
+    credito?:Credito,
+    ventasBs?:VentaBs
 }

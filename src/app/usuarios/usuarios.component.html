@@ -1,0 +1,36 @@
+<div class="boton-cuentas-bancarias">
+  <div class="container">
+    <div class="buttons-container">
+      <div class="button-align">
+        <button mat-stroked-button class="btn"
+          [ngClass]="{'btn-active': vistaActual === 'proveedor',
+          'btn-inactive': vistaActual !== 'proveedor'}"
+          (click)="cambiarVista('proveedor')">
+          Proveedores
+        </button>
+      </div>
+      <div class="left-align">
+        <button mat-stroked-button class="btn"
+          [ngClass]="{'btn-active': vistaActual === 'cliente',
+          'btn-inactive': vistaActual !== 'cliente'}"
+          (click)="cambiarVista('cliente')">
+          Clientes
+        </button>
+      </div>
+    </div>
+    <!-- <div class="titles-container">
+      <div class="right-align espac-h2">
+        <label class="admin">ADMINISTRADOR</label>
+      </div>
+      <div class="right-align">
+        <h2 class="desc">Cuentas Bancarias</h2>
+      </div>
+    </div> -->
+  </div>
+</div>
+
+
+<ng-container [ngSwitch]="vistaActual">
+  <proveedor *ngSwitchCase="'proveedor'"></proveedor>
+  <cliente *ngSwitchCase="'cliente'"></cliente>
+</ng-container>

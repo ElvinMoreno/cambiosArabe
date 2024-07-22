@@ -3,13 +3,14 @@ import { Component, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
-import { ProveedorService } from '../services/proveedor.service';
-import { Proveedor } from '../interfaces/proveedor';
+
 import { FormularioProveedorComponent } from './formulario-proveedor/formulario-proveedor.component';
+import { Proveedor } from '../../interfaces/proveedor';
+import { ProveedorService } from '../../services/proveedor.service';
 
 
 @Component({
-  selector: 'app-proveedor',
+  selector: 'proveedor',
   standalone: true,
   imports: [MatButtonModule, MatTableModule, CommonModule],
   templateUrl: './proveedor.component.html',

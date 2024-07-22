@@ -8,9 +8,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { ReactiveFormsModule } from '@angular/forms';
-import { ProveedorService } from '../../services/proveedor.service';
-import { Proveedor } from '../../interfaces/proveedor';
-import { ConfirmarAccionComponent } from '../../confirmar-accion/confirmar-accion.component';
+import { ProveedorService } from '../../../services/proveedor.service';
+import { ConfirmarAccionComponent } from '../../../confirmar-accion/confirmar-accion.component';
+import { Proveedor } from '../../../interfaces/proveedor';
+
 
 @Component({
   selector: 'app-formulario-proveedor',
