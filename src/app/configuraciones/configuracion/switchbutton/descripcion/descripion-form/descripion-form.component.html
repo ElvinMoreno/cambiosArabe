@@ -6,7 +6,7 @@
       <div class="form-grid">
         <div class="form-group" [ngClass]="{'has-error': form.get('texto')?.invalid && form.get('texto')?.touched}">
           <label for="texto">Descripción <span class="required">*</span></label>
-          <input id="texto" type="text" formControlName="texto" placeholder="Ingrese descripción">
+          <textarea id="texto" formControlName="texto" placeholder="Ingrese descripción"></textarea>
         </div>
       </div>
       <div class="button-group">

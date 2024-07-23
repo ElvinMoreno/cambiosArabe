@@ -14,7 +14,7 @@
   background-color: #ffffff;
   padding: 20px;
   border-radius: 10px;
-  max-width: 600px;
+  max-width: 400px; /* Reducir el ancho del formulario */
   width: 100%;
   box-sizing: border-box;
 }
@@ -53,7 +53,7 @@ label {
   color: red;
 }
 
-input, select {
+input, select, textarea {
   width: 100%;
   padding: 6px;
   border: 1px solid #ccc;
@@ -62,7 +62,12 @@ input, select {
   font-size: 12px;
 }
 
-input.ng-invalid.ng-touched, select.ng-invalid.ng-touched {
+textarea {
+  resize: none; /* No permite cambiar el tamaño del textarea */
+  height: 100px; /* Altura inicial */
+}
+
+input.ng-invalid.ng-touched, select.ng-invalid.ng-touched, textarea.ng-invalid.ng-touched {
   border-color: red;
 }
 
@@ -100,7 +105,7 @@ input.ng-invalid.ng-touched, select.ng-invalid.ng-touched {
   font-weight: 300;
 }
 
-.has-error input, .has-error select {
+.has-error input, .has-error select, .has-error textarea {
   border-color: red;
 }
 
@@ -112,6 +117,6 @@ option {
   font-size: 1rem;
 }
 
-input {
+input, textarea {
   font-size: 1rem;
 }

@@ -4,12 +4,15 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
 import { AggEntradaComponent } from '../../../../formulario/agg-entrada/agg-entrada.component';
+import { MatIconModule } from '@angular/material/icon';
 
 
 @Component({
   selector: 'entradas',
   standalone: true,
-  imports: [MatButtonModule, MatTableModule,CommonModule],
+  imports: [MatButtonModule, MatTableModule,CommonModule,
+    MatIconModule
+  ],
   templateUrl: './entradas.component.html',
   styleUrl: './entradas.component.css'
 })

@@ -38,23 +38,24 @@
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.btn-agregar {
-  background-color: #4a90e2;
-  color: white;
-  font-weight: bold;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
+  .btn-agregar {
+    background-color: #4a90e2;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* padding: 10px; */
+  }
 
-.btn-agregar:hover {
-  background-color: #3a78c2;
-  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.1);
-}
+  .btn-agregar mat-icon {
+    font-size: 1.7rem; /* Ajusta el tamaño del ícono */
+    height: 24px;
+    width: 24px;
+    line-height: 24px;
+    margin-right: -0.3rem;
+  }
 
-.btn-agregar:active {
-  background-color: #3366bb;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transform: translateY(1px);
-}
+
 
 .btn-filtro {
   background-color: #f0f0f0;
