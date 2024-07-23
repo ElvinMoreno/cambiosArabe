@@ -4,11 +4,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { BancolombiaComponent } from '../../../../formulario/bancolombia/bancolombia.component';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'ventas-bolivares',
   standalone: true,
-  imports: [MatButtonModule, MatTableModule, CommonModule,MatDialogModule],
+  imports: [MatButtonModule, MatTableModule, CommonModule,
+    MatDialogModule, MatIconModule],
   templateUrl: './ventas-bolivares.component.html',
   styleUrls: ['./ventas-bolivares.component.css']
 })

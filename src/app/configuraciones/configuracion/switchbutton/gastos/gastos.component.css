@@ -2,13 +2,14 @@ body {
   font-size: 16px; /* Ajuste general de tamaño de fuente */
 }
 
-.container {
+.boton-cuentas-bancarias .container {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  align-items: center;
-  padding: 20px;
+  gap: 10px;
+  margin-bottom: 1rem;
+  align-items: center; /* Centra verticalmente los elementos */
 }
+
 
 .right-align {
   justify-self: start;
@@ -54,7 +55,7 @@ button {
   transform: translateY(1px);
 }
 
-/* Diseño de las tarjetas */
+/* Diseño de la tabla */
 .grid-container {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

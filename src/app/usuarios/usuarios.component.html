@@ -2,7 +2,8 @@
   <div class="container">
     <div class="buttons-container">
       <div class="button-align">
-        <button mat-stroked-button class="btn"
+        <button mat-stroked-button
+          class="btn"
           [ngClass]="{'btn-active': vistaActual === 'proveedor',
           'btn-inactive': vistaActual !== 'proveedor'}"
           (click)="cambiarVista('proveedor')">

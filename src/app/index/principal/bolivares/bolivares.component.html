@@ -2,17 +2,19 @@
   <div class="compras">
     <button mat-raised-button
             class="btn"
-            [class.btn-dark]="vistaActual === 'compras'"
-            [class.btn-light]="vistaActual !== 'compras'"
-            (click)="cambiarVista('compras')">
-      Entradas
+            [ngClass]="{'btn-dark': vistaActual === 'compras',
+            'btn-light': vistaActual !== 'compras'}"
+            (click)="cambiarVista('compras')"
+
+            >
+      Compras
     </button>
   </div>
   <div class="ventas">
     <button mat-raised-button
             class="btn"
-            [class.btn-dark]="vistaActual === 'ventas'"
-            [class.btn-light]="vistaActual !== 'ventas'"
+            [ngClass]="{'btn-dark': vistaActual === 'ventas',
+            'btn-light': vistaActual !== 'ventas'}"
             (click)="cambiarVista('ventas')">
       Ventas
     </button>
