@@ -7,6 +7,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { Descripcion } from '../../../../interfaces/descripcion';
 import { DescripcionService } from '../../../../services/descripcion.service';
+import { MatDialog } from '@angular/material/dialog';
+import { DescripcionFormComponent } from './descripion-form/descripion-form.component';
 
 @Component({
   selector: 'descripcion',
@@ -25,12 +27,11 @@ import { DescripcionService } from '../../../../services/descripcion.service';
 export class DescripcionComponent implements OnInit {
   displayedColumns: string[] = ['id', 'texto', 'acciones'];
   dataSource: Descripcion[] = [];
-  newDescripcion: Descripcion = { id: 0, texto: '' };
-  isNewRow = false;
 
   constructor(
     private descripcionService: DescripcionService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    public dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -50,37 +51,21 @@ export class DescripcionComponent implements OnInit {
   }
 
   nuevaDescripcion() {
-    if (this.isNewRow && this.newDescripcion.texto.trim() === '') {
-      // Si la fila nueva está abierta y el campo de texto está vacío, cierra la fila
-      this.isNewRow = false;
-    } else {
-      // Si no, abre una nueva fila
-      this.isNewRow = true;
-      this.newDescripcion = { id: this.getNextId(), texto: '' };
-    }
-    this.cdr.detectChanges();
-  }
+    const dialogRef = this.dialog.open(DescripcionFormComponent, {
+      width: '300px'
+    });
 
-  getNextId(): number {
-    return this.dataSource.length > 0 ? Math.max(...this.dataSource.map(d => d.id || 0)) + 1 : 1;
-  }
-
-  guardarDescripcion() {
-    if (this.newDescripcion.texto.trim()) {
-      this.descripcionService.createDescripcion(this.newDescripcion).subscribe(
-        (data: Descripcion) => {
-          this.loadDescripciones();
-          this.newDescripcion = { id: 0, texto: '' };
-          this.isNewRow = false;
-        },
-        (error) => {
-          console.error('Error al guardar la descripción', error);
-        }
-      );
-    } else {
-      // Si el campo de texto está vacío, simplemente cierra la fila
-      this.isNewRow = false;
-    }
-    this.cdr.detectChanges();
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.descripcionService.createDescripcion(result).subscribe(
+          (data: Descripcion) => {
+            this.loadDescripciones();
+          },
+          (error) => {
+            console.error('Error al guardar la descripción', error);
+          }
+        );
+      }
+    });
   }
 }

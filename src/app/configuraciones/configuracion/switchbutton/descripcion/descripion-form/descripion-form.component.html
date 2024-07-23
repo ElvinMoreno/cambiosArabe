@@ -1,0 +1,18 @@
+<div class="modal-overlay">
+  <div class="modal-content">
+    <h2>Agregar Descripción</h2>
+    <div class="separator"></div>
+    <form [formGroup]="form" (ngSubmit)="onConfirmar()">
+      <div class="form-grid">
+        <div class="form-group" [ngClass]="{'has-error': form.get('texto')?.invalid && form.get('texto')?.touched}">
+          <label for="texto">Descripción <span class="required">*</span></label>
+          <input id="texto" type="text" formControlName="texto" placeholder="Ingrese descripción">
+        </div>
+      </div>
+      <div class="button-group">
+        <button type="submit" class="btn-confirmar">Confirmar</button>
+        <button type="button" class="btn-cancelar" (click)="onCancelar()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>

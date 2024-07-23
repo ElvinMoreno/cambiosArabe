@@ -6,10 +6,7 @@
     <h2 class="desc">Descripciones</h2>
   </div>
   <div class="left-align">
-    <button mat-flat-button class="btn2 btn-agregar"
-    (click)="nuevaDescripcion()">
-      {{ isNewRow ? 'Cerrar' : 'Nueva descripción' }}
-    </button>
+    <button mat-flat-button class="btn2 btn-agregar" (click)="nuevaDescripcion()">Nueva descripción</button>
   </div>
 </div>
 <div class="table-container">
@@ -35,13 +32,4 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns" class="centered-cell"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="centered-cell"></tr>
   </table>
-
-  <!-- New Row for Adding Description -->
-  <div *ngIf="isNewRow" class="new-row">
-    <span class="centered-cell">{{newDescripcion.id}}</span>
-    <input matInput placeholder="Nueva descripción" [(ngModel)]="newDescripcion.texto" class="centered-cell">
-    <button mat-icon-button color="primary" (click)="guardarDescripcion()" class="centered-cell">
-      <mat-icon>check</mat-icon>
-    </button>
-  </div>
 </div>
