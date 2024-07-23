@@ -9,8 +9,19 @@
 .btn-agregar {
   background-color: #4a90e2;
   color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* padding: 10px; */
 }
 
+.btn-agregar mat-icon {
+  font-size: 1.7rem; /* Ajusta el tamaño del ícono */
+  height: 24px;
+  width: 24px;
+  line-height: 24px;
+  margin-right: 0.2rem;
+}
 .btn2 {
   padding: 10px 20px;
   border: none;
