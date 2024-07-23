@@ -55,16 +55,7 @@
   white-space: nowrap; /* Evita que el texto se desborde */
 }
 
-.btn-agregar:hover {
-  background-color: #3a78c2;
-  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.1);
-}
 
-.btn-agregar:active {
-  background-color: #3366bb;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transform: translateY(1px);
-}
 
 .btn-filtro {
   background-color: #f0f0f0;

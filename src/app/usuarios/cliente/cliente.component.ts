@@ -8,11 +8,14 @@ import { MatDialog } from '@angular/material/dialog';
 import { FormularioClienteComponent } from './formulario-cliente/formulario-cliente.component';
 import { Cliente } from '../../interfaces/clientes';
 import { ClienteService } from '../../services/clientes.service';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'cliente',
   standalone: true,
-  imports: [MatButtonModule, MatTableModule, CommonModule],
+  imports: [MatButtonModule, MatTableModule, CommonModule,
+    MatIconModule
+  ],
   templateUrl: './cliente.component.html',
   styleUrls: ['./cliente.component.css']
 })

@@ -10,9 +10,7 @@ body {
   align-items: center; /* Centra verticalmente los elementos */
 }
 
-.button-align {
-  justify-self: start;
-}
+
 
 .right-align {
   justify-self: end;
@@ -53,13 +51,6 @@ h2.desc {
   margin-top: 1rem;
 }
 
-.btn-desc {
-  background-color: #1B1A26 !important;
-  color: white !important;
-  margin-bottom: 1rem;
-  border: 1px solid #000000;
-}
-
 .agregar-proveedor {
   display: flex;
   justify-content: flex-end; /* Mueve el botón al extremo derecho */
@@ -70,14 +61,18 @@ h2.desc {
 .btn-agregar {
   background-color: #4a90e2;
   color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* padding: 10px; */
 }
 
-.btn2 {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
+.btn-agregar mat-icon {
+  font-size: 1.7rem; /* Ajusta el tamaño del ícono */
+  height: 24px;
+  width: 24px;
+  line-height: 24px;
+  margin-right: -0.3rem;
 }
 
 /* Tabla estilos */

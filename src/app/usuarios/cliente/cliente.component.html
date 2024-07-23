@@ -3,7 +3,7 @@
   <div class="container">
     <div>
       <div class="right-align espac-h2">
-        <label class="admin">ADMINISTRADOR</label>
+        <label class="admin">ADMINISTRA</label>
       </div>
       <div class="right-align">
         <h2 class="desc">Lista de Clientes</h2>
@@ -13,7 +13,9 @@
 </div>
 
 <div class="agregar-proveedor">
-  <button mat-flat-button class="btn2 btn-agregar" (click)="openNuevoClienteDialog()">Nuevo cliente</button>
+  <button mat-flat-button class="btn-agregar" (click)="openNuevoClienteDialog()">
+    <mat-icon>add</mat-icon>
+  </button>
 </div>
 <div class="table-container centered-table">
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 custom-table">

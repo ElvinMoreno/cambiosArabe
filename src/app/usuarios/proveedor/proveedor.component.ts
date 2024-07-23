@@ -7,12 +7,15 @@ import { MatDialog } from '@angular/material/dialog';
 import { FormularioProveedorComponent } from './formulario-proveedor/formulario-proveedor.component';
 import { Proveedor } from '../../interfaces/proveedor';
 import { ProveedorService } from '../../services/proveedor.service';
+import { MatIconModule } from '@angular/material/icon';
 
 
 @Component({
   selector: 'proveedor',
   standalone: true,
-  imports: [MatButtonModule, MatTableModule, CommonModule],
+  imports: [MatButtonModule, MatTableModule, CommonModule,
+    MatIconModule
+  ],
   templateUrl: './proveedor.component.html',
   styleUrls: ['./proveedor.component.css']
 })

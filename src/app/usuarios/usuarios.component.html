@@ -9,7 +9,7 @@
           Proveedores
         </button>
       </div>
-      <div class="left-align">
+      <div class="button-align">
         <button mat-stroked-button class="btn"
           [ngClass]="{'btn-active': vistaActual === 'cliente',
           'btn-inactive': vistaActual !== 'cliente'}"
@@ -18,17 +18,8 @@
         </button>
       </div>
     </div>
-    <!-- <div class="titles-container">
-      <div class="right-align espac-h2">
-        <label class="admin">ADMINISTRADOR</label>
-      </div>
-      <div class="right-align">
-        <h2 class="desc">Cuentas Bancarias</h2>
-      </div>
-    </div> -->
   </div>
 </div>
-
 
 <ng-container [ngSwitch]="vistaActual">
   <proveedor *ngSwitchCase="'proveedor'"></proveedor>
