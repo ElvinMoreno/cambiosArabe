@@ -1,3 +1,9 @@
+
+<div class="agregar-proveedor">
+  <button mat-flat-button class="btn2 btn-agregar" (click)="openCrearCuentaBancaria()">Nueva Cuenta Bancaria</button>
+</div>
+
+
 <div class="card-container">
   <mat-card *ngFor="let cuenta of cuentasBancarias"
             [ngClass]="{'contentAmarillo': cuenta.nombreCuenta !== 'davidplata', 'contentDavidPlata': cuenta.nombreCuenta === 'davidplata'}"
@@ -29,3 +35,4 @@
     </mat-card-content>
   </mat-card>
 </div>
+

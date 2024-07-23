@@ -1,3 +1,24 @@
+
+.agregar-proveedor {
+  display: flex;
+  justify-content: flex-end; /* Mueve el botón al extremo derecho */
+  padding: 10px; /* Espacio alrededor del contenedor */
+  padding-right: 3rem;
+}
+
+.btn-agregar {
+  background-color: #4a90e2;
+  color: white;
+}
+
+.btn2 {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
 /* Estilo card */
 .card-container {
   display: grid;

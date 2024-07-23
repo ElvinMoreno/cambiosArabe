@@ -1,20 +1,21 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
-import { CuentaBancariaService } from '../../../services/cuenta-bancaria.service';
-import { CuentaBancaria } from '../../../interfaces/cuenta-bancaria';
-import { TipoCuentaBancaria } from '../../../interfaces/tipo-cuenta-bancaria';
-import { CommonModule } from '@angular/common';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { catchError, finalize, of } from 'rxjs';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { TipoCuentaBancaria } from '../../../interfaces/tipo-cuenta-bancaria';
+import { CuentaBancariaService } from '../../../services/cuenta-bancaria.service';
 import { TipoCuentaBancariaService } from '../../../services/tipo-de-cuenta-bancaria.service';
+import { CrearCuentaBancariaComponent } from '../crear-cuenta-bancaria/crear-cuenta-bancaria.component';
+import { MatDialogRef } from '@angular/material/dialog';
+import { CuentaBancaria } from '../../../interfaces/cuenta-bancaria';
+import { catchError, finalize, of } from 'rxjs';
 
 @Component({
-  selector: 'app-crear-cuenta-bancaria',
+  selector: 'app-crear-cuenta-bancaria-v',
   standalone: true,
   imports: [
     CommonModule,
@@ -25,15 +26,22 @@ import { TipoCuentaBancariaService } from '../../../services/tipo-de-cuenta-banc
     ReactiveFormsModule,
     MatIconModule,
   ],
-  templateUrl: './crear-cuenta-bancaria.component.html',
-  styleUrls: ['./crear-cuenta-bancaria.component.css']
+  templateUrl: './crear-cuenta-bancaria-v.component.html',
+  styleUrl: './crear-cuenta-bancaria-v.component.css'
 })
-export class CrearCuentaBancariaComponent implements OnInit {
+export class CrearCuentaBancariaVComponent implements OnInit {
   form: FormGroup;
   tiposCuenta: TipoCuentaBancaria[] = [];
+  bancos = [
+    'Banco de Venezuela',
+    'BBVA',
+    'Banesco',
+    'Banco Mercantil'
+  ];
+  otroBancoSeleccionado = false;
   isLoading = false;
   errorMessage: string | null = null;
-  tipoCuentaPesos: TipoCuentaBancaria | null = null;
+  selectedTipoCuenta: string = '';
 
   constructor(
     private fb: FormBuilder,
@@ -43,7 +51,8 @@ export class CrearCuentaBancariaComponent implements OnInit {
   ) {
     this.form = this.fb.group({
       tipocuenta: [{ value: null, disabled: true }, Validators.required],
-      bancoSeleccionado: ['', Validators.required],
+      bancoSeleccionado: [null, Validators.required],
+      otroBanco: [''],
       nombreCuenta: ['', Validators.required],
       monto: [0, [Validators.required, Validators.min(0)]],
       numCuenta: [0, Validators.required],
@@ -54,15 +63,26 @@ export class CrearCuentaBancariaComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadTiposCuentaBancaria();
+
+    this.form.get('bancoSeleccionado')?.valueChanges.subscribe(value => {
+      this.otroBancoSeleccionado = value === 'Otro';
+      if (this.otroBancoSeleccionado) {
+        this.form.get('otroBanco')?.setValidators([Validators.required]);
+      } else {
+        this.form.get('otroBanco')?.clearValidators();
+      }
+      this.form.get('otroBanco')?.updateValueAndValidity();
+    });
   }
 
   loadTiposCuentaBancaria(): void {
     this.tipoCuentaBancariaService.getAllTiposCuentaBancaria().subscribe(
       (data: TipoCuentaBancaria[]) => {
         this.tiposCuenta = data;
-        this.tipoCuentaPesos = this.tiposCuenta.find(tipo => tipo.divisa === 'Pesos') || null;
-        if (this.tipoCuentaPesos) {
-          this.form.patchValue({ tipocuenta: this.tipoCuentaPesos });
+        const bolivaresTipoCuenta = this.tiposCuenta.find(tipo => tipo.divisa === 'Bolivares');
+        if (bolivaresTipoCuenta) {
+          this.form.patchValue({ tipocuenta: bolivaresTipoCuenta.nombre });
+          this.selectedTipoCuenta = `${bolivaresTipoCuenta.nombre} - ${bolivaresTipoCuenta.divisa}`;
         }
       },
       (error) => {
@@ -75,18 +95,18 @@ export class CrearCuentaBancariaComponent implements OnInit {
     if (this.form.valid) {
       this.isLoading = true;
       this.errorMessage = null;
-      const formValue = this.form.getRawValue();
+      const formValue = this.form.value;
 
       const nuevaCuenta: CuentaBancaria = {
         id: 0,  // Se asume que el ID será generado por el backend
         tipocuenta: formValue.tipocuenta,
-        nombreBanco: formValue.bancoSeleccionado,
+        nombreBanco: this.otroBancoSeleccionado ? formValue.otroBanco : formValue.bancoSeleccionado,
         nombreCuenta: formValue.nombreCuenta,
         monto: formValue.monto,
         numCuenta: formValue.numCuenta,
         limiteCB: formValue.limiteCB,
         limiteMonto: formValue.limiteMonto,
-        divisa: formValue.tipocuenta.divisa
+        divisa: 'Bolívares'
       };
 
       this.cuentaBancariaService.createCuentaBancaria(nuevaCuenta)

@@ -22,9 +22,6 @@
   </div>
 </div>
 
-<div class="agregar-proveedor">
-  <button mat-flat-button class="btn2 btn-agregar" (click)="openCrearCuentaBancaria()">Nueva Cuenta Bancaria</button>
-</div>
 
 <ng-container [ngSwitch]="vistaActual">
   <app-cuenta-colombiana *ngSwitchCase="'cuentaC'"></app-cuenta-colombiana>

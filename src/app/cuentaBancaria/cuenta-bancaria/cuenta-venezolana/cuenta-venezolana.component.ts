@@ -7,6 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { CuentaBancaria } from '../../../interfaces/cuenta-bancaria';
 import { CuentaBancariaService } from '../../../services/cuenta-bancaria.service';
 import { ActualizarCuentaBancariaComponent } from '../actualizar-cuenta-bancaria/actualizar-cuenta-bancaria.component';
+import { CrearCuentaBancariaVComponent } from '../crear-cuenta-bancaria-v/crear-cuenta-bancaria-v.component';
 
 @Component({
   selector: 'app-cuenta-venezolana',
@@ -28,7 +29,17 @@ export class CuentaVenezolanaComponent implements OnInit {
   ngOnInit(): void {
     this.loadCuentasVenezolanas();
   }
+  openCrearCuentaBancaria(): void {
+    const dialogRef = this.dialog.open(CrearCuentaBancariaVComponent, {
+      width: '600px',
+    });
 
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Aquí puedes agregar la lógica para actualizar la lista de cuentas bancarias si es necesario
+      }
+    });
+  }
   loadCuentasVenezolanas(): void {
     this.cuentaBancariaService.getCuentasVenezolanas().subscribe(
       (data: CuentaBancaria[]) => {

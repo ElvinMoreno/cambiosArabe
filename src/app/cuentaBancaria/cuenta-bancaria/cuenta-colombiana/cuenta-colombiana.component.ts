@@ -7,6 +7,7 @@ import { CuentaBancaria } from '../../../interfaces/cuenta-bancaria';
 import { CuentaBancariaService } from '../../../services/cuenta-bancaria.service';
 import { ActualizarCuentaBancariaComponent } from '../actualizar-cuenta-bancaria/actualizar-cuenta-bancaria.component';
 import { MatDialog } from '@angular/material/dialog';
+import { CrearCuentaBancariaComponent } from '../crear-cuenta-bancaria/crear-cuenta-bancaria.component';
 
 @Component({
   selector: 'app-cuenta-colombiana',
@@ -29,6 +30,17 @@ export class CuentaColombianaComponent implements OnInit {
     this.loadCuentasColombianas();
   }
 
+    openCrearCuentaBancaria(): void {
+    const dialogRef = this.dialog.open(CrearCuentaBancariaComponent, {
+      width: '600px',
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Aquí puedes agregar la lógica para actualizar la lista de cuentas bancarias si es necesario
+      }
+    });
+  }
   loadCuentasColombianas(): void {
     this.cuentaBancariaService.getCuentasColombianas().subscribe(
       (data: CuentaBancaria[]) => {
