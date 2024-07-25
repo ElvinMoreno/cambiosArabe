@@ -67,22 +67,22 @@ h2.desc {
   padding-right: 3rem;
 }
 
-  .btn-agregar {
-    background-color: #4a90e2;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /* padding: 10px; */
-  }
+.btn-agregar {
+  background-color: #4a90e2;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* padding: 10px; */
+}
 
-  .btn-agregar mat-icon {
-    font-size: 1.7rem; /* Ajusta el tamaño del ícono */
-    height: 24px;
-    width: 24px;
-    line-height: 24px;
-    margin-right: -0.3rem;
-  }
+.btn-agregar mat-icon {
+  font-size: 1.7rem; /* Ajusta el tamaño del ícono */
+  height: 24px;
+  width: 24px;
+  line-height: 24px;
+  margin-right: -0.3rem;
+}
 
 /* Tabla estilos */
 .table-container {
@@ -117,6 +117,40 @@ h2.desc {
   font-weight: bold;
 }
 
+/* Estilos para las cards en vista móvil */
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Adaptar columnas automáticamente */
+  gap: 20px; /* Espacio entre las tarjetas */
+  justify-content: center; /* Centrar las tarjetas en el contenedor */
+  padding: 10px; /* Añadido padding para mayor espacio alrededor */
+}
+
+.example-card {
+  margin-bottom: 10px; /* Ajusta este valor según tus necesidades */
+  transition: transform 0.3s ease; /* Añade una transición para la transformación */
+}
+
+.example-card:hover {
+  transform: scale(1.05); /* Aumenta ligeramente el tamaño al hacer hover */
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  font-family: "IBM Plex Sans", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.grid-item {
+  padding: 5px; /* Reducido el padding dentro de las grid-items */
+}
+
+.settings-icon {
+  vertical-align: middle;
+}
+
 /* Media query for responsive design */
 @media (max-width: 768px) {
   .boton-cuentas-bancarias .container {
@@ -141,8 +175,11 @@ h2.desc {
   }
 
   .table-container {
-    padding: 0.5rem;
-    overflow-x: auto; /* Permite el desplazamiento horizontal */
+    display: none; /* Oculta la tabla en vista móvil */
+  }
+
+  .card-container {
+    display: grid; /* Muestra las cards en vista móvil */
   }
 
   .custom-table {

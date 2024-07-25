@@ -10,8 +10,6 @@ body {
   align-items: center; /* Centra verticalmente los elementos */
 }
 
-
-
 .right-align {
   justify-self: end;
 }
@@ -42,11 +40,6 @@ h2.desc {
   font-weight: bold;
 }
 
-.btn1 {
-  padding-left: 3rem;
-  padding-right: 3rem;
-}
-
 .espac-h2 {
   margin-top: 1rem;
 }
@@ -64,7 +57,6 @@ h2.desc {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* padding: 10px; */
 }
 
 .btn-agregar mat-icon {
@@ -132,8 +124,13 @@ h2.desc {
   }
 
   .table-container {
-    padding: 0.5rem;
-    overflow-x: auto; /* Permite el desplazamiento horizontal */
+    display: none; /* Oculta la tabla en vista móvil */
+  }
+
+  .card-container {
+    display: grid; /* Muestra las cards en vista móvil */
+    grid-template-columns: 1fr;
+    gap: 20px;
   }
 
   .custom-table {
@@ -157,5 +154,28 @@ h2.desc {
 
   .custom-table td {
     padding-left: 8px;
+  }
+
+  .example-card {
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+  }
+
+  .card-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .grid-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .grid-item p {
+    margin: 0;
   }
 }

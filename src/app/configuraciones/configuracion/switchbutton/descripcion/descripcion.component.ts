@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
@@ -27,6 +27,12 @@ import { DescripcionFormComponent } from './descripion-form/descripion-form.comp
 export class DescripcionComponent implements OnInit {
   displayedColumns: string[] = ['id', 'texto', 'acciones'];
   dataSource: Descripcion[] = [];
+  isMobile: boolean = false;
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.isMobile = window.innerWidth <= 768;
+  }
 
   constructor(
     private descripcionService: DescripcionService,
@@ -36,6 +42,7 @@ export class DescripcionComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadDescripciones();
+    this.isMobile = window.innerWidth <= 768;
   }
 
   loadDescripciones() {
@@ -67,5 +74,18 @@ export class DescripcionComponent implements OnInit {
         );
       }
     });
+  }
+
+  editarDescripcion(element: Descripcion) {
+    // Implementar lógica de edición
+  }
+
+  eliminarDescripcion(id: number | undefined): void {
+    if (id === undefined) {
+      console.error('ID is undefined');
+      return;
+    }
+    // Lógica para eliminar la descripción
+    console.log(`Eliminando descripción con ID: ${id}`);
   }
 }

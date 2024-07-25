@@ -1,21 +1,20 @@
 // cliente.component.ts
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card'; // Asegúrate de importar MatCardModule
 
 import { FormularioClienteComponent } from './formulario-cliente/formulario-cliente.component';
 import { Cliente } from '../../interfaces/clientes';
 import { ClienteService } from '../../services/clientes.service';
-import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'cliente',
   standalone: true,
-  imports: [MatButtonModule, MatTableModule, CommonModule,
-    MatIconModule
-  ],
+  imports: [MatButtonModule, MatTableModule, CommonModule, MatIconModule, MatCardModule],
   templateUrl: './cliente.component.html',
   styleUrls: ['./cliente.component.css']
 })
@@ -23,10 +22,17 @@ export class ClienteComponent implements OnInit {
   ELEMENT_DATA: Cliente[] = [];
   displayedColumns: string[] = ['nombre', 'cedula', 'credito', 'ventaBs'];
   dataSource = this.ELEMENT_DATA;
+  isMobile: boolean = false;
 
   constructor(private clienteService: ClienteService, public dialog: MatDialog) {}
 
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.isMobile = window.innerWidth <= 768;
+  }
+
   ngOnInit(): void {
+    this.isMobile = window.innerWidth <= 768;
     this.loadClientes();
   }
 

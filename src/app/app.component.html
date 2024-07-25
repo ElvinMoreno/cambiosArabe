@@ -1,5 +1,6 @@
 <ng-container *ngIf="isAuthenticated(); else loginTemplate">
-  <router-outlet></router-outlet>
+  <router-outlet>
+  </router-outlet>
 </ng-container>
 <ng-template #loginTemplate>
   <router-outlet></router-outlet>
