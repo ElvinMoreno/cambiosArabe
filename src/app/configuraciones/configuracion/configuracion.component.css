@@ -17,16 +17,10 @@ body {
   flex-wrap: wrap; /* Permitir que los botones se ajusten en varias filas si es necesario */
 }
 
-.titles-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
 .button-align, .left-align, .right-align {
   display: flex;
   justify-content: center;
+  flex: 1; /* Asegurar que todos los contenedores de botones tengan el mismo tamaño */
 }
 
 button {
@@ -36,11 +30,12 @@ button {
   cursor: pointer;
   font-size: 16px;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  width: 100%; /* Asegurar que los botones ocupen todo el espacio disponible */
+  max-width: 200px; /* Limitar el ancho máximo de los botones */
 }
 
 .btn {
-  padding-left: 3rem;
-  padding-right: 3rem;
+  width: 100%; /* Asegurar que los botones ocupen todo el espacio disponible */
 }
 
 .btn-active {
@@ -54,20 +49,3 @@ button {
   color: black;
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
 }
-
-
-
-/* Media query for responsive design */
-@media (max-width: 768px) {
-  .container {
-    flex-direction: column; /* Coloca los botones en columna en pantallas pequeñas */
-    gap: 15px;
-    align-items: center; /* Centra los botones verticalmente */
-  }
-
-.espac-h2 {
-  margin-top: 1rem;
-
-}
-}
-

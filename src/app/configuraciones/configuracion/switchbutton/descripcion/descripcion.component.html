@@ -9,27 +9,65 @@
     <button mat-flat-button class="btn2 btn-agregar" (click)="nuevaDescripcion()">Nueva descripción</button>
   </div>
 </div>
-<div class="table-container">
-  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 custom-table">
-    <!-- ID Column -->
-    <ng-container matColumnDef="id">
-      <th mat-header-cell *matHeaderCellDef class="custom-header-cell centered-cell"> ID </th>
-      <td mat-cell *matCellDef="let element" class="centered-cell"> {{element.id}} </td>
-    </ng-container>
 
-    <!-- Texto Column -->
-    <ng-container matColumnDef="texto">
-      <th mat-header-cell *matHeaderCellDef class="custom-header-cell centered-cell"> Descripción </th>
-      <td mat-cell *matCellDef="let element" class="centered-cell"> {{element.texto}} </td>
-    </ng-container>
+<ng-container *ngIf="isDesktop; else mobileView">
+  <!-- Vista de tabla para escritorio -->
+  <div class="table-container">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 custom-table">
+      <!-- Columna para expandir/contraer -->
+      <ng-container matColumnDef="expand">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button (click)="expandedElement = expandedElement === element ? null : element">
+            <mat-icon>{{expandedElement === element ? 'expand_less' : 'expand_more'}}</mat-icon>
+          </button>
+        </td>
+      </ng-container>
 
-    <!-- Action Column -->
-    <ng-container matColumnDef="acciones">
-      <th mat-header-cell *matHeaderCellDef class="custom-header-cell centered-cell"> Acciones </th>
-      <td mat-cell *matCellDef="let element" class="centered-cell"></td>
-    </ng-container>
+      <!-- Otras columnas principales -->
+      <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
+        <th mat-header-cell *matHeaderCellDef>{{ column }}</th>
+        <td mat-cell *matCellDef="let element">{{ element[column] }}</td>
+      </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns" class="centered-cell"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="centered-cell"></tr>
-  </table>
-</div>
+      <!-- Columnas expandidas -->
+      <ng-container matColumnDef="expandedDetail">
+        <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length + 1">
+          <div class="element-detail" [@detailExpand]="element === expandedElement ? 'expanded' : 'collapsed'">
+            <!-- Contenido expandido aquí -->
+            <p><strong>Columna Extra 1:</strong> {{element.extraColumn1}}</p>
+            <p><strong>Columna Extra 2:</strong> {{element.extraColumn2}}</p>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="['expand', ...displayedColumns]"></tr>
+      <tr mat-row *matRowDef="let element; columns: ['expand', ...displayedColumns];"
+          class="element-row"
+          [class.expanded-row]="expandedElement === element"
+          (click)="expandedElement = expandedElement === element ? null : element">
+      </tr>
+      <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
+    </table>
+  </div>
+</ng-container>
+
+<ng-template #mobileView>
+  <!-- Vista de tarjetas para móvil -->
+  <div class="card-container">
+    <mat-card *ngFor="let item of dataSource" class="mobile-card">
+      <mat-card-content>
+        <p><strong>ID:</strong> {{item.id}}</p>
+        <p><strong>Descripción:</strong> {{item.texto}}</p>
+        <button mat-icon-button (click)="expandedElement = expandedElement === item ? null : item">
+          <mat-icon>{{expandedElement === item ? 'expand_less' : 'expand_more'}}</mat-icon>
+        </button>
+        <div *ngIf="expandedElement === item">
+          <!-- Contenido expandido aquí -->
+          <p><strong>Columna Extra 1:</strong> {{item.extraColumn1}}</p>
+          <p><strong>Columna Extra 2:</strong> {{item.extraColumn2}}</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</ng-template>
