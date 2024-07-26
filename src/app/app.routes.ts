@@ -3,7 +3,6 @@ import { BolivaresComponent } from './index/principal/bolivares/bolivares.compon
 import { CajaComponent } from './index/principal/caja/caja.component';
 import { EfectivoComponent } from './index/principal/efectivo/efectivo.component';
 import { LoginComponent } from './pages/login/login.component';
-import { RegistroComponent } from './pages/registro/registro.component';
 import { DescripcionComponent } from './configuraciones/configuracion/switchbutton/descripcion/descripcion.component';
 import { ContentPolaniaComponent } from './shared/content-polania/content-polania.component';
 import { AuthGuard } from './guards/auth.guard';
@@ -27,10 +26,6 @@ export const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent
-  },
-  {
-    path: 'registro',
-    component: RegistroComponent
   },
   {
     path: 'index',
