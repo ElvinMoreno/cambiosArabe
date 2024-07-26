@@ -48,7 +48,7 @@ export class LoginComponent {
         console.log('Respuesta de la API:', data);
         if (data.statusCode === 200) {
           localStorage.setItem('token', data.token);
-          this.router.navigate(['index']);
+          this.router.navigate(['operaciones']);
         } else {
           alert('Credenciales son incorrectas');
         }

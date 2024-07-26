@@ -1,13 +1,12 @@
 import { Routes } from '@angular/router';
-import { BolivaresComponent } from './index/principal/bolivares/bolivares.component';
-import { CajaComponent } from './index/principal/caja/caja.component';
-import { EfectivoComponent } from './index/principal/efectivo/efectivo.component';
+import { BolivaresComponent } from './operaciones/principal/bolivares/bolivares.component';
+import { CajaComponent } from './operaciones/principal/caja/caja.component';
 import { LoginComponent } from './pages/login/login.component';
 import { RegistroComponent } from './pages/registro/registro.component';
 import { DescripcionComponent } from './configuraciones/configuracion/switchbutton/descripcion/descripcion.component';
 import { ContentPolaniaComponent } from './shared/content-polania/content-polania.component';
 import { AuthGuard } from './guards/auth.guard';
-import { PrincipalComponent } from './index/principal/principal.component';
+import { PrincipalComponent } from './operaciones/principal/principal.component';
 import { CuentaBancariaComponent } from './cuentaBancaria/cuenta-bancaria/cuenta-bancaria.component';
 import { DetalleDavidplataComponent } from './cuentaBancaria/detalle-Cuenta/detalle-davidplata/detalle-davidplata.component';
 import { DetalleBancolombia1Component } from './cuentaBancaria/detalle-Cuenta/detalle-bancolombia1/detalle-bancolombia1.component';
@@ -17,6 +16,7 @@ import { DetalleMovimientoBancolombia1Component } from './cuentaBancaria/detalle
 import { DetalleMovimientoBancolombia2Component } from './cuentaBancaria/detalle-Cuenta/detalle-bancolombia2/detalle-movimiento/detalle-movimiento-bancolombia2/detalle-movimiento-bancolombia2.component';
 import { ConfiguracionComponent } from './configuraciones/configuracion/configuracion.component';
 import { UsuariosComponent } from './usuarios/usuarios.component';
+import { TasaComponent } from './tasa/tasa.component';
 
 export const routes: Routes = [
   {
@@ -33,7 +33,7 @@ export const routes: Routes = [
     component: RegistroComponent
   },
   {
-    path: 'index',
+    path: 'operaciones',
     component: ContentPolaniaComponent,
     canActivate: [AuthGuard],
     children: [
@@ -43,10 +43,12 @@ export const routes: Routes = [
         children: [
           { path: 'bolivares', component: BolivaresComponent },
           { path: 'adicionales', component: CajaComponent },
-          { path: 'efectivo', component: EfectivoComponent },
           { path: '', redirectTo: 'bolivares', pathMatch: 'full' }
         ]
       },
+      {path: 'index',
+        component: ContentPolaniaComponent},
+      {path:'tasa', component: TasaComponent},
       { path: 'configuracion', component: ConfiguracionComponent },
       { path: 'detalle-davidplata', component: DetalleDavidplataComponent },
       {
