@@ -28,15 +28,7 @@ export const routes: Routes = [
     component: LoginComponent
   },
   {
-<<<<<<< HEAD
-    path: 'index',
-=======
-    path: 'registro',
-    component: RegistroComponent
-  },
-  {
     path: 'operaciones',
->>>>>>> 5015094067daed90996d34a824a2fffe59e42862
     component: ContentPolaniaComponent,
     canActivate: [AuthGuard],
     children: [
