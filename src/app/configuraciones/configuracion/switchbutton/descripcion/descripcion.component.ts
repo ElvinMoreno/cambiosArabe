@@ -1,5 +1,5 @@
-import { Component, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';  // Añadir ChangeDetectorRef
 import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -27,23 +27,26 @@ import { DescripcionFormComponent } from './descripion-form/descripion-form.comp
 export class DescripcionComponent implements OnInit {
   displayedColumns: string[] = ['id', 'texto', 'acciones'];
   dataSource: Descripcion[] = [];
-  expandedElement: Descripcion | null = null;
-  isDesktop: boolean | null = null;
+  isMobile: boolean = false;
 
   constructor(
     private descripcionService: DescripcionService,
-    private cdr: ChangeDetectorRef,
+    private cdr: ChangeDetectorRef,  // Asegúrate de importar ChangeDetectorRef
     public dialog: MatDialog
   ) {}
 
   @HostListener('window:resize', ['$event'])
-  onResize(event) {
+  onResize(event: any) {
     this.checkScreenSize();
   }
 
   ngOnInit(): void {
     this.loadDescripciones();
     this.checkScreenSize();
+  }
+
+  checkScreenSize(): void {
+    this.isMobile = window.innerWidth <= 768;
   }
 
   loadDescripciones() {
@@ -75,9 +78,5 @@ export class DescripcionComponent implements OnInit {
         );
       }
     });
-  }
-
-  checkScreenSize() {
-    this.isDesktop = window.innerWidth > 768; // Ajusta este valor según tus necesidades
   }
 }

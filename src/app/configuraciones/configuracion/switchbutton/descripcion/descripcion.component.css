@@ -2,11 +2,58 @@ body {
   font-size: 16px; /* Ajuste general de tamaño de fuente */
 }
 
-.container {
+.boton-cuentas-bancarias .container {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column; /* Cambiar a columna para mejor alineación */
   align-items: center;
+  gap: 20px;
   margin-bottom: 1rem;
+}
+
+.buttons-container {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap; /* Permitir que los botones se ajusten en varias filas si es necesario */
+}
+
+.titles-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.button-align, .left-align, .right-align {
+  display: flex;
+  justify-content: center;
+}
+
+button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn {
+  padding-left: 3rem;
+  padding-right: 3rem;
+}
+
+.btn-active {
+  background-color: #5E94FF;
+  color: white !important;
+  margin-bottom: 1rem;
+}
+
+.btn-inactive {
+  background-color: white;
+  color: black;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+
 }
 
 .admin {
@@ -22,6 +69,10 @@ body {
   font-weight: bold;
 }
 
+.espac-h2 {
+  margin-top: 1rem;
+}
+
 .btn-agregar {
   background-color: #4a90e2;
   color: white;
@@ -31,6 +82,9 @@ body {
   cursor: pointer;
   font-size: 16px;
 }
+
+
+/* Tabla estilos */
 
 .table-container {
   display: flex;
@@ -59,35 +113,46 @@ body {
   font-weight: bold;
 }
 
+
+/* Estilo card */
 .card-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 1rem;
+}
+
+.example-card {
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 10px;
+  transition: transform 0.3s ease; /* Añade una transición para la transformación */
+}
+
+.example-card:hover {
+  transform: scale(1.05); /* Aumenta ligeramente el tamaño al hacer hover */
+}
+
+.card-grid {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.mobile-card {
-  width: 100%;
-  margin-bottom: 1rem;
+.action-buttons {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 10px;
 }
 
+/* Media query for responsive design */
 @media (max-width: 768px) {
-  .container {
-    flex-direction: column;
-    gap: 10px;
-  }
+  .boton-cuentas-bancarias .container {
+    flex-direction: column; /* Coloca los botones en columna en pantallas pequeñas */
+    gap: 15px;
+    align-items: center; /* Centra los botones verticalmente */
 
-  .btn-agregar {
-    width: 100%;
-  }
-
-  .table-container {
-    padding: 0.5rem;
-  }
-
-  .custom-table {
-    width: 100%;
-    display: block; /* Asegura que la tabla sea desplazable */
-    overflow-x: auto;
-    white-space: nowrap; /* Evita el ajuste automático de líneas */
-  }
+  
+}
 }

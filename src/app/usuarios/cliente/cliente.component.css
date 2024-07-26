@@ -10,8 +10,6 @@ body {
   align-items: center; /* Centra verticalmente los elementos */
 }
 
-
-
 .right-align {
   justify-self: end;
 }
@@ -116,7 +114,7 @@ h2.desc {
     justify-items: center; /* Centra los elementos horizontalmente */
   }
 
-  .button-align, .right-align, .left-align {
+  .right-align, .left-align {
     justify-self: center; /* Centra los elementos dentro de sus celdas */
   }
 
@@ -132,30 +130,35 @@ h2.desc {
   }
 
   .table-container {
-    padding: 0.5rem;
-    overflow-x: auto; /* Permite el desplazamiento horizontal */
+    display: none; /* Oculta la tabla en vista móvil */
   }
 
-  .custom-table {
-    width: 100%;
-    display: block; /* Asegura que la tabla sea desplazable */
-    overflow-x: auto;
-    white-space: nowrap; /* Evita el ajuste automático de líneas */
+  .card-container {
+    display: grid; /* Muestra las cards en vista móvil */
+    grid-template-columns: 1fr;
+    gap: 20px;
   }
 
-  .custom-table th, .custom-table td {
-    display: table-cell;
-    text-align: center;
-    padding: 8px;
-    border: 1px solid #ddd;
+  .example-card {
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
   }
 
-  .custom-table th {
-    background-color: #4a90e2;
-    color: white;
+  .card-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
 
-  .custom-table td {
-    padding-left: 8px;
+  .grid-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .grid-item p {
+    margin: 0;
   }
 }

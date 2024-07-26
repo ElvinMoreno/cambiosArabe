@@ -1,9 +1,8 @@
-<!-- cliente.component.html -->
 <div class="boton-cuentas-bancarias">
   <div class="container">
     <div>
       <div class="right-align espac-h2">
-        <label class="admin">ADMINISTRA</label>
+        <label class="admin">ADMINISTRADOR</label>
       </div>
       <div class="right-align">
         <h2 class="desc">Lista de Clientes</h2>
@@ -17,7 +16,9 @@
     <mat-icon>add</mat-icon>
   </button>
 </div>
-<div class="table-container centered-table">
+
+<!-- Vista de escritorio: Tabla -->
+<div class="table-container centered-table" *ngIf="!isMobile">
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 custom-table">
 
     <!-- Nombre Column -->
@@ -47,4 +48,20 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
+</div>
+
+<!-- Vista móvil: Cards -->
+<div class="card-container" *ngIf="isMobile">
+  <mat-card *ngFor="let element of dataSource" class="example-card">
+    <mat-card-content>
+      <div class="card-grid">
+        <div class="grid-item">
+          <p><strong>Nombre:</strong> {{element.nombre}}</p>
+          <p><strong>Cédula:</strong> {{element.cedula}}</p>
+          <p><strong>Crédito Máximo:</strong> {{ getCreditoMaximo(element) }}</p>
+          <p><strong>VentaBs:</strong> {{ getVentaBsPrice(element) }}</p>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
 </div>

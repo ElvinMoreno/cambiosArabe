@@ -49,3 +49,13 @@ button {
   color: black;
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
 }
+
+/* Media query for responsive design */
+@media (max-width: 768px) {
+  .buttons-container {
+    flex-direction: column; /* Coloca los botones en columna en pantallas pequeñas */
+    gap: 15px;
+    align-items: center; /* Centra los botones verticalmente */
+  }
+}
+

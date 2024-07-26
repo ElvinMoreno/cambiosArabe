@@ -1,19 +1,20 @@
 
 export const navbarData = [
     {
-        routerLink:['bolivares','efectivo','adicionales'],
+        routerLink:'',
         icon:'fa-solid fa-house',
         label: 'Casa'
     },
     {
-        routerLink:'proveedores',
+        routerLink:['bolivares','efectivo','adicionales'],
         icon:'fa-solid fa-address-book',
-        label: 'Proveedor'
+        label: 'Operaciones'
     },
+
     {
-        routerLink:'informes',
+        routerLink:'tasa',
         icon:'fa-solid fa-book-open',
-        label: 'Informes'
+        label: 'tasa'
     },
     {
         routerLink:'configuracion',

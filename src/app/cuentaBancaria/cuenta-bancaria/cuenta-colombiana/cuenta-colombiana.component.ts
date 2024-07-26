@@ -13,7 +13,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 @Component({
   selector: 'app-cuenta-colombiana',
   standalone: true,
-  imports: [
+  imports:[
     MatCardModule,
     MatIconModule,
     MatDividerModule,
