@@ -1,11 +1,10 @@
-// cliente.component.ts
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, HostListener } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatCardModule } from '@angular/material/card'; // Asegúrate de importar MatCardModule
+import { MatCardModule } from '@angular/material/card'; // Importa MatCardModule
 
 import { FormularioClienteComponent } from './formulario-cliente/formulario-cliente.component';
 import { Cliente } from '../../interfaces/clientes';
@@ -32,8 +31,8 @@ export class ClienteComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.isMobile = window.innerWidth <= 768;
     this.loadClientes();
+    this.isMobile = window.innerWidth <= 768;
   }
 
   loadClientes(): void {

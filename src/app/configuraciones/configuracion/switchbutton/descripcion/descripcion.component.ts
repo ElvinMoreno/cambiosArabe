@@ -1,5 +1,5 @@
-import { Component, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';  // Añadir ChangeDetectorRef
 import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -29,19 +29,23 @@ export class DescripcionComponent implements OnInit {
   dataSource: Descripcion[] = [];
   isMobile: boolean = false;
 
-  @HostListener('window:resize', ['$event'])
-  onResize(event: any) {
-    this.isMobile = window.innerWidth <= 768;
-  }
-
   constructor(
     private descripcionService: DescripcionService,
-    private cdr: ChangeDetectorRef,
+    private cdr: ChangeDetectorRef,  // Asegúrate de importar ChangeDetectorRef
     public dialog: MatDialog
   ) {}
 
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.checkScreenSize();
+  }
+
   ngOnInit(): void {
     this.loadDescripciones();
+    this.checkScreenSize();
+  }
+
+  checkScreenSize(): void {
     this.isMobile = window.innerWidth <= 768;
   }
 
@@ -74,18 +78,5 @@ export class DescripcionComponent implements OnInit {
         );
       }
     });
-  }
-
-  editarDescripcion(element: Descripcion) {
-    // Implementar lógica de edición
-  }
-
-  eliminarDescripcion(id: number | undefined): void {
-    if (id === undefined) {
-      console.error('ID is undefined');
-      return;
-    }
-    // Lógica para eliminar la descripción
-    console.log(`Eliminando descripción con ID: ${id}`);
   }
 }

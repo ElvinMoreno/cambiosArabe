@@ -1,3 +1,4 @@
+// cuenta-venezolana.component.ts
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
@@ -29,6 +30,7 @@ export class CuentaVenezolanaComponent implements OnInit {
   ngOnInit(): void {
     this.loadCuentasVenezolanas();
   }
+
   openCrearCuentaBancaria(): void {
     const dialogRef = this.dialog.open(CrearCuentaBancariaVComponent, {
       width: '600px',
@@ -36,16 +38,17 @@ export class CuentaVenezolanaComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // Aquí puedes agregar la lógica para actualizar la lista de cuentas bancarias si es necesario
+        this.loadCuentasVenezolanas();
       }
     });
   }
+
   loadCuentasVenezolanas(): void {
     this.cuentaBancariaService.getCuentasVenezolanas().subscribe(
       (data: CuentaBancaria[]) => {
         this.cuentasBancarias = data;
       },
-      (error) => {
+      error => {
         console.error('Error al obtener las cuentas bancarias venezolanas:', error);
       }
     );
@@ -59,12 +62,12 @@ export class CuentaVenezolanaComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.loadCuentasVenezolanas();  // Recargar la lista después de actualizar
+        this.loadCuentasVenezolanas();
       }
     });
   }
 
-   getCardClass(nombreBanco: string): string {
+  getCardClass(nombreBanco: string): string {
     switch (nombreBanco) {
       case 'Banco de Venezuela':
         return 'banco-venezuela';

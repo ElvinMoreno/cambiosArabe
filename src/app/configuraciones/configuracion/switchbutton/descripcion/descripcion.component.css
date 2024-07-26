@@ -53,6 +53,7 @@ button {
   background-color: white;
   color: black;
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+
 }
 
 .admin {
@@ -61,7 +62,7 @@ button {
   font-weight: bold;
 }
 
-h2.desc {
+.desc {
   font-size: 2rem;
   color: #4a90e2;
   margin: 0;
@@ -75,9 +76,6 @@ h2.desc {
 .btn-agregar {
   background-color: #4a90e2;
   color: white;
-}
-
-.btn2 {
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
@@ -85,7 +83,9 @@ h2.desc {
   font-size: 16px;
 }
 
+
 /* Tabla estilos */
+
 .table-container {
   display: flex;
   justify-content: center;
@@ -93,17 +93,12 @@ h2.desc {
   margin-top: 20px;
 }
 
-.centered-table {
-  width: 100%;
-  overflow-x: auto; /* Permite el desplazamiento horizontal */
-}
-
 .custom-table {
   width: 100%;
   max-width: 100%;
   border-collapse: collapse;
   border-radius: 8px;
-  overflow: hidden;
+  overflow-x: auto; /* Permite el desplazamiento horizontal */
 }
 
 .custom-table th, .custom-table td {
@@ -117,6 +112,7 @@ h2.desc {
   color: white;
   font-weight: bold;
 }
+
 
 /* Estilo card */
 .card-container {
@@ -156,5 +152,7 @@ h2.desc {
     flex-direction: column; /* Coloca los botones en columna en pantallas pequeñas */
     gap: 15px;
     align-items: center; /* Centra los botones verticalmente */
-  }
+
+  
+}
 }

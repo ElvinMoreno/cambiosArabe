@@ -8,15 +8,17 @@ import { CuentaBancariaService } from '../../../services/cuenta-bancaria.service
 import { ActualizarCuentaBancariaComponent } from '../actualizar-cuenta-bancaria/actualizar-cuenta-bancaria.component';
 import { MatDialog } from '@angular/material/dialog';
 import { CrearCuentaBancariaComponent } from '../crear-cuenta-bancaria/crear-cuenta-bancaria.component';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 @Component({
   selector: 'app-cuenta-colombiana',
   standalone: true,
-  imports: [
+  imports:[
     MatCardModule,
     MatIconModule,
     MatDividerModule,
-    CommonModule
+    CommonModule,
+    FlexLayoutModule
   ],
   templateUrl: './cuenta-colombiana.component.html',
   styleUrls: ['./cuenta-colombiana.component.css']
