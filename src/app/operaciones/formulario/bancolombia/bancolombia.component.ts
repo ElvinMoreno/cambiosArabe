@@ -118,15 +118,7 @@ export class BancolombiaComponent implements OnInit {
       }
     );
 
-    this.tasaService.getTasaDelDia().subscribe(
-      (data: any) => {
-        this.tasaCompra = data?.tasaCompra || null;
-        this.form.patchValue({ tasa: this.tasaCompra });
-      },
-      (error) => {
-        console.error('Error al cargar la tasa del día', error);
-      }
-    );
+
   }
 
   setupFormListeners(): void {

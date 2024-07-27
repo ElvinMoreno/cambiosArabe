@@ -2,7 +2,7 @@ import { Component, EventEmitter, HostListener, OnInit, Output } from '@angular/
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbar } from '@angular/material/toolbar';
 import { MatIcon } from '@angular/material/icon';
-import { RouterModule, RouterOutlet } from '@angular/router';
+import { RouterModule, RouterOutlet, Router } from '@angular/router';
 import { MatNavList } from '@angular/material/list';
 import { MatDivider, MatDividerModule } from '@angular/material/divider';
 import { navbarData } from './nav-data';
@@ -39,6 +39,14 @@ export class SidebarPolaniaComponent implements OnInit {
   navData = navbarData;
   isMobile = false;
 
+  constructor(private router: Router) {
+    this.router.events.subscribe(() => {
+      if (this.isMobile || this.collapsad) {
+        this.closeSidenav();
+      }
+    });
+  }
+
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     this.screenWidth = window.innerWidth;
@@ -62,5 +70,11 @@ export class SidebarPolaniaComponent implements OnInit {
   closeSidenav(): void {
     this.collapsad = false;
     this.onToggleSideNav.emit({ collapsed: this.collapsad, screenWidth: this.screenWidth });
+  }
+
+  closeOnSelect(): void {
+    if (this.isMobile || this.collapsad) {
+      this.closeSidenav();
+    }
   }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, catchError, map, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Tasa } from '../interfaces/tasa';
 import { appsetting } from '../settings/appsetting';
 
@@ -14,9 +14,6 @@ export class TasaService {
 
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('token');
-    if (!token) {
-      throw new Error('No se encontró un token de autenticación.');
-    }
     return new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
@@ -24,32 +21,10 @@ export class TasaService {
   }
 
   getAllTasas(): Observable<Tasa[]> {
-    const headers = this.getHeaders();
-    return this.http.get<Tasa[]>(this.apiUrl, { headers })
-      .pipe(
-        catchError(this.handleError)
-      );
+    return this.http.get<Tasa[]>(this.apiUrl, { headers: this.getHeaders() });
   }
 
-  getTasaDelDia(): Observable<Tasa | null> {
-    const headers = this.getHeaders();
-    return this.http.get<Tasa[]>(this.apiUrl, { headers }).pipe(
-      map((tasas: Tasa[]) => {
-        const today = new Date().toISOString().split('T')[0];
-        return tasas.find(tasa => {
-          if (tasa.fechaTasa) {
-            const tasaFecha = new Date(tasa.fechaTasa).toISOString().split('T')[0];
-            return tasaFecha === today;
-          }
-          return false;
-        }) || null;
-      }),
-      catchError(this.handleError)
-    );
-  }
-
-  private handleError(error: any) {
-    console.error('An error occurred:', error);
-    return throwError(() => new Error('Ocurrió un error en la solicitud. Por favor, inténtalo de nuevo.'));
+  updateTasa(id: number, tasa: Tasa): Observable<Tasa> {
+    return this.http.put<Tasa>(`${this.apiUrl}/${id}`, tasa, { headers: this.getHeaders() });
   }
 }
