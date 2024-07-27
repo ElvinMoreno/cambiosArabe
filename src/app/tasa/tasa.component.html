@@ -8,7 +8,6 @@
         <th>Bolivares</th>
         <th>Tasa</th>
         <th>Pesos</th>
-        <th>Acciones</th>
       </tr>
     </thead>
     <tbody>
@@ -20,19 +19,19 @@
         <td *ngIf="item.editable"><input [(ngModel)]="item.tasa" class="form-control" (input)="updatePesos(item)"></td>
         
         <td>{{ item.pesos }}</td>
-        
-        <td class="actions-column">
-          <button *ngIf="!item.editable" (click)="editItem(i)" class="btn btn-warning btn-sm">
-            <mat-icon>edit</mat-icon> Editar
-          </button>
-          <button *ngIf="item.editable" (click)="saveItem(i)" class="btn btn-success btn-sm">
-            <mat-icon>save</mat-icon> Guardar
-          </button>
-          <button *ngIf="item.editable" (click)="cancelEdit(i)" class="btn btn-secondary btn-sm">
-            <mat-icon>cancel</mat-icon> Cancelar
-          </button>
-        </td>
       </tr>
     </tbody>
   </table>
+
+  <div class="actions-column">
+    <button *ngIf="!isEditable" (click)="editItem()" class="btn btn-warning btn-sm">
+      <mat-icon>edit</mat-icon> Editar
+    </button>
+    <button *ngIf="isEditable" (click)="saveItem()" class="btn btn-success btn-sm">
+      <mat-icon>save</mat-icon> Guardar
+    </button>
+    <button *ngIf="isEditable" (click)="cancelEdit()" class="btn btn-secondary btn-sm">
+      <mat-icon>cancel</mat-icon> Cancelar
+    </button>
+  </div>
 </div>

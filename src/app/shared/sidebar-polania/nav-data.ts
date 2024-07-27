@@ -24,6 +24,6 @@ export const navbarData = [
     {
         routerLink:'cuentaBancaria',
         icon:'fa-solid fa-building-user',
-        label: 'Cuentas Bancarias'
+        label: 'Caldos'
     },
 ];

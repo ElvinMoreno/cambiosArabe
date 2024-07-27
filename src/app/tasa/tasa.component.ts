@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';  // Importar MatDialogRef
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-tasa',
@@ -22,21 +22,24 @@ export class TasaComponent {
 
   constructor(public dialog: MatDialog) {}
 
-  editItem(index: number) {
-    this.tasas[index].editable = true;
+  get isEditable(): boolean {
+    return this.tasas.some(item => item.editable);
   }
 
-  saveItem(index: number) {
-    this.tasas[index].editable = false;
-    this.tasas[index].pesos = this.calculatePesos(this.tasas[index].bolivares, this.tasas[index].tasa);
-    this.originalData[index] = { ...this.tasas[index] };
-    console.log('Item guardado:', this.tasas[index]);
+  editItem() {
+    this.tasas.forEach(item => item.editable = true);
   }
 
-  cancelEdit(index: number) {
-    this.tasas[index] = { ...this.originalData[index] };
-    this.tasas[index].editable = false;
-    console.log('Edición cancelada:', this.tasas[index]);
+  saveItem() {
+    this.tasas.forEach((item, index) => {
+      item.editable = false;
+      item.pesos = this.calculatePesos(item.bolivares, item.tasa);
+      this.originalData[index] = { ...item };
+    });
+  }
+
+  cancelEdit() {
+    this.tasas = this.originalData.map(item => ({ ...item, editable: false }));
   }
 
   updatePesos(item: any) {
