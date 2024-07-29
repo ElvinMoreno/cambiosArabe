@@ -4,10 +4,12 @@
     <div class="separator"></div>
     <form [formGroup]="form" (ngSubmit)="onConfirmar()">
       <div class="form-grid">
-        <div class="form-group" [ngClass]="{'has-error': form.get('tipocuenta')?.invalid && form.get('tipocuenta')?.touched}">
-          <label for="tipocuenta">Tipo de Cuenta <span class="required">*</span></label>
-          <input id="tipocuenta" type="text" formControlName="tipocuenta" [value]="selectedTipoCuenta" readonly>
-        </div>
+        <mat-form-field>
+          <mat-label>Tipo de Cuenta</mat-label>
+          <mat-select formControlName="tipocuenta" [disabled]="true">
+            <mat-option *ngFor="let tipo of tiposCuenta" [value]="tipo">{{ tipo.nombre }}</mat-option>
+          </mat-select>
+        </mat-form-field>
         <div class="form-group" [ngClass]="{'has-error': form.get('bancoSeleccionado')?.invalid && form.get('bancoSeleccionado')?.touched}">
           <label for="bancoSeleccionado">Banco <span class="required">*</span></label>
           <select id="bancoSeleccionado" formControlName="bancoSeleccionado">

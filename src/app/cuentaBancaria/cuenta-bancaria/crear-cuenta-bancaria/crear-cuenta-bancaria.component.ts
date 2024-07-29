@@ -77,6 +77,8 @@ export class CrearCuentaBancariaComponent implements OnInit {
       this.errorMessage = null;
       const formValue = this.form.getRawValue();
 
+      console.log('Valor del formulario:', formValue);
+
       const nuevaCuenta: CuentaBancaria = {
         id: 0,  // Se asume que el ID será generado por el backend
         tipocuenta: formValue.tipocuenta,
@@ -85,8 +87,7 @@ export class CrearCuentaBancariaComponent implements OnInit {
         monto: formValue.monto,
         numCuenta: formValue.numCuenta,
         limiteCB: formValue.limiteCB,
-        limiteMonto: formValue.limiteMonto,
-        divisa: formValue.tipocuenta.divisa
+        limiteMonto: formValue.limiteMonto
       };
 
       this.cuentaBancariaService.createCuentaBancaria(nuevaCuenta)
