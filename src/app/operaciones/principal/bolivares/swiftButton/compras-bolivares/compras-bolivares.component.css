@@ -22,7 +22,6 @@
   justify-self: end;
 }
 
-
 .filtro {
   grid-column: 2;
   grid-row: 5;
@@ -45,17 +44,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  /* padding: 10px; */
 }
 
 .btn-agregar mat-icon {
-  font-size: 1.7rem; /* Ajusta el tamaño del ícono */
+  font-size: 1.7rem;
   height: 24px;
   width: 24px;
   line-height: 24px;
   margin-right: -0.3rem;
 }
-
 
 .btn-filtro {
   background-color: #f0f0f0;
@@ -87,11 +84,6 @@ h2 {
   font-weight: bold;
 }
 
-/* Tabla estilos */
-.column {
-  background: blue;
-}
-
 :host ::ng-deep .custom-header-cell {
   background-color: #4a90e2 !important;
   color: white;
@@ -121,13 +113,12 @@ h2 {
   border: 1px solid #ddd;
 }
 
-/* Media query to maintain the same structure on smaller screens */
 @media (max-width: 768px) {
   .grid-container {
     grid-template-columns: 1fr;
     grid-template-rows: auto;
     gap: 5px;
-    justify-items: center; /* Center items horizontally */
+    justify-items: center;
   }
 
   .agregar-venta, .filtro {
@@ -145,7 +136,6 @@ h2 {
     text-align: center;
     height: auto;
     grid-column: 1;
-
   }
 
   .btn-filtro {
@@ -178,5 +168,38 @@ h2 {
 
   .custom-table td {
     padding-left: 8px;
+  }
+
+  .cards-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 1rem;
+  }
+
+  .card {
+    background-color: #fff;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+  }
+
+  .card-content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card-content h3 {
+    margin: 0 0 10px 0;
+    font-size: 1.2rem;
+    color: #333;
+  }
+
+  .card-content p {
+    margin: 5px 0;
+    font-size: 1rem;
+    color: #666;
   }
 }

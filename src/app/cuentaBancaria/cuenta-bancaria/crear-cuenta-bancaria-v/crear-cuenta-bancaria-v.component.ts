@@ -111,7 +111,6 @@ export class CrearCuentaBancariaVComponent implements OnInit {
         numCuenta: formValue.numCuenta,
         limiteCB: formValue.limiteCB,
         limiteMonto: formValue.limiteMonto,
-        divisa: formValue.tipocuenta.divisa,
       };
       console.log('Datos enviados:', nuevaCuenta);  // Log para verificar los datos enviados
 

@@ -66,7 +66,7 @@ export class AggCompraComponent implements OnInit {
       cuentaBancariaPesos: ['', [Validators.required]],
       metodoPagoId: ['', [Validators.required]],
       descripcionId: ['', [Validators.required]], // Añadir este campo
-      tasaCompra: [{ value: '', disabled: true }, [Validators.required]],
+      tasaCompra: ['', [Validators.required]],
       montoBs: ['', [Validators.required, Validators.min(0)]],
       referencia: ['', [Validators.required]]
     });

@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
 import { CompraBsDTO } from '../../../../../interfaces/compra-bs-dto';
 import { CompraService } from '../../../../../services/compra.service';
@@ -21,14 +22,19 @@ export class ComprasBolivaresComponent implements OnInit {
   ELEMENT_DATA: CompraBsDTO[] = [];
   displayedColumns: string[] = ['proveedorId', 'fechaCompra', 'referencia', 'montoBs', 'precio', 'tasaCompra', 'detalles'];
   dataSource = this.ELEMENT_DATA;
+  isMobile = false;
 
   constructor(
     private compraService: CompraService,
     public dialog: MatDialog,
+    private breakpointObserver: BreakpointObserver
   ) {}
 
   ngOnInit(): void {
     this.loadCompras();
+    this.breakpointObserver.observe([Breakpoints.Handset]).subscribe(result => {
+      this.isMobile = result.matches;
+    });
   }
 
   loadCompras(): void {
