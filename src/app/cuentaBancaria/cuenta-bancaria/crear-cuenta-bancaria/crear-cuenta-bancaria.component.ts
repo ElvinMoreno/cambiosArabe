@@ -89,6 +89,8 @@ export class CrearCuentaBancariaComponent implements OnInit {
         divisa: formValue.tipocuenta.divisa
       };
 
+      console.log('Datos enviados:', nuevaCuenta);  // Log para verificar los datos enviados
+
       this.cuentaBancariaService.createCuentaBancaria(nuevaCuenta)
         .pipe(
           catchError(error => {
