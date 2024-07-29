@@ -27,7 +27,7 @@ import { catchError, finalize, of } from 'rxjs';
     MatIconModule,
   ],
   templateUrl: './crear-cuenta-bancaria-v.component.html',
-  styleUrl: './crear-cuenta-bancaria-v.component.css'
+  styleUrls: ['./crear-cuenta-bancaria-v.component.css']
 })
 export class CrearCuentaBancariaVComponent implements OnInit {
   form: FormGroup;
@@ -41,7 +41,7 @@ export class CrearCuentaBancariaVComponent implements OnInit {
   otroBancoSeleccionado = false;
   isLoading = false;
   errorMessage: string | null = null;
-  selectedTipoCuenta: string = '';
+  bolivaresTipoCuenta: TipoCuentaBancaria | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -56,8 +56,8 @@ export class CrearCuentaBancariaVComponent implements OnInit {
       nombreCuenta: ['', Validators.required],
       monto: [0, [Validators.required, Validators.min(0)]],
       numCuenta: [0, Validators.required],
-      limiteCB: [0, [Validators.required, Validators.min(0)]],
-      limiteMonto: [0, [Validators.required, Validators.min(0)]]
+      limiteCB: [null, [Validators.required, Validators.min(0)]],
+      limiteMonto: [null, [Validators.required, Validators.min(0)]]
     });
   }
 
@@ -79,10 +79,10 @@ export class CrearCuentaBancariaVComponent implements OnInit {
     this.tipoCuentaBancariaService.getAllTiposCuentaBancaria().subscribe(
       (data: TipoCuentaBancaria[]) => {
         this.tiposCuenta = data;
-        const bolivaresTipoCuenta = this.tiposCuenta.find(tipo => tipo.divisa === 'Bolivares');
-        if (bolivaresTipoCuenta) {
-          this.form.patchValue({ tipocuenta: bolivaresTipoCuenta.nombre });
-          this.selectedTipoCuenta = `${bolivaresTipoCuenta.nombre} - ${bolivaresTipoCuenta.divisa}`;
+        this.bolivaresTipoCuenta = this.tiposCuenta.find(tipo => tipo.divisa === 'Bolivares') || null;
+        if (this.bolivaresTipoCuenta) {
+          // Asignar el valor del campo tipocuenta con el objeto completo
+          this.form.patchValue({ tipocuenta: this.bolivaresTipoCuenta });
         }
       },
       (error) => {
@@ -95,8 +95,13 @@ export class CrearCuentaBancariaVComponent implements OnInit {
     if (this.form.valid) {
       this.isLoading = true;
       this.errorMessage = null;
-      const formValue = this.form.value;
 
+      // Habilitar el campo temporalmente para obtener el valor
+      this.form.get('tipocuenta')?.enable();
+      const formValue = this.form.getRawValue();
+      this.form.get('tipocuenta')?.disable(); // Deshabilitar el campo nuevamente
+
+      // Crear el objeto nuevaCuenta
       const nuevaCuenta: CuentaBancaria = {
         id: 0,  // Se asume que el ID será generado por el backend
         tipocuenta: formValue.tipocuenta,
