@@ -5,6 +5,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { MatCardModule } from '@angular/material/card';
 
 import { CompraBsDTO } from '../../../../../interfaces/compra-bs-dto';
 import { CompraService } from '../../../../../services/compra.service';
@@ -14,7 +15,13 @@ import { DetallesCompraComponent } from './modal-detalles/detalles-compra/detall
 @Component({
   selector: 'compras-bolivares',
   standalone: true,
-  imports: [MatButtonModule, MatTableModule, CommonModule, MatIconModule],
+  imports: [
+    MatButtonModule,
+    MatTableModule,
+    CommonModule,
+    MatIconModule,
+    MatCardModule
+  ],
   templateUrl: './compras-bolivares.component.html',
   styleUrls: ['./compras-bolivares.component.css']
 })
@@ -32,12 +39,16 @@ export class ComprasBolivaresComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCompras();
+    this.detectMobileView();
+  }
+
+  private detectMobileView(): void {
     this.breakpointObserver.observe([Breakpoints.Handset]).subscribe(result => {
       this.isMobile = result.matches;
     });
   }
 
-  loadCompras(): void {
+  private loadCompras(): void {
     this.compraService.getCompras().subscribe(
       (data: CompraBsDTO[]) => {
         this.ELEMENT_DATA = data;
@@ -53,7 +64,7 @@ export class ComprasBolivaresComponent implements OnInit {
     const dialogRef = this.dialog.open(AggCompraComponent);
 
     dialogRef.componentInstance.compraCreada.subscribe(() => {
-      this.loadCompras(); // Recargar compras cuando se crea una nueva
+      this.loadCompras();
     });
 
     dialogRef.afterClosed().subscribe(result => {

@@ -1,5 +1,6 @@
 // compra-bs-dto.ts
 export interface CompraBsDTO {
+  id?: any;
   proveedorId: number;
   metodoPagoId: number;
   cuentaBancariaBsId: number;

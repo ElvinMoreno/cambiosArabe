@@ -9,6 +9,7 @@
   </div>
 </div>
 
+<!-- Table view for desktop -->
 <div class="table-container centered-table" *ngIf="!isMobile">
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 custom-table">
     <!-- Proveedor Column -->
@@ -62,12 +63,12 @@
 
 <!-- Cards view for mobile -->
 <div class="cards-container" *ngIf="isMobile">
-  <div class="card" *ngFor="let element of dataSource">
-    <div class="card-content">
+  <mat-card *ngFor="let element of dataSource" class="card"  (click)="openDetallesDialog(element.id)">
+    <mat-card-content>
       <h3>Proveedor: {{element.proveedor}}</h3>
       <p>Referencia: {{element.referencia}}</p>
       <p>Monto Bs: {{element.montoBs}}</p>
       <p>Tasa: {{element.tasaCompra}}</p>
-    </div>
-  </div>
+    </mat-card-content>
+  </mat-card>
 </div>
