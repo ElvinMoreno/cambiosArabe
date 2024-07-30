@@ -1,5 +1,7 @@
 <sidebar-polania (onToggleSideNav)="onToggleSideNav($event)"></sidebar-polania>
 <app-body-side-nav
+  #sideNav
   [collapsed]="isSideNavCollapsed"
   [screenWidth]="screenWidth"
+  (clickOutside)="closeSideNav()"
 ></app-body-side-nav>

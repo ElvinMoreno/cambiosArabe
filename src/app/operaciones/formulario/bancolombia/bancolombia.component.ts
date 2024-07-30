@@ -14,6 +14,7 @@ import { ClienteService } from '../../../services/clientes.service';
 import { MetodoPagoService } from '../../../services/metodo-pago.service';
 import { CuentaBancariaService } from '../../../services/cuenta-bancaria.service';
 import { TasaService } from '../../../services/tasa.service';
+import { Tasa } from '../../../interfaces/tasa';
 
 @Component({
   selector: 'app-bancolombia',
@@ -44,7 +45,7 @@ export class BancolombiaComponent implements OnInit {
   metodosPago: any[] = [];
   clientes: any[] = [];
   currentDate: string;
-  tasaCompra: number | null = null;
+  tasas: Tasa[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -67,7 +68,7 @@ export class BancolombiaComponent implements OnInit {
       cliente: ['', Validators.required],
       cuentaPesos: ['', Validators.required],
       cantidad: ['', Validators.required],
-      tasa: ['', Validators.required],
+      tasa: [{value: '', disabled: true}],
       cedula: ['', Validators.required]
     });
 
@@ -77,6 +78,7 @@ export class BancolombiaComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadInitialData();
+    this.loadTasas();
     this.form.patchValue({ fecha: this.currentDate });
     this.setupFormListeners();
   }
@@ -117,12 +119,22 @@ export class BancolombiaComponent implements OnInit {
         console.error('Error al cargar las cuentas colombianas', error);
       }
     );
+  }
 
-
+  loadTasas(): void {
+    this.tasaService.getAllTasas().subscribe(
+      (data: Tasa[]) => {
+        this.tasas = data;
+      },
+      (error) => {
+        console.error('Error al cargar las tasas', error);
+      }
+    );
   }
 
   setupFormListeners(): void {
     this.form.get('cantidad')?.valueChanges.subscribe(value => {
+      this.updateTasa(value);
       this.updateConversionAutomatica(value);
     });
 
@@ -135,13 +147,13 @@ export class BancolombiaComponent implements OnInit {
   }
 
   updateConversionAutomatica(value: number): void {
-    const tasa = this.form.get('tasa')?.value;
-    if (tasa && value) {
+    const tasaActual = this.form.get('tasa')?.value;
+    if (tasaActual !== null && value) {
       let resultado: number;
       if (this.currentLabel === 'Cantidad bolívares') {
-        resultado = value * tasa;
+        resultado = value * tasaActual;
       } else {
-        resultado = value / tasa;
+        resultado = value / tasaActual;
       }
       this.form.patchValue({ conversionAutomatica: resultado.toFixed(2) }, { emitEvent: false });
     } else {
@@ -149,24 +161,42 @@ export class BancolombiaComponent implements OnInit {
     }
   }
 
+  updateTasa(value: number): void {
+    if (value === null || value === undefined) return;
+
+    let tasaAplicable: Tasa | undefined;
+
+    if (this.currentLabel === 'Cantidad bolívares') {
+      tasaAplicable = this.tasas.find(tasa => value >= (tasa.bolivares ?? 0));
+    } else {
+      tasaAplicable = this.tasas.find(tasa => value >= (tasa.pesos ?? 0));
+    }
+
+    if (tasaAplicable) {
+      this.form.patchValue({ tasa: tasaAplicable.tasaVenta });
+    } else {
+      this.form.patchValue({ tasa: null });
+    }
+  }
+
   toggleCantidad() {
     this.currentLabel = this.currentLabel === 'Cantidad bolívares' ? 'Cantidad pesos' : 'Cantidad bolívares';
-    // Reset the cantidad and conversionAutomatica fields
     this.form.patchValue({
       cantidad: '',
-      conversionAutomatica: ''
+      conversionAutomatica: '',
+      tasa: null
     });
   }
 
   onConfirmar() {
     if (this.form.valid) {
       this.confirmar.emit(this.form.value);
-      this.dialogRef.close(this.form.value); // Close the dialog with the form value
+      this.dialogRef.close(this.form.value);
     }
   }
 
   onCancelar() {
     this.cancelar.emit();
-    this.dialogRef.close(); // Close the dialog without returning any value
+    this.dialogRef.close();
   }
 }

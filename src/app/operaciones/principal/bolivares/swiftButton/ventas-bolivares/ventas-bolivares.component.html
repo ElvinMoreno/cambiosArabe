@@ -11,28 +11,28 @@
 
 <div class="table-container centered-table">
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 custom-table">
-    <!-- Nombre Cliente Column -->
-    <ng-container matColumnDef="nombreCliente">
-      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Nombre Cliente </th>
-      <td mat-cell *matCellDef="let element" data-title="Nombre Cliente"> {{element.nombreCliente}} </td>
+    <!-- Cuenta Bs Column -->
+    <ng-container matColumnDef="cuentaBs">
+      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Cuenta Bs </th>
+      <td mat-cell *matCellDef="let element" data-title="Cuenta Bs"> {{element.cuentaBs}} </td>
     </ng-container>
 
-    <!-- Cuenta Column -->
-    <ng-container matColumnDef="cuenta">
-      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Cuenta </th>
-      <td mat-cell *matCellDef="let element" data-title="Cuenta"> {{element.cuenta}} </td>
+    <!-- Cuenta Cop Column -->
+    <ng-container matColumnDef="cuentaCop">
+      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Cuenta Cop </th>
+      <td mat-cell *matCellDef="let element" data-title="Cuenta Cop"> {{element.cuentaCop}} </td>
     </ng-container>
 
-    <!-- Transferencia en Bolívares Column -->
-    <ng-container matColumnDef="transferenciaBolivares">
-      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Transferencia en Bolívares </th>
-      <td mat-cell *matCellDef="let element" data-title="Transferencia en Bolívares"> {{element.transferenciaBolivares}} </td>
+    <!-- Metodo Pago Column -->
+    <ng-container matColumnDef="metodoPago">
+      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Metodo Pago </th>
+      <td mat-cell *matCellDef="let element" data-title="Metodo Pago"> {{element.metodoPago}} </td>
     </ng-container>
 
-    <!-- Conversión Column -->
-    <ng-container matColumnDef="conversion">
-      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Conversión </th>
-      <td mat-cell *matCellDef="let element" data-title="Conversión"> {{element.conversion}} </td>
+    <!-- Cliente Column -->
+    <ng-container matColumnDef="cliente">
+      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Cliente </th>
+      <td mat-cell *matCellDef="let element" data-title="Cliente"> {{element.cliente}} </td>
     </ng-container>
 
     <!-- Tasa Column -->
@@ -41,10 +41,22 @@
       <td mat-cell *matCellDef="let element" data-title="Tasa"> {{element.tasa}} </td>
     </ng-container>
 
-    <!-- Detalles Column -->
-    <ng-container matColumnDef="detalles">
-      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Detalles </th>
-      <td mat-cell *matCellDef="let element" data-title="Detalles"> {{element.detalles}} </td>
+    <!-- Fecha Column -->
+    <ng-container matColumnDef="fecha">
+      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Fecha </th>
+      <td mat-cell *matCellDef="let element" data-title="Fecha"> {{element.fecha | date:'dd/MM/yyyy'}} </td>
+    </ng-container>
+
+    <!-- Bolivares Column -->
+    <ng-container matColumnDef="bolivares">
+      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Bolivares </th>
+      <td mat-cell *matCellDef="let element" data-title="Bolivares"> {{element.bolivares}} </td>
+    </ng-container>
+
+    <!-- Pesos Column -->
+    <ng-container matColumnDef="pesos">
+      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Pesos </th>
+      <td mat-cell *matCellDef="let element" data-title="Pesos"> {{element.pesos}} </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

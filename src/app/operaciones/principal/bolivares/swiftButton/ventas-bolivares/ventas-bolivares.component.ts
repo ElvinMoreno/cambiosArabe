@@ -9,18 +9,17 @@ import { MatIconModule } from '@angular/material/icon';
 @Component({
   selector: 'ventas-bolivares',
   standalone: true,
-  imports: [MatButtonModule, MatTableModule, CommonModule,
-    MatDialogModule, MatIconModule],
+  imports: [MatButtonModule, MatTableModule, CommonModule, MatDialogModule, MatIconModule],
   templateUrl: './ventas-bolivares.component.html',
   styleUrls: ['./ventas-bolivares.component.css']
 })
 export class VentasBolivaresComponent {
   ELEMENT_DATA = [
-    { nombreCliente: 'Juan Perez', cuenta: '123456', transferenciaBolivares: 10000, conversion: 10.5, tasa: 1.2, detalles: 'Pago de servicio' },
-    { nombreCliente: 'Maria Gomez', cuenta: '654321', transferenciaBolivares: 20000, conversion: 21.0, tasa: 1.1, detalles: 'Pago de producto' }
+    { cuentaBs: 'Banco Venezuela', cuentaCop: 'Banco Colombia', metodoPago: 'Transferencia', cliente: 'Juan Perez', tasa: 1.2, fecha: new Date(), bolivares: 10000, pesos: 10500 },
+    { cuentaBs: 'Banco Banesco', cuentaCop: 'Banco Davivienda', metodoPago: 'Efectivo', cliente: 'Maria Gomez', tasa: 1.1, fecha: new Date(), bolivares: 20000, pesos: 21000 }
   ];
 
-  displayedColumns: string[] = ['nombreCliente', 'cuenta', 'transferenciaBolivares', 'conversion', 'tasa', 'detalles'];
+  displayedColumns: string[] = ['cuentaBs', 'cuentaCop', 'metodoPago', 'cliente', 'tasa', 'fecha', 'bolivares', 'pesos'];
   dataSource = this.ELEMENT_DATA;
 
   constructor(public dialog: MatDialog) {}

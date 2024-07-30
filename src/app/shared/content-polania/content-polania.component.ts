@@ -1,18 +1,16 @@
-import { Component, Input, input } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { CommonModule } from '@angular/common';
 import { SidebarPolaniaComponent } from '../sidebar-polania/sidebar-polania.component';
-
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { style } from '@angular/animations';
 import { BodySideNavComponent } from '../body-side-nav/body-side-nav.component';
 
-interface SideNavToggle{
-  screenWidth:number;
-  collapsed:boolean;
+interface SideNavToggle {
+  screenWidth: number;
+  collapsed: boolean;
 }
 
 @Component({
@@ -24,21 +22,65 @@ interface SideNavToggle{
     MatSidenavModule,
     MatIconModule,
     MatListModule,
-    SidebarPolaniaComponent, 
+    SidebarPolaniaComponent,
     MatToolbarModule,
     BodySideNavComponent
   ],
   templateUrl: './content-polania.component.html',
-  styleUrl: './content-polania.component.css'
+  styleUrls: ['./content-polania.component.css']
 })
-export class ContentPolaniaComponent {
-  opened = true;
+export class ContentPolaniaComponent implements OnInit, AfterViewInit {
+  @ViewChild('sideNav', { static: false }) sideNav!: ElementRef;
 
-  isSideNavCollapsed=false;
-  screenWidth=0;
-  onToggleSideNav(data:SideNavToggle):void{
-    this.screenWidth=data.screenWidth;
-    this.isSideNavCollapsed=data.collapsed;
+  opened = true;
+  isSideNavCollapsed = false;
+  screenWidth = 0;
+
+  ngOnInit(): void {
+    this.screenWidth = window.innerWidth;
+    if (this.screenWidth <= 768) {
+      this.isSideNavCollapsed = true;
+      this.opened = false;
+    }
   }
-  
+
+  ngAfterViewInit(): void {
+    this.setupDocumentClickListener();
+  }
+
+  onToggleSideNav(data: SideNavToggle): void {
+    this.screenWidth = data.screenWidth;
+    this.isSideNavCollapsed = data.collapsed;
+    this.opened = !data.collapsed;
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any): void {
+    this.screenWidth = window.innerWidth;
+    if (this.screenWidth <= 768) {
+      this.isSideNavCollapsed = true;
+      this.opened = false;
+    } else {
+      this.isSideNavCollapsed = false;
+      this.opened = true;
+    }
+  }
+
+  setupDocumentClickListener(): void {
+    document.addEventListener('click', this.onDocumentClick.bind(this));
+  }
+
+  onDocumentClick(event: Event): void {
+    if (this.screenWidth <= 768 && this.opened) {
+      const target = event.target as HTMLElement;
+      if (this.sideNav && !this.sideNav.nativeElement.contains(target)) {
+        this.closeSideNav();
+      }
+    }
+  }
+
+  closeSideNav(): void {
+    this.opened = false;
+    this.isSideNavCollapsed = true;
+  }
 }

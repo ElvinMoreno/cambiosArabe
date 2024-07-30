@@ -43,6 +43,7 @@ export class TasaComponent implements OnInit {
         } else {
           this.tasas = data.map(item => ({ ...item, editable: false }));
         }
+
       },
       (error) => {
         console.error('Error al cargar las tasas:', error);
@@ -77,6 +78,7 @@ export class TasaComponent implements OnInit {
 
   updatePesos(item: Tasa) {
     item.pesos = this.calculatePesos(item.bolivares!, item.tasaVenta!, item.sumaTasa!);
+    console.log(item.pesos);
   }
 
   calculatePesos(bolivares: number, tasa: number, sumaTasa: number): number {

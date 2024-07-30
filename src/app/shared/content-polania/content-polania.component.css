@@ -35,6 +35,10 @@ mat-sidenav-container {
   padding: 1rem; /* Ajusta el padding interno si es necesario */
   overflow-y: auto;
 }
+.hidden {
+  display: none;
+}
+
 
 /* Media queries for responsive design */
 @media (max-width: 768px) {
