@@ -31,6 +31,14 @@ export class VentaBsService {
       );
   }
 
+  saveVentaBs(dto: any): Observable<void> {
+    const headers = this.getHeaders();
+    return this.http.post<void>(this.apiUrl, dto, { headers })
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
   private handleError(error: any) {
     console.error('An error occurred:', error);
     return throwError(() => new Error('Ocurrió un error en la solicitud. Por favor, inténtalo de nuevo.'));

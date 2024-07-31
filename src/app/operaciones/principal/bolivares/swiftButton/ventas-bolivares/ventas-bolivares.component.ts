@@ -1,10 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { BancolombiaComponent } from '../../../../formulario/bancolombia/bancolombia.component';
 import { MatIconModule } from '@angular/material/icon';
+
+import { BancolombiaComponent } from '../../../../formulario/bancolombia/bancolombia.component';
+import { VentaBs } from '../../../../../interfaces/venta-bs';
+import { VentaBsService } from '../../../../../services/venta-bs.service';
 
 @Component({
   selector: 'ventas-bolivares',
@@ -13,16 +16,26 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './ventas-bolivares.component.html',
   styleUrls: ['./ventas-bolivares.component.css']
 })
-export class VentasBolivaresComponent {
-  ELEMENT_DATA = [
-    { cuentaBs: 'Banco Venezuela', cuentaCop: 'Banco Colombia', metodoPago: 'Transferencia', cliente: 'Juan Perez', tasa: 1.2, fecha: new Date(), bolivares: 10000, pesos: 10500 },
-    { cuentaBs: 'Banco Banesco', cuentaCop: 'Banco Davivienda', metodoPago: 'Efectivo', cliente: 'Maria Gomez', tasa: 1.1, fecha: new Date(), bolivares: 20000, pesos: 21000 }
-  ];
-
+export class VentasBolivaresComponent implements OnInit {
   displayedColumns: string[] = ['cuentaBs', 'cuentaCop', 'metodoPago', 'cliente', 'tasa', 'fecha', 'bolivares', 'pesos'];
-  dataSource = this.ELEMENT_DATA;
+  dataSource: VentaBs[] = [];
 
-  constructor(public dialog: MatDialog) {}
+  constructor(public dialog: MatDialog, private ventaBsService: VentaBsService) {}
+
+  ngOnInit(): void {
+    this.loadVentas();
+  }
+
+  loadVentas(): void {
+    this.ventaBsService.getAllVentasBs().subscribe(
+      (data: VentaBs[]) => {
+        this.dataSource = data;
+      },
+      (error) => {
+        console.error('Error al cargar las ventas:', error);
+      }
+    );
+  }
 
   openDialog(): void {
     const dialogRef = this.dialog.open(BancolombiaComponent, {
@@ -37,8 +50,14 @@ export class VentasBolivaresComponent {
     });
   }
 
-  onConfirmar(event: any) {
-    this.ELEMENT_DATA.push(event);
-    this.dataSource = [...this.ELEMENT_DATA];
+  onConfirmar(event: VentaBs) {
+    this.ventaBsService.saveVentaBs(event).subscribe(
+      () => {
+        this.loadVentas();
+      },
+      (error) => {
+        console.error('Error al guardar la venta:', error);
+      }
+    );
   }
 }
