@@ -1,7 +1,8 @@
 <h1>Tasa Bolivares</h1>
 <button (click)="openActualizarTasaDialog()" class="btn-actualizar-tasa">Actualizar Tasa</button>
+<button (click)="downloadTableAsImage()" class="btn-actualizar-tasa">Descargar Imagen</button>
 
-<div class="container">
+<div class="container" #captureElement>
   <table class="table table-striped">
     <thead>
       <tr>
