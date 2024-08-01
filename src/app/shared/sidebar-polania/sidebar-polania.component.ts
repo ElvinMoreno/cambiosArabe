@@ -2,7 +2,7 @@ import { Component, EventEmitter, HostListener, OnInit, Output } from '@angular/
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbar } from '@angular/material/toolbar';
 import { MatIcon } from '@angular/material/icon';
-import { RouterModule, RouterOutlet, Router } from '@angular/router';
+import { RouterModule, RouterOutlet } from '@angular/router';
 import { MatNavList } from '@angular/material/list';
 import { MatDivider, MatDividerModule } from '@angular/material/divider';
 import { navbarData } from './nav-data';
@@ -38,14 +38,7 @@ export class SidebarPolaniaComponent implements OnInit {
   screenWidth = 0;
   navData = navbarData;
   isMobile = false;
-
-  constructor(private router: Router) {
-    this.router.events.subscribe(() => {
-      if (this.isMobile || this.collapsad) {
-        this.closeSidenav();
-      }
-    });
-  }
+  showOverlay = false;
 
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
@@ -53,6 +46,7 @@ export class SidebarPolaniaComponent implements OnInit {
     this.isMobile = this.screenWidth <= 768;
     if (this.isMobile) {
       this.collapsad = false;
+      this.showOverlay = false;
       this.onToggleSideNav.emit({ collapsed: this.collapsad, screenWidth: this.screenWidth });
     }
   }
@@ -64,16 +58,24 @@ export class SidebarPolaniaComponent implements OnInit {
 
   toggleCollapse(): void {
     this.collapsad = !this.collapsad;
+    this.showOverlay = this.isMobile && this.collapsad;
     this.onToggleSideNav.emit({ collapsed: this.collapsad, screenWidth: this.screenWidth });
   }
 
   closeSidenav(): void {
     this.collapsad = false;
+    this.showOverlay = false;
     this.onToggleSideNav.emit({ collapsed: this.collapsad, screenWidth: this.screenWidth });
   }
 
   closeOnSelect(): void {
-    if (this.isMobile || this.collapsad) {
+    if (this.isMobile) {
+      this.closeSidenav();
+    }
+  }
+
+  handleOverlayClick(): void {
+    if (this.isMobile) {
       this.closeSidenav();
     }
   }
