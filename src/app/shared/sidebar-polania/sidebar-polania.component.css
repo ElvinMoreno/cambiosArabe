@@ -13,14 +13,14 @@
   position: absolute;
   top: 10px;
   left: 10px;
-  z-index: 2;
+  z-index: 3; /* Asegurarse de que el botón esté encima de la superposición */
 }
 
 .sidenav {
   background: #ffffff;
   transition: all .5s ease;
   position: fixed;
-  z-index: 1;
+  z-index: 2;
   top: 0;
   width: 5rem;
   height: 100%;
