@@ -166,19 +166,31 @@ export class BancolombiaComponent implements OnInit {
   updateTasa(value: number): void {
     if (value === null || value === undefined) return;
 
-    let tasaAplicable: Tasa | undefined;
-
     if (this.currentLabel === 'Cantidad bolívares') {
-      tasaAplicable = this.tasas.find(tasa => value >= (tasa.bolivares ?? 0));
+      this.updateTasaByBolivares(value);
     } else {
-      tasaAplicable = this.tasas.find(tasa => value >= (tasa.pesos ?? 0));
+      this.updateTasaByPesos(value);
     }
+  }
 
-    if (tasaAplicable) {
-      this.form.patchValue({ tasa: tasaAplicable.tasaVenta });
-    } else {
-      this.form.patchValue({ tasa: null });
+  updateTasaByBolivares(value: number): void {
+    for (let i = 0; i < this.tasas.length; i++) {
+      if (value >= this.tasas[i].bolivares!) {
+        this.form.patchValue({ tasa: this.tasas[i].tasaVenta });
+        return;
+      }
     }
+    this.form.patchValue({ tasa: null });
+  }
+
+  updateTasaByPesos(value: number): void {
+    for (let i = 0; i < this.tasas.length; i++) {
+      if (value >= this.tasas[i].pesos!) {
+        this.form.patchValue({ tasa: this.tasas[i].tasaVenta });
+        return;
+      }
+    }
+    this.form.patchValue({ tasa: null });
   }
 
   toggleCantidad() {
@@ -206,7 +218,6 @@ export class BancolombiaComponent implements OnInit {
     }
   }
 
-
   buildVentaData(): any {
     const formValues = this.form.value;
     const fechaVenta = new Date(formValues.fecha).toISOString().split('T')[0] + 'T00:00:00.000Z';
@@ -219,7 +230,7 @@ export class BancolombiaComponent implements OnInit {
       fechaVenta,
       metodoPagoId: parseInt(formValues.tipoPago),
       comision: parseFloat(formValues.comision),
-      tasaVenta: parseFloat(formValues.tasa),
+      tasaVenta: parseFloat(this.form.get('tasa')?.value),
       nombreCuenta: formValues.nombreCuenta,
       cedula: formValues.cedula,
       numeroCuenta: formValues.numeroCuenta,
@@ -228,10 +239,10 @@ export class BancolombiaComponent implements OnInit {
 
     if (this.currentLabel === 'Cantidad bolívares') {
       ventaData.bolivaresVendidos = parseFloat(formValues.cantidad);
-      ventaData.precioVentaBs = parseFloat(formValues.conversionAutomatica);
+      ventaData.precioVentaBs = null;
     } else {
       ventaData.precioVentaBs = parseFloat(formValues.cantidad);
-      ventaData.bolivaresVendidos = parseFloat(formValues.conversionAutomatica);
+      ventaData.bolivaresVendidos = null;
     }
 
     // Asegurarse de que todos los valores numéricos sean números
