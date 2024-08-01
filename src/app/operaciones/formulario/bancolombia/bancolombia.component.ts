@@ -15,6 +15,7 @@ import { MetodoPagoService } from '../../../services/metodo-pago.service';
 import { CuentaBancariaService } from '../../../services/cuenta-bancaria.service';
 import { TasaService } from '../../../services/tasa.service';
 import { Tasa } from '../../../interfaces/tasa';
+import { VentaBsService } from '../../../services/venta-bs.service';
 
 @Component({
   selector: 'app-bancolombia',
@@ -53,6 +54,7 @@ export class BancolombiaComponent implements OnInit {
     private metodoPagoService: MetodoPagoService,
     private cuentaBancariaService: CuentaBancariaService,
     private tasaService: TasaService,
+    private ventaBsService: VentaBsService,
     public dialogRef: MatDialogRef<BancolombiaComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
@@ -62,18 +64,18 @@ export class BancolombiaComponent implements OnInit {
       fecha: ['', Validators.required],
       cuentaBs: ['', Validators.required],
       tipoPago: ['', Validators.required],
-      conversionAutomatica: [{value: '', disabled: true}, Validators.required],
+      conversionAutomatica: [{ value: '', disabled: true }, Validators.required],
       comision: ['', Validators.required],
-      celular: ['', Validators.required],
       cliente: ['', Validators.required],
       cuentaPesos: ['', Validators.required],
       cantidad: ['', Validators.required],
-      tasa: [{value: '', disabled: true}],
-      cedula: ['', Validators.required]
+      tasa: [{ value: '', disabled: true }],
+      cedula: ['', Validators.required],
+      nombreBanco: ['', Validators.required]
     });
 
     const today = new Date();
-    this.currentDate = formatDate(today, 'dd/MM/yyyy HH:mm', 'en-US');
+    this.currentDate = formatDate(today, 'yyyy-MM-ddTHH:mm:ss.SSSZ', 'en-US');
   }
 
   ngOnInit(): void {
@@ -164,19 +166,31 @@ export class BancolombiaComponent implements OnInit {
   updateTasa(value: number): void {
     if (value === null || value === undefined) return;
 
-    let tasaAplicable: Tasa | undefined;
-
     if (this.currentLabel === 'Cantidad bolívares') {
-      tasaAplicable = this.tasas.find(tasa => value >= (tasa.bolivares ?? 0));
+      this.updateTasaByBolivares(value);
     } else {
-      tasaAplicable = this.tasas.find(tasa => value >= (tasa.pesos ?? 0));
+      this.updateTasaByPesos(value);
     }
+  }
 
-    if (tasaAplicable) {
-      this.form.patchValue({ tasa: tasaAplicable.tasaVenta });
-    } else {
-      this.form.patchValue({ tasa: null });
+  updateTasaByBolivares(value: number): void {
+    for (let i = 0; i < this.tasas.length; i++) {
+      if (value >= this.tasas[i].bolivares!) {
+        this.form.patchValue({ tasa: this.tasas[i].tasaVenta });
+        return;
+      }
     }
+    this.form.patchValue({ tasa: null });
+  }
+
+  updateTasaByPesos(value: number): void {
+    for (let i = 0; i < this.tasas.length; i++) {
+      if (value >= this.tasas[i].pesos!) {
+        this.form.patchValue({ tasa: this.tasas[i].tasaVenta });
+        return;
+      }
+    }
+    this.form.patchValue({ tasa: null });
   }
 
   toggleCantidad() {
@@ -190,9 +204,55 @@ export class BancolombiaComponent implements OnInit {
 
   onConfirmar() {
     if (this.form.valid) {
-      this.confirmar.emit(this.form.value);
-      this.dialogRef.close(this.form.value);
+      const ventaData = this.buildVentaData();
+      console.log('Cuerpo de la petición:', ventaData);
+      this.ventaBsService.saveVentaBs(ventaData).subscribe(
+        () => {
+          this.confirmar.emit(ventaData);
+          this.dialogRef.close(ventaData);
+        },
+        (error) => {
+          console.error('Error al guardar la venta', error);
+        }
+      );
     }
+  }
+
+  buildVentaData(): any {
+    const formValues = this.form.value;
+    const fechaVenta = new Date(formValues.fecha).toISOString().split('T')[0] + 'T00:00:00.000Z';
+
+    let ventaData: any = {
+      cuentaBancariaBolivares: parseInt(formValues.cuentaBs),
+      cuentaBancariaPesos: parseInt(formValues.cuentaPesos),
+      descripcionId: 1,
+      clienteId: parseInt(formValues.cliente),
+      fechaVenta,
+      metodoPagoId: parseInt(formValues.tipoPago),
+      comision: parseFloat(formValues.comision),
+      tasaVenta: parseFloat(this.form.get('tasa')?.value),
+      nombreCuenta: formValues.nombreCuenta,
+      cedula: formValues.cedula,
+      numeroCuenta: formValues.numeroCuenta,
+      banco: formValues.nombreBanco,
+    };
+
+    if (this.currentLabel === 'Cantidad bolívares') {
+      ventaData.bolivaresVendidos = parseFloat(formValues.cantidad);
+      ventaData.precioVentaBs = null;
+    } else {
+      ventaData.precioVentaBs = parseFloat(formValues.cantidad);
+      ventaData.bolivaresVendidos = null;
+    }
+
+    // Asegurarse de que todos los valores numéricos sean números
+    Object.keys(ventaData).forEach(key => {
+      if (typeof ventaData[key] === 'number' && isNaN(ventaData[key])) {
+        ventaData[key] = 0;
+      }
+    });
+
+    return ventaData;
   }
 
   onCancelar() {

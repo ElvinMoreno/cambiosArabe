@@ -26,4 +26,9 @@ export const navbarData = [
         icon:'fa-solid fa-building-user',
         label: 'Caldos'
     },
+    {
+      routerLink:'movimientos',
+      icon:'fa-solid aterial-symbols-outlined',
+      label: 'Mvoimientos'
+    },
 ];
