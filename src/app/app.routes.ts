@@ -16,6 +16,7 @@ import { DetalleMovimientoBancolombia2Component } from './cuentaBancaria/detalle
 import { ConfiguracionComponent } from './configuraciones/configuracion/configuracion.component';
 import { UsuariosComponent } from './usuarios/usuarios.component';
 import { TasaComponent } from './tasa/tasa.component';
+import { MovimientosComponent } from './movimientos/movimientos.component';
 
 export const routes: Routes = [
   {
@@ -54,7 +55,8 @@ export const routes: Routes = [
       { path: 'detalle-movimiento-davidplata', component: DetalleMovimientoDavidplataComponent },
       { path: 'detalle-movimiento-bancolombia1', component: DetalleMovimientoBancolombia1Component},
       {path: 'detalle-movimiento-bancolombia2', component: DetalleMovimientoBancolombia2Component},
-      {path: 'proveedores', component: UsuariosComponent}
+      {path: 'proveedores', component: UsuariosComponent},
+      {path: 'movimientos', component: MovimientosComponent}
     ]
   }
 ];

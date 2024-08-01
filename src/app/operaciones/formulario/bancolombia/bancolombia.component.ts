@@ -47,6 +47,7 @@ export class BancolombiaComponent implements OnInit {
   clientes: any[] = [];
   currentDate: string;
   tasas: Tasa[] = [];
+  isSubmitting = false;
 
   constructor(
     private fb: FormBuilder,
@@ -203,20 +204,23 @@ export class BancolombiaComponent implements OnInit {
   }
 
   onConfirmar() {
-    if (this.form.valid) {
+    if (this.form.valid && !this.isSubmitting) {
+      this.isSubmitting = true;
       const ventaData = this.buildVentaData();
-      console.log('Cuerpo de la petición:', ventaData);
       this.ventaBsService.saveVentaBs(ventaData).subscribe(
         () => {
           this.confirmar.emit(ventaData);
-          this.dialogRef.close(ventaData);
+          this.dialogRef.close();
+          this.isSubmitting = false;
         },
         (error) => {
           console.error('Error al guardar la venta', error);
+          this.isSubmitting = false;
         }
       );
     }
   }
+
 
   buildVentaData(): any {
     const formValues = this.form.value;
@@ -235,6 +239,8 @@ export class BancolombiaComponent implements OnInit {
       cedula: formValues.cedula,
       numeroCuenta: formValues.numeroCuenta,
       banco: formValues.nombreBanco,
+      enntrada: false,
+      salida: false
     };
 
     if (this.currentLabel === 'Cantidad bolívares') {

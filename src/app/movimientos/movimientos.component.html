@@ -1,0 +1,29 @@
+<div class="boton-cuentas-bancarias">
+  <div class="container">
+    <div class="buttons-container">
+      <div class="button-align">
+        <button mat-stroked-button class="btn"
+          [ngClass]="{'btn-active': vistaActual === 'entradas',
+          'btn-inactive': vistaActual !== 'entradas'}"
+          (click)="cambiarVista('entradas')">
+          Ventas por Confirmar
+        </button>
+      </div>
+      <div class="left-align">
+        <button mat-stroked-button class="btn"
+          [ngClass]="{'btn-active': vistaActual === 'salidas',
+          'btn-inactive': vistaActual !== 'salidas'}"
+          (click)="cambiarVista('salidas')">
+          Salidas por Confirmar
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<ng-container [ngSwitch]="vistaActual">
+  <app-confirmar-entrada *ngSwitchCase="'entradas'"></app-confirmar-entrada>
+  <app-confirmar-salida *ngSwitchCase="'salidas'"></app-confirmar-salida>
+</ng-container>

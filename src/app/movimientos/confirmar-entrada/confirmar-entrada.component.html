@@ -1,13 +1,3 @@
-<div class="grid-container">
-  <div class="agregar-venta">
-    <button mat-flat-button class="btn btn-agregar" (click)="openDialog()">
-      <mat-icon>add</mat-icon>
-    </button>
-  </div>
-  <div class="filtro">
-    <button mat-raised-button class="btn-filtro">Filtro</button>
-  </div>
-</div>
 
 <!-- Tabla para vista de computadora -->
 <div class="table-container centered-table" *ngIf="!isMobile">
@@ -69,14 +59,20 @@
 <div class="cards-container" *ngIf="isMobile">
     <mat-card *ngFor="let element of dataSource" class="card">
       <mat-card-content>
-        <p><strong></strong> {{element.cuentaBancariaPesos.nombreBanco}}</p>
-        <p><strong>Precio</strong> {{element.precio}}</p>
-        <p><strong></strong> {{element.cuentaBancariaBolivares.nombreBanco}}</p>
-        <p><strong></strong> {{element.bolivaresVendidos}}</p>
-        <p><strong></strong> {{element.banco}}</p>
-        <p><strong></strong> {{element.cedula}}</p>
-        <p><strong></strong> {{element.nombreCuenta}}</p>
-        <p><strong></strong> {{element.bolivaresVendidos}}</p>
+        <p><strong>Cuenta cop:</strong> {{element.cuentaBancariaPesos.nombreBanco}}</p>
+        <p><strong>Pesos recibidos:</strong> {{element.precio}}</p>
+        <p><strong>Cuenta bs</strong> {{element.cuentaBancariaBolivares.nombreBanco}}</p>
+        <p><strong>Bolivares enviar:</strong> {{element.bolivaresVendidos}}</p>
+        <p><strong>Banco destino: </strong> {{element.banco}}</p>
+        <p><strong>Cedula destino: </strong> {{element.cedula}}</p>
+        <p><strong>Nombre destinatario</strong> {{element.nombreCuenta}}</p>
+        <!-- <p><strong></strong> {{element.bolivaresVendidos}}</p> -->
       </mat-card-content>
+      <mat-card-actions>
+        <button mat-raised-button
+        color="primary" class="check-button" (click)="openConfirmDialog(element)">
+          <mat-icon>check</mat-icon>
+        </button>
+      </mat-card-actions>
     </mat-card>
 </div>

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, catchError, throwError } from 'rxjs';
+import { Observable, catchError, tap, throwError, finalize } from 'rxjs';
 import { VentaBs } from '../interfaces/venta-bs';
 import { appsetting } from '../settings/appsetting';
 
@@ -9,6 +9,7 @@ import { appsetting } from '../settings/appsetting';
 })
 export class VentaBsService {
   private apiUrl = `${appsetting.apiUrl}venta`;
+  private isSaving = false;
 
   constructor(private http: HttpClient) { }
 
@@ -31,11 +32,25 @@ export class VentaBsService {
       );
   }
 
-  saveVentaBs(dto: any): Observable<void> {
+  saveVentaBs(dto: VentaBs): Observable<void> {
+    if (this.isSaving) {
+      return throwError(() => new Error('Solicitud ya en curso'));
+    }
+    this.isSaving = true;
+
     const headers = this.getHeaders();
-    return this.http.post<void>(this.apiUrl, dto, { headers })
+    return this.http.post<void>(`${this.apiUrl}`, dto, { headers })
       .pipe(
-        catchError(this.handleError)
+        tap(() => {
+          this.isSaving = false;
+        }),
+        catchError((error) => {
+          this.isSaving = false;
+          return this.handleError(error);
+        }),
+        finalize(() => {
+          this.isSaving = false;
+        })
       );
   }
 

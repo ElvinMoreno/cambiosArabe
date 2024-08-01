@@ -28,7 +28,7 @@ export const navbarData = [
     },
     {
       routerLink:'movimientos',
-      icon:'fa-solid aterial-symbols-outlined',
-      label: 'Mvoimientos'
+      icon:'fa-solid fa-building-user',
+      label: 'Movimientos'
     },
 ];

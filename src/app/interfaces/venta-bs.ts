@@ -21,4 +21,6 @@ export interface VentaBs {
   nombreCuenta?: string;
   cedula?: string;
   banco?: string;
+  entrada: boolean;
+  salida: boolean;
 }
