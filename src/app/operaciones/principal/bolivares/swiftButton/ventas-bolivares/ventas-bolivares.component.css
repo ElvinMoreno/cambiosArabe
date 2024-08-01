@@ -16,12 +16,11 @@
   text-align: center;
 }
 
-.agregar-venta{
+.agregar-venta {
   grid-column: 2;
   grid-row: 4;
   justify-self: end;
 }
-
 
 .filtro {
   grid-column: 2;
@@ -29,7 +28,6 @@
   justify-self: end;
   margin-top: 10px;
 }
-
 
 .btn {
   padding: 10px 20px;
@@ -142,5 +140,35 @@ h2 {
 
   .custom-table td {
     padding-left: 8px;
+  }
+}
+
+.cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+}
+
+.card {
+  width: 100%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card mat-card-content {
+  padding: 16px;
+}
+
+.card mat-card-content p {
+  margin: 8px 0;
+}
+
+@media (max-width: 768px) {
+  .grid-container {
+    grid-template-columns: 1fr;
+  }
+
+  .agregar-venta, .filtro {
+    justify-self: center;
   }
 }

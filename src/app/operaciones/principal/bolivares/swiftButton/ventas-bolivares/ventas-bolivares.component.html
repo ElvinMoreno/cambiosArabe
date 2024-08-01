@@ -9,7 +9,8 @@
   </div>
 </div>
 
-<div class="table-container centered-table">
+<!-- Tabla para vista de computadora -->
+<div class="table-container centered-table" *ngIf="!isMobile">
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 custom-table">
     <!-- Cuenta Bs Column -->
     <ng-container matColumnDef="cuentaBs">
@@ -62,4 +63,20 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
+</div>
+
+<!-- Cards para vista móvil -->
+<div class="cards-container" *ngIf="isMobile">
+  <mat-card *ngFor="let element of dataSource" class="card">
+    <mat-card-content>
+      <p><strong></strong> {{element.cuentaBancariaPesos.nombreBanco}}</p>
+      <p><strong></strong> {{element.precioVentaBs}}</p>
+      <p><strong></strong> {{element.cuentaBancariaBolivares.nombreBanco}}</p>
+      <p><strong></strong> {{element.bolivaresVendidos}}</p>
+      <p><strong></strong> {{element.banco}}</p>
+      <p><strong></strong> {{element.cedula}}</p>
+      <p><strong></strong> {{element.banco}}</p>
+      <p><strong></strong> {{element.bolivaresVendidos}}</p>
+    </mat-card-content>
+  </mat-card>
 </div>
