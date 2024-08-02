@@ -1,4 +1,3 @@
-
 <!-- Tabla para vista de computadora -->
 <div class="table-container centered-table" *ngIf="!isMobile">
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 custom-table">
@@ -57,22 +56,24 @@
 
 <!-- Cards para vista móvil -->
 <div class="cards-container" *ngIf="isMobile">
-    <mat-card *ngFor="let element of dataSource" class="card">
-      <mat-card-content>
-        <p><strong>Cuenta cop:</strong> {{element.cuentaBancariaPesos.nombreBanco}}</p>
-        <p><strong>Pesos recibidos:</strong> {{element.precio}}</p>
-        <p><strong>Cuenta bs</strong> {{element.cuentaBancariaBolivares.nombreBanco}}</p>
-        <p><strong>Bolivares enviar:</strong> {{element.bolivaresVendidos}}</p>
-        <p><strong>Banco destino: </strong> {{element.banco}}</p>
-        <p><strong>Cedula destino: </strong> {{element.cedula}}</p>
-        <p><strong>Nombre destinatario</strong> {{element.nombreCuenta}}</p>
-        <!-- <p><strong></strong> {{element.bolivaresVendidos}}</p> -->
-      </mat-card-content>
-      <mat-card-actions>
-        <button mat-raised-button
-        color="primary" class="check-button" (click)="openConfirmDialog(element)">
-          <mat-icon>check</mat-icon>
-        </button>
-      </mat-card-actions>
-    </mat-card>
+  <mat-card *ngFor="let element of dataSource" class="card border-red">
+    <mat-card-content>
+      <!-- <p><strong>Cuenta cop:</strong> {{element.cuentaBancariaPesos.nombreBanco}}</p> -->
+      <p><strong>Dueño de cuenta:</strong> {{element.nombreCuentaCop}}</p>
+      <p><strong>Pesos recibidos:</strong> {{element.pesosRecibidos}}</p>
+      <!-- <p><strong>Cuenta bs:</strong> {{element.cuentaBancariaBolivares.nombreBanco}}</p>
+      <p><strong>Bolivares enviar:</strong> {{element.bolivaresVendidos}}</p>
+      <p><strong>Banco destino:</strong> {{element.banco}}</p>
+      <p><strong>Cedula destino:</strong> {{element.cedula}}</p>
+      <p><strong>Cuenta destinatario:</strong> {{element.numeroCuenta}}</p>
+      <p><strong>Nombre destinatario:</strong> {{element.nombreCuenta}}</p> -->
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="primary"
+      class="check-button"
+      (click)="openConfirmDialog(element)">
+        <mat-icon>check</mat-icon>
+      </button>
+    </mat-card-actions>
+  </mat-card>
 </div>

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { VentaBs } from '../../interfaces/venta-bs';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { VentaBsService } from '../../services/venta-bs.service';
@@ -9,20 +9,19 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { ConfirmarAccionComponent } from '../../confirmar-accion/confirmar-accion.component';
+import { VentaPagos } from '../../interfaces/venta-pagos';
 
 @Component({
   selector: 'app-confirmar-entrada',
   standalone: true,
-  imports: [MatButtonModule,
-    MatTableModule, CommonModule, MatDialogModule,
-    MatIconModule, MatCardModule
-  ],
+  imports: [MatButtonModule, MatTableModule,
+    CommonModule, MatDialogModule, MatIconModule, MatCardModule],
   templateUrl: './confirmar-entrada.component.html',
-  styleUrl: './confirmar-entrada.component.css'
+  styleUrls: ['./confirmar-entrada.component.css']
 })
-export class ConfirmarEntradaComponent {
+export class ConfirmarEntradaComponent implements OnInit {
   displayedColumns: string[] = ['cuentaBs', 'cuentaCop', 'metodoPago', 'cliente', 'tasa', 'fecha', 'bolivares', 'pesos'];
-  dataSource: VentaBs[] = [];
+  dataSource: VentaPagos[] = [];
   isMobile = false;
 
   constructor(
@@ -44,9 +43,10 @@ export class ConfirmarEntradaComponent {
   }
 
   loadVentas(): void {
-    this.ventaBsService.getAllVentasBs().subscribe(
-      (data: VentaBs[]) => {
+    this.ventaBsService.getVentasEntradas().subscribe(
+      (data: VentaPagos[]) => {
         this.dataSource = data;
+        console.log(data);
       },
       (error) => {
         console.error('Error al cargar las ventas:', error);
@@ -54,21 +54,32 @@ export class ConfirmarEntradaComponent {
     );
   }
 
-  openConfirmDialog(element: VentaBs): void {
+  openConfirmDialog(element: VentaPagos): void {
     const dialogRef = this.dialog.open(ConfirmarAccionComponent, {
       data: {
-        message: `Desea confirmar ${element.precio} que ha recibido  en la cuenta
-        ${element.cuentaBancariaPesos.nombreBanco}`,
-        accion: 'Entrada'
+        message: `Desea confirmar ${element.pesosRecibidos} que ha recibido  en la cuenta
+        ${element.nombreCuentaCop}`,
+        accion: 'Entrada',
+        venta: element
       }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        console.log('Acción confirmada');
-      } else {
-        console.log('Acción cancelada');
+        this.confirmarVentaEntrada(result);
       }
     });
+  }
+
+  confirmarVentaEntrada(venta: VentaPagos): void {
+    this.ventaBsService.confirmarVentaEntrada(venta).subscribe(
+      response => {
+        console.log('Venta confirmada', response);
+        this.loadVentas();  // Recargar las ventas después de la confirmación
+      },
+      error => {
+        console.error('Error al confirmar la venta', error);
+      }
+    );
   }
 }

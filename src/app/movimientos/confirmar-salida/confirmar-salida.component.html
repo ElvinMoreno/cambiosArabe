@@ -1,1 +1,80 @@
-<p>confirmar-salida works!</p>
+<!-- Tabla para vista de computadora -->
+<div class="table-container centered-table" *ngIf="!isMobile">
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 custom-table">
+    <!-- Cuenta Bs Column -->
+    <ng-container matColumnDef="cuentaBs">
+      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Cuenta Bs </th>
+      <td mat-cell *matCellDef="let element" data-title="Cuenta Bs"> {{element.cuentaBancariaBolivares.nombreBanco}} </td>
+    </ng-container>
+
+    <!-- Cuenta Cop Column -->
+    <ng-container matColumnDef="cuentaCop">
+      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Cuenta Cop </th>
+      <td mat-cell *matCellDef="let element" data-title="Cuenta Cop"> {{element.cuentaBancariaPesos.nombreBanco}} </td>
+    </ng-container>
+
+    <!-- Metodo Pago Column -->
+    <ng-container matColumnDef="metodoPago">
+      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Metodo Pago </th>
+      <td mat-cell *matCellDef="let element" data-title="Metodo Pago"> {{element.metodoPago.tipopago}} </td>
+    </ng-container>
+
+    <!-- Cliente Column -->
+    <ng-container matColumnDef="cliente">
+      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Cliente </th>
+      <td mat-cell *matCellDef="let element" data-title="Cliente"> {{element.cliente.nombre}} </td>
+    </ng-container>
+
+    <!-- Tasa Column -->
+    <ng-container matColumnDef="tasa">
+      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Tasa </th>
+      <td mat-cell *matCellDef="let element" data-title="Tasa"> {{element.tasaVenta}} </td>
+    </ng-container>
+
+    <!-- Fecha Column -->
+    <ng-container matColumnDef="fecha">
+      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Fecha </th>
+      <td mat-cell *matCellDef="let element" data-title="Fecha"> {{element.fechaVenta | date:'dd/MM/yyyy'}} </td>
+    </ng-container>
+
+    <!-- Bolivares Column -->
+    <ng-container matColumnDef="bolivares">
+      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Bolivares </th>
+      <td mat-cell *matCellDef="let element" data-title="Bolivares"> {{element.bolivaresVendidos}} </td>
+    </ng-container>
+
+    <!-- Pesos Column -->
+    <ng-container matColumnDef="pesos">
+      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Pesos </th>
+      <td mat-cell *matCellDef="let element" data-title="Pesos"> {{element.precio}} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>
+
+<!-- Cards para vista móvil -->
+<div class="cards-container" *ngIf="isMobile">
+  <mat-card *ngFor="let element of dataSource" class="card border-red">
+    <mat-card-content>
+      <!-- <p><strong>Cuenta cop:</strong> {{element.cuentaBancariaPesos.nombreBanco}}</p> -->
+      <!-- <p><strong>Dueño de cuenta:</strong> {{element.nombreCuentaCop}}</p>
+      <p><strong>Pesos recibidos:</strong> {{element.pesosRecibidos}}</p> -->
+      <!-- <p><strong>Cuenta bs:</strong> {{element.cuentaBancariaBolivares.nombreBanco}}</p>
+      <p><strong>Bolivares enviar:</strong> {{element.bolivaresVendidos}}</p>-->
+
+      <p><strong>Banco destino:</strong> {{element.bancoDestino}}</p>
+      <p><strong>Cedula destino:</strong> {{element.cedulaDestino}}</p>
+      <p><strong>Cuenta destinatario:</strong> {{element.numeroCuentaDestinatario}}</p>
+      <p><strong>Nombre destinatario:</strong> {{element.nombreCuentaDestinatario}}</p>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="primary"
+      class="check-button"
+      (click)="openConfirmDialog(element)">
+        <mat-icon>check</mat-icon>
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

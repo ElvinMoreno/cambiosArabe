@@ -57,7 +57,7 @@ label {
   color: red;
 }
 
-input, select, textarea {
+input, select{
   width: 100%;
   padding: 6px;
   border: 1px solid #ccc;
@@ -66,9 +66,7 @@ input, select, textarea {
   font-size: 12px;
 }
 
-textarea {
-  resize: none;
-}
+
 
 input.ng-invalid.ng-touched, select.ng-invalid.ng-touched, textarea.ng-invalid.ng-touched {
   border-color: red;
@@ -108,7 +106,7 @@ input.ng-invalid.ng-touched, select.ng-invalid.ng-touched, textarea.ng-invalid.n
   font-weight: 300;
 }
 
-.has-error input, .has-error select, .has-error textarea {
+.has-error input, .has-error select{
   border-color: red;
 }
 
@@ -120,6 +118,6 @@ option {
   font-size: 1rem;
 }
 
-input, textarea {
+input{
   font-size: 1rem;
 }

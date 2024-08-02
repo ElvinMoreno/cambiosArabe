@@ -221,7 +221,6 @@ export class BancolombiaComponent implements OnInit {
     }
   }
 
-
   buildVentaData(): any {
     const formValues = this.form.value;
     const fechaVenta = new Date(formValues.fecha).toISOString().split('T')[0] + 'T00:00:00.000Z';
@@ -235,6 +234,7 @@ export class BancolombiaComponent implements OnInit {
       metodoPagoId: parseInt(formValues.tipoPago),
       comision: parseFloat(formValues.comision),
       tasaVenta: parseFloat(this.form.get('tasa')?.value),
+      nombreCuentaDestinatario: "jesus",
       nombreCuenta: formValues.nombreCuenta,
       cedula: formValues.cedula,
       numeroCuenta: formValues.numeroCuenta,

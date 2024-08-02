@@ -154,9 +154,10 @@ h2 {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* .card mat-card-content {
-  padding: 16px;
-} */
+/* Añadir borde rojo a las cards */
+.border-red {
+  border: 2px solid red;
+}
 
 .card mat-card-content p {
   margin: 8px 0;

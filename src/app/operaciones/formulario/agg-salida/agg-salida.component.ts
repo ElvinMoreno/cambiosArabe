@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -27,10 +27,9 @@ import { MatSelectModule } from '@angular/material/select';
   templateUrl: './agg-salida.component.html',
   styleUrls: ['./agg-salida.component.css']
 })
-export class AggSalidaComponent {
+export class AggSalidaComponent{
   @Output() cancelar = new EventEmitter<void>();
   @Output() confirmar = new EventEmitter<any>();
-
   form: FormGroup;
 
   constructor(
@@ -39,7 +38,6 @@ export class AggSalidaComponent {
   ) {
     this.form = this.fb.group({
       monto: ['', Validators.required],
-      fecha: ['', Validators.required],
       metodoPago: ['', Validators.required],
       destino: ['', Validators.required],
       descripcion: ['', Validators.required]
@@ -48,7 +46,11 @@ export class AggSalidaComponent {
 
   onConfirmar() {
     if (this.form.valid) {
-      this.confirmar.emit(this.form.value);
+      const formValue = {
+        ...this.form.value,
+        fecha: new Date() // Agregamos la fecha actual aquí
+      };
+      this.confirmar.emit(formValue);
       this.dialogRef.close();
     }
   }

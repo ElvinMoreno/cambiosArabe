@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, catchError, tap, throwError, finalize } from 'rxjs';
 import { VentaBs } from '../interfaces/venta-bs';
 import { appsetting } from '../settings/appsetting';
+import { VentaPagos } from '../interfaces/venta-pagos';
 
 @Injectable({
   providedIn: 'root'
@@ -51,6 +52,38 @@ export class VentaBsService {
         finalize(() => {
           this.isSaving = false;
         })
+      );
+  }
+
+  getVentasSalidas(): Observable<VentaPagos[]> {
+    const headers = this.getHeaders();
+    return this.http.get<VentaPagos[]>(`${this.apiUrl}/ventas-salida`, { headers })
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  getVentasEntradas(): Observable<VentaPagos[]> {
+    const headers = this.getHeaders();
+    return this.http.get<VentaPagos[]>(`${this.apiUrl}/ventas-entradas`, { headers })
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  confirmarVentaEntrada(dto: VentaPagos): Observable<string> {
+    const headers = this.getHeaders();
+    return this.http.post<string>(`${this.apiUrl}/entrada`, dto, { headers })
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  confirmarVentaSalida(dto: VentaPagos): Observable<string> {
+    const headers = this.getHeaders();
+    return this.http.post<string>(`${this.apiUrl}/salida`, dto, { headers })
+      .pipe(
+        catchError(this.handleError)
       );
   }
 

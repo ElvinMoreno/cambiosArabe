@@ -8,7 +8,7 @@ export interface VentaBs {
   cuentaBancariaBolivares: CuentaBancaria;
   cuentaBancariaPesos: CuentaBancaria;
   descripcionId: Descripcion;
-  metodoPagoId                         : MetodoPago;
+  metodoPagoId: MetodoPago;
   clienteId: Cliente;
   tasaVenta: number | null;
   fechaVenta: Date;
