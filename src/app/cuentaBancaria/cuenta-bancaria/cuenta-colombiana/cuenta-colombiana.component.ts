@@ -32,27 +32,30 @@ export class CuentaColombianaComponent implements OnInit {
     this.loadCuentasColombianas();
   }
 
-    openCrearCuentaBancaria(): void {
+  openCrearCuentaBancaria(): void {
     const dialogRef = this.dialog.open(CrearCuentaBancariaComponent, {
       width: '600px',
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // Aquí puedes agregar la lógica para actualizar la lista de cuentas bancarias si es necesario
+        this.loadCuentasColombianas();  // Recargar la lista después de crear una cuenta
       }
     });
   }
+
   loadCuentasColombianas(): void {
     this.cuentaBancariaService.getCuentasColombianas().subscribe(
       (data: CuentaBancaria[]) => {
         this.cuentasBancarias = data;
+        console.log(data);
       },
       (error) => {
         console.error('Error al obtener las cuentas bancarias colombianas:', error);
       }
     );
   }
+
   openActualizarModal(cuenta: CuentaBancaria): void {
     const dialogRef = this.dialog.open(ActualizarCuentaBancariaComponent, {
       width: '600px',

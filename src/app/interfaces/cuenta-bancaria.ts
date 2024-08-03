@@ -9,5 +9,6 @@ export interface CuentaBancaria {
   numCuenta: number | null;
   limiteCB: number | null;
   limiteMonto: number | null;
+  responsabe: string ;
 
 }

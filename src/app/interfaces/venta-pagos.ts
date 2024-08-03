@@ -7,4 +7,7 @@ export interface VentaPagos {
   cedulaDestino: number;
   numeroCuentaDestinatario: number;
   nombreCuentaDestinatario: string;
+  responsable: string;
+//  entrada:Boolean ;
+//  salida: Boolean;
 }

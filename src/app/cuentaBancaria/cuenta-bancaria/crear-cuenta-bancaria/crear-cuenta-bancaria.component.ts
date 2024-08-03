@@ -48,7 +48,8 @@ export class CrearCuentaBancariaComponent implements OnInit {
       monto: [0, [Validators.required, Validators.min(0)]],
       numCuenta: [0, Validators.required],
       limiteCB: [0, [Validators.required, Validators.min(0)]],
-      limiteMonto: [0, [Validators.required, Validators.min(0)]]
+      limiteMonto: [0, [Validators.required, Validators.min(0)]],
+      responsable: ['', Validators.required]
     });
   }
 
@@ -87,7 +88,8 @@ export class CrearCuentaBancariaComponent implements OnInit {
         monto: formValue.monto,
         numCuenta: formValue.numCuenta,
         limiteCB: formValue.limiteCB,
-        limiteMonto: formValue.limiteMonto
+        limiteMonto: formValue.limiteMonto,
+        responsabe: formValue.responsable  // Agregar el responsable aquí
       };
 
       console.log('Datos enviados:', nuevaCuenta);  // Log para verificar los datos enviados
