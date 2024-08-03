@@ -234,7 +234,7 @@ export class BancolombiaComponent implements OnInit {
       metodoPagoId: parseInt(formValues.tipoPago),
       comision: parseFloat(formValues.comision),
       tasaVenta: parseFloat(this.form.get('tasa')?.value),
-      nombreCuentaDestinatario:  formValues.nombreCuenta,
+      nombreCuenta:  formValues.nombreCuenta,
       cedula: formValues.cedula,
       numeroCuenta: formValues.numeroCuenta,
       banco: formValues.nombreBanco,
@@ -256,8 +256,9 @@ export class BancolombiaComponent implements OnInit {
         ventaData[key] = 0;
       }
     });
-
+    console.log(ventaData);
     return ventaData;
+
   }
 
   onCancelar() {
