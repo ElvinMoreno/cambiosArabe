@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, catchError, tap, throwError, finalize } from 'rxjs';
+import { Observable, catchError, tap, throwError, finalize, map, switchMap } from 'rxjs';
 import { VentaBs } from '../interfaces/venta-bs';
 import { appsetting } from '../settings/appsetting';
 import { VentaPagos } from '../interfaces/venta-pagos';
+import { CuentaBancaria } from '../interfaces/cuenta-bancaria';
 
 @Injectable({
   providedIn: 'root'
@@ -73,11 +74,32 @@ export class VentaBsService {
 
   confirmarVentaEntrada(dto: VentaPagos): Observable<string> {
     const headers = this.getHeaders();
-    return this.http.post<string>(`${this.apiUrl}/entrada`, dto, { headers })
-      .pipe(
-        catchError(this.handleError)
-      );
+
+    // Buscar la cuenta bancaria correspondiente
+    return this.getCuentaBancariaPorNombre(dto.nombreCuentaCop).pipe(
+      switchMap(cuenta => {
+        if (cuenta) {
+          // Agregar el responsable al DTO
+          const dtoConResponsable = {
+            ...dto,
+            responsable: cuenta.responsabe // Nota: hay un error de ortografía en la interfaz CuentaBancaria
+          };
+          return this.http.post<string>(`${this.apiUrl}/entrada`, dtoConResponsable, { headers });
+        } else {
+          throw new Error('No se encontró la cuenta bancaria correspondiente');
+        }
+      }),
+      catchError(this.handleError)
+    );
   }
+
+  private getCuentaBancariaPorNombre(nombreCuenta: string): Observable<CuentaBancaria | undefined> {
+    return this.http.get<CuentaBancaria[]>(`${appsetting.apiUrl}cuentas`, { headers: this.getHeaders() }).pipe(
+      map(cuentas => cuentas.find(cuenta => cuenta.nombreCuenta === nombreCuenta)),
+      catchError(this.handleError)
+    );
+  }
+
 
   confirmarVentaSalida(dto: VentaPagos): Observable<string> {
     const headers = this.getHeaders();

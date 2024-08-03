@@ -48,6 +48,8 @@ export class CuentaBancariaService {
       );
   }
 
+
+
   createCuentaBancaria(cuentaBancaria: CuentaBancaria): Observable<CuentaBancaria> {
     const headers = this.getHeaders();
     return this.http.post<CuentaBancaria>(this.apiUrl, cuentaBancaria, { headers })
@@ -59,7 +61,6 @@ export class CuentaBancariaService {
   updateCuentaBancaria(id: number, cuentaBancaria: Partial<CuentaBancaria>): Observable<CuentaBancaria> {
     const headers = this.getHeaders();
 
-    // Obtén la cuenta bancaria existente para conservar el valor de tipocuenta
     return this.getAllCuentasBancarias().pipe(
       map(cuentas => cuentas.find(cuenta => cuenta.id === id)),
       switchMap(existingCuenta => {
@@ -67,7 +68,6 @@ export class CuentaBancariaService {
           return throwError(new Error('Cuenta bancaria no encontrada.'));
         }
 
-        // Crear el cuerpo de la petición para la actualización
         const updateData = {
           nombreBanco: cuentaBancaria.nombreBanco,
           nombreCuenta: cuentaBancaria.nombreCuenta,
@@ -75,7 +75,7 @@ export class CuentaBancariaService {
           numCuenta: cuentaBancaria.numCuenta,
           limiteCB: cuentaBancaria.limiteCB,
           limiteMonto: cuentaBancaria.limiteMonto,
-          tipocuenta: existingCuenta.tipocuenta  // Conservar el tipocuenta existente
+          tipocuenta: existingCuenta.tipocuenta
         };
 
         return this.http.put<CuentaBancaria>(`${this.apiUrl}/${id}`, updateData, { headers })

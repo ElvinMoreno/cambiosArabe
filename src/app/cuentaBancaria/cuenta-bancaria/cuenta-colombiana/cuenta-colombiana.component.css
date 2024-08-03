@@ -32,14 +32,14 @@
 
 
 /* Estilo card */
-.card-container {
+.card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Adaptar columnas automáticamente */
-  gap: 20px; /* Espacio entre las tarjetas */
-  justify-content: center; /* Centrar las tarjetas en el contenedor */
-  padding: 10px; /* Añadido padding para mayor espacio alrededor */
+  grid-template-columns: 1fr 1fr;
+  color: black;
+  font-family: "IBM Plex Sans", sans-serif;
+  font-weight: 700;
+  font-style: normal;
 }
-
 .example-card {
   width: 100%; /* Ancho completo por defecto */
   max-width: 500px; /* Ajusta este valor según tus necesidades */
@@ -110,6 +110,14 @@
   margin-bottom: -0.8rem;
 }
 
+.grid-item-5-1-2 {
+  grid-column: 1 / span 2;
+  grid-row: 5;
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+
 .settings-icon {
   vertical-align: middle;
 }
@@ -138,28 +146,24 @@ mat-card {
 }
 
 /* Media query for responsive design */
+/* Media query for responsive design */
 @media (max-width: 768px) {
   .card-container {
-    grid-template-columns: 1fr; /* Una columna en pantallas pequeñas */
+    grid-template-columns: 1fr;
     padding: 5px;
   }
 
   .card-grid {
-    grid-template-columns: 1fr; /* Una columna en pantallas pequeñas */
-    text-align: center;
+    grid-template-columns: 1fr;
   }
 
   .example-card {
-    width: 100%; /* Asegura que las tarjetas ocupen todo el ancho en pantallas pequeñas */
+    width: 100%;
     margin-bottom: 20px;
   }
 
-  .grid-item-1-2, .grid-item-2-2, .grid-item-4-2 {
-    justify-self: center; /* Centra los elementos en pantallas pequeñas */
-  }
-
-  /* Ocultar ciertos elementos en pantallas pequeñas */
-  .grid-item-1-2, .grid-item-2-2, .grid-item-4-2 {
-    display: none;
+  .grid-item-5-1-2 {
+    grid-column: 1;
+    text-align: left;
   }
 }

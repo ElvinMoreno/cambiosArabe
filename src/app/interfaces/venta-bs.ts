@@ -18,9 +18,10 @@ export interface VentaBs {
   comision?: number;
   numeroCuenta: number;
   precio?: number;
-  nombreCuenta?: string;
+  nombreCuentaDestinatario?: string;
   cedula?: string;
   banco?: string;
   entrada: boolean;
   salida: boolean;
+
 }
