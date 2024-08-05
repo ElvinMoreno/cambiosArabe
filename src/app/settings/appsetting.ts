@@ -1,3 +1,3 @@
 export const appsetting={
-  apiUrl: "https://cambios-arabes-production.up.railway.app/"
+  apiUrl: "http://localhost:8080/"
 }
