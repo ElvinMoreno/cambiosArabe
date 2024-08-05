@@ -1,5 +1,7 @@
 <div class="sidenav-container">
-  <button class="collapse-button" *ngIf="isMobile && !collapsad" (click)="toggleCollapse()">☰</button>
+  <button class="collapse-button" *ngIf="isMobile && !collapsad" (click)="toggleCollapse()">
+    <mat-icon>menu</mat-icon>
+  </button>
   <div class="sidenav" [ngClass]="{'sidenav-collapsed': collapsad, 'sidenav-hidden': isMobile && !collapsad}">
     <div class="logo-container">
       <button class="logo" (click)="toggleCollapse()">M</button>
