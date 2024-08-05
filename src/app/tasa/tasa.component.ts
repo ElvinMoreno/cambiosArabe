@@ -6,6 +6,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { TasaService } from '../services/tasa.service';
 import { Tasa } from '../interfaces/tasa';
 import html2canvas from 'html2canvas';
+import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg';
 
 @Component({
   selector: 'app-tasa',
@@ -112,12 +113,17 @@ export class TasaComponent implements OnInit {
     });
   }
 
-  // Función para formatear la fecha a DD/MM/YYYY
+  // Función para formatear la fecha a "DD mes"
   formatDate(date: Date): string {
     const day = ('0' + date.getDate()).slice(-2);
-    const month = ('0' + (date.getMonth() + 1)).slice(-2);
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
+    const monthNames = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+    const month = monthNames[date.getMonth()];
+    return `${day} ${month}`;
+  }
+
+  // Función para formatear números con punto de miles
+  formatNumber(num: number): string {
+    return num.toLocaleString('es-ES'); // Esto agrega puntos de miles
   }
 
   async downloadTableAsImage(): Promise<void> {
@@ -146,11 +152,11 @@ export class TasaComponent implements OnInit {
       context.fillStyle = '#fff';
       context.font = 'bold 50px Arial';
       context.textBaseline = 'middle'; // Centrar verticalmente el texto
-      context.fillText(dateString, imgCanvas.width - boxWidth / 1.15 - 50, 50 + boxHeight / 2);
+      context.fillText(dateString, imgCanvas.width - boxWidth / 1.25 - 50, 50 + boxHeight / 2);
 
       // Agregar los títulos de las columnas
       const columnSpacing = 280; // Espacio entre columnas
-      const titles = ['PESOS', 'TASA', 'BOLIVAR'];
+      const titles = ['PESOS', 'TASA', 'BOLIVARES'];
       const baseXOffset = imgCanvas.width / 2 - (3 * columnSpacing) / 3; // Centrar las columnas
       const boxWidthTitle = 250; // Ancho fijo de las cajas para los títulos
 
@@ -177,9 +183,9 @@ export class TasaComponent implements OnInit {
 
         context.fillStyle = 'rgba(0, 0, 0, 0.6)';
 
-        const bolivaresText = `${item.bolivares}`;
-        const tasaText = `${item.tasaVenta}`;
-        const pesosText = `$${item.pesos}`;
+        const bolivaresText = this.formatNumber(item.bolivares ?? 0); // Formatear con punto de miles
+        const tasaText = this.formatNumber(item.tasaVenta ?? 0); // Formatear con punto de miles
+        const pesosText = `$${this.formatNumber(item.pesos ?? 0)}`; // Formatear con punto de miles
 
         // Dibujar fondo para bolivares
         context.fillRect(baseXOffset + 2 * columnSpacing - boxWidthFixed / 2, yOffset + index * lineHeight - textHeight / 2, boxWidthFixed, textHeight);
@@ -210,6 +216,45 @@ export class TasaComponent implements OnInit {
       link.download = 'tasa_table.jpg';
       link.click();
     };
+  }
+
+  async downloadTableAsVideo(): Promise<void> {
+    const ffmpeg = createFFmpeg({ log: true });
+    await ffmpeg.load();
+
+    // Ruta a tu video de plantilla
+    const videoTemplatePath = '../assets/sourceImag/plantillaTasa.mp4';
+
+    // Escribir el archivo de video de plantilla en el sistema de archivos de FFmpeg
+    const videoData = await fetch(videoTemplatePath).then(res => res.arrayBuffer());
+    ffmpeg.FS('writeFile', 'template.mp4', new Uint8Array(videoData));
+
+    // Generar la imagen del canvas
+    const canvas = await html2canvas(this.captureElement.nativeElement);
+    const imgDataUrl = canvas.toDataURL('image/jpeg');
+    const imgData = await fetch(imgDataUrl).then(res => res.arrayBuffer());
+    ffmpeg.FS('writeFile', 'frame.jpg', new Uint8Array(imgData));
+
+    // Combinar la imagen con el video de plantilla
+    await ffmpeg.run(
+      '-i', 'template.mp4',
+      '-i', 'frame.jpg',
+      '-filter_complex', 'overlay',
+      '-c:v', 'libx264',
+      '-r', '30',
+      '-pix_fmt', 'yuv420p',
+      'output.mp4'
+    );
+
+    // Leer el archivo de salida y descargarlo
+    const data = ffmpeg.FS('readFile', 'output.mp4');
+    const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
+    const videoUrl = URL.createObjectURL(videoBlob);
+
+    const link = document.createElement('a');
+    link.href = videoUrl;
+    link.download = 'tasa_table.mp4';
+    link.click();
   }
 }
 
