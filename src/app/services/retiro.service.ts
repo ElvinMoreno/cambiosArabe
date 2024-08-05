@@ -32,6 +32,14 @@ export class RetiroService {
       );
   }
 
+  getAllRetiros(): Observable<Retiro[]> {
+    const headers = this.getHeaders();
+    return this.http.get<Retiro[]>(this.apiUrl, { headers })
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
   private handleError(error: HttpErrorResponse) {
     console.error('An error occurred:', error);
     return throwError(() => new Error('Ocurrió un error en la solicitud. Por favor, inténtalo de nuevo.'));

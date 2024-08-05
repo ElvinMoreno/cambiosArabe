@@ -103,7 +103,7 @@ export class AggSalidaComponent implements OnInit {
     this.isLoading = true;
     this.descripcionService.getAllDescripciones().subscribe(
       (data: Descripcion[]) => {
-        this.descripciones = data.filter(descripcion => descripcion.id === 6 || descripcion.id === 7);
+        this.descripciones = data.filter(descripcion => descripcion.id === 1 || descripcion.id === 2);
         this.isLoading = false;
       },
       (error) => {
