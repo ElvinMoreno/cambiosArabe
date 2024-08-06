@@ -14,14 +14,19 @@ import { VentaBsService } from '../../../../../services/venta-bs.service';
 @Component({
   selector: 'ventas-bolivares',
   standalone: true,
-  imports: [MatButtonModule,
-    MatTableModule, CommonModule, MatDialogModule,
-    MatIconModule, MatCardModule],
+  imports: [
+    MatButtonModule,
+    MatTableModule,
+    CommonModule,
+    MatDialogModule,
+    MatIconModule,
+    MatCardModule
+  ],
   templateUrl: './ventas-bolivares.component.html',
   styleUrls: ['./ventas-bolivares.component.css']
 })
 export class VentasBolivaresComponent implements OnInit {
-  displayedColumns: string[] = ['cuentaBs', 'cuentaCop', 'metodoPago', 'cliente', 'tasa', 'fecha', 'bolivares', 'pesos'];
+  displayedColumns: string[] = ['cuentaCop', 'metodoPago', 'cliente', 'tasa', 'fecha', 'bolivares', 'pesos'];
   dataSource: VentaBs[] = [];
   isMobile = false;
 

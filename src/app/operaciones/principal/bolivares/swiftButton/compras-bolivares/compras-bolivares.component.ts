@@ -53,6 +53,7 @@ export class ComprasBolivaresComponent implements OnInit {
       (data: CompraBsDTO[]) => {
         this.ELEMENT_DATA = data;
         this.dataSource = [...this.ELEMENT_DATA];
+        console.log(data);
       },
       (error) => {
         console.error('Error al obtener las compras:', error);

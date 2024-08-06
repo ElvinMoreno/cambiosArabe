@@ -63,7 +63,7 @@ export class BancolombiaComponent implements OnInit {
       nombreCuenta: ['', Validators.required],
       numeroCuenta: ['', Validators.required],
       fecha: ['', Validators.required],
-      cuentaBs: ['', Validators.required],
+      // cuentaBs: ['', Validators.required],
       tipoPago: ['', Validators.required],
       conversionAutomatica: [{ value: '', disabled: true }, Validators.required],
       comision: ['', Validators.required],

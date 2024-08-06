@@ -14,13 +14,19 @@ import { VentaPagos } from '../../interfaces/venta-pagos';
 @Component({
   selector: 'app-confirmar-entrada',
   standalone: true,
-  imports: [MatButtonModule, MatTableModule,
-    CommonModule, MatDialogModule, MatIconModule, MatCardModule],
+  imports: [
+    MatButtonModule,
+    MatTableModule,
+    CommonModule,
+    MatDialogModule,
+    MatIconModule,
+    MatCardModule
+  ],
   templateUrl: './confirmar-entrada.component.html',
   styleUrls: ['./confirmar-entrada.component.css']
 })
 export class ConfirmarEntradaComponent implements OnInit {
-  displayedColumns: string[] = ['cuentaBs', 'cuentaCop', 'metodoPago', 'cliente', 'tasa', 'fecha', 'bolivares', 'pesos'];
+  displayedColumns: string[] = ['cuentaCop', 'metodoPago', 'cliente', 'tasa', 'fecha', 'bolivares', 'pesos'];
   dataSource: VentaPagos[] = [];
   isMobile = false;
 
@@ -57,8 +63,7 @@ export class ConfirmarEntradaComponent implements OnInit {
   openConfirmDialog(element: VentaPagos): void {
     const dialogRef = this.dialog.open(ConfirmarAccionComponent, {
       data: {
-        message: `Desea confirmar ${element.pesosRecibidos} que ha recibido  en la cuenta
-        ${element.nombreCuentaCop}`,
+        message: `Desea confirmar ${element.pesosRecibidos} que ha recibido  en la cuenta ${element.nombreCuentaCop}`,
         accion: 'Entrada',
         venta: element
       }

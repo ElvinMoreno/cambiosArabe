@@ -1,7 +1,7 @@
 export interface VentaPagos {
   nombreCuentaCop: string;
   pesosRecibidos: number;
-  nombreCuentaBs: string;
+  nombreCuentaBs?: string;
   bolivaresEnviar: number;
   bancoDestino: string;
   cedulaDestino: number;
