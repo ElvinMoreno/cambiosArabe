@@ -1,30 +1,42 @@
+/* Estilo base para el contenedor del sidenav */
 .sidenav-container {
   position: relative;
 }
 
+/* Botón para colapsar el sidenav */
 .collapse-button {
   display: none;
-  background: #5E94FF;
-  color: white;
+  background: none;
+  color: #5E94FF;
   border: none;
   padding: 10px;
-  font-size: 20px;
+  font-size: 24px;
   cursor: pointer;
   position: absolute;
   top: 10px;
   left: 10px;
-  z-index: 3; /* Asegurarse de que el botón esté encima de la superposición */
+  z-index: 3;
+  transition: transform 0.3s ease;
 }
 
+.collapse-button mat-icon {
+  font-size: 30px;
+}
+
+.collapse-button:hover {
+  transform: scale(1.1);
+}
+
+/* Estilo del sidenav */
 .sidenav {
   background: #ffffff;
-  transition: all .5s ease;
+  transition: width 0.5s ease, transform 0.5s ease;
   position: fixed;
   z-index: 2;
   top: 0;
   width: 5rem;
   height: 100%;
-  box-shadow: 0.063rem 0 1.25rem 0 #a6b3ca;
+  box-shadow: 0 0 1.25rem rgba(0, 0, 0, 0.2);
 }
 
 .sidenav-collapsed {
@@ -35,10 +47,11 @@
   transform: translateX(-100%);
 }
 
+/* Contenedor del logo */
 .logo-container {
   display: flex;
   align-items: center;
-  padding: 0.938rem;
+  padding: 1rem;
   width: 100%;
 }
 
@@ -49,23 +62,31 @@
   width: 3rem;
   min-width: 3rem;
   border-radius: 0.313rem;
-  padding: 0.313rem;
+  padding: 0.5rem;
   font-size: 24px;
   font-weight: 900;
   cursor: pointer;
   border: none;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.logo:hover {
+  background-color: #4a7ccc;
+  transform: scale(1.1);
 }
 
 .logo-text {
-  margin-top: 1.5rem;
-  margin-left: 1rem;
-  margin-right: 1rem;
-  margin-bottom: 1rem;
+  margin: 1rem;
   font-size: 20px;
   font-weight: 700;
   color: #5E94FF;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   text-align: center;
+  transition: color 0.3s ease;
+}
+
+.logo-text:hover {
+  color: #4a7ccc;
 }
 
 .btn-close {
@@ -76,6 +97,11 @@
   border-radius: 50%;
   background-color: transparent;
   border: none;
+  transition: transform 0.3s ease;
+}
+
+.btn-close:hover {
+  transform: rotate(90deg);
 }
 
 .fal.fa-times {
@@ -85,7 +111,7 @@
 
 .sidenav-nav {
   list-style: none;
-  padding: 0.938rem;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -97,6 +123,11 @@
 .sidenav-nav-item {
   width: 100%;
   margin-bottom: 0.625rem;
+  transition: transform 0.3s ease;
+}
+
+.sidenav-nav-item:hover {
+  transform: translateX(10px);
 }
 
 .sidenav-nav-link {
@@ -106,7 +137,7 @@
   color: #5E94FF;
   text-decoration: none;
   border-radius: 0.5rem;
-  transition: all .3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .sidenav-link-icon {
@@ -140,7 +171,7 @@
   z-index: 1;
 }
 
-/* Media queries for responsive design */
+/* Media queries para diseño responsive */
 @media (max-width: 768px) {
   .sidenav {
     transform: translateX(-100%);

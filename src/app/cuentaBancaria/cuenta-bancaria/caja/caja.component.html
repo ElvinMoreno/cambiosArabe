@@ -1,0 +1,41 @@
+<!-- caja.component.html -->
+<div *ngIf="caja">
+    <h2>Información de la Caja</h2>
+    <p>Banco: {{ caja.nombreBanco }}</p>
+    <p>Cuenta: {{ caja.nombreCuenta }}</p>
+    <p>Monto: {{ caja.monto | currency }}</p>
+  </div>
+  <div *ngIf="!caja && !error">
+    <p>Cargando información de la caja...</p>
+  </div>
+  <div *ngIf="error">
+    <p>{{ error }}</p>
+  </div>
+  
+  <div *ngIf="movimientos.length > 0">
+    <h2>Movimientos de la Caja</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Hora</th>
+          <th>Tipo de Movimiento</th>
+          <th>Monto</th>
+          <th>Descripción</th>
+          <th>Entrada</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let movimiento of movimientos">
+          <td>{{ movimiento.hora }}</td>
+          <td>{{ movimiento.tipoMovimiento }}</td>
+          <td>{{ movimiento.monto | currency }}</td>
+          <td>{{ movimiento.descripcion }}</td>
+          <td>{{ movimiento.entrada ? 'Sí' : 'No' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div *ngIf="movimientos.length === 0 && !error">
+    <p>No hay movimientos de caja disponibles.</p>
+  </div>
+  
