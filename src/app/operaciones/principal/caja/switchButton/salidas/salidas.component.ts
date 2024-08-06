@@ -1,40 +1,55 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-
+import { Component, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
 import { AggSalidaComponent } from '../../../../formulario/agg-salida/agg-salida.component';
 import { MatIconModule } from '@angular/material/icon';
+import { RetiroService } from '../../../../../services/retiro.service';
+import { Retiro } from '../../../../../interfaces/retiro';
 
 @Component({
   selector: 'salidas',
   standalone: true,
-  imports: [MatButtonModule, MatTableModule,CommonModule,
+  imports: [
+    MatButtonModule,
+    MatTableModule,
+    CommonModule,
     MatIconModule
   ],
   templateUrl: './salidas.component.html',
-  styleUrl: './salidas.component.css'
+  styleUrls: ['./salidas.component.css']
 })
-export class SalidasComponent {
-  ELEMENT_DATA = [
-    { numero: 'Jon', cuenta: '123456', origen: 10000, monto: 10.5, descripcion: 1.2, detalles: 'Pago de servicio' },
-    { numero: 'Alba', cuenta: '654321', origen: 20000, monto: 21.0, descripcion: 1.1, detalles: 'Pago de producto' }
-  ];
+export class SalidasComponent implements OnInit {
+  displayedColumns: string[] = ['fecha', 'cuenta', 'monto'];
+  dataSource: Retiro[] = [];
 
-  displayedColumns: string[] = ['nombreCliente', 'cuenta', 'transferenciaBolivares', 'conversion', 'tasa', 'detalles'];
-  dataSource = this.ELEMENT_DATA;
+  constructor(public dialog: MatDialog, private retiroService: RetiroService) {}
 
-  constructor(public dialog: MatDialog) {}
+  ngOnInit(): void {
+    this.loadRetiros();
+  }
+
+  loadRetiros(): void {
+    this.retiroService.getAllRetiros().subscribe(
+      (data: Retiro[]) => {
+        this.dataSource = data;
+      },
+      (error) => {
+        console.error('Error al cargar los retiros', error);
+      }
+    );
+  }
 
   openDialog(): void {
     const dialogRef = this.dialog.open(AggSalidaComponent, {
       width: '600px'
     });
 
-    dialogRef.componentInstance.confirmar.subscribe((data: any) => {
-      // Lógica para manejar los datos de la nueva salida
+    dialogRef.componentInstance.confirmar.subscribe((data: Retiro) => {
       console.log(data);
+      this.dataSource.push(data); // Añadir nueva salida a la dataSource
+      this.dataSource = [...this.dataSource]; // Actualizar dataSource
     });
 
     dialogRef.componentInstance.cancelar.subscribe(() => {

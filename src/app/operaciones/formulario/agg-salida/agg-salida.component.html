@@ -10,20 +10,35 @@
         </div>
         <div class="form-group" [ngClass]="{'has-error': form.get('metodoPago')?.invalid && form.get('metodoPago')?.touched}">
           <label for="metodoPago">Método de Pago <span class="required">*</span></label>
-          <input id="metodoPago" type="text" formControlName="metodoPago">
+          <select id="metodoPago" formControlName="metodoPago" (change)="onMetodoPagoChange()">
+            <option *ngFor="let metodo of metodosPago" [value]="metodo.id">{{ metodo.tipopago }}</option>
+          </select>
         </div>
         <div class="form-group" [ngClass]="{'has-error': form.get('destino')?.invalid && form.get('destino')?.touched}">
-          <label for="destino">Cuenta donde se realiza la saa <span class="required">*</span></label>
-          <input id="destino" type="text" formControlName="destino">
+          <label for="destino">Cuenta salida <span class="required">*</span></label>
+          <select id="destino" formControlName="destino">
+            <option *ngFor="let cuenta of cuentasColombianas" [value]="cuenta.id">{{ cuenta.nombreBanco }} - {{ cuenta.nombreCuenta }}</option>
+          </select>
+        </div>
+        <div *ngIf="showCuentaEntrante" class="form-group" [ngClass]="{'has-error': form.get('cuentaEntrante')?.invalid && form.get('cuentaEntrante')?.touched}">
+          <label for="cuentaEntrante">Cuenta entrante <span class="required">*</span></label>
+          <select id="cuentaEntrante" formControlName="cuentaEntrante">
+            <option *ngFor="let cuenta of cuentasColombianas" [value]="cuenta.id">{{ cuenta.nombreBanco }} - {{ cuenta.nombreCuenta }}</option>
+          </select>
         </div>
         <div class="form-group" [ngClass]="{'has-error': form.get('descripcion')?.invalid && form.get('descripcion')?.touched}">
           <label for="descripcion">Descripción <span class="required">*</span></label>
-          <input id="descripcion" formControlName="descripcion">
+          <select id="descripcion" formControlName="descripcion">
+            <option *ngFor="let descripcion of descripciones" [value]="descripcion.id">{{ descripcion.texto }}</option>
+          </select>
         </div>
       </div>
       <div class="button-group">
-        <button type="submit" class="btn-confirmar">Confirmar Salida</button>
-        <button type="button" class="btn-cancelar" (click)="onCancelar()">Cancelar</button>
+        <button type="submit" class="btn-confirmar" [disabled]="isLoading">Confirmar Salida</button>
+        <button type="button" class="btn-cancelar" (click)="onCancelar()" [disabled]="isLoading">Cancelar</button>
+      </div>
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
       </div>
     </form>
   </div>
