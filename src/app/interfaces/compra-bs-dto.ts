@@ -4,7 +4,7 @@ export interface CompraBsDTO {
   proveedorId: number;
   metodoPagoId: number;
   cuentaBancariaBsId: number;
-  cuentaBancariaPesosId: number;
+  cuentaBancariaPesosId?: number;
   descripcionId: number;
   fechaCompra: string; // Puedes cambiarlo a Date si prefieres manejarlo como objeto Date
   referencia: string;

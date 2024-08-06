@@ -48,6 +48,7 @@ export class AggCompraComponent implements OnInit {
   tasaCompra: number = 0;
   errorMessage: string = '';
   currentDate: string = '';
+  showCuentaBancariaPesos: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -63,9 +64,9 @@ export class AggCompraComponent implements OnInit {
       proveedorId: ['', [Validators.required]],
       fechaCompra: ['', [Validators.required]],
       cuentaBancariaBs: ['', [Validators.required]],
-      cuentaBancariaPesos: ['', [Validators.required]],
+      cuentaBancariaPesos: [''],
       metodoPagoId: ['', [Validators.required]],
-      descripcionId: ['', [Validators.required]], // Añadir este campo
+      descripcionId: ['', [Validators.required]],
       tasaCompra: ['', [Validators.required]],
       montoBs: ['', [Validators.required, Validators.min(0)]],
       referencia: ['', [Validators.required]]
@@ -136,15 +137,26 @@ export class AggCompraComponent implements OnInit {
     });
   }
 
+  onMetodoPagoChange(): void {
+    const metodoPagoId = this.form.get('metodoPagoId')?.value;
+    this.showCuentaBancariaPesos = metodoPagoId === '1';
+
+    if (this.showCuentaBancariaPesos) {
+      this.form.get('cuentaBancariaPesos')?.setValidators([Validators.required]);
+    } else {
+      this.form.get('cuentaBancariaPesos')?.clearValidators();
+      this.form.get('cuentaBancariaPesos')?.setValue('');
+    }
+    this.form.get('cuentaBancariaPesos')?.updateValueAndValidity();
+  }
+
   onConfirmar(): void {
     if (this.form.valid) {
-      const formValue = this.form.getRawValue(); // Obtiene todos los valores, incluyendo los deshabilitados
-
-      console.log('Formulario válido. Valores del formulario:', formValue);
+      const formValue = this.form.getRawValue();
 
       const compra: CompraBsDTO = {
         cuentaBancariaBsId: parseInt(formValue.cuentaBancariaBs, 10),
-        cuentaBancariaPesosId: parseInt(formValue.cuentaBancariaPesos, 10),
+        cuentaBancariaPesosId:parseInt(formValue.cuentaBancariaPesos, 10),
         proveedorId: parseInt(formValue.proveedorId, 10),
         metodoPagoId: parseInt(formValue.metodoPagoId, 10),
         descripcionId: parseInt(formValue.descripcionId, 10), // Añadir este campo
