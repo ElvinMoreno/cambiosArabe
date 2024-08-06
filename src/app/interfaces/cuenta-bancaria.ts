@@ -10,5 +10,6 @@ export interface CuentaBancaria {
   limiteCB: number | null;
   limiteMonto: number | null;
   responsabe: string ;
+  responsable?: string ;
 
 }

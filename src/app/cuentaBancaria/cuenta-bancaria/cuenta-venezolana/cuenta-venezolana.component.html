@@ -4,24 +4,35 @@
   </button>
 </div>
 
-<div class="card-container" fxLayout="row" fxLayoutWrap fxLayoutGap="20px" fxLayoutAlign="center start">
-  <mat-card *ngFor="let cuenta of cuentasBancarias" [ngClass]="getCardClass(cuenta.nombreBanco!)" class="example-card" appearance="outlined" fxFlex="1 1 calc(33% - 20px)" fxFlex.lt-md="calc(50% - 20px)" fxFlex.lt-sm="calc(100% - 20px)">
+<div class="card-container">
+  <mat-card *ngFor="let cuenta of cuentasBancarias"
+  [ngClass]="getCardClass(cuenta.nombreBanco!)"
+            class="example-card" appearance="outlined">
     <mat-card-content>
-      <div class="card-grid" fxLayout="column" fxLayoutGap="10px">
-        <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="space-between center">
-          <p fxFlex>{{ cuenta.nombreCuenta }}</p>
-          <p fxFlex fxHide fxShow.gt-sm>Cupos CV: {{ cuenta.limiteCB }}</p>
+      <div class="card-grid">
+        <div class="grid-item grid-item-1-1">
+          <p>{{ cuenta.nombreCuenta }}</p>
         </div>
-        <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="space-between center">
-          <p fxFlex>Saldo Actual</p>
-          <p fxFlex fxHide fxShow.gt-sm>Capacidad Cuenta: {{ cuenta.limiteMonto }}</p>
+        <div class="grid-item grid-item-1-2">
+          <p>Cupos CV: {{ cuenta.limiteCB }}</p>
         </div>
-        <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="space-between center">
-          <p fxFlex>$ {{ cuenta.monto | number:'1.2-2' }}</p>
+        <div class="grid-item grid-item-2-1">
+          <p>Saldo Actual</p>
         </div>
-        <div fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="space-between center">
-          <p fxFlex>{{ cuenta.nombreBanco }}</p>
-          <mat-icon fxFlex fxLayoutAlign="end" (click)="openActualizarModal(cuenta)">settings</mat-icon>
+        <div class="grid-item grid-item-2-2">
+          <p>Capacidad: {{ cuenta.limiteMonto }}</p>
+        </div>
+        <div class="grid-item grid-item-3-1">
+          <p>$ {{ cuenta.monto | number:'1.2-2' }}</p>
+        </div>
+        <div class="grid-item grid-item-4-1">
+          <p>{{ cuenta.nombreBanco }}</p>
+        </div>
+        <div class="grid-item grid-item-4-2">
+          <mat-icon class="settings-icon" (click)="openActualizarModal(cuenta)">settings</mat-icon>
+        </div>
+        <div class="grid-item grid-item-5-1-2">
+          <p>Responsable: {{ cuenta.responsable }}</p>
         </div>
       </div>
     </mat-card-content>
