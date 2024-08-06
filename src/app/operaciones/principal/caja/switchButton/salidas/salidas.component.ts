@@ -5,8 +5,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
 import { AggSalidaComponent } from '../../../../formulario/agg-salida/agg-salida.component';
 import { MatIconModule } from '@angular/material/icon';
-import { RetiroService } from '../../../../../services/retiro.service';
 import { Retiro } from '../../../../../interfaces/retiro';
+import { RetiroService } from '../../../../../services/retiro.service';
 
 @Component({
   selector: 'salidas',
