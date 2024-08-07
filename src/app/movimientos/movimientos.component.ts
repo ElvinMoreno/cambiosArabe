@@ -1,6 +1,7 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTabsModule } from '@angular/material/tabs';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { ConfirmarEntradaComponent } from './confirmar-entrada/confirmar-entrada.component';
@@ -9,24 +10,28 @@ import { ConfirmarSalidaComponent } from './confirmar-salida/confirmar-salida.co
 @Component({
   selector: 'app-movimientos',
   standalone: true,
-  imports: [MatButtonModule,
+  imports: [
+    MatButtonModule,
     CommonModule,
+    MatTabsModule,
     ConfirmarEntradaComponent,
     ConfirmarSalidaComponent
   ],
   templateUrl: './movimientos.component.html',
-  styleUrl: './movimientos.component.css'
+  styleUrls: ['./movimientos.component.css']
 })
 export class MovimientosComponent {
   vistaActual: 'entradas' | 'salidas' = 'entradas';
+  selectedIndex: number = 0;
 
   constructor(private router: Router, public dialog: MatDialog) {}
 
   ngOnInit() {
-    // La vista 'cuentaC' ya está establecida por defecto
+    // La vista 'entradas' ya está establecida por defecto
   }
 
-  cambiarVista(vista: 'entradas' | 'salidas') {
-    this.vistaActual = vista;
+  cambiarVista(index: number) {
+    const vistas = ['entradas', 'salidas'];
+    this.vistaActual = vistas[index] as 'entradas' | 'salidas';
   }
 }

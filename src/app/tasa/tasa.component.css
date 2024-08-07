@@ -5,9 +5,15 @@ h1 {
   font-family: 'Poppins', sans-serif;
 }
 
+.button-group-horizontal {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
 .btn-actualizar-tasa {
-  display: block;
-  margin: 0 auto 20px auto;
   padding: 10px 20px;
   background-color: #4a90e2;
   color: white;
@@ -17,6 +23,13 @@ h1 {
   font-size: 1rem;
   text-align: center;
   transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.btn-actualizar-tasa mat-icon {
+  font-size: 1.5rem;
 }
 
 .btn-actualizar-tasa:hover {
@@ -227,6 +240,7 @@ input.ng-invalid.ng-touched, select.ng-invalid.ng-touched {
 .btn-cancelar:hover {
   background-color: #cc4c4c;
 }
+
 .btn-download {
   display: block;
   margin: 20px auto;
@@ -263,5 +277,23 @@ input.ng-invalid.ng-touched, select.ng-invalid.ng-touched {
   .form-control {
     font-size: 0.875rem;
     padding: 0.375rem 0.5rem;
+  }
+
+  .button-group-horizontal {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+
+  .button-group-horizontal button {
+    flex: 1 0 auto;
+    margin-bottom: 0;
+    display: flex;
+    justify-content: center;  /* Centra horizontalmente */
+    align-items: center;  /* Centra verticalmente */
+  }
+
+  .btn-text {
+    display: none;
   }
 }
