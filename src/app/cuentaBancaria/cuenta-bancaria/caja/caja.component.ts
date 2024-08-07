@@ -1,59 +1,52 @@
-// caja.component.ts
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { Observable } from 'rxjs';
-import { appsetting } from '../../../settings/appsetting';  // Importa appsetting
-
-interface CajaDTO {
-  id: number;
-  divisa: string;
-  nombreBanco: string;
-  nombreCuenta: string;
-  monto: number;
-  numCuenta: string;
-  limiteCB: number;
-  limiteMonto: number;
-}
-
-interface MovimientoDiaDTO {
-  hora: string;
-  tipoMovimiento: string;
-  monto: number;
-  descripcion: string;
-  entrada: boolean;
-}
+import { MatCardModule } from '@angular/material/card';
+import { MatTableModule } from '@angular/material/table';
+import { CajaService } from '../../../services/caja.service';
+import { CuentaBancaria } from '../../../interfaces/cuenta-bancaria';
+import { Movimiento} from '../../../interfaces/movimiento';
+import { catchError, of } from 'rxjs';
 
 @Component({
   selector: 'app-caja',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MatCardModule, MatTableModule],
   templateUrl: './caja.component.html',
   styleUrls: ['./caja.component.css']
 })
 export class CajaComponent implements OnInit {
-  caja: CajaDTO | undefined;
-  movimientos: MovimientoDiaDTO[] = [];
-  error: string | undefined;
+  monto: number | null = null;
+  movimientos: Movimiento[] = [];
+  errorMessage: string | null = null;
+  displayedColumns: string[] = ['hora', 'tipoMovimiento', 'monto', 'descripcion', 'entrada'];
 
-  constructor(private http: HttpClient) {}
+  constructor(private cajaService: CajaService) { }
 
   ngOnInit(): void {
-    this.getCajaDatos().subscribe(
-      data => this.caja = data,
-      error => this.error = 'Error fetching caja data: ' + error.message
-    );
-    this.getMovimientosCaja().subscribe(
-      data => this.movimientos = data,
-      error => this.error = 'Error fetching movimientos data: ' + error.message
-    );
-  }
+    this.cajaService.getCajaDatos()
+      .pipe(
+        catchError(error => {
+          console.error('Error al obtener datos de la caja:', error);
+          this.errorMessage = 'Ocurrió un error al obtener los datos de la caja. Por favor, inténtalo de nuevo.';
+          return of(null);
+        })
+      )
+      .subscribe(data => {
+        if (data) {
+          this.monto = data.monto;
+        }
+      });
 
-  getCajaDatos(): Observable<CajaDTO> {
-    return this.http.get<CajaDTO>(`${appsetting.apiUrl}/caja`);
-  }
-
-  getMovimientosCaja(): Observable<MovimientoDiaDTO[]> {
-    return this.http.get<MovimientoDiaDTO[]>(`${appsetting.apiUrl}/caja/movimientos`);
+    this.cajaService.getMovimientosCaja()
+      .pipe(
+        catchError(error => {
+          console.error('Error al obtener movimientos de la caja:', error);
+          this.errorMessage = 'Ocurrió un error al obtener los movimientos de la caja. Por favor, inténtalo de nuevo.';
+          return of([]);
+        })
+      )
+      .subscribe(data => {
+        this.movimientos = data;
+      });
   }
 }

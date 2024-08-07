@@ -179,6 +179,9 @@ mat-card {
   body {
     font-size: 4vw;
   }
+.container{
+  margin-top: 2rem;
+}
 
   .boton-cuentas-bancarias .container {
     flex-direction: column; /* Coloca los botones en columna en pantallas pequeñas */

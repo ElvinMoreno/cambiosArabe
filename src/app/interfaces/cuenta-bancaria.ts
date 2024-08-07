@@ -1,15 +1,12 @@
-import { TipoCuentaBancaria } from "./tipo-cuenta-bancaria";
-
+// src/app/interfaces/cuenta-bancaria.ts
 export interface CuentaBancaria {
   id: number;
-  tipocuenta: TipoCuentaBancaria;
   nombreBanco: string | null;
   nombreCuenta: string | null;
   monto: number | null;
   numCuenta: number | null;
   limiteCB: number | null;
   limiteMonto: number | null;
-  responsabe: string ;
-  responsable?: string ;
-
+  responsabe: string;
+  responsable?: string;
 }
