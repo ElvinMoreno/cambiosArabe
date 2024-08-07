@@ -76,6 +76,7 @@ export class ConfirmarEntradaComponent implements OnInit {
   }
 
   confirmarVentaEntrada(venta: VentaPagos): void {
+
     this.ventaBsService.confirmarVentaEntrada(venta).subscribe(
       response => {
         console.log('Venta confirmada', response);
