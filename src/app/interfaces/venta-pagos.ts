@@ -8,6 +8,6 @@ export interface VentaPagos {
   numeroCuentaDestinatario: number;
   nombreCuentaDestinatario: string;
   responsable: string;
-//  entrada:Boolean ;
-//  salida: Boolean;
+ entrada?:Boolean ;
+ salida?: Boolean;
 }
