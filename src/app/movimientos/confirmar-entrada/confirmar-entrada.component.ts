@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { VentaBs } from '../../interfaces/venta-bs';
+import { VentaPagos } from '../../interfaces/venta-pagos';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { VentaBsService } from '../../services/venta-bs.service';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
@@ -9,7 +9,6 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { ConfirmarAccionComponent } from '../../confirmar-accion/confirmar-accion.component';
-import { VentaPagos } from '../../interfaces/venta-pagos';
 
 @Component({
   selector: 'app-confirmar-entrada',
@@ -77,6 +76,7 @@ export class ConfirmarEntradaComponent implements OnInit {
   }
 
   confirmarVentaEntrada(venta: VentaPagos): void {
+
     this.ventaBsService.confirmarVentaEntrada(venta).subscribe(
       response => {
         console.log('Venta confirmada', response);

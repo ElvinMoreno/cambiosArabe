@@ -48,6 +48,8 @@ export class BancolombiaComponent implements OnInit {
   currentDate: string;
   tasas: Tasa[] = [];
   isSubmitting = false;
+  isTasaEditable = false;
+  tasaLabel = 'Tasa';
 
   constructor(
     private fb: FormBuilder,
@@ -201,6 +203,12 @@ export class BancolombiaComponent implements OnInit {
       conversionAutomatica: '',
       tasa: null
     });
+  }
+
+  makeTasaEditable() {
+    this.isTasaEditable = true;
+    this.tasaLabel = 'Tasa especial';
+    this.form.get('tasa')?.enable();
   }
 
   onConfirmar() {
