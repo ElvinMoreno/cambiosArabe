@@ -1,4 +1,3 @@
-// src/app/interfaces/cuenta-bancaria.ts
 export interface CuentaBancaria {
   id: number;
   nombreBanco: string | null;
@@ -9,4 +8,6 @@ export interface CuentaBancaria {
   limiteMonto: number | null;
   responsabe: string;
   responsable?: string;
+  tipocuenta?: { id: number }; // Agregar tipocuenta para la creación
+  banco?: { id: number }; // Agregar banco para la creación
 }

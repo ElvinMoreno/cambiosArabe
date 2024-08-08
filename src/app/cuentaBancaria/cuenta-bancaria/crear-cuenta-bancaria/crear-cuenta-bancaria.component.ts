@@ -4,7 +4,6 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { CuentaBancariaService } from '../../../services/cuenta-bancaria.service';
 import { BancosService } from '../../../services/banco.service';
 import { Bancos } from '../../../interfaces/bancos';
-import { CuentaBancaria } from '../../../interfaces/cuenta-bancaria';
 import { catchError, finalize, of } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -41,7 +40,7 @@ export class CrearCuentaBancariaComponent implements OnInit {
     public dialogRef: MatDialogRef<CrearCuentaBancariaComponent>
   ) {
     this.form = this.fb.group({
-      bancoSeleccionado: ['', Validators.required],
+      bancoSeleccionado: [null, Validators.required],
       nombreCuenta: ['', Validators.required],
       monto: [0, [Validators.required, Validators.min(0)]],
       numCuenta: [0, Validators.required],
@@ -51,7 +50,7 @@ export class CrearCuentaBancariaComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadBancosColombianos();
   }
 
@@ -73,18 +72,22 @@ export class CrearCuentaBancariaComponent implements OnInit {
     if (this.form.valid) {
       this.isLoading = true;
       this.errorMessage = null;
-      const formValue = this.form.getRawValue();
 
-      const nuevaCuenta: CuentaBancaria = {
-        id: 0,  // Se asume que el ID será generado por el backend
-        nombreBanco: formValue.bancoSeleccionado,
+      const formValue = this.form.getRawValue();
+      const selectedBanco = this.bancos.find(banco => banco.nombreBanco === formValue.bancoSeleccionado);
+
+      const nuevaCuenta = {
+        tipocuenta: { id: 1 }, // Asumiendo que este es el ID para cuentas colombianas
+        banco: { id: selectedBanco ? selectedBanco.id : null },
         nombreCuenta: formValue.nombreCuenta,
+        responsabe: formValue.responsable,
         monto: formValue.monto,
         numCuenta: formValue.numCuenta,
         limiteCB: formValue.limiteCB,
-        limiteMonto: formValue.limiteMonto,
-        responsabe: formValue.responsable  // Corregido el nombre de la propiedad aquí
+        limiteMonto: formValue.limiteMonto
       };
+
+      console.log('Datos enviados:', nuevaCuenta);  // Log para verificar los datos enviados
 
       this.cuentaBancariaService.createCuentaBancaria(nuevaCuenta)
         .pipe(

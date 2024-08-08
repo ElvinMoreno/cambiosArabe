@@ -116,7 +116,7 @@ export class TasaComponent implements OnInit {
   // Función para formatear la fecha a "DD mes"
   formatDate(date: Date): string {
     const day = ('0' + date.getDate()).slice(-2);
-    const monthNames = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+    const monthNames = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
     const month = monthNames[date.getMonth()];
     return `${day} ${month}`;
   }
@@ -150,13 +150,13 @@ export class TasaComponent implements OnInit {
       context.fillStyle = 'rgba(0, 0, 0, 0.6)'; // Fondo negro con opacidad
       context.fillRect(imgCanvas.width - boxWidth - 50, 50, boxWidth, boxHeight); // Fondo negro con opacidad para la fecha
       context.fillStyle = '#fff';
-      context.font = 'bold 50px Arial';
+      context.font = 'bold 45px Arial';
       context.textBaseline = 'middle'; // Centrar verticalmente el texto
-      context.fillText(dateString, imgCanvas.width - boxWidth / 1.25 - 50, 50 + boxHeight / 2);
+      context.fillText(dateString, imgCanvas.width - boxWidth / 1.10 - 50, 50 + boxHeight / 2);
 
       // Agregar los títulos de las columnas
       const columnSpacing = 280; // Espacio entre columnas
-      const titles = ['PESOS', 'TASA', 'BOLIVARES'];
+      const titles = ['PESOS', 'TASA', 'BS'];
       const baseXOffset = imgCanvas.width / 2 - (3 * columnSpacing) / 3; // Centrar las columnas
       const boxWidthTitle = 250; // Ancho fijo de las cajas para los títulos
 
@@ -169,7 +169,7 @@ export class TasaComponent implements OnInit {
       });
 
       // Agregar los valores de la tabla centrados con fondo negro semitransparente
-      context.font = 'bold 50px Arial'; // Fuente en negrita
+      context.font = 'bold 45px Arial'; // Fuente en negrita
       const lineHeight = 135; // Aumentar la altura de cada línea para más espacio entre filas
       const totalHeight = this.tasas.length * lineHeight;
       let yOffset = (imgCanvas.height - totalHeight) / 2 + 100; // Ajustar para títulos de columnas

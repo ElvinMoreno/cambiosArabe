@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 import { CuentaBancaria } from '../interfaces/cuenta-bancaria';
 import { appsetting } from '../settings/appsetting';
 
@@ -24,17 +24,17 @@ export class CuentaBancariaService {
     });
   }
 
-  getAllCuentasBancarias(): Observable<CuentaBancaria[]> {
+  createCuentaBancaria(cuentaBancaria: any): Observable<CuentaBancaria> {
     const headers = this.getHeaders();
-    return this.http.get<CuentaBancaria[]>(this.apiUrl, { headers })
+    return this.http.post<CuentaBancaria>(this.apiUrl, cuentaBancaria, { headers })
       .pipe(
         catchError(this.handleError)
       );
   }
 
-  getCuentasVenezolanas(): Observable<CuentaBancaria[]> {
+  updateCuentaBancaria(id: number, cuentaBancaria: Partial<CuentaBancaria>): Observable<CuentaBancaria> {
     const headers = this.getHeaders();
-    return this.http.get<CuentaBancaria[]>(`${this.apiUrl}/venezolanas`, { headers })
+    return this.http.put<CuentaBancaria>(`${this.apiUrl}/${id}`, cuentaBancaria, { headers })
       .pipe(
         catchError(this.handleError)
       );
@@ -48,41 +48,12 @@ export class CuentaBancariaService {
       );
   }
 
-
-
-  createCuentaBancaria(cuentaBancaria: CuentaBancaria): Observable<CuentaBancaria> {
+  getCuentasVenezolanas(): Observable<CuentaBancaria[]> {
     const headers = this.getHeaders();
-    return this.http.post<CuentaBancaria>(this.apiUrl, cuentaBancaria, { headers })
+    return this.http.get<CuentaBancaria[]>(`${this.apiUrl}/venezolanas`, { headers })
       .pipe(
         catchError(this.handleError)
       );
-  }
-
-  updateCuentaBancaria(id: number, cuentaBancaria: Partial<CuentaBancaria>): Observable<CuentaBancaria> {
-    const headers = this.getHeaders();
-
-    return this.getAllCuentasBancarias().pipe(
-      map(cuentas => cuentas.find(cuenta => cuenta.id === id)),
-      switchMap(existingCuenta => {
-        if (!existingCuenta) {
-          return throwError(new Error('Cuenta bancaria no encontrada.'));
-        }
-
-        const updateData = {
-          nombreBanco: cuentaBancaria.nombreBanco,
-          nombreCuenta: cuentaBancaria.nombreCuenta,
-          monto: cuentaBancaria.monto,
-          numCuenta: cuentaBancaria.numCuenta,
-          limiteCB: cuentaBancaria.limiteCB,
-          limiteMonto: cuentaBancaria.limiteMonto,
-        };
-
-        return this.http.put<CuentaBancaria>(`${this.apiUrl}/${id}`, updateData, { headers })
-          .pipe(
-            catchError(this.handleError)
-          );
-      })
-    );
   }
 
   private handleError(error: any) {
