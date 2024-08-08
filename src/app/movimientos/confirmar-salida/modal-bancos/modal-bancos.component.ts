@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Bancos } from '../../../interfaces/bancos';
-import { BancosService } from '../../../services/banco.service';
+import { CuentaBancaria } from '../../../interfaces/cuenta-bancaria';
+import { CuentaBancariaService } from '../../../services/cuenta-bancaria.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -15,29 +15,29 @@ import { MatSelectModule } from '@angular/material/select';
   styleUrls: ['./modal-bancos.component.css']
 })
 export class ModalBancosComponent implements OnInit {
-  bancos: Bancos[] = [];
-  selectedBanco: string | null = null;
+  cuentas: CuentaBancaria[] = [];
+  selectedCuenta: string | null = null;
 
   constructor(
     public dialogRef: MatDialogRef<ModalBancosComponent>,
-    private bancosService: BancosService,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any, // Para recibir el ID de la venta
+    private cuentaBancariaService: CuentaBancariaService
   ) {}
 
   ngOnInit(): void {
-    this.bancosService.getBancosVenezolanos().subscribe(
-      (data: Bancos[]) => {
-        this.bancos = data;
+    this.cuentaBancariaService.getCuentasVenezolanas().subscribe(
+      (data: CuentaBancaria[]) => {
+        this.cuentas = data;
       },
       (error) => {
-        console.error('Error al cargar los bancos', error);
+        console.error('Error al cargar las cuentas venezolanas', error);
       }
     );
   }
 
   onConfirm(): void {
-    if (this.selectedBanco) {
-      this.dialogRef.close({ bancoId: this.selectedBanco, venta: this.data.venta });
+    if (this.selectedCuenta) {
+      this.dialogRef.close({ cuentaId: this.selectedCuenta, ventaId: this.data.ventaId });
     }
   }
 
