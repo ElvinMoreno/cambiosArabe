@@ -13,10 +13,9 @@ import { VentaPagos } from '../../interfaces/venta-pagos';
 @Component({
   selector: 'app-confirmar-salida',
   standalone: true,
-  imports: [MatButtonModule, MatTableModule,
-    CommonModule, MatDialogModule, MatIconModule, MatCardModule],
+  imports: [MatButtonModule, MatTableModule, CommonModule, MatDialogModule, MatIconModule, MatCardModule],
   templateUrl: './confirmar-salida.component.html',
-  styleUrl: './confirmar-salida.component.css'
+  styleUrls: ['./confirmar-salida.component.css']
 })
 export class ConfirmarSalidaComponent implements OnInit {
   displayedColumns: string[] = ['cuentaBs', 'cuentaCop', 'metodoPago', 'cliente', 'tasa', 'fecha', 'bolivares', 'pesos'];
@@ -45,6 +44,7 @@ export class ConfirmarSalidaComponent implements OnInit {
     this.ventaBsService.getVentasSalidas().subscribe(
       (data: VentaPagos[]) => {
         this.dataSource = data;
+        console.log(data);
       },
       (error) => {
         console.error('Error al cargar las ventas:', error);
@@ -55,21 +55,21 @@ export class ConfirmarSalidaComponent implements OnInit {
   openConfirmDialog(element: VentaPagos): void {
     const dialogRef = this.dialog.open(ConfirmarAccionComponent, {
       data: {
-        message: `Desea confirmar ${element.pesosRecibidos} que ha recibido  en la cuenta
-        ${element.nombreCuentaCop}`,
-        accion: 'Entrada',
+        message: `¿Desea confirmar que realizó la transacción?`,
+        accion: 'Salida',
         venta: element
       }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.confirmarVentaSalida(result);
+        this.confirmarVentaSalida(element);
       }
     });
   }
 
   confirmarVentaSalida(venta: VentaPagos): void {
+    console.log('Cuerpo de la petición:', venta);  // Agregado para ver el cuerpo de la petición
     this.ventaBsService.confirmarVentaSalida(venta).subscribe(
       response => {
         console.log('Venta confirmada', response);
@@ -81,4 +81,3 @@ export class ConfirmarSalidaComponent implements OnInit {
     );
   }
 }
-

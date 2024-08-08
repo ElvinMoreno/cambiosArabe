@@ -39,7 +39,7 @@ export class BancolombiaComponent implements OnInit {
   @Output() confirmar = new EventEmitter<any>();
 
   form: FormGroup;
-  currentLabel = 'Cantidad bolívares';
+  currentLabel = 'Cantidad pesos';  // Cambiado a 'Cantidad pesos'
   currentType = 'number';
   cuentasVenezolanas: any[] = [];
   cuentasColombianas: any[] = [];
@@ -49,6 +49,7 @@ export class BancolombiaComponent implements OnInit {
   tasas: Tasa[] = [];
   isSubmitting = false;
   isTasaEditable = false;
+  isTasaVisible = false;
   tasaLabel = 'Tasa';
 
   constructor(
@@ -65,7 +66,6 @@ export class BancolombiaComponent implements OnInit {
       nombreCuenta: ['', Validators.required],
       numeroCuenta: ['', Validators.required],
       fecha: ['', Validators.required],
-      // cuentaBs: ['', Validators.required],
       tipoPago: ['', Validators.required],
       conversionAutomatica: [{ value: '', disabled: true }, Validators.required],
       comision: ['', Validators.required],
@@ -207,6 +207,7 @@ export class BancolombiaComponent implements OnInit {
 
   makeTasaEditable() {
     this.isTasaEditable = true;
+    this.isTasaVisible = true;  // Mostrar el campo de "tasa"
     this.tasaLabel = 'Tasa especial';
     this.form.get('tasa')?.enable();
   }
@@ -242,11 +243,11 @@ export class BancolombiaComponent implements OnInit {
       metodoPagoId: parseInt(formValues.tipoPago),
       comision: parseFloat(formValues.comision),
       tasaVenta: parseFloat(this.form.get('tasa')?.value),
-      nombreCuenta:  formValues.nombreCuenta,
+      nombreCuenta: formValues.nombreCuenta,
       cedula: formValues.cedula,
       numeroCuenta: formValues.numeroCuenta,
       banco: formValues.nombreBanco,
-      enntrada: false,
+      entrada: false,
       salida: false
     };
 
@@ -266,7 +267,6 @@ export class BancolombiaComponent implements OnInit {
     });
     console.log(ventaData);
     return ventaData;
-
   }
 
   onCancelar() {

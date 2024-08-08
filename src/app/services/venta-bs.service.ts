@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, catchError, tap, throwError, finalize } from 'rxjs';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError, tap, finalize } from 'rxjs/operators';
 import { VentaBs } from '../interfaces/venta-bs';
 import { appsetting } from '../settings/appsetting';
 import { VentaPagos } from '../interfaces/venta-pagos';
@@ -67,17 +68,17 @@ export class VentaBsService {
 
   confirmarVentaEntrada(dto: VentaPagos): Observable<string> {
     const headers = this.getHeaders();
-    return this.http.post<string>(`${this.apiUrl}/entrada`, dto, { headers })
+    return this.http.post(`${this.apiUrl}/entrada`, dto, { headers, responseType: 'text' })
       .pipe(catchError(this.handleError));
   }
 
   confirmarVentaSalida(dto: VentaPagos): Observable<string> {
     const headers = this.getHeaders();
-    return this.http.post<string>(`${this.apiUrl}/salida`, dto, { headers })
+    return this.http.post(`${this.apiUrl}/salida`, dto, { headers, responseType: 'text' })
       .pipe(catchError(this.handleError));
   }
 
-  private handleError(error: any) {
+  private handleError(error: HttpErrorResponse) {
     console.error('An error occurred:', error);
     return throwError(() => new Error('Ocurrió un error en la solicitud. Por favor, inténtalo de nuevo.'));
   }

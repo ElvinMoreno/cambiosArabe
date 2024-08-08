@@ -62,7 +62,7 @@ export class ConfirmarEntradaComponent implements OnInit {
   openConfirmDialog(element: VentaPagos): void {
     const dialogRef = this.dialog.open(ConfirmarAccionComponent, {
       data: {
-        message: `Desea confirmar ${element.pesosRecibidos} que ha recibido  en la cuenta ${element.nombreCuentaCop}`,
+        message: `¿Desea confirmar ${element.pesosRecibidos} que ha recibido en la cuenta ${element.nombreCuentaCop}?`,
         accion: 'Entrada',
         venta: element
       }
@@ -70,13 +70,13 @@ export class ConfirmarEntradaComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.confirmarVentaEntrada(result);
+        this.confirmarVentaEntrada(element);
       }
     });
   }
 
   confirmarVentaEntrada(venta: VentaPagos): void {
-
+    console.log('Cuerpo de la petición:', venta);  // Agregado para ver el cuerpo de la petición
     this.ventaBsService.confirmarVentaEntrada(venta).subscribe(
       response => {
         console.log('Venta confirmada', response);
