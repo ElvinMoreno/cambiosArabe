@@ -1,7 +1,18 @@
 <h1>Tasa Bolivares</h1>
-<button (click)="openActualizarTasaDialog()" class="btn-actualizar-tasa">Actualizar Tasa</button>
-<button (click)="downloadTableAsImage()" class="btn-actualizar-tasa">Descargar Imagen</button>
-<button (click)="downloadTableAsVideo()" class="btn-actualizar-tasa">Descargar Video</button>
+<div class="button-group-horizontal">
+  <button (click)="openActualizarTasaDialog()" class="btn-actualizar-tasa">
+    <mat-icon>update</mat-icon>
+    <span class="btn-text">Actualizar Tasa</span>
+  </button>
+  <button (click)="downloadTableAsImage()" class="btn-actualizar-tasa">
+    <mat-icon>image</mat-icon>
+    <span class="btn-text">Descargar Imagen</span>
+  </button>
+  <button (click)="downloadTableAsVideo()" class="btn-actualizar-tasa">
+    <mat-icon>videocam</mat-icon>
+    <span class="btn-text">Descargar Video</span>
+  </button>
+</div>
 
 <div class="container" #captureElement>
   <table class="table table-striped">
@@ -29,13 +40,16 @@
   </table>
   <div class="actions">
     <button *ngIf="!isEditable" (click)="editItem()" class="btn btn-warning btn-sm">
-      <mat-icon>edit</mat-icon> Editar
+      <mat-icon>edit</mat-icon>
+      <span class="btn-text">Editar</span>
     </button>
     <button *ngIf="isEditable" (click)="saveItem()" class="btn btn-success btn-sm">
-      <mat-icon>save</mat-icon> Guardar
+      <mat-icon>save</mat-icon>
+      <span class="btn-text">Guardar</span>
     </button>
     <button *ngIf="isEditable" (click)="cancelEdit()" class="btn btn-secondary btn-sm">
-      <mat-icon>cancel</mat-icon> Cancelar
+      <mat-icon>cancel</mat-icon>
+      <span class="btn-text">Cancelar</span>
     </button>
   </div>
 </div>

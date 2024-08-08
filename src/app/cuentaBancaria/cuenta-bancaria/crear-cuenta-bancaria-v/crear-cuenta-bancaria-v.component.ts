@@ -6,13 +6,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { TipoCuentaBancaria } from '../../../interfaces/tipo-cuenta-bancaria';
 import { CuentaBancariaService } from '../../../services/cuenta-bancaria.service';
-import { TipoCuentaBancariaService } from '../../../services/tipo-de-cuenta-bancaria.service';
-import { CrearCuentaBancariaComponent } from '../crear-cuenta-bancaria/crear-cuenta-bancaria.component';
-import { MatDialogRef } from '@angular/material/dialog';
+import { BancosService } from '../../../services/banco.service';
+import { Bancos } from '../../../interfaces/bancos';
 import { CuentaBancaria } from '../../../interfaces/cuenta-bancaria';
 import { catchError, finalize, of } from 'rxjs';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-crear-cuenta-bancaria-v',
@@ -31,26 +30,18 @@ import { catchError, finalize, of } from 'rxjs';
 })
 export class CrearCuentaBancariaVComponent implements OnInit {
   form: FormGroup;
-  tiposCuenta: TipoCuentaBancaria[] = [];
-  bancos = [
-    'Banco de Venezuela',
-    'BBVA',
-    'Banesco',
-    'Banco Mercantil'
-  ];
+  bancos: Bancos[] = [];
   otroBancoSeleccionado = false;
   isLoading = false;
   errorMessage: string | null = null;
-  bolivaresTipoCuenta: TipoCuentaBancaria | null = null;
 
   constructor(
     private fb: FormBuilder,
     private cuentaBancariaService: CuentaBancariaService,
-    private tipoCuentaBancariaService: TipoCuentaBancariaService,
-    public dialogRef: MatDialogRef<CrearCuentaBancariaComponent>
+    private bancosService: BancosService,
+    public dialogRef: MatDialogRef<CrearCuentaBancariaVComponent>
   ) {
     this.form = this.fb.group({
-      tipocuenta: [{ value: null, disabled: true }, Validators.required],
       bancoSeleccionado: [null, Validators.required],
       otroBanco: [''],
       nombreCuenta: ['', Validators.required],
@@ -63,7 +54,7 @@ export class CrearCuentaBancariaVComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadTiposCuentaBancaria();
+    this.loadBancosVenezolanos();
 
     this.form.get('bancoSeleccionado')?.valueChanges.subscribe(value => {
       this.otroBancoSeleccionado = value === 'Otro';
@@ -76,20 +67,18 @@ export class CrearCuentaBancariaVComponent implements OnInit {
     });
   }
 
-  loadTiposCuentaBancaria(): void {
-    this.tipoCuentaBancariaService.getAllTiposCuentaBancaria().subscribe(
-      (data: TipoCuentaBancaria[]) => {
-        this.tiposCuenta = data;
-        this.bolivaresTipoCuenta = this.tiposCuenta.find(tipo => tipo.divisa === 'Bolivares') || null;
-        if (this.bolivaresTipoCuenta) {
-          // Asignar el valor del campo tipocuenta con el objeto completo
-          this.form.patchValue({ tipocuenta: this.bolivaresTipoCuenta });
-        }
-      },
-      (error) => {
-        console.error('Error al cargar los tipos de cuenta bancaria', error);
-      }
-    );
+  loadBancosVenezolanos() {
+    this.bancosService.getBancosVenezolanos()
+      .pipe(
+        catchError(error => {
+          console.error('Error al cargar los bancos venezolanos:', error);
+          this.errorMessage = 'Ocurrió un error al cargar los bancos venezolanos. Por favor, inténtalo de nuevo.';
+          return of([]);
+        })
+      )
+      .subscribe(data => {
+        this.bancos = data;
+      });
   }
 
   onConfirmar(): void {
@@ -97,15 +86,10 @@ export class CrearCuentaBancariaVComponent implements OnInit {
       this.isLoading = true;
       this.errorMessage = null;
 
-      // Habilitar el campo temporalmente para obtener el valor
-      this.form.get('tipocuenta')?.enable();
       const formValue = this.form.getRawValue();
-      this.form.get('tipocuenta')?.disable(); // Deshabilitar el campo nuevamente
 
-      // Crear el objeto nuevaCuenta
       const nuevaCuenta: CuentaBancaria = {
         id: 0,  // Se asume que el ID será generado por el backend
-        tipocuenta: formValue.tipocuenta,
         nombreBanco: this.otroBancoSeleccionado ? formValue.otroBanco : formValue.bancoSeleccionado,
         nombreCuenta: formValue.nombreCuenta,
         monto: formValue.monto,
@@ -114,8 +98,8 @@ export class CrearCuentaBancariaVComponent implements OnInit {
         limiteMonto: formValue.limiteMonto,
         responsabe: formValue.responsable
       };
-      console.log('Datos enviados:', nuevaCuenta);  // Log para verificar los datos enviados
 
+      console.log('Datos enviados:', nuevaCuenta);  // Log para verificar los datos enviados
 
       this.cuentaBancariaService.createCuentaBancaria(nuevaCuenta)
         .pipe(

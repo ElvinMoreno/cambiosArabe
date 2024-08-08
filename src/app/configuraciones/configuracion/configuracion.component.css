@@ -57,5 +57,9 @@ button {
     gap: 15px;
     align-items: center; /* Centra los botones verticalmente */
   }
+
+  .container{
+    margin-top: 2rem;
+  }
 }
 

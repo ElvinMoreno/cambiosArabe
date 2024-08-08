@@ -1,19 +1,25 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTabsModule } from '@angular/material/tabs';
+import { Router } from '@angular/router';
 import { DescripcionComponent } from './switchbutton/descripcion/descripcion.component';
 import { GastosComponent } from './switchbutton/gastos/gastos.component';
-import { Router } from '@angular/router';
 import { ProveedorComponent } from '../../usuarios/proveedor/proveedor.component';
 import { ClienteComponent } from '../../usuarios/cliente/cliente.component';
 
 @Component({
   selector: 'app-configuracion',
   standalone: true,
-  imports: [CommonModule, MatButtonModule,
-    DescripcionComponent, GastosComponent,
-  MatButtonModule,
-  ProveedorComponent, ClienteComponent],
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    MatTabsModule,
+    DescripcionComponent,
+    GastosComponent,
+    ProveedorComponent,
+    ClienteComponent
+  ],
   templateUrl: './configuracion.component.html',
   styleUrls: ['./configuracion.component.css']
 })
@@ -21,17 +27,15 @@ export class ConfiguracionComponent {
 
   constructor(private router: Router) {}
 
-  navegar(ruta: string) {
-    this.router.navigate([ruta]);
-  }
+  selectedIndex: number = 0;
   vistaActual: 'descripcion' | 'gastos' | 'proveedor' | 'cliente' = 'descripcion';
+
   ngOnInit() {
-    // La vista 'compras' ya está establecida por defecto
+    // La vista 'descripcion' ya está establecida por defecto
   }
 
-  cambiarVista(vista: 'descripcion' | 'gastos'| 'proveedor' | 'cliente') {
-    this.vistaActual = vista;
-
+  cambiarVista(index: number) {
+    const vistas = ['descripcion', 'gastos', 'proveedor', 'cliente'];
+    this.vistaActual = vistas[index] as 'descripcion' | 'gastos' | 'proveedor' | 'cliente';
   }
-
 }

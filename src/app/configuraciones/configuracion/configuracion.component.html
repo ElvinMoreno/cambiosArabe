@@ -1,45 +1,19 @@
-<div class="boton-cuentas-bancarias">
-  <div class="container">
-    <div class="buttons-container">
-      <div class="button-align">
-        <button mat-stroked-button class="btn"
-          [ngClass]="{'btn-active': vistaActual === 'descripcion',
-          'btn-inactive': vistaActual !== 'descripcion'}"
-          (click)="cambiarVista('descripcion')">
-          Descripciones
-        </button>
-      </div>
-      <div class="button-align">
-        <button mat-stroked-button class="btn"
-          [ngClass]="{'btn-active': vistaActual === 'gastos',
-          'btn-inactive': vistaActual !== 'gastos'}"
-          (click)="cambiarVista('gastos')">
-          Gastos
-        </button>
-      </div>
-      <div class="button-align">
-        <button mat-stroked-button class="btn"
-          [ngClass]="{'btn-active': vistaActual === 'proveedor',
-          'btn-inactive': vistaActual !== 'proveedor'}"
-          (click)="cambiarVista('proveedor')">
-          Proveedores
-        </button>
-      </div>
-      <div class="button-align">
-        <button mat-stroked-button class="btn"
-          [ngClass]="{'btn-active': vistaActual === 'cliente',
-          'btn-inactive': vistaActual !== 'cliente'}"
-          (click)="cambiarVista('cliente')">
-          Clientes
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
+<div class="container">
+  <mat-tab-group [(selectedIndex)]="selectedIndex" (selectedIndexChange)="cambiarVista($event)">
+    <mat-tab label="Descripciones">
+    </mat-tab>
+    <mat-tab label="Gastos">
+    </mat-tab>
+    <mat-tab label="Proveedores">
+    </mat-tab>
+    <mat-tab label="Clientes">
+    </mat-tab>
+  </mat-tab-group>
 
-<ng-container [ngSwitch]="vistaActual">
-  <descripcion *ngSwitchCase="'descripcion'"></descripcion>
-  <gastos *ngSwitchCase="'gastos'"></gastos>
-  <proveedor *ngSwitchCase="'proveedor'"></proveedor>
-  <cliente *ngSwitchCase="'cliente'"></cliente>
-</ng-container>
+  <ng-container [ngSwitch]="vistaActual">
+    <descripcion *ngSwitchCase="'descripcion'"></descripcion>
+    <gastos *ngSwitchCase="'gastos'"></gastos>
+    <proveedor *ngSwitchCase="'proveedor'"></proveedor>
+    <cliente *ngSwitchCase="'cliente'"></cliente>
+  </ng-container>
+</div>

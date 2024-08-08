@@ -23,7 +23,7 @@ export const navbarData = [
     },
     {
         routerLink:'cuentaBancaria',
-        icon:'fa-solid fa-building-user',
+        icon:'fa-solid fa-hand-holding-dollar',
         label: 'Saldos'
     },
     {

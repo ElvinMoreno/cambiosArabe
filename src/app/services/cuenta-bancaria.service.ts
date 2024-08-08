@@ -75,7 +75,6 @@ export class CuentaBancariaService {
           numCuenta: cuentaBancaria.numCuenta,
           limiteCB: cuentaBancaria.limiteCB,
           limiteMonto: cuentaBancaria.limiteMonto,
-          tipocuenta: existingCuenta.tipocuenta
         };
 
         return this.http.put<CuentaBancaria>(`${this.apiUrl}/${id}`, updateData, { headers })

@@ -2,15 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { CuentaBancaria } from '../interfaces/cuenta-bancaria';
-import { Movimiento} from '../interfaces/movimiento';
+import { Bancos } from '../interfaces/bancos';
 import { appsetting } from '../settings/appsetting';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CajaService {
-  private apiUrl = `${appsetting.apiUrl}caja`;
+export class BancosService {
+  private apiUrl = `${appsetting.apiUrl}bancos`;
 
   constructor(private http: HttpClient) { }
 
@@ -25,17 +24,25 @@ export class CajaService {
     });
   }
 
-  getCajaDatos(): Observable<CuentaBancaria> {
+  getAllBancos(): Observable<Bancos[]> {
     const headers = this.getHeaders();
-    return this.http.get<CuentaBancaria>(this.apiUrl, { headers })
+    return this.http.get<Bancos[]>(this.apiUrl, { headers })
       .pipe(
         catchError(this.handleError)
       );
   }
 
-  getMovimientosCaja(): Observable<Movimiento[]> {
+  getBancosColombianos(): Observable<Bancos[]> {
     const headers = this.getHeaders();
-    return this.http.get<Movimiento[]>(`${this.apiUrl}/movimientos`, { headers })
+    return this.http.get<Bancos[]>(`${this.apiUrl}/colombia`, { headers })
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  getBancosVenezolanos(): Observable<Bancos[]> {
+    const headers = this.getHeaders();
+    return this.http.get<Bancos[]>(`${this.apiUrl}/venezuela`, { headers })
       .pipe(
         catchError(this.handleError)
       );
