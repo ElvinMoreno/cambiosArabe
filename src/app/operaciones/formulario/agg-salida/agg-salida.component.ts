@@ -130,8 +130,7 @@ export class AggSalidaComponent implements OnInit {
       const formValue = this.form.value;
 
       // Crear la fecha en el formato correcto y asegurarse de que esté en UTC
-      const now = new Date();
-      const fecha = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate())).toISOString();
+
 
       const retiro: Retiro = {
         cuentaBancariaSalidaId: parseInt(formValue.destino, 10),
@@ -139,7 +138,7 @@ export class AggSalidaComponent implements OnInit {
         metodoPagoId: parseInt(formValue.metodoPago, 10),
         descripcionId: parseInt(formValue.descripcion, 10),
         monto: formValue.monto,
-        fecha // La fecha está en formato ISO UTC
+         // La fecha está en formato ISO UTC
       };
 
       console.log(retiro);
