@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
@@ -29,7 +29,7 @@ interface SideNavToggle {
   templateUrl: './content-polania.component.html',
   styleUrls: ['./content-polania.component.css']
 })
-export class ContentPolaniaComponent implements OnInit, AfterViewInit {
+export class ContentPolaniaComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('sideNav', { static: false }) sideNav!: ElementRef;
 
   opened = true;
@@ -46,6 +46,10 @@ export class ContentPolaniaComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.setupDocumentClickListener();
+  }
+
+  ngOnDestroy(): void {
+    this.removeDocumentClickListener();
   }
 
   onToggleSideNav(data: SideNavToggle): void {
@@ -70,10 +74,14 @@ export class ContentPolaniaComponent implements OnInit, AfterViewInit {
     document.addEventListener('click', this.onDocumentClick.bind(this));
   }
 
+  removeDocumentClickListener(): void {
+    document.removeEventListener('click', this.onDocumentClick.bind(this));
+  }
+
   onDocumentClick(event: Event): void {
     if (this.screenWidth <= 768 && this.opened) {
       const target = event.target as HTMLElement;
-      if (this.sideNav && !this.sideNav.nativeElement.contains(target)) {
+      if (this.sideNav && this.sideNav.nativeElement && !this.sideNav.nativeElement.contains(target)) {
         this.closeSideNav();
       }
     }
