@@ -9,7 +9,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { CuentaBancariaService } from '../../../services/cuenta-bancaria.service';
 import { BancosService } from '../../../services/banco.service';
 import { Bancos } from '../../../interfaces/bancos';
-import { CuentaBancaria } from '../../../interfaces/cuenta-bancaria';
 import { catchError, finalize, of } from 'rxjs';
 import { MatDialogRef } from '@angular/material/dialog';
 
@@ -87,16 +86,17 @@ export class CrearCuentaBancariaVComponent implements OnInit {
       this.errorMessage = null;
 
       const formValue = this.form.getRawValue();
+      const selectedBanco = this.bancos.find(banco => banco.nombreBanco === formValue.bancoSeleccionado);
 
-      const nuevaCuenta: CuentaBancaria = {
-        id: 0,  // Se asume que el ID será generado por el backend
-        nombreBanco: this.otroBancoSeleccionado ? formValue.otroBanco : formValue.bancoSeleccionado,
+      const nuevaCuenta = {
+        tipocuenta: { id: 2 }, // Asumiendo que este es el ID para cuentas venezolanas
+        banco: { id: selectedBanco ? selectedBanco.id : null },
         nombreCuenta: formValue.nombreCuenta,
+        responsable: formValue.responsable,
         monto: formValue.monto,
         numCuenta: formValue.numCuenta,
         limiteCB: formValue.limiteCB,
-        limiteMonto: formValue.limiteMonto,
-        responsabe: formValue.responsable
+        limiteMonto: formValue.limiteMonto
       };
 
       console.log('Datos enviados:', nuevaCuenta);  // Log para verificar los datos enviados
