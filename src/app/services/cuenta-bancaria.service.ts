@@ -32,19 +32,7 @@ export class CuentaBancariaService {
       );
   }
 
-<<<<<<< HEAD
-  getCuentaBancariaById(id: number): Observable<CuentaBancaria> {
-    const headers = this.getHeaders();
-    return this.http.get<CuentaBancaria>(`${this.apiUrl}/${id}`, { headers })
-      .pipe(
-        catchError(this.handleError)
-      );
-  }
-
-  getCuentasVenezolanas(): Observable<CuentaBancaria[]> {
-=======
   updateCuentaBancaria(id: number, cuentaBancaria: Partial<CuentaBancaria>): Observable<CuentaBancaria> {
->>>>>>> dcec2b4db084cee3e684540accbe8ef397222310
     const headers = this.getHeaders();
     return this.http.put<CuentaBancaria>(`${this.apiUrl}/${id}`, cuentaBancaria, { headers })
       .pipe(

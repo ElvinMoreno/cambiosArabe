@@ -8,10 +8,8 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { ConfirmarAccionComponent } from '../../confirmar-accion/confirmar-accion.component';
-import { ModalBancosComponent } from './modal-bancos/modal-bancos.component';
 import { VentaPagos } from '../../interfaces/venta-pagos';
-import { VentaBs } from '../../interfaces/venta-bs';
-import { PartialVentaBs } from '../../interfaces/partial-venta-bs';
+import { ModalBancosComponent } from './modal-bancos/modal-bancos.component';
 
 @Component({
   selector: 'app-confirmar-salida',
@@ -71,40 +69,6 @@ export class ConfirmarSalidaComponent implements OnInit {
     });
   }
 
-  openBancosDialog(element: VentaPagos): void {
-    const dialogRef = this.dialog.open(ModalBancosComponent, {
-      data: { venta: element }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.updateVentaBanco(result.venta.id, result.bancoId);
-      }
-    });
-  }
-
-  updateVentaBanco(ventaId: number, bancoId: string): void {
-    this.ventaBsService.getVentaBsById(ventaId).subscribe(
-      (venta: VentaBs) => {
-        const updatedVenta: PartialVentaBs = {
-          cuentaBancariaBolivares: { id: bancoId }
-        };
-        this.ventaBsService.updateVentaBs(ventaId, updatedVenta as unknown as VentaBs).subscribe(
-          response => {
-            console.log('Venta actualizada con banco seleccionado', response);
-            this.loadVentas();  // Recargar las ventas después de la actualización
-          },
-          error => {
-            console.error('Error al actualizar la venta con el banco seleccionado', error);
-          }
-        );
-      },
-      error => {
-        console.error('Error al obtener la venta', error);
-      }
-    );
-  }
-
   confirmarVentaSalida(venta: VentaPagos): void {
     console.log('Cuerpo de la petición:', venta);  // Agregado para ver el cuerpo de la petición
     this.ventaBsService.confirmarVentaSalida(venta).subscribe(
@@ -116,5 +80,15 @@ export class ConfirmarSalidaComponent implements OnInit {
         console.error('Error al confirmar la venta', error);
       }
     );
+  }
+
+  openBancosDialog(): void {
+    const dialogRef = this.dialog.open(ModalBancosComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.log('Banco seleccionado:', result); // Puedes manejar el resultado aquí
+      }
+    });
   }
 }
