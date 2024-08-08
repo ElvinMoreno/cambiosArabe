@@ -169,6 +169,12 @@ h2 {
   padding: 16px;
 }
 
+.balance-button {
+  margin-right: auto; /* Move to the left */
+  background-color: hsl(220, 100%, 68%);
+  color: white;
+}
+
 .check-button {
   background-color: green;
   color: white;

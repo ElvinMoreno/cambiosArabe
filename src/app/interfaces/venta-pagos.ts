@@ -1,4 +1,5 @@
 export interface VentaPagos {
+  id?: number;  // Optional for updates, auto-generated for new records
   nombreCuentaCop: string;
   pesosRecibidos: number;
   nombreCuentaBs?: string;

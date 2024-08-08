@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { ConfirmarAccionComponent } from '../../confirmar-accion/confirmar-accion.component';
 import { VentaPagos } from '../../interfaces/venta-pagos';
+import { ModalBancosComponent } from './modal-bancos/modal-bancos.component';
 
 @Component({
   selector: 'app-confirmar-salida',
@@ -79,5 +80,15 @@ export class ConfirmarSalidaComponent implements OnInit {
         console.error('Error al confirmar la venta', error);
       }
     );
+  }
+
+  openBancosDialog(): void {
+    const dialogRef = this.dialog.open(ModalBancosComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.log('Banco seleccionado:', result); // Puedes manejar el resultado aquí
+      }
+    });
   }
 }
