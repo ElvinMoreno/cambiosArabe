@@ -1,0 +1,18 @@
+<div class="modal-overlay">
+  <div class="modal-content">
+    <p class="titulo">Realizar transferencia</p>
+    <div class="separator"></div>
+    <div class="form-group">
+      <label for="banco">Seleccione el banco del cual realizará la transferencia</label><br>
+      <mat-form-field>
+        <mat-select [(ngModel)]="selectedBanco" placeholder="Seleccione un banco">
+          <mat-option *ngFor="let banco of bancos" [value]="banco.id">{{ banco.nombreBanco }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="button-group">
+      <button class="btn-confirmar" (click)="onConfirm()">Aceptar</button>
+      <button class="btn-cancelar" (click)="onCancel()">Cancelar</button>
+    </div>
+  </div>
+</div>

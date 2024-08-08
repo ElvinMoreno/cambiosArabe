@@ -32,6 +32,14 @@ export class CuentaBancariaService {
       );
   }
 
+  getCuentaBancariaById(id: number): Observable<CuentaBancaria> {
+    const headers = this.getHeaders();
+    return this.http.get<CuentaBancaria>(`${this.apiUrl}/${id}`, { headers })
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
   getCuentasVenezolanas(): Observable<CuentaBancaria[]> {
     const headers = this.getHeaders();
     return this.http.get<CuentaBancaria[]>(`${this.apiUrl}/venezolanas`, { headers })

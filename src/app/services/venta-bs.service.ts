@@ -32,6 +32,12 @@ export class VentaBsService {
       .pipe(catchError(this.handleError));
   }
 
+  getVentaBsById(id: number): Observable<VentaBs> {
+    const headers = this.getHeaders();
+    return this.http.get<VentaBs>(`${this.apiUrl}/${id}`, { headers })
+      .pipe(catchError(this.handleError));
+  }
+
   saveVentaBs(dto: VentaBs): Observable<void> {
     if (this.isSaving) {
       return throwError(() => new Error('Solicitud ya en curso'));
@@ -52,6 +58,12 @@ export class VentaBsService {
           this.isSaving = false;
         })
       );
+  }
+
+  updateVentaBs(id: number, dto: VentaBs): Observable<VentaBs> {
+    const headers = this.getHeaders();
+    return this.http.put<VentaBs>(`${this.apiUrl}/${id}`, dto, { headers })
+      .pipe(catchError(this.handleError));
   }
 
   getVentasSalidas(): Observable<VentaPagos[]> {

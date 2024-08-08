@@ -1,27 +1,23 @@
-import { Cliente } from "./clientes";
-import { CuentaBancaria } from "./cuenta-bancaria";
-import { Descripcion } from "./descripcion";
-import { MetodoPago } from "./metodo-pago";
+import { Cliente } from './clientes';
+import { CuentaBancaria } from './cuenta-bancaria';
+import { MetodoPago } from './metodo-pago';
 
 export interface VentaBs {
   id?: number;
   cuentaBancariaBolivares: CuentaBancaria;
   cuentaBancariaPesos: CuentaBancaria;
-  descripcionId: Descripcion;
-  metodoPagoId: MetodoPago;
-  clienteId: Cliente;
-  tasaVenta: number | null;
+  metodoPago: MetodoPago;
+  cliente: Cliente;
+  tasaVenta?: number;
   fechaVenta: Date;
   referencia?: string;
   bolivaresVendidos?: number;
-  precioVentaBs: number;
-  comision?: number;
-  numeroCuenta: number;
   precio?: number;
+  comision?: number;
   nombreCuentaDestinatario?: string;
-  cedula?: string;
+  cedula?: number;
+  numeroCuenta?: number;
   banco?: string;
-  entrada: boolean;
-  salida: boolean;
-
+  entrada?: boolean;
+  salida?: boolean;
 }

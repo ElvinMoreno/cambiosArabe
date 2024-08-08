@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ConfirmarSalidaComponent } from './confirmar-salida.component';
+import { ModalBancosComponent } from './modal-bancos.component';
 
-describe('ConfirmarSalidaComponent', () => {
-  let component: ConfirmarSalidaComponent;
-  let fixture: ComponentFixture<ConfirmarSalidaComponent>;
+describe('ModalBancosComponent', () => {
+  let component: ModalBancosComponent;
+  let fixture: ComponentFixture<ModalBancosComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ConfirmarSalidaComponent]
+      imports: [ModalBancosComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ConfirmarSalidaComponent);
+    fixture = TestBed.createComponent(ModalBancosComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

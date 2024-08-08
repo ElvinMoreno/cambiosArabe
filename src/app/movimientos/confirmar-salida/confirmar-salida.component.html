@@ -58,21 +58,18 @@
 <div class="cards-container" *ngIf="isMobile">
   <mat-card *ngFor="let element of dataSource" class="card border-red">
     <mat-card-content>
-      <!-- <p><strong>Cuenta cop:</strong> {{element.cuentaBancariaPesos.nombreBanco}}</p> -->
-      <!-- <p><strong>Dueño de cuenta:</strong> {{element.nombreCuentaCop}}</p>
-      <p><strong>Pesos recibidos:</strong> {{element.pesosRecibidos}}</p> -->
-      <!-- <p><strong>Cuenta bs:</strong> {{element.cuentaBancariaBolivares.nombreBanco}}</p>
-      <p><strong>Bolivares enviar:</strong> {{element.bolivaresVendidos}}</p>-->
-
       <p><strong>Banco destino:</strong> {{element.bancoDestino}}</p>
       <p><strong>Cedula destino:</strong> {{element.cedulaDestino}}</p>
       <p><strong>Cuenta destinatario:</strong> {{element.numeroCuentaDestinatario}}</p>
       <p><strong>Nombre destinatario:</strong> {{element.nombreCuentaDestinatario}}</p>
+      <p><strong>Bolivares:</strong> {{element.bolivaresEnviar}}</p>
+      <p><strong>cuenta:</strong> {{element.nombreCuentaBs}}</p>
     </mat-card-content>
     <mat-card-actions>
-      <button mat-raised-button color="primary"
-      class="check-button"
-      (click)="openConfirmDialog(element)">
+      <button mat-raised-button class="balance-button" (click)="openBancosDialog(element)">
+        <mat-icon>account_balance</mat-icon>
+      </button>
+      <button mat-raised-button color="primary" class="check-button" (click)="openConfirmDialog(element)">
         <mat-icon>check</mat-icon>
       </button>
     </mat-card-actions>
