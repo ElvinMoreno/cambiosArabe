@@ -1,8 +1,15 @@
 <div class="container">
   <mat-tab-group [(selectedIndex)]="selectedTabIndex">
-    <mat-tab [label]="cajaLabel">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <div>
+          <span style="display: block; font-size: 0.75rem; color: #8BC94D;">Efectivo:</span>
+          <span>{{ cajaLabel }}</span>
+        </div>
+      </ng-template>
       <app-caja></app-caja>
     </mat-tab>
+    
     <mat-tab label="Cuentas">
       <app-listar-cuentas-colombianas></app-listar-cuentas-colombianas>
     </mat-tab>
