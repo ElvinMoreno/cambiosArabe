@@ -1,40 +1,20 @@
-<div class="agregar-proveedor">
-  <button mat-flat-button class="btn2 btn-agregar" (click)="openCrearCuentaBancaria()">
-    <mat-icon>add</mat-icon>
-  </button>
-</div>
+<div class="container">
+  <mat-tab-group [(selectedIndex)]="selectedTabIndex">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <div>
+          <span style="display: block; font-size: 0.75rem; color: #8BC94D;">Efectivo:</span>
+          <span>{{ cajaLabel }}</span>
+        </div>
+      </ng-template>
+      <app-caja></app-caja>
+    </mat-tab>
 
-<div class="card-container">
-  <mat-card *ngFor="let cuenta of cuentasBancarias"
-            [ngClass]="{'contentAmarillo': cuenta.nombreCuenta !== 'davidplata', 'contentDavidPlata': cuenta.nombreCuenta === 'davidplata'}"
-            class="example-card" appearance="outlined">
-    <mat-card-content>
-      <div class="card-grid">
-        <div class="grid-item grid-item-1-1">
-          <p>{{ cuenta.nombreCuenta }}</p>
-        </div>
-        <div class="grid-item grid-item-1-2">
-          <p>Cupos CV: {{ cuenta.limiteCB }}</p>
-        </div>
-        <div class="grid-item grid-item-2-1">
-          <p>Saldo Actual</p>
-        </div>
-        <div class="grid-item grid-item-2-2">
-          <p>Capacidad: {{ cuenta.limiteMonto }}</p>
-        </div>
-        <div class="grid-item grid-item-3-1">
-          <p>$ {{ cuenta.monto | number:'1.2-2' }}</p>
-        </div>
-        <div class="grid-item grid-item-4-1">
-          <p>{{ cuenta.nombreBanco }}</p>
-        </div>
-        <div class="grid-item grid-item-4-2">
-          <mat-icon class="settings-icon" (click)="openActualizarModal(cuenta)">settings</mat-icon>
-        </div>
-        <div class="grid-item grid-item-5-1-2">
-          <p>Responsable: {{ cuenta.responsable }}</p>
-        </div>
-      </div>
-    </mat-card-content>
-  </mat-card>
+    <mat-tab label="Cuentas">
+      <app-listar-cuentas-colombianas></app-listar-cuentas-colombianas>
+    </mat-tab>
+    <mat-tab label="Movimientos">
+    <app-listar-movimientos-colombianas></app-listar-movimientos-colombianas>
+    </mat-tab>
+  </mat-tab-group>
 </div>

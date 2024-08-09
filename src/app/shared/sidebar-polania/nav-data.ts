@@ -13,7 +13,7 @@ export const navbarData = [
 
     {
         routerLink:'tasa',
-        icon:'fa-solid fa-book-open',
+        icon:'fa-solid fa-mug-saucer',
         label: 'tasa'
     },
     {

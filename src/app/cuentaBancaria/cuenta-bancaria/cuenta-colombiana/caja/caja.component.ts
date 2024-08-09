@@ -1,10 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
-import { CajaService } from '../../../services/caja.service';
-import { CuentaBancaria } from '../../../interfaces/cuenta-bancaria';
-import { Movimiento} from '../../../interfaces/movimiento';
+import { CajaService } from '../../../../services/caja.service';
+import { Movimiento } from '../../../../interfaces/movimiento';
 import { catchError, of } from 'rxjs';
 
 @Component({
@@ -19,10 +18,12 @@ export class CajaComponent implements OnInit {
   movimientos: Movimiento[] = [];
   errorMessage: string | null = null;
   displayedColumns: string[] = ['hora', 'tipoMovimiento', 'monto', 'descripcion', 'entrada'];
+  isMobile: boolean = false;
 
   constructor(private cajaService: CajaService) { }
 
   ngOnInit(): void {
+    this.checkScreenSize(); // Inicializa la detección de tamaño de pantalla
     this.cajaService.getCajaDatos()
       .pipe(
         catchError(error => {
@@ -48,5 +49,15 @@ export class CajaComponent implements OnInit {
       .subscribe(data => {
         this.movimientos = data;
       });
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event): void {
+    this.checkScreenSize();
+  }
+  
+
+  checkScreenSize() {
+    this.isMobile = window.innerWidth <= 768; // Consideramos 768px como el umbral para móviles
   }
 }

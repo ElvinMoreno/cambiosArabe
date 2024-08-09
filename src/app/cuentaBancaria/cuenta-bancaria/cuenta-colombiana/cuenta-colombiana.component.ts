@@ -1,71 +1,58 @@
-import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatTabsModule } from '@angular/material/tabs';
 import { MatCardModule } from '@angular/material/card';
-import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
-import { CuentaBancaria } from '../../../interfaces/cuenta-bancaria';
-import { CuentaBancariaService } from '../../../services/cuenta-bancaria.service';
-import { ActualizarCuentaBancariaComponent } from '../actualizar-cuenta-bancaria/actualizar-cuenta-bancaria.component';
-import { MatDialog } from '@angular/material/dialog';
-import { CrearCuentaBancariaComponent } from '../crear-cuenta-bancaria/crear-cuenta-bancaria.component';
+import { MatDividerModule } from '@angular/material/divider';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { ListarCuentasColombianasComponent } from './listar-cuentas-colombianas/listar-cuentas-colombianas.component';
+import { ListarMovimientosColombianasComponent } from './listar-movimientos-colombianas/listar-movimientos-colombianas.component';
+import { CajaComponent } from './caja/caja.component';
+import { CajaService } from '../../../services/caja.service';
+import { catchError, of } from 'rxjs';
 
 @Component({
   selector: 'app-cuenta-colombiana',
   standalone: true,
-  imports:[
+  imports: [
     MatCardModule,
     MatIconModule,
     MatDividerModule,
     CommonModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    MatTabsModule,
+    ListarCuentasColombianasComponent,
+    ListarMovimientosColombianasComponent,
+    CajaComponent // <- Asegúrate de importar MatTabsModule
+
   ],
   templateUrl: './cuenta-colombiana.component.html',
   styleUrls: ['./cuenta-colombiana.component.css']
 })
 export class CuentaColombianaComponent implements OnInit {
-  cuentasBancarias: CuentaBancaria[] = [];
+  selectedTabIndex = 0;  // Índice de la pestaña seleccionada
+  montoCaja: number | null = null;
 
-  constructor(private cuentaBancariaService: CuentaBancariaService, public dialog: MatDialog) {}
+  constructor(private cajaService: CajaService) {}
 
-  ngOnInit(): void {
-    this.loadCuentasColombianas();
+  ngOnInit() {
+    this.cajaService.getCajaDatos()
+      .pipe(
+        catchError(error => {
+          console.error('Error al obtener datos de la caja:', error);
+          return of(null);
+        })
+      )
+      .subscribe(data => {
+        if (data) {
+          this.montoCaja = data.monto;
+        }
+      });
   }
 
-  openCrearCuentaBancaria(): void {
-    const dialogRef = this.dialog.open(CrearCuentaBancariaComponent, {
-      width: '600px',
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.loadCuentasColombianas();  // Recargar la lista después de crear una cuenta
-      }
-    });
+  get cajaLabel(): string {
+    return this.montoCaja !== null ? `$${this.montoCaja}` : '$';
   }
 
-  loadCuentasColombianas(): void {
-    this.cuentaBancariaService.getCuentasColombianas().subscribe(
-      (data: CuentaBancaria[]) => {
-        this.cuentasBancarias = data;
-        console.log(data);
-      },
-      (error) => {
-        console.error('Error al obtener las cuentas bancarias colombianas:', error);
-      }
-    );
-  }
-
-  openActualizarModal(cuenta: CuentaBancaria): void {
-    const dialogRef = this.dialog.open(ActualizarCuentaBancariaComponent, {
-      width: '600px',
-      data: { cuentaBancaria: cuenta }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.loadCuentasColombianas();  // Recargar la lista después de actualizar
-      }
-    });
-  }
+  
 }

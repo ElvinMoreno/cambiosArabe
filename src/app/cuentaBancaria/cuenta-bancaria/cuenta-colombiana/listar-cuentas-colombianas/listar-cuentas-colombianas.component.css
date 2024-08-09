@@ -1,0 +1,231 @@
+.agregar-proveedor {
+    display: flex;
+    justify-content: flex-end; /* Mueve el botón al extremo derecho */
+    padding: 10px; /* Espacio alrededor del contenedor */
+    padding-right: 3rem;
+  }
+  
+  .btn-agregar {
+    background-color: #4a90e2;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+  
+  .btn-agregar:hover {
+    background-color: #357ABD;
+    transform: scale(1.1);
+  }
+  
+  .btn-agregar mat-icon {
+    font-size: 1.7rem; /* Ajusta el tamaño del ícono */
+    height: 24px;
+    width: 24px;
+    line-height: 24px;
+    margin-right: 0.2rem;
+  }
+  
+  .btn2 {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  /* Estilo card */
+  .card-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columnas */
+    gap: 20px; /* Espacio entre las cards */
+    justify-content: center;
+    padding: 20px;
+    background-color: #f7faff;
+  }
+  
+  .example-card {
+    width: 100%; /* Ancho completo por defecto */
+    max-width: 500px; /* Ajusta este valor según tus necesidades */
+    margin-bottom: 10px; /* Ajustado el margen inferior */
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    border-radius: 10px; /* Añadimos bordes redondeados */
+    cursor: pointer;
+  }
+  
+  .example-card:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    transform: translateY(-5px);
+  }
+  
+  .card-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    color: black;
+    font-family: "IBM Plex Sans", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+  }
+  
+  .grid-item {
+    padding: 4px; /* Reducido el padding dentro de las grid-items */
+  }
+  
+  .grid-item-1-1 {
+    grid-column: 1;
+    grid-row: 1;
+    margin-top: -0.5rem;
+  }
+  
+  .grid-item-1-2 {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: center;
+    margin-top: -0.5rem;
+  }
+  
+  .grid-item-2-1 {
+    grid-column: 1;
+    grid-row: 2;
+    font-size: 1.3rem; /* Ajustado el tamaño de la fuente */
+    font-weight: bold;
+    margin-bottom: -0.8rem;
+  }
+  
+  .grid-item-2-2 {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: center;
+  }
+  
+  .grid-item-3-1 {
+    grid-column: 1;
+    grid-row: 3;
+    font-size: 1.5rem; /* Ajustado el tamaño de la fuente */
+  }
+  
+  .grid-item-4-1 {
+    grid-column: 1;
+    grid-row: 4;
+    margin-bottom: -0.8rem;
+  }
+  
+  .grid-item-4-2 {
+    grid-column: 2;
+    grid-row: 5;
+    text-align: right;
+    margin-bottom: -0.8rem;
+  }
+  
+  .grid-item-5-1-2 {
+    grid-column: 1 / span 2;
+    grid-row: 5;
+    text-align: center;
+    margin-top: 0.5rem;
+  }
+  
+  .grid-item-5-1-1 {
+    grid-column: 1;
+    grid-row: 5;
+  }
+  
+  .settings-icon {
+    vertical-align: middle;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  
+  .settings-icon:hover {
+    color: #4a90e2;
+  }
+  
+  .contentDavidPlata {
+    background-color: #FF6D6D;
+    color: white;
+  }
+  
+  .contentAmarillo {
+    background-color: #FFE65D;
+    color: #333;
+  }
+  
+  mat-card-content {
+    padding: 8px; /* Ajustado el padding dentro del contenido del card */
+    border-radius: 0.5rem;
+  }
+  
+  mat-divider {
+    background-color: rgba(255, 255, 255, 0.2); /* Color del divider ajustado para mejor visibilidad */
+    margin: 8px 0; /* Ajustado el margen de los dividers */
+  }
+  
+  mat-card {
+    border-radius: 0.5rem;
+  }
+  
+  @media (max-width: 1024px) {
+    .card-container {
+      grid-template-columns: repeat(2, 1fr); /* 2 columnas en pantallas medianas */
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .card-container {
+      grid-template-columns: 1fr; /* 1 columna en pantallas pequeñas */
+      padding: 5px;
+    }
+  
+    .card-grid {
+      grid-template-columns: 1fr;
+    }
+  
+    .example-card {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+  
+    .grid-item-5-1-1 {
+      grid-column: 1;
+      text-align: left;
+      display: none;
+    }
+  
+    .grid-item-1-1,
+    .grid-item-1-2,
+    .grid-item-4-1,
+    .grid-item-3-1 {
+      grid-row: 1;
+      font-size: 1rem;
+    }
+  
+    .grid-item-1-1 {
+      grid-column: 1;
+    }
+  
+    .grid-item-1-2 {
+      grid-column: 2;
+      justify-self: end;
+    }
+  
+    .hide-on-mobile {
+      display: none;
+    }
+  
+    .grid-item-4-1 {
+      grid-column: 1;
+      grid-row: 2;
+    }
+  
+    .grid-item-3-1 {
+      grid-column: 2;
+      grid-row: 2;
+    }
+  
+    .grid-item-2-1,
+    .grid-item-2-2,
+    .grid-item-5-1-1 {
+      display: none;
+    }
+  }
+  
