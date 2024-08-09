@@ -1,0 +1,43 @@
+<div class="agregar-proveedor">
+    <button mat-flat-button class="btn2 btn-agregar" (click)="openCrearCuentaBancaria()">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+  
+  <div class="card-container">
+    <mat-card *ngFor="let cuenta of cuentasBancarias"
+              [ngClass]="{'contentAmarillo': cuenta.nombreCuenta !== 'davidplata', 'contentDavidPlata': cuenta.nombreCuenta === 'davidplata'}"
+              class="example-card" appearance="outlined">
+      <mat-card-content>
+        <div class="card-grid">
+          <div class="grid-item grid-item-1-1">
+            <p>{{ cuenta.nombreCuenta }}</p>
+          </div>
+          <div class="grid-item grid-item-1-2">
+            <p><span class="hide-on-mobile">Cupos CV:</span>{{ cuenta.limiteCB }}</p>
+        </div>
+        
+          <div class="grid-item grid-item-2-1">
+            <p>Saldo</p>
+          </div>
+          <div class="grid-item grid-item-2-2">
+            <p>Capacidad: {{ cuenta.limiteMonto }}</p>
+          </div>
+          <div class="grid-item grid-item-3-1">
+            <p>${{ cuenta.monto | number:'1.2-2' }}</p>
+          </div>
+          <div class="grid-item grid-item-4-1">
+            <p>{{ cuenta.nombreBanco }}</p>
+          </div>
+          <div class="grid-item grid-item-5-1-1">
+            <p>Responsable: {{ cuenta.responsable }}</p>
+          </div>
+          <div class="grid-item grid-item-4-2">
+            <mat-icon class="settings-icon" (click)="openActualizarModal(cuenta)">settings</mat-icon>
+          </div>
+          
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+

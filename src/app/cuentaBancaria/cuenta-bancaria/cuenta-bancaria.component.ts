@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTabsModule } from '@angular/material/tabs';
 import { CuentaColombianaComponent } from './cuenta-colombiana/cuenta-colombiana.component';
 import { CuentaVenezolanaComponent } from './cuenta-venezolana/cuenta-venezolana.component';
-import { CajaComponent } from './caja/caja.component';
+import { CajaComponent } from './cuenta-colombiana/caja/caja.component';
 import { CajaService } from '../../services/caja.service'; // Importar el servicio
 import { catchError, of } from 'rxjs';
 

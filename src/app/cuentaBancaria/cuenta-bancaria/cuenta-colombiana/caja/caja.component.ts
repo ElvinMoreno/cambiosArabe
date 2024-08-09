@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
-import { CajaService } from '../../../services/caja.service';
-import { CuentaBancaria } from '../../../interfaces/cuenta-bancaria';
-import { Movimiento} from '../../../interfaces/movimiento';
+import { CajaService } from '../../../../services/caja.service';
+import { CuentaBancaria } from '../../../../interfaces/cuenta-bancaria';
+import { Movimiento} from '../../../../interfaces/movimiento';
 import { catchError, of } from 'rxjs';
 
 @Component({
