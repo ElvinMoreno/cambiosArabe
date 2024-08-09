@@ -2,14 +2,26 @@
   <div class="modal-content">
     <p class="titulo">Realizar transferencia</p>
     <div class="separator"></div>
+
+    <!-- Selección de cuenta bancaria -->
     <div class="form-group">
       <label for="cuenta">Seleccione la cuenta bancaria para realizar la transferencia</label><br>
       <mat-form-field>
-        <mat-select [(ngModel)]="selectedCuenta" placeholder="Seleccione una cuenta">
+        <mat-select [(ngModel)]="selectedCuenta" placeholder="Seleccione una cuenta" required>
           <mat-option *ngFor="let cuenta of cuentas" [value]="cuenta.id">{{ cuenta.nombreBanco }} - {{ cuenta.nombreCuenta }}</mat-option>
         </mat-select>
       </mat-form-field>
     </div>
+
+    <!-- Campo de comisión -->
+    <div class="form-group">
+      <label for="comision">Comisión</label><br>
+      <mat-form-field>
+        <input matInput [(ngModel)]="comision" placeholder="Ingrese la comisión" required>
+      </mat-form-field>
+    </div>
+
+    <!-- Botones -->
     <div class="button-group">
       <button class="btn-confirmar" (click)="onConfirm()">Aceptar</button>
       <button class="btn-cancelar" (click)="onCancel()">Cancelar</button>
