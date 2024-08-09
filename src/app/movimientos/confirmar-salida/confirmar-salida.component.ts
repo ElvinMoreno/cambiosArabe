@@ -10,6 +10,7 @@ import { MatCardModule } from '@angular/material/card';
 import { ConfirmarAccionComponent } from '../../confirmar-accion/confirmar-accion.component';
 import { VentaPagos } from '../../interfaces/venta-pagos';
 import { ModalBancosComponent } from './modal-bancos/modal-bancos.component';
+import { VentaBs } from '../../interfaces/venta-bs';
 
 @Component({
   selector: 'app-confirmar-salida',
@@ -82,13 +83,44 @@ export class ConfirmarSalidaComponent implements OnInit {
     );
   }
 
-  openBancosDialog(): void {
-    const dialogRef = this.dialog.open(ModalBancosComponent);
+  openBancosDialog(element: VentaPagos): void {
+    const dialogRef = this.dialog.open(ModalBancosComponent, {
+      data: { ventaId: element.id }
+    });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        console.log('Banco seleccionado:', result); // Puedes manejar el resultado aquí
+        this.ventaBsService.getVentaBsById(result.ventaId).subscribe(
+          (venta: VentaBs) => {
+            // Actualizar la cuenta bancaria venezolana seleccionada
+            const updatedVenta: VentaBs = {
+              ...venta,
+              cuentaBancariaBolivares: {
+                ...venta.cuentaBancariaBolivares,
+                id: result.cuentaId
+              }
+            };
+            this.updateVentaBanco(result.ventaId, updatedVenta);
+          },
+          error => {
+            console.error('Error al obtener la venta por ID', error);
+          }
+        );
       }
     });
   }
+
+  updateVentaBanco(ventaId: number, updatedVenta: VentaBs): void {
+    this.ventaBsService.updateVentaBs(ventaId, updatedVenta).subscribe(
+      response => {
+        console.log('Venta actualizada con la cuenta bancaria seleccionada', response);
+        this.loadVentas();  // Recargar las ventas después de la actualización
+      },
+      error => {
+        console.error('Error al actualizar la venta con la cuenta bancaria seleccionada', error);
+      }
+    );
+  }
+
+
 }

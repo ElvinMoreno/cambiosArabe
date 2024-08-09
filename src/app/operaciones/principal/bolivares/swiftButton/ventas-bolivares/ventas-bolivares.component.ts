@@ -66,6 +66,10 @@ export class VentasBolivaresComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      // Siempre recargar las ventas cuando se cierra el diálogo
+      this.loadVentas();
+
+      // Si se confirmó una nueva venta, guardarla
       if (result) {
         this.onConfirmar(result);
       }
