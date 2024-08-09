@@ -80,7 +80,7 @@ export class CrearCuentaBancariaComponent implements OnInit {
         tipocuenta: { id: 1 }, // Asumiendo que este es el ID para cuentas colombianas
         banco: { id: selectedBanco ? selectedBanco.id : null },
         nombreCuenta: formValue.nombreCuenta,
-        responsabe: formValue.responsable,
+        responsable: formValue.responsable,
         monto: formValue.monto,
         numCuenta: formValue.numCuenta,
         limiteCB: formValue.limiteCB,
