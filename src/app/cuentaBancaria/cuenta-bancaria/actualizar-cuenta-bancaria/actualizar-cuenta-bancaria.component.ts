@@ -83,6 +83,8 @@ export class ActualizarCuentaBancariaComponent implements OnInit {
           }),
           finalize(() => this.isLoading = false)
         )
+
+
         .subscribe(
           result => {
             if (result !== null) {
@@ -90,6 +92,7 @@ export class ActualizarCuentaBancariaComponent implements OnInit {
             }
           }
         );
+        console.log(updatedCuenta);
     }
   }
 

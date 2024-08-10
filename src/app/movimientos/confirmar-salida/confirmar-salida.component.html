@@ -1,52 +1,53 @@
-<!-- Tabla para vista de computadora -->
 <div class="table-container centered-table" *ngIf="!isMobile">
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 custom-table">
-    <!-- Cuenta Bs Column -->
-    <ng-container matColumnDef="cuentaBs">
-      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Cuenta Bs </th>
-      <td mat-cell *matCellDef="let element" data-title="Cuenta Bs"> {{element.cuentaBancariaBolivares.nombreBanco}} </td>
+
+    <!-- Banco Column -->
+    <ng-container matColumnDef="banco">
+      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Banco </th>
+      <td mat-cell *matCellDef="let element" data-title="Banco"> {{element.bancoDestino}} </td>
     </ng-container>
 
-    <!-- Cuenta Cop Column -->
-    <ng-container matColumnDef="cuentaCop">
-      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Cuenta Cop </th>
-      <td mat-cell *matCellDef="let element" data-title="Cuenta Cop"> {{element.cuentaBancariaPesos.nombreBanco}} </td>
+    <!-- Cédula Column -->
+    <ng-container matColumnDef="cedula">
+      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Cédula </th>
+      <td mat-cell *matCellDef="let element" data-title="Cédula"> {{element.cedulaDestino}} </td>
     </ng-container>
 
-    <!-- Metodo Pago Column -->
-    <ng-container matColumnDef="metodoPago">
-      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Metodo Pago </th>
-      <td mat-cell *matCellDef="let element" data-title="Metodo Pago"> {{element.metodoPago.tipopago}} </td>
+    <!-- Cuenta Column -->
+    <ng-container matColumnDef="cuenta">
+      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Cuenta </th>
+      <td mat-cell *matCellDef="let element" data-title="Cuenta"> {{element.numeroCuentaDestinatario}} </td>
     </ng-container>
 
-    <!-- Cliente Column -->
-    <ng-container matColumnDef="cliente">
-      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Cliente </th>
-      <td mat-cell *matCellDef="let element" data-title="Cliente"> {{element.cliente.nombre}} </td>
+    <!-- Nombre Column -->
+    <ng-container matColumnDef="nombre">
+      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Nombre </th>
+      <td mat-cell *matCellDef="let element" data-title="Nombre"> {{element.nombreCuentaDestinatario}} </td>
     </ng-container>
 
-    <!-- Tasa Column -->
-    <ng-container matColumnDef="tasa">
-      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Tasa </th>
-      <td mat-cell *matCellDef="let element" data-title="Tasa"> {{element.tasaVenta}} </td>
-    </ng-container>
-
-    <!-- Fecha Column -->
-    <ng-container matColumnDef="fecha">
-      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Fecha </th>
-      <td mat-cell *matCellDef="let element" data-title="Fecha"> {{element.fechaVenta | date:'dd/MM/yyyy'}} </td>
-    </ng-container>
-
-    <!-- Bolivares Column -->
+    <!-- Bolívares Column -->
     <ng-container matColumnDef="bolivares">
-      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Bolivares </th>
-      <td mat-cell *matCellDef="let element" data-title="Bolivares"> {{element.bolivaresVendidos}} </td>
+      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Bolívares </th>
+      <td mat-cell *matCellDef="let element" data-title="Bolívares"> {{element.bolivaresEnviar}} </td>
     </ng-container>
 
-    <!-- Pesos Column -->
-    <ng-container matColumnDef="pesos">
-      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Pesos </th>
-      <td mat-cell *matCellDef="let element" data-title="Pesos"> {{element.precio}} </td>
+    <!-- Cuenta Usada Column -->
+    <ng-container matColumnDef="cuentaUsada">
+      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Cuenta Usada </th>
+      <td mat-cell *matCellDef="let element" data-title="Cuenta Usada"> {{element.nombreCuentaBs}} </td>
+    </ng-container>
+
+    <!-- Acciones Column -->
+    <ng-container matColumnDef="acciones">
+      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Acciones </th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-raised-button class="balance-button" (click)="openBancosDialog(element)">
+          <mat-icon>account_balance</mat-icon>
+        </button>&nbsp;&nbsp;
+        <button mat-raised-button color="primary" class="check-button" (click)="openConfirmDialog(element)">
+          <mat-icon>check</mat-icon>
+        </button>
+      </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

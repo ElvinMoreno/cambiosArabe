@@ -20,7 +20,7 @@ import { VentaBs } from '../../interfaces/venta-bs';
   styleUrls: ['./confirmar-salida.component.css']
 })
 export class ConfirmarSalidaComponent implements OnInit {
-  displayedColumns: string[] = ['cuentaBs', 'cuentaCop', 'metodoPago', 'cliente', 'tasa', 'fecha', 'bolivares', 'pesos'];
+  displayedColumns: string[] = ['banco', 'cedula', 'cuenta', 'nombre', 'bolivares', 'cuentaUsada', 'acciones'];
   dataSource: VentaPagos[] = [];
   isMobile = false;
 
@@ -92,7 +92,6 @@ export class ConfirmarSalidaComponent implements OnInit {
       if (result) {
         this.ventaBsService.getVentaBsById(result.ventaId).subscribe(
           (venta: VentaBs) => {
-            // Actualizar la cuenta bancaria venezolana seleccionada
             const updatedVenta: VentaBs = {
               ...venta,
               cuentaBancariaBolivares: {
@@ -121,6 +120,4 @@ export class ConfirmarSalidaComponent implements OnInit {
       }
     );
   }
-
-
 }

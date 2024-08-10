@@ -25,7 +25,7 @@ import { ConfirmarAccionComponent } from '../../confirmar-accion/confirmar-accio
   styleUrls: ['./confirmar-entrada.component.css']
 })
 export class ConfirmarEntradaComponent implements OnInit {
-  displayedColumns: string[] = ['cuentaCop', 'metodoPago', 'cliente', 'tasa', 'fecha', 'bolivares', 'pesos'];
+  displayedColumns: string[] = ['cuenta', 'pesos', 'responsable', 'acciones'];
   dataSource: VentaPagos[] = [];
   isMobile = false;
 
