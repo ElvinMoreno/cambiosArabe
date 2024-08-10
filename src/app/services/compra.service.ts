@@ -47,6 +47,14 @@ export class CompraService {
       );
   }
 
+  updateCompra(id: number, dto: CompraBsDTO): Observable<CompraBsDTO> {
+    const headers = this.getHeaders();
+    return this.http.put<CompraBsDTO>(`${this.apiUrl}/${id}`, dto, { headers })
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
   private handleError(error: any) {
     console.error('An error occurred:', error);
     return throwError(() => new Error('Ocurrió un error en la solicitud. Por favor, inténtalo de nuevo.'));

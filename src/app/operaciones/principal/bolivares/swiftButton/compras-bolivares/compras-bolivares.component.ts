@@ -11,6 +11,7 @@ import { CompraBsDTO } from '../../../../../interfaces/compra-bs-dto';
 import { CompraService } from '../../../../../services/compra.service';
 import { AggCompraComponent } from '../../../../formulario/agg-compra/agg-compra.component';
 import { DetallesCompraComponent } from './modal-detalles/detalles-compra/detalles-compra.component';
+import { ActualizarCompraComponent } from './actualizar-compra/actualizar-compra.component';
 
 @Component({
   selector: 'compras-bolivares',
@@ -27,7 +28,7 @@ import { DetallesCompraComponent } from './modal-detalles/detalles-compra/detall
 })
 export class ComprasBolivaresComponent implements OnInit {
   ELEMENT_DATA: CompraBsDTO[] = [];
-  displayedColumns: string[] = ['proveedorId', 'fechaCompra', 'referencia', 'montoBs', 'precio', 'tasaCompra', 'detalles'];
+  displayedColumns: string[] = ['proveedorId', 'fechaCompra', 'referencia', 'montoBs', 'precio', 'tasaCompra', 'detalles', 'acciones'];
   dataSource = this.ELEMENT_DATA;
   isMobile = false;
 
@@ -79,6 +80,19 @@ export class ComprasBolivaresComponent implements OnInit {
     this.dialog.open(DetallesCompraComponent, {
       data: { id: id },
       width: '600px',
+    });
+  }
+
+  openActualizarCompraDialog(id: number): void {
+    const dialogRef = this.dialog.open(ActualizarCompraComponent, {
+      data: { compraId: id },
+      width: '600px',
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadCompras(); // Recargar la lista de compras después de actualizar
+      }
     });
   }
 }

@@ -45,6 +45,7 @@ export class AggSalidaComponent implements OnInit {
   isLoading = false;
   errorMessage: string | null = null;
   showCuentaEntrante = false;
+  isMetodoPago5 = false; // Nueva variable para manejar la visibilidad del campo "Cuenta salida"
 
   constructor(
     private fb: FormBuilder,
@@ -73,7 +74,7 @@ export class AggSalidaComponent implements OnInit {
     this.isLoading = true;
     this.metodoPagoService.getAllMetodosPago().subscribe(
       (data: MetodoPago[]) => {
-        this.metodosPago = data.filter(metodo => metodo.id === 1 || metodo.id === 4|| metodo.id === 5);
+        this.metodosPago = data.filter(metodo => metodo.id === 1 || metodo.id === 4 || metodo.id === 5);
         this.isLoading = false;
       },
       (error) => {
@@ -103,7 +104,7 @@ export class AggSalidaComponent implements OnInit {
     this.isLoading = true;
     this.descripcionService.getAllDescripciones().subscribe(
       (data: Descripcion[]) => {
-        this.descripciones = data.filter(descripcion => descripcion.id === 3);
+        this.descripciones = data.filter(descripcion => descripcion.id === 3 || descripcion.id === 4);
         this.isLoading = false;
       },
       (error) => {
@@ -116,13 +117,25 @@ export class AggSalidaComponent implements OnInit {
 
   onMetodoPagoChange(): void {
     const metodoPagoId = this.form.get('metodoPago')?.value;
-    this.showCuentaEntrante = metodoPagoId === '1'; // Asumiendo que 1 es el ID para transferencia
+    this.showCuentaEntrante = metodoPagoId === '1'; // Mostrar campo "Cuenta entrante" si el método de pago es transferencia
+    this.isMetodoPago5 = metodoPagoId === '5'; // Si el método de pago es 5, ocultar el campo "Cuenta salida"
+
+    // Validaciones para "Cuenta entrante"
     if (this.showCuentaEntrante) {
       this.form.get('cuentaEntrante')?.setValidators(Validators.required);
     } else {
       this.form.get('cuentaEntrante')?.clearValidators();
     }
     this.form.get('cuentaEntrante')?.updateValueAndValidity();
+
+    // Si se selecciona método de pago 5, eliminar la validación de "Cuenta salida"
+    if (this.isMetodoPago5) {
+      this.form.get('destino')?.clearValidators();
+      this.form.get('destino')?.setValue(null); // Limpiar el valor seleccionado
+    } else {
+      this.form.get('destino')?.setValidators(Validators.required);
+    }
+    this.form.get('destino')?.updateValueAndValidity();
   }
 
   onConfirmar() {
@@ -155,7 +168,6 @@ export class AggSalidaComponent implements OnInit {
       );
     }
   }
-
 
   onCancelar() {
     this.cancelar.emit();

@@ -14,12 +14,15 @@
             <option *ngFor="let metodo of metodosPago" [value]="metodo.id">{{ metodo.tipopago }}</option>
           </select>
         </div>
-        <div class="form-group" [ngClass]="{'has-error': form.get('destino')?.invalid && form.get('destino')?.touched}">
+
+        <!-- Mostrar el campo Cuenta Salida solo si el método de pago no es 5 -->
+        <div *ngIf="!isMetodoPago5" class="form-group" [ngClass]="{'has-error': form.get('destino')?.invalid && form.get('destino')?.touched}">
           <label for="destino">Cuenta salida <span class="required">*</span></label>
           <select id="destino" formControlName="destino">
             <option *ngFor="let cuenta of cuentasColombianas" [value]="cuenta.id">{{ cuenta.nombreBanco }} - {{ cuenta.nombreCuenta }}</option>
           </select>
         </div>
+
         <div *ngIf="showCuentaEntrante" class="form-group" [ngClass]="{'has-error': form.get('cuentaEntrante')?.invalid && form.get('cuentaEntrante')?.touched}">
           <label for="cuentaEntrante">Cuenta entrante <span class="required">*</span></label>
           <select id="cuentaEntrante" formControlName="cuentaEntrante">
