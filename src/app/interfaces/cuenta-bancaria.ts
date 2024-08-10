@@ -6,7 +6,6 @@ export interface CuentaBancaria {
   numCuenta: number | null;
   limiteCB: number | null;
   limiteMonto: number | null;
-  responsabe: string;
   responsable?: string;
   tipocuenta?: { id: number }; // Agregar tipocuenta para la creación
   banco?: { id: number }; // Agregar banco para la creación

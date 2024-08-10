@@ -68,13 +68,11 @@ export class BancolombiaComponent implements OnInit {
       fecha: ['', Validators.required],
       tipoPago: ['', Validators.required],
       conversionAutomatica: [{ value: '', disabled: true }, Validators.required],
-      // comision: ['', Validators.required],
       cliente: ['', Validators.required],
       cuentaPesos: ['', Validators.required],
       cantidad: ['', Validators.required],
       tasa: [{ value: '', disabled: true }],
       cedula: ['', Validators.required],
-      nombreBanco: ['', Validators.required]
     });
 
     const today = new Date();
@@ -246,7 +244,6 @@ export class BancolombiaComponent implements OnInit {
       nombreCuenta: formValues.nombreCuenta,
       cedula: formValues.cedula,
       numeroCuenta: formValues.numeroCuenta,
-      banco: formValues.nombreBanco,
       entrada: false,
       salida: false
     };

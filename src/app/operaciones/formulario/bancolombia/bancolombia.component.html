@@ -11,15 +11,11 @@
         </div>
         <div class="form-group" [ngClass]="{'has-error': form.get('numeroCuenta')?.invalid && form.get('numeroCuenta')?.touched}">
           <label for="numeroCuenta">Número de Cuenta <span class="required">*</span></label>
-          <input id="numeroCuenta" type="text" formControlName="numeroCuenta" placeholder="Ingrese número de cuenta">
+          <input id="numeroCuenta" type="tel" inputmode="numeric" formControlName="numeroCuenta" placeholder="Ingrese número de cuenta">
         </div>
         <div class="form-group" [ngClass]="{'has-error': form.get('cedula')?.invalid && form.get('cedula')?.touched}">
           <label for="cedula">Cédula <span class="required">*</span></label>
           <input id="cedula" type="tel" inputmode="numeric" pattern="[0-9]*" formControlName="cedula" placeholder="Número de cédula">
-        </div>
-        <div class="form-group" [ngClass]="{'has-error': form.get('nombreBanco')?.invalid && form.get('nombreBanco')?.touched}">
-          <label for="nombreBanco">Nombre de banco <span class="required">*</span></label>
-          <input id="nombreBanco" type="text" formControlName="nombreBanco" placeholder="Ingrese nombre del banco">
         </div>
         <div class="form-group hidden">
           <label for="fecha">Fecha <span class="required">*</span></label>
