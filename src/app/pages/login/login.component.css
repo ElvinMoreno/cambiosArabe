@@ -1,8 +1,8 @@
 /* Animación de fondo */
 @keyframes gradientBackground {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% { background-position: 0% 52%; }
+  50% { background-position: 100% 52%; }
+  100% { background-position: 0% 52%; }
 }
 
 /* Contenedor principal */
