@@ -23,6 +23,7 @@ export class CompraService {
     });
   }
 
+
   getCompras(): Observable<CompraBsDTO[]> {
     const headers = this.getHeaders();
     return this.http.get<CompraBsDTO[]>(`${this.apiUrl}/index`, { headers })

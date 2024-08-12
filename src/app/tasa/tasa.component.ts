@@ -38,6 +38,7 @@ export class TasaComponent implements OnInit {
           this.tasas = data.map(item => {
             if (item.id! > 1) {
               item.tasaVenta = tasaBase.tasaVenta! + item.sumaTasa!;
+              item.pesos = this.calculatePesos(item.bolivares!, item.tasaVenta!);
             }
             return { ...item, editable: false };
           });
@@ -50,19 +51,34 @@ export class TasaComponent implements OnInit {
       }
     );
   }
+  
 
   editItem() {
     this.tasas.forEach(item => item.editable = true);
   }
 
   saveItem() {
-    this.tasas.forEach((item: Tasa & { editable: boolean }, index: number) => {
+    this.tasas.forEach((item: Tasa & { editable: boolean }) => {
       if (item.editable) {
         this.tasaService.updateTasa(item.id!, item).subscribe(
           (updatedItem: Tasa) => {
             item.editable = false;
-            item.pesos = this.calculatePesos(item.bolivares!, item.tasaVenta!, item.sumaTasa!);
+  
+            if (item.id === 1) { // Si es la tasa base, recalcula todas las demás
+              this.tasas.forEach(otherItem => {
+                if (otherItem.id !== 1) {
+                  otherItem.tasaVenta = item.tasaVenta! + otherItem.sumaTasa!;
+                  otherItem.pesos = this.calculatePesos(otherItem.bolivares!, otherItem.tasaVenta!);
+                }
+              });
+            } else { 
+              item.pesos = this.calculatePesos(item.bolivares!, item.tasaVenta!);
+            }
+  
             console.log('Item guardado:', updatedItem);
+  
+            // Recarga los datos sin recargar la página
+            this.loadTasas();
           },
           (error: any) => {
             console.error('Error al guardar la tasa:', error);
@@ -71,36 +87,41 @@ export class TasaComponent implements OnInit {
       }
     });
   }
+  
+  
 
   cancelEdit() {
     this.loadTasas();
   }
 
   updatePesos(item: Tasa) {
-    item.pesos = this.calculatePesos(item.bolivares!, item.tasaVenta!, item.sumaTasa!);
+    // Ahora solo se pasan dos parámetros, bolivares y tasaVenta
+    item.pesos = this.calculatePesos(item.bolivares!, item.tasaVenta!);
     console.log(item.pesos);
   }
+  
 
-  calculatePesos(bolivares: number, tasa: number, sumaTasa: number): number {
-    return bolivares * (tasa + sumaTasa);
+  calculatePesos(bolivares: number, tasa: number): number {
+    return bolivares * tasa;
   }
+  
+  
 
   openActualizarTasaDialog(): void {
     const dialogRef = this.dialog.open(ActualizarTasaModalComponent);
-
+  
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         const tasaItem = this.tasas.find(item => item.id === 1);
         if (tasaItem) {
           tasaItem.tasaVenta = result;
-          tasaItem.pesos = this.calculatePesos(tasaItem.bolivares!, tasaItem.tasaVenta!, tasaItem.sumaTasa!);
           this.tasaService.updateTasa(tasaItem.id!, tasaItem).subscribe(
             updatedItem => {
               console.log('Tasa actualizada:', updatedItem);
               this.tasas.forEach(item => {
                 if (item.id! > 1) {
                   item.tasaVenta = tasaItem.tasaVenta! + item.sumaTasa!;
-                  item.pesos = this.calculatePesos(item.bolivares!, item.tasaVenta!, item.sumaTasa!);
+                  item.pesos = this.calculatePesos(item.bolivares!, item.tasaVenta!);
                 }
               });
             },
@@ -112,6 +133,7 @@ export class TasaComponent implements OnInit {
       }
     });
   }
+  
 
   // Función para formatear la fecha a "DD mes"
   formatDate(date: Date): string {

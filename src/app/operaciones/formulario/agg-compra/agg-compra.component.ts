@@ -122,20 +122,24 @@ export class AggCompraComponent implements OnInit {
           }
           return false;
         });
+
         if (tasaHoy) {
           this.tasaCompra = tasaHoy.tasaCompra ?? 0;
           this.form.patchValue({ tasaCompra: this.tasaCompra });
         } else {
           console.error('No se encontró tasa para la fecha actual');
           this.tasaCompra = 0;
+          this.errorMessage = 'No se encontró una tasa de cambio para la fecha actual.';
         }
       },
       error: (error) => {
         console.error('Error al cargar las tasas', error);
         this.tasaCompra = 0;
+        this.errorMessage = 'Error al cargar las tasas de cambio. Por favor, inténtelo de nuevo.';
       }
     });
   }
+
 
   onMetodoPagoChange(): void {
     const metodoPagoId = this.form.get('metodoPagoId')?.value;

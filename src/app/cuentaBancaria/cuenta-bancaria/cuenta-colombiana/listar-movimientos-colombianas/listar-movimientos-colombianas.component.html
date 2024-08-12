@@ -1,0 +1,33 @@
+<div class="movimientos-container">
+  <h2>Movimientos de Cuentas Colombianas</h2>
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="movimientos.length > 0; else noDataTemplate">
+    <table class="movimientos-table">
+      <thead>
+        <tr>
+          <th>Hora</th>
+          <th>Tipo de Movimiento</th>
+          <th>Monto</th>
+          <th>Descripción</th>
+          <th>Entrada</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let movimiento of movimientos">
+          <td>{{ movimiento.hora }}</td>
+          <td>{{ movimiento.tipoMovimiento }}</td>
+          <td>{{ movimiento.monto | currency }}</td>
+          <td>{{ movimiento.descripcion }}</td>
+          <td>{{ movimiento.entrada ? 'Sí' : 'No' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <ng-template #noDataTemplate>
+    <p>No hay movimientos disponibles.</p>
+  </ng-template>
+</div>
