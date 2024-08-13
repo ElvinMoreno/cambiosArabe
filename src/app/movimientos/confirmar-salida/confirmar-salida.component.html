@@ -86,13 +86,10 @@
 
 <!-- Cards para vista móvil -->
 <div class="cards-container" *ngIf="isMobile">
-  <mat-card *ngFor="let element of dataSource" [ngClass]="{'border-red': !updatedVentas.has(element.id!)}">
+  <mat-card *ngFor="let element of dataSource" [ngClass]="{'border-red': !shouldRemoveBorder(element)}">
     <mat-card-content>
       <div class="card-content-row">
         <p><strong>Banco destino:</strong> {{element.bancoDestino}}</p>
-        <button mat-icon-button class="copy-button-card" (click)="copyToClipboard(element.bancoDestino, element.id!, 'banco')">
-          <mat-icon [ngClass]="{'copied': isCopied(element.id!, 'banco')}">content_copy</mat-icon>
-        </button>
       </div>
       <div class="card-content-row">
         <p><strong>Nombre destinatario:</strong> {{element.nombreCuentaDestinatario}}</p>
@@ -121,9 +118,6 @@
       </div>
       <div class="card-content-row">
         <p><strong>Cuenta usada:</strong> {{element.nombreCuentaBs}}</p>
-        <button mat-icon-button class="copy-button-card" (click)="copyToClipboard(element.nombreCuentaBs!, element.id!, 'cuentaUsada')">
-          <mat-icon [ngClass]="{'copied': isCopied(element.id!, 'cuentaUsada')}">content_copy</mat-icon>
-        </button>
       </div>
     </mat-card-content>
     <mat-card-actions>
@@ -136,3 +130,4 @@
     </mat-card-actions>
   </mat-card>
 </div>
+
