@@ -18,7 +18,6 @@ import { MatInputModule } from '@angular/material/input';
 export class ModalBancosComponent implements OnInit {
   cuentas: CuentaBancaria[] = [];
   selectedCuenta: string | null = null;
-  comision: number | null = null;
 
   constructor(
     public dialogRef: MatDialogRef<ModalBancosComponent>,
@@ -38,8 +37,8 @@ export class ModalBancosComponent implements OnInit {
   }
 
   onConfirm(): void {
-    if (this.selectedCuenta && this.comision !== null) {
-      this.dialogRef.close({ cuentaId: this.selectedCuenta, comision: this.comision, ventaId: this.data.ventaId });
+    if (this.selectedCuenta) {
+      this.dialogRef.close({ cuentaId: this.selectedCuenta, ventaId: this.data.ventaId });
     }
   }
 
