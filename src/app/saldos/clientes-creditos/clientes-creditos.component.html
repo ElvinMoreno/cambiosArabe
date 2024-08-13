@@ -1,0 +1,16 @@
+<div class="clientes-container">
+    <h2>Clientes y Créditos</h2>
+    <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+    </div>
+
+    <div class="clientes-grid">
+        <div *ngFor="let cliente of clientes" class="cliente-card">
+            <div class="card-title">{{ cliente.nombre }}</div>
+            <div class="card-content">
+                <p><strong>Límite de Crédito:</strong> {{ cliente.limiteCredito | currency }}</p>
+                <p><strong>Total en Créditos:</strong> {{ getTotalCredito(cliente) | currency }}</p>
+            </div>
+        </div>
+    </div>
+</div>
