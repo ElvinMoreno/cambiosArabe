@@ -23,6 +23,7 @@ export class ConfirmarSalidaComponent implements OnInit {
   displayedColumns: string[] = ['banco', 'cedula', 'cuenta', 'nombre', 'bolivares', 'cuentaUsada', 'acciones'];
   dataSource: VentaPagos[] = [];
   isMobile = false;
+  updatedVentas: Set<number> = new Set();
 
   constructor(
     public dialog: MatDialog,
@@ -71,7 +72,7 @@ export class ConfirmarSalidaComponent implements OnInit {
   }
 
   confirmarVentaSalida(venta: VentaPagos): void {
-    console.log('Cuerpo de la petición:', venta);  // Agregado para ver el cuerpo de la petición
+    console.log('Cuerpo de la petición:', venta);
     this.ventaBsService.confirmarVentaSalida(venta).subscribe(
       response => {
         console.log('Venta confirmada', response);
@@ -113,11 +114,22 @@ export class ConfirmarSalidaComponent implements OnInit {
     this.ventaBsService.updateVentaBs(ventaId, updatedVenta).subscribe(
       response => {
         console.log('Venta actualizada con la cuenta bancaria seleccionada', response);
-        this.loadVentas();  // Recargar las ventas después de la actualización
+        this.updatedVentas.add(ventaId);  // Añadir el ID de la venta actualizada
+        this.loadVentas();
       },
       error => {
         console.error('Error al actualizar la venta con la cuenta bancaria seleccionada', error);
       }
     );
   }
+
+  copyToClipboard(value: string): void {
+    navigator.clipboard.writeText(value).then(() => {
+      console.log('Texto copiado al portapapeles:', value);
+    }).catch(err => {
+      console.error('Error al copiar el texto al portapapeles:', err);
+    });
+  }
+
+
 }

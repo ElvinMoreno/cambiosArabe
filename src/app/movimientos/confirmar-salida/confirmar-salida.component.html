@@ -4,37 +4,67 @@
     <!-- Banco Column -->
     <ng-container matColumnDef="banco">
       <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Banco </th>
-      <td mat-cell *matCellDef="let element" data-title="Banco"> {{element.bancoDestino}} </td>
+      <td mat-cell *matCellDef="let element" data-title="Banco">
+        <span>{{element.bancoDestino}}</span>
+        <button mat-icon-button class="copy-button" (click)="copyToClipboard(element.bancoDestino)">
+          <mat-icon>content_copy</mat-icon>
+        </button>
+      </td>
     </ng-container>
 
     <!-- Cédula Column -->
     <ng-container matColumnDef="cedula">
       <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Cédula </th>
-      <td mat-cell *matCellDef="let element" data-title="Cédula"> {{element.cedulaDestino}} </td>
+      <td mat-cell *matCellDef="let element" data-title="Cédula">
+        <span>{{element.cedulaDestino}}</span>
+        <button mat-icon-button class="copy-button" (click)="copyToClipboard(element.cedulaDestino)">
+          <mat-icon>content_copy</mat-icon>
+        </button>
+      </td>
     </ng-container>
 
     <!-- Cuenta Column -->
     <ng-container matColumnDef="cuenta">
       <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Cuenta </th>
-      <td mat-cell *matCellDef="let element" data-title="Cuenta"> {{element.numeroCuentaDestinatario}} </td>
+      <td mat-cell *matCellDef="let element" data-title="Cuenta">
+        <span>{{element.numeroCuentaDestinatario}}</span>
+        <button mat-icon-button class="copy-button" (click)="copyToClipboard(element.numeroCuentaDestinatario)">
+          <mat-icon>content_copy</mat-icon>
+        </button>
+      </td>
     </ng-container>
 
     <!-- Nombre Column -->
     <ng-container matColumnDef="nombre">
       <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Nombre </th>
-      <td mat-cell *matCellDef="let element" data-title="Nombre"> {{element.nombreCuentaDestinatario}} </td>
+      <td mat-cell *matCellDef="let element" data-title="Nombre">
+        <span>{{element.nombreCuentaDestinatario}}</span>
+        <button mat-icon-button class="copy-button" (click)="copyToClipboard(element.nombreCuentaDestinatario)">
+          <mat-icon>content_copy</mat-icon>
+        </button>
+      </td>
     </ng-container>
 
     <!-- Bolívares Column -->
     <ng-container matColumnDef="bolivares">
       <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Bolívares </th>
-      <td mat-cell *matCellDef="let element" data-title="Bolívares"> {{element.bolivaresEnviar}} </td>
+      <td mat-cell *matCellDef="let element" data-title="Bolívares">
+        <span>{{element.bolivaresEnviar}}</span>
+        <button mat-icon-button class="copy-button" (click)="copyToClipboard(element.bolivaresEnviar)">
+          <mat-icon>content_copy</mat-icon>
+        </button>
+      </td>
     </ng-container>
 
     <!-- Cuenta Usada Column -->
     <ng-container matColumnDef="cuentaUsada">
       <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Cuenta Usada </th>
-      <td mat-cell *matCellDef="let element" data-title="Cuenta Usada"> {{element.nombreCuentaBs}} </td>
+      <td mat-cell *matCellDef="let element" data-title="Cuenta Usada">
+        <span>{{element.nombreCuentaBs}}</span>
+        <button mat-icon-button class="copy-button" (click)="copyToClipboard(element.nombreCuentaBs)">
+          <mat-icon>content_copy</mat-icon>
+        </button>
+      </td>
     </ng-container>
 
     <!-- Acciones Column -->
@@ -57,14 +87,43 @@
 
 <!-- Cards para vista móvil -->
 <div class="cards-container" *ngIf="isMobile">
-  <mat-card *ngFor="let element of dataSource" class="card border-red">
-    <mat-card-content>
-      <p><strong>Banco destino:</strong> {{element.bancoDestino}}</p>
-      <p><strong>Cedula destino:</strong> {{element.cedulaDestino}}</p>
-      <p><strong>Cuenta destinatario:</strong> {{element.numeroCuentaDestinatario}}</p>
-      <p><strong>Nombre destinatario:</strong> {{element.nombreCuentaDestinatario}}</p>
-      <p><strong>Bolivares:</strong> {{element.bolivaresEnviar}}</p>
-      <p><strong>cuenta:</strong> {{element.nombreCuentaBs}}</p>
+  <mat-card *ngFor="let element of dataSource" [ngClass]="{'border-red': !updatedVentas.has(element.id!)}">    <mat-card-content>
+      <div class="card-content-row">
+        <p><strong>Banco destino:</strong> {{element.bancoDestino}}</p>
+        <button mat-icon-button class="copy-button-card" (click)="copyToClipboard(element.bancoDestino)">
+          <mat-icon>content_copy</mat-icon>
+        </button>
+      </div>
+      <div class="card-content-row">
+        <p><strong>Cédula destino:</strong> {{element.cedulaDestino}}</p>
+        <button mat-icon-button class="copy-button-card" (click)="copyToClipboard(element.cedulaDestino.toString())">
+          <mat-icon>content_copy</mat-icon>
+        </button>
+      </div>
+      <div class="card-content-row">
+        <p><strong>Cuenta destinatario:</strong> {{element.numeroCuentaDestinatario}}</p>
+        <button mat-icon-button class="copy-button-card" (click)="copyToClipboard(element.numeroCuentaDestinatario.toString())">
+          <mat-icon>content_copy</mat-icon>
+        </button>
+      </div>
+      <div class="card-content-row">
+        <p><strong>Nombre destinatario:</strong> {{element.nombreCuentaDestinatario}}</p>
+        <button mat-icon-button class="copy-button-card" (click)="copyToClipboard(element.nombreCuentaDestinatario)">
+          <mat-icon>content_copy</mat-icon>
+        </button>
+      </div>
+      <div class="card-content-row">
+        <p><strong>Bolívares:</strong> {{element.bolivaresEnviar}}</p>
+        <button mat-icon-button class="copy-button-card" (click)="copyToClipboard(element.bolivaresEnviar.toString())">
+          <mat-icon>content_copy</mat-icon>
+        </button>
+      </div>
+      <div class="card-content-row">
+        <p><strong>Cuenta usada:</strong> {{element.nombreCuentaBs}}</p>
+        <button mat-icon-button class="copy-button-card" (click)="copyToClipboard(element.nombreCuentaBs!)">
+          <mat-icon>content_copy</mat-icon>
+        </button>
+      </div>
     </mat-card-content>
     <mat-card-actions>
       <button mat-raised-button class="balance-button" (click)="openBancosDialog(element)">

@@ -142,6 +142,25 @@ h2 {
   }
 }
 
+/* Estilos para los botones de copiar en las cards */
+.card-content-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.copy-button-card {
+  margin-left: auto;
+  vertical-align: middle;
+  color: #4a90e2; /* Opcional: color del icono */
+}
+
+.copy-button {
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
 .cards-container {
   display: flex;
   flex-direction: column;
@@ -159,8 +178,10 @@ h2 {
   border: 2px solid red;
 }
 
+
 .card mat-card-content p {
-  margin: 8px 0;
+  margin: 0;
+  flex: 1;
 }
 
 .card mat-card-actions {
@@ -179,6 +200,7 @@ h2 {
   background-color: green;
   color: white;
 }
+
 
 @media (max-width: 768px) {
   .grid-container {
