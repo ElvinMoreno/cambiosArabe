@@ -7,6 +7,9 @@ import { CuentaVenezolanaComponent } from './cuenta-venezolana/cuenta-venezolana
 import { CajaComponent } from './cuenta-colombiana/caja/caja.component';
 import { CajaService } from '../../services/caja.service'; // Importar el servicio
 import { catchError, of } from 'rxjs';
+import { ClientesCreditosComponent } from "../../saldos/creditos/clientes-creditos/clientes-creditos.component";
+import { CreditosComponent } from '../../saldos/creditos/creditos.component';
+
 
 @Component({
   selector: 'app-cuenta-bancaria',
@@ -17,8 +20,10 @@ import { catchError, of } from 'rxjs';
     MatTabsModule,
     CuentaColombianaComponent,
     CuentaVenezolanaComponent,
-    CajaComponent
-  ],
+    CajaComponent,
+    ClientesCreditosComponent,
+    CreditosComponent
+],
   templateUrl: './cuenta-bancaria.component.html',
   styleUrls: ['./cuenta-bancaria.component.css']
 })
@@ -46,4 +51,5 @@ export class CuentaBancariaComponent implements OnInit {
   get cajaLabel(): string {
     return this.montoCaja !== null ? `$${this.montoCaja}` : '$';
   }
+  
 }

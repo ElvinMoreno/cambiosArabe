@@ -11,7 +11,7 @@ import { CajaComponent } from './caja/caja.component';
 import { CajaService } from '../../../services/caja.service';
 import { ClienteService } from '../../../services/clientes.service';
 import { catchError, of } from 'rxjs';
-import { ClientesCreditosComponent } from '../../../saldos/clientes-creditos/clientes-creditos.component';
+
 
 @Component({
   selector: 'app-cuenta-colombiana',
@@ -26,7 +26,7 @@ import { ClientesCreditosComponent } from '../../../saldos/clientes-creditos/cli
     ListarCuentasColombianasComponent,
     ListarMovimientosColombianasComponent,
     CajaComponent,
-    ClientesCreditosComponent
+
   ],
   templateUrl: './cuenta-colombiana.component.html',
   styleUrls: ['./cuenta-colombiana.component.css']
