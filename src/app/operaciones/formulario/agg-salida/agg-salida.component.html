@@ -4,7 +4,7 @@
     <div class="separator"></div>
     <form [formGroup]="form" (ngSubmit)="onConfirmar()">
       <div class="form-grid">
-        
+
         <!-- Campo Monto -->
         <div class="form-group" [ngClass]="{'has-error': form.get('monto')?.invalid && form.get('monto')?.touched}">
           <label for="monto">Monto <span class="required">*</span></label>
@@ -12,47 +12,70 @@
         </div>
 
         <!-- Campo Método de Pago -->
-        <div class="form-group" [ngClass]="{'has-error': form.get('metodoPago')?.invalid && form.get('metodoPago')?.touched}">
+        <div class="form-group"
+          [ngClass]="{'has-error': form.get('metodoPago')?.invalid && form.get('metodoPago')?.touched}">
           <label for="metodoPago">Método de Pago <span class="required">*</span></label>
           <select id="metodoPago" formControlName="metodoPago" (change)="onMetodoPagoChange()">
             <option *ngFor="let metodo of metodosPago" [value]="metodo.id">{{ metodo.tipopago }}</option>
           </select>
         </div>
 
-        <!-- Campo Proveedor (solo si metodoPago === 5) -->
-        <div *ngIf="isMetodoPago5" class="form-group" [ngClass]="{'has-error': form.get('proveedor')?.invalid && form.get('proveedor')?.touched}">
+        <!-- Campo Proveedor (solo si metodoPago === 5 y tipoSeleccion es 'descripcion') -->
+        <div *ngIf="isMetodoPago5 && tipoSeleccion === 'descripcion'" class="form-group"
+          [ngClass]="{'has-error': form.get('proveedor')?.invalid && form.get('proveedor')?.touched}">
           <label for="proveedor">Proveedor <span class="required">*</span></label>
           <select id="proveedor" formControlName="proveedor">
             <option *ngFor="let proveedor of proveedores" [value]="proveedor.id">{{ proveedor.nombre }}</option>
           </select>
         </div>
 
+
         <!-- Campo Cuenta salida (oculto si metodoPago === 5) -->
-        <div *ngIf="!isMetodoPago5" class="form-group" [ngClass]="{'has-error': form.get('destino')?.invalid && form.get('destino')?.touched}">
+        <div *ngIf="!isMetodoPago5 && !isMetodoPagoUndefined" class="form-group"
+          [ngClass]="{'has-error': form.get('destino')?.invalid && form.get('destino')?.touched}">
           <label for="destino">Cuenta salida <span class="required">*</span></label>
           <select id="destino" formControlName="destino">
-            <option *ngFor="let cuenta of cuentasColombianas" [value]="cuenta.id">{{ cuenta.nombreBanco }} - {{ cuenta.nombreCuenta }}</option>
+            <option *ngFor="let cuenta of cuentasColombianas" [value]="cuenta.id">{{ cuenta.nombreBanco }} - {{
+              cuenta.nombreCuenta }}</option>
           </select>
         </div>
 
-        <!-- Botón para alternar entre Descripción y Gasto -->
-        <div class="form-group">
-          <label for="tipoSeleccion">Seleccionar Tipo</label>
-          <button type="button" (click)="toggleTipoSeleccion()" class="btn-toggle">
-            {{ tipoSeleccion === 'descripcion' ? 'Cambiar a Gasto' : 'Cambiar a Descripción' }}
-          </button>
+        <!-- Campo Cuenta Entrante (solo si metodoPago === 1 y tipoSeleccion es 'descripcion') -->
+        <div *ngIf="showCuentaEntrante && tipoSeleccion === 'descripcion'" class="form-group"
+          [ngClass]="{'has-error': form.get('cuentaEntrante')?.invalid && form.get('cuentaEntrante')?.touched}">
+          <label for="cuentaEntrante">Cuenta Entrante <span class="required">*</span></label>
+          <select id="cuentaEntrante" formControlName="cuentaEntrante">
+            <option *ngFor="let cuenta of cuentasColombianas" [value]="cuenta.id">{{ cuenta.nombreBanco }} - {{
+              cuenta.nombreCuenta }}</option>
+          </select>
         </div>
 
-        <!-- Campo Descripción o Gasto (dependiendo de la selección) -->
-        <!-- Campo Descripción o Gasto (dependiendo de la selección) -->
-<div class="form-group" [ngClass]="{'has-error': form.get('descripcionGasto')?.invalid && form.get('descripcionGasto')?.touched}">
-  <label for="descripcionGasto">{{ tipoSeleccion === 'descripcion' ? 'Descripción' : 'Gasto' }} <span class="required">*</span></label>
-  <select id="descripcionGasto" formControlName="descripcionGasto">
-    <option *ngFor="let item of itemsSeleccionados" [value]="item.id">
-      {{ tipoSeleccion === 'descripcion' ? item.texto : item.nombre }}
-    </option>
-  </select>
-</div>
+
+        <!-- Campo Descripción (siempre visible) -->
+        <div class="form-group"
+          [ngClass]="{'has-error': form.get('descripcionGasto')?.invalid && form.get('descripcionGasto')?.touched}">
+          <label for="descripcionGasto">{{ tipoSeleccion === 'descripcion' ? 'Descripción' : 'Gasto' }} <span
+              class="required">*</span></label>
+          <div class="input-group">
+            <select id="descripcionGasto" formControlName="descripcionGasto">
+              <option *ngFor="let item of itemsSeleccionados" [value]="item.id">
+                {{ tipoSeleccion === 'descripcion' ? item.texto : item.nombre }}
+              </option>
+            </select>
+            <!-- Botón de alternancia, visible cuando metodoPago === 1 o 5 -->
+            <ng-container *ngIf="isMetodoPago5 || showCuentaEntrante">
+              <input type="checkbox" id="toggleButton" (change)="toggleTipoSeleccion()" />
+              <label for="toggleButton" class="switch">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                  fill="#5f6368">
+                  <path
+                    d="M280-120 80-320l200-200 57 56-104 104h607v80H233l104 104-57 56Zm400-320-57-56 104-104H120v-80h607L623-784l57-56 200 200-200 200Z" />
+                </svg>
+              </label>
+            </ng-container>
+          </div>
+        </div>
+
 
       </div>
 

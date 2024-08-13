@@ -59,6 +59,7 @@ export class AggSalidaComponent implements OnInit {
   errorMessage: string | null = null;
   showCuentaEntrante = false;
   isMetodoPago5 = false;
+  isMetodoPagoUndefined = true;
 
   constructor(
     private fb: FormBuilder,
@@ -76,7 +77,7 @@ export class AggSalidaComponent implements OnInit {
       destino: ['', Validators.required],
       cuentaEntrante: [''],
       descripcionGasto: ['', Validators.required],
-      proveedor: ['']  // Agregamos el campo proveedor
+      proveedor: ['']
     });
   }
 
@@ -85,7 +86,7 @@ export class AggSalidaComponent implements OnInit {
     this.loadCuentasColombianas();
     this.loadDescripciones();
     this.loadGastos();
-    this.loadProveedores();  // Carga la lista de proveedores
+    this.loadProveedores();
     this.itemsSeleccionados = this.descripciones;
   }
 
@@ -124,6 +125,7 @@ export class AggSalidaComponent implements OnInit {
     this.descripcionService.getAllDescripciones().subscribe(
       (data: Descripcion[]) => {
         this.descripciones = data;
+        this.itemsSeleccionados = this.descripciones; // Mostrar siempre Descripciones por defecto
         this.isLoading = false;
       },
       (error) => {
@@ -168,12 +170,16 @@ export class AggSalidaComponent implements OnInit {
     this.tipoSeleccion = this.tipoSeleccion === 'descripcion' ? 'gasto' : 'descripcion';
     this.itemsSeleccionados = this.tipoSeleccion === 'descripcion' ? this.descripciones : this.gastos;
     this.form.get('descripcionGasto')?.setValue(null);  // Reinicia la selección
+
+    // Configurar visibilidad y validación del campo "Proveedor"
+    this.updateProveedorField();
   }
 
   onMetodoPagoChange(): void {
     const metodoPagoId = this.form.get('metodoPago')?.value;
     this.showCuentaEntrante = metodoPagoId === '1';  // Mostrar campo "Cuenta entrante" si el método de pago es transferencia
-    this.isMetodoPago5 = metodoPagoId === '5';  // Si el método de pago es 5, ocultar el campo "Cuenta salida"
+    this.isMetodoPago5 = metodoPagoId === '5';  // Si el método de pago es 5, manejar el campo "Proveedor"
+    this.isMetodoPagoUndefined = !metodoPagoId; // Sin método de pago
 
     if (this.showCuentaEntrante) {
       this.form.get('cuentaEntrante')?.setValidators(Validators.required);
@@ -182,16 +188,22 @@ export class AggSalidaComponent implements OnInit {
     }
     this.form.get('cuentaEntrante')?.updateValueAndValidity();
 
-    if (this.isMetodoPago5) {
-      this.form.get('proveedor')?.setValidators(Validators.required);  // Proveedor requerido si metodoPago es 5
-      this.form.get('destino')?.clearValidators();
-      this.form.get('destino')?.setValue(null);  // Limpiar el valor seleccionado
+    // Configurar visibilidad y validación del campo "Proveedor"
+    this.updateProveedorField();
+
+    // Actualiza el campo "Descripción" o "Gasto" según el tipo seleccionado
+    this.itemsSeleccionados = this.tipoSeleccion === 'descripcion' ? this.descripciones : this.gastos;
+  }
+
+  updateProveedorField(): void {
+    if (this.isMetodoPago5 && this.tipoSeleccion === 'descripcion') {
+      this.form.get('proveedor')?.setValidators(Validators.required);
+      this.form.get('proveedor')?.updateValueAndValidity();
     } else {
       this.form.get('proveedor')?.clearValidators();
-      this.form.get('destino')?.setValidators(Validators.required);
+      this.form.get('proveedor')?.setValue(null);
+      this.form.get('proveedor')?.updateValueAndValidity();
     }
-    this.form.get('proveedor')?.updateValueAndValidity();
-    this.form.get('destino')?.updateValueAndValidity();
   }
 
   onConfirmar() {
@@ -204,7 +216,7 @@ export class AggSalidaComponent implements OnInit {
         metodoPagoId: parseInt(formValue.metodoPago, 10),
         descripcionId: this.tipoSeleccion === 'descripcion' ? parseInt(formValue.descripcionGasto, 10) : null,
         gastoId: this.tipoSeleccion === 'gasto' ? parseInt(formValue.descripcionGasto, 10) : null,
-        ProveedorId: this.isMetodoPago5 ? parseInt(formValue.proveedor, 10) : null,  // Asigna proveedorId si aplica
+        proveedorId: this.isMetodoPago5 && this.tipoSeleccion === 'descripcion' ? parseInt(formValue.proveedor, 10) : null,
         monto: formValue.monto,
       };
 
