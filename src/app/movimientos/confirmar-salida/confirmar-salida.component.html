@@ -86,7 +86,7 @@
 
 <!-- Cards para vista móvil -->
 <div class="cards-container" *ngIf="isMobile">
-  <mat-card *ngFor="let element of dataSource" [ngClass]="{'border-red': !updatedVentas.has(element.id!)}">
+  <mat-card *ngFor="let element of dataSource" [ngClass]="{'border-red': !shouldRemoveBorder(element)}">
     <mat-card-content>
       <div class="card-content-row">
         <p><strong>Banco destino:</strong> {{element.bancoDestino}}</p>
@@ -136,3 +136,4 @@
     </mat-card-actions>
   </mat-card>
 </div>
+

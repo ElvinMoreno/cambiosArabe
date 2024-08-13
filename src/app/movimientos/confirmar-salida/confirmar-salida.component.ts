@@ -147,4 +147,8 @@ export class ConfirmarSalidaComponent implements OnInit {
   isCopied(id: number, field: string): boolean {
     return this.copiedIcons[id]?.[field] || false;
   }
+
+  shouldRemoveBorder(element: VentaPagos): boolean {
+    return element.nombreCuentaBs !== null;
+  }
 }
