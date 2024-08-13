@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ClienteService } from '../../services/clientes.service';
-import { Cliente } from '../../interfaces/clientes';
+import { ClienteService } from '../../../services/clientes.service';
+import { Cliente } from '../../../interfaces/clientes';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
