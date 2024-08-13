@@ -1,22 +1,28 @@
 import { Component, EventEmitter, Output, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatDatepickerModule } from '@angular/material/datepicker';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
+import { CommonModule } from '@angular/common';
+
 import { MetodoPagoService } from '../../../services/metodo-pago.service';
 import { CuentaBancariaService } from '../../../services/cuenta-bancaria.service';
 import { DescripcionService } from '../../../services/descripcion.service';
+import { GastosService } from '../../../services/gastos.service';
+import { ProveedorService } from '../../../services/proveedor.service';
+import { RetiroService } from '../../../services/retiro.service';
+
 import { MetodoPago } from '../../../interfaces/metodo-pago';
 import { CuentaBancaria } from '../../../interfaces/cuenta-bancaria';
 import { Descripcion } from '../../../interfaces/descripcion';
-import { CommonModule } from '@angular/common';
+import { Gastos } from '../../../interfaces/gastos';
+import { Proveedor } from '../../../interfaces/proveedor';
 import { Retiro } from '../../../interfaces/retiro';
-import { RetiroService } from '../../../services/retiro.service';
 
 @Component({
   selector: 'app-agg-salida',
@@ -38,20 +44,29 @@ import { RetiroService } from '../../../services/retiro.service';
 export class AggSalidaComponent implements OnInit {
   @Output() cancelar = new EventEmitter<void>();
   @Output() confirmar = new EventEmitter<any>();
+
   form: FormGroup;
   metodosPago: MetodoPago[] = [];
   cuentasColombianas: CuentaBancaria[] = [];
   descripciones: Descripcion[] = [];
+  gastos: Gastos[] = [];
+  proveedores: Proveedor[] = [];
+
+  itemsSeleccionados: any[] = [];
+  tipoSeleccion: 'descripcion' | 'gasto' = 'descripcion';
+
   isLoading = false;
   errorMessage: string | null = null;
   showCuentaEntrante = false;
-  isMetodoPago5 = false; // Nueva variable para manejar la visibilidad del campo "Cuenta salida"
+  isMetodoPago5 = false;
 
   constructor(
     private fb: FormBuilder,
     private metodoPagoService: MetodoPagoService,
     private cuentaBancariaService: CuentaBancariaService,
     private descripcionService: DescripcionService,
+    private gastosService: GastosService,
+    private proveedorService: ProveedorService,
     private retiroService: RetiroService,
     public dialogRef: MatDialogRef<AggSalidaComponent>
   ) {
@@ -60,7 +75,8 @@ export class AggSalidaComponent implements OnInit {
       metodoPago: ['', Validators.required],
       destino: ['', Validators.required],
       cuentaEntrante: [''],
-      descripcion: ['', Validators.required]
+      descripcionGasto: ['', Validators.required],
+      proveedor: ['']  // Agregamos el campo proveedor
     });
   }
 
@@ -68,6 +84,9 @@ export class AggSalidaComponent implements OnInit {
     this.loadMetodosPago();
     this.loadCuentasColombianas();
     this.loadDescripciones();
+    this.loadGastos();
+    this.loadProveedores();  // Carga la lista de proveedores
+    this.itemsSeleccionados = this.descripciones;
   }
 
   loadMetodosPago(): void {
@@ -104,7 +123,7 @@ export class AggSalidaComponent implements OnInit {
     this.isLoading = true;
     this.descripcionService.getAllDescripciones().subscribe(
       (data: Descripcion[]) => {
-        this.descripciones = data.filter(descripcion => descripcion.id === 3 || descripcion.id === 4);
+        this.descripciones = data;
         this.isLoading = false;
       },
       (error) => {
@@ -115,12 +134,47 @@ export class AggSalidaComponent implements OnInit {
     );
   }
 
+  loadGastos(): void {
+    this.isLoading = true;
+    this.gastosService.getAllGastos().subscribe(
+      (data: Gastos[]) => {
+        this.gastos = data;
+        this.isLoading = false;
+      },
+      (error) => {
+        console.error('Error al cargar los gastos', error);
+        this.errorMessage = 'Ocurrió un error al cargar los gastos. Por favor, inténtalo de nuevo.';
+        this.isLoading = false;
+      }
+    );
+  }
+
+  loadProveedores(): void {
+    this.isLoading = true;
+    this.proveedorService.getAllProveedores().subscribe(
+      (data: Proveedor[]) => {
+        this.proveedores = data;
+        this.isLoading = false;
+      },
+      (error) => {
+        console.error('Error al cargar los proveedores', error);
+        this.errorMessage = 'Ocurrió un error al cargar los proveedores. Por favor, inténtalo de nuevo.';
+        this.isLoading = false;
+      }
+    );
+  }
+
+  toggleTipoSeleccion(): void {
+    this.tipoSeleccion = this.tipoSeleccion === 'descripcion' ? 'gasto' : 'descripcion';
+    this.itemsSeleccionados = this.tipoSeleccion === 'descripcion' ? this.descripciones : this.gastos;
+    this.form.get('descripcionGasto')?.setValue(null);  // Reinicia la selección
+  }
+
   onMetodoPagoChange(): void {
     const metodoPagoId = this.form.get('metodoPago')?.value;
-    this.showCuentaEntrante = metodoPagoId === '1'; // Mostrar campo "Cuenta entrante" si el método de pago es transferencia
-    this.isMetodoPago5 = metodoPagoId === '5'; // Si el método de pago es 5, ocultar el campo "Cuenta salida"
+    this.showCuentaEntrante = metodoPagoId === '1';  // Mostrar campo "Cuenta entrante" si el método de pago es transferencia
+    this.isMetodoPago5 = metodoPagoId === '5';  // Si el método de pago es 5, ocultar el campo "Cuenta salida"
 
-    // Validaciones para "Cuenta entrante"
     if (this.showCuentaEntrante) {
       this.form.get('cuentaEntrante')?.setValidators(Validators.required);
     } else {
@@ -128,13 +182,15 @@ export class AggSalidaComponent implements OnInit {
     }
     this.form.get('cuentaEntrante')?.updateValueAndValidity();
 
-    // Si se selecciona método de pago 5, eliminar la validación de "Cuenta salida"
     if (this.isMetodoPago5) {
+      this.form.get('proveedor')?.setValidators(Validators.required);  // Proveedor requerido si metodoPago es 5
       this.form.get('destino')?.clearValidators();
-      this.form.get('destino')?.setValue(null); // Limpiar el valor seleccionado
+      this.form.get('destino')?.setValue(null);  // Limpiar el valor seleccionado
     } else {
+      this.form.get('proveedor')?.clearValidators();
       this.form.get('destino')?.setValidators(Validators.required);
     }
+    this.form.get('proveedor')?.updateValueAndValidity();
     this.form.get('destino')?.updateValueAndValidity();
   }
 
@@ -142,16 +198,14 @@ export class AggSalidaComponent implements OnInit {
     if (this.form.valid) {
       const formValue = this.form.value;
 
-      // Crear la fecha en el formato correcto y asegurarse de que esté en UTC
-
-
       const retiro: Retiro = {
         cuentaBancariaSalidaId: parseInt(formValue.destino, 10),
         cuentaBancariaEntradaId: this.showCuentaEntrante ? parseInt(formValue.cuentaEntrante, 10) : null,
         metodoPagoId: parseInt(formValue.metodoPago, 10),
-        descripcionId: parseInt(formValue.descripcion, 10),
+        descripcionId: this.tipoSeleccion === 'descripcion' ? parseInt(formValue.descripcionGasto, 10) : null,
+        gastoId: this.tipoSeleccion === 'gasto' ? parseInt(formValue.descripcionGasto, 10) : null,
+        ProveedorId: this.isMetodoPago5 ? parseInt(formValue.proveedor, 10) : null,  // Asigna proveedorId si aplica
         monto: formValue.monto,
-         // La fecha está en formato ISO UTC
       };
 
       console.log(retiro);

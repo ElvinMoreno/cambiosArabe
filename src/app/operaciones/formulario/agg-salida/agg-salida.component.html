@@ -4,10 +4,14 @@
     <div class="separator"></div>
     <form [formGroup]="form" (ngSubmit)="onConfirmar()">
       <div class="form-grid">
+        
+        <!-- Campo Monto -->
         <div class="form-group" [ngClass]="{'has-error': form.get('monto')?.invalid && form.get('monto')?.touched}">
           <label for="monto">Monto <span class="required">*</span></label>
           <input id="monto" type="number" formControlName="monto">
         </div>
+
+        <!-- Campo Método de Pago -->
         <div class="form-group" [ngClass]="{'has-error': form.get('metodoPago')?.invalid && form.get('metodoPago')?.touched}">
           <label for="metodoPago">Método de Pago <span class="required">*</span></label>
           <select id="metodoPago" formControlName="metodoPago" (change)="onMetodoPagoChange()">
@@ -15,7 +19,15 @@
           </select>
         </div>
 
-        <!-- Mostrar el campo Cuenta Salida solo si el método de pago no es 5 -->
+        <!-- Campo Proveedor (solo si metodoPago === 5) -->
+        <div *ngIf="isMetodoPago5" class="form-group" [ngClass]="{'has-error': form.get('proveedor')?.invalid && form.get('proveedor')?.touched}">
+          <label for="proveedor">Proveedor <span class="required">*</span></label>
+          <select id="proveedor" formControlName="proveedor">
+            <option *ngFor="let proveedor of proveedores" [value]="proveedor.id">{{ proveedor.nombre }}</option>
+          </select>
+        </div>
+
+        <!-- Campo Cuenta salida (oculto si metodoPago === 5) -->
         <div *ngIf="!isMetodoPago5" class="form-group" [ngClass]="{'has-error': form.get('destino')?.invalid && form.get('destino')?.touched}">
           <label for="destino">Cuenta salida <span class="required">*</span></label>
           <select id="destino" formControlName="destino">
@@ -23,23 +35,34 @@
           </select>
         </div>
 
-        <div *ngIf="showCuentaEntrante" class="form-group" [ngClass]="{'has-error': form.get('cuentaEntrante')?.invalid && form.get('cuentaEntrante')?.touched}">
-          <label for="cuentaEntrante">Cuenta entrante <span class="required">*</span></label>
-          <select id="cuentaEntrante" formControlName="cuentaEntrante">
-            <option *ngFor="let cuenta of cuentasColombianas" [value]="cuenta.id">{{ cuenta.nombreBanco }} - {{ cuenta.nombreCuenta }}</option>
-          </select>
+        <!-- Botón para alternar entre Descripción y Gasto -->
+        <div class="form-group">
+          <label for="tipoSeleccion">Seleccionar Tipo</label>
+          <button type="button" (click)="toggleTipoSeleccion()" class="btn-toggle">
+            {{ tipoSeleccion === 'descripcion' ? 'Cambiar a Gasto' : 'Cambiar a Descripción' }}
+          </button>
         </div>
-        <div class="form-group" [ngClass]="{'has-error': form.get('descripcion')?.invalid && form.get('descripcion')?.touched}">
-          <label for="descripcion">Descripción <span class="required">*</span></label>
-          <select id="descripcion" formControlName="descripcion">
-            <option *ngFor="let descripcion of descripciones" [value]="descripcion.id">{{ descripcion.texto }}</option>
-          </select>
-        </div>
+
+        <!-- Campo Descripción o Gasto (dependiendo de la selección) -->
+        <!-- Campo Descripción o Gasto (dependiendo de la selección) -->
+<div class="form-group" [ngClass]="{'has-error': form.get('descripcionGasto')?.invalid && form.get('descripcionGasto')?.touched}">
+  <label for="descripcionGasto">{{ tipoSeleccion === 'descripcion' ? 'Descripción' : 'Gasto' }} <span class="required">*</span></label>
+  <select id="descripcionGasto" formControlName="descripcionGasto">
+    <option *ngFor="let item of itemsSeleccionados" [value]="item.id">
+      {{ tipoSeleccion === 'descripcion' ? item.texto : item.nombre }}
+    </option>
+  </select>
+</div>
+
       </div>
+
+      <!-- Botones de Confirmar y Cancelar -->
       <div class="button-group">
         <button type="submit" class="btn-confirmar" [disabled]="isLoading">Confirmar Salida</button>
         <button type="button" class="btn-cancelar" (click)="onCancelar()" [disabled]="isLoading">Cancelar</button>
       </div>
+
+      <!-- Mensaje de error -->
       <div *ngIf="errorMessage" class="error-message">
         {{ errorMessage }}
       </div>
