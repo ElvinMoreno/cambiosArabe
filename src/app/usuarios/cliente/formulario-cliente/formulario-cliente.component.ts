@@ -1,4 +1,3 @@
-// formulario-cliente.component.ts
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
@@ -82,10 +81,10 @@ export class FormularioClienteComponent implements OnInit {
       };
 
       this.clienteService.createCliente(newCliente).subscribe(
-        (response) => {
+        (response: Cliente) => {
           this.dialogRef.close(true);
         },
-        (error) => {
+        (error: any) => {
           console.error('Error al crear el cliente:', error);
         }
       );

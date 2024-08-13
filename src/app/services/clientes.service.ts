@@ -1,7 +1,7 @@
-// services/cliente.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, catchError, throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 import { appsetting } from '../settings/appsetting';
 import { Cliente } from '../interfaces/clientes';
@@ -12,7 +12,7 @@ import { Cliente } from '../interfaces/clientes';
 export class ClienteService {
   private apiUrl = `${appsetting.apiUrl}cliente`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('token');

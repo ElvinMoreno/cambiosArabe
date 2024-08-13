@@ -11,7 +11,7 @@ import { appsetting } from '../settings/appsetting';
 export class MovimientoService {
   private apiUrl = `${appsetting.apiUrl}movimientos`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('token');
@@ -24,9 +24,9 @@ export class MovimientoService {
     });
   }
 
-  getMovimientosColombianas(cuentaBancariaId: number): Observable<MovimientoDiaDTO[]> {
+  getMovimientosColombianas(): Observable<MovimientoDiaDTO[]> {
     const headers = this.getHeaders();
-    return this.http.get<MovimientoDiaDTO[]>(`${this.apiUrl}/colombianas/${cuentaBancariaId}`, { headers })
+    return this.http.get<MovimientoDiaDTO[]>(`${this.apiUrl}/colombianas`, { headers })
       .pipe(
         catchError(this.handleError)
       );

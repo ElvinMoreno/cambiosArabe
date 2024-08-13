@@ -8,6 +8,7 @@
     <table class="movimientos-table">
       <thead>
         <tr>
+          <th>Cuenta Bancaria</th>
           <th>Hora</th>
           <th>Tipo de Movimiento</th>
           <th>Monto</th>
@@ -17,6 +18,7 @@
       </thead>
       <tbody>
         <tr *ngFor="let movimiento of movimientos">
+          <td>{{ movimiento.cuentaBancaria }}</td> <!-- Mostrar la cuenta bancaria -->
           <td>{{ movimiento.hora }}</td>
           <td>{{ movimiento.tipoMovimiento }}</td>
           <td>{{ movimiento.monto | currency }}</td>

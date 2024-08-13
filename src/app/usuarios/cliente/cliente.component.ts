@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatCardModule } from '@angular/material/card'; // Importa MatCardModule
+import { MatCardModule } from '@angular/material/card';
 
 import { FormularioClienteComponent } from './formulario-cliente/formulario-cliente.component';
 import { Cliente } from '../../interfaces/clientes';
@@ -48,11 +48,23 @@ export class ClienteComponent implements OnInit {
   }
 
   getCreditoMaximo(cliente: Cliente): string {
-    return cliente.credito && cliente.credito.precio ? cliente.credito.precio.toFixed(2) : 'null';
+    if (cliente.creditos && cliente.creditos.length > 0) {
+      const maxCredito = cliente.creditos.reduce((max, credito) => {
+        return credito.precio > max ? credito.precio : max;
+      }, 0);
+      return maxCredito.toFixed(2);
+    }
+    return 'null';
   }
 
   getVentaBsPrice(cliente: Cliente): string {
-    return cliente.ventasBs && cliente.ventasBs.precio ? cliente.ventasBs.precio.toFixed(2) : 'null';
+    if (cliente.ventasBs && cliente.ventasBs.length > 0) {
+      const totalVentaBs = cliente.ventasBs.reduce((total, venta) => {
+        return total + (venta.precio || 0);  // Evitar undefined
+      }, 0);
+      return totalVentaBs.toFixed(2);
+    }
+    return 'null';
   }
 
   openNuevoClienteDialog(): void {
