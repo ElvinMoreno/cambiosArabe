@@ -23,11 +23,8 @@ export class ConfirmarSalidaComponent implements OnInit {
   displayedColumns: string[] = ['banco', 'cedula', 'cuenta', 'nombre', 'bolivares', 'cuentaUsada', 'acciones'];
   dataSource: VentaPagos[] = [];
   isMobile = false;
+  updatedVentas: Set<number> = new Set();  // Mantener el seguimiento de ventas actualizadas
   copiedIcons: { [key: number]: { [key: string]: boolean } } = {};
-  updatedVentas: Set<number> = new Set();
-
-  // Campos que deben ser copiados
-  requiredFields = ['banco', 'cedula', 'cuenta', 'nombre', 'bolivares', 'cuentaUsada'];
 
   constructor(
     public dialog: MatDialog,
@@ -105,6 +102,7 @@ export class ConfirmarSalidaComponent implements OnInit {
               }
             };
             this.updateVentaBanco(result.ventaId, updatedVenta);
+            this.updatedVentas.add(result.ventaId);  // Añadir ID para quitar el borde rojo
           },
           error => {
             console.error('Error al obtener la venta por ID', error);
@@ -127,6 +125,12 @@ export class ConfirmarSalidaComponent implements OnInit {
   }
 
   copyToClipboard(value: string, id: number, field: string): void {
+    if (this.isCopied(id, field)) {
+      console.log("Este texto ya ha sido copiado anteriormente");
+      alert("Este texto ya ha sido copiado anteriormente");
+      return;
+    }
+
     navigator.clipboard.writeText(value).then(() => {
       console.log('Texto copiado al portapapeles:', value);
 
@@ -134,12 +138,6 @@ export class ConfirmarSalidaComponent implements OnInit {
         this.copiedIcons[id] = {};
       }
       this.copiedIcons[id][field] = true;
-
-      // Verifica si todos los campos requeridos han sido copiados
-      const allCopied = this.requiredFields.every(field => this.copiedIcons[id][field]);
-      if (allCopied) {
-        this.updatedVentas.add(id);
-      }
 
     }).catch(err => {
       console.error('Error al copiar el texto al portapapeles:', err);
