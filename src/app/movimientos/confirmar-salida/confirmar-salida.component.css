@@ -201,6 +201,11 @@ h2 {
   color: white;
 }
 
+/* Agregar estilos para el ícono copiado */
+.copied {
+  color: black; /* Cambiar a negro después de copiar */
+}
+
 
 @media (max-width: 768px) {
   .grid-container {
