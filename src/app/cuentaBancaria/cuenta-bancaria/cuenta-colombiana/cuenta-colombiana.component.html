@@ -10,9 +10,16 @@
       <app-caja></app-caja>
     </mat-tab>
 
-    <mat-tab label="Cuentas">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <div>
+          <span style="display: block; font-size: 0.75rem; color: #8BC94D;">Cuentas:</span>
+          <span>{{ cuentasLabel }}</span>
+        </div>
+      </ng-template>
       <app-listar-cuentas-colombianas></app-listar-cuentas-colombianas>
     </mat-tab>
+
     <mat-tab label="Movimientos">
       <app-listar-movimientos-colombianas></app-listar-movimientos-colombianas>
     </mat-tab>

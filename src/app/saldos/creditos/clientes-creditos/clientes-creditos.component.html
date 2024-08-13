@@ -1,16 +1,33 @@
 <div class="clientes-container">
     <h2>Clientes y Créditos</h2>
     <div *ngIf="errorMessage" class="error-message">
-        {{ errorMessage }}
+      {{ errorMessage }}
     </div>
-
+  
     <div class="clientes-grid">
-        <div *ngFor="let cliente of clientes" class="cliente-card">
-            <div class="card-title">{{ cliente.nombre }}</div>
-            <div class="card-content">
-                <p><strong>Límite de Crédito:</strong> {{ cliente.limiteCredito | currency }}</p>
-                <p><strong>Total en Créditos:</strong> {{ getTotalCredito(cliente) | currency }}</p>
-            </div>
+      <div *ngFor="let cliente of clientes" class="cliente-card" (click)="openCreditoDetalle(cliente)">
+        <div class="card-title">{{ cliente.nombre }}</div>
+        <div class="card-content">
+          <p><strong>Límite de Crédito:</strong> {{ cliente.limiteCredito | currency }}</p>
+          <p><strong>Total en Créditos:</strong> {{ getTotalCredito(cliente) | currency }}</p>
         </div>
+      </div>
     </div>
-</div>
+  
+    <!-- Modal Inline -->
+    <div class="modal" *ngIf="selectedCliente">
+      <div class="modal-content">
+        <h2>Detalles de Créditos para {{ selectedCliente.nombre }}</h2>
+        <ul>
+          <li *ngFor="let credito of selectedCliente.creditos">
+            <p>Monto: {{ credito.precio | currency }}</p>
+            <p>Fecha de Registro: {{ credito.fechaRegistro | date }}</p>
+            <p>Bolívares: {{ credito.bolivares | currency }}</p>
+          </li>
+        </ul>
+        <p><strong>Total Crédito:</strong> {{ getTotalCredito(selectedCliente) | currency }}</p>
+        <button mat-button (click)="closeModal()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+  

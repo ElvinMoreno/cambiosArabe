@@ -9,9 +9,8 @@ import { ListarCuentasColombianasComponent } from './listar-cuentas-colombianas/
 import { ListarMovimientosColombianasComponent } from './listar-movimientos-colombianas/listar-movimientos-colombianas.component';
 import { CajaComponent } from './caja/caja.component';
 import { CajaService } from '../../../services/caja.service';
-import { ClienteService } from '../../../services/clientes.service';
+import { CuentaBancariaService } from '../../../services/cuenta-bancaria.service';
 import { catchError, of } from 'rxjs';
-
 
 @Component({
   selector: 'app-cuenta-colombiana',
@@ -26,7 +25,6 @@ import { catchError, of } from 'rxjs';
     ListarCuentasColombianasComponent,
     ListarMovimientosColombianasComponent,
     CajaComponent,
-
   ],
   templateUrl: './cuenta-colombiana.component.html',
   styleUrls: ['./cuenta-colombiana.component.css']
@@ -34,13 +32,13 @@ import { catchError, of } from 'rxjs';
 export class CuentaColombianaComponent implements OnInit {
   selectedTabIndex = 0;  // Índice de la pestaña seleccionada
   montoCaja: number | null = null;
-  totalCreditos: number | null = null;
+  totalSaldoCuentas: number | null = null;
 
-  constructor(private cajaService: CajaService, private clienteService: ClienteService) {}
+  constructor(private cajaService: CajaService, private cuentaBancariaService: CuentaBancariaService) {}
 
   ngOnInit() {
     this.cargarMontoCaja();
-    this.cargarTotalCreditos();
+    this.cargarTotalSaldoCuentas();
   }
 
   cargarMontoCaja() {
@@ -58,26 +56,25 @@ export class CuentaColombianaComponent implements OnInit {
       });
   }
 
-  cargarTotalCreditos() {
-    this.clienteService.getAllClientes()
+  cargarTotalSaldoCuentas() {
+    this.cuentaBancariaService.getCuentasColombianas()
       .pipe(
         catchError(error => {
-          console.error('Error al obtener los créditos:', error);
+          console.error('Error al obtener los saldos de las cuentas:', error);
           return of([]);
         })
       )
-      .subscribe(clientes => {
-        this.totalCreditos = clientes
-          .filter(cliente => cliente.permitirCredito)
-          .reduce((total, cliente) => total + cliente.creditos.reduce((sum, credito) => sum + credito.precio, 0), 0);
+      .subscribe(cuentas => {
+        this.totalSaldoCuentas = cuentas.reduce((total, cuenta) => total + (cuenta.monto || 0), 0);
       });
   }
 
   get cajaLabel(): string {
-    return this.montoCaja !== null ? `$${this.montoCaja}` : '$';
+    return this.montoCaja !== null ? `$${this.montoCaja/1000}` : '$';
   }
 
-  get totalCreditosLabel(): string {
-    return this.totalCreditos !== null ? `$${this.totalCreditos}` : '$';
+  get cuentasLabel(): string {
+    return this.totalSaldoCuentas !== null ? `$${Math.trunc(this.totalSaldoCuentas / 1000)}` : '$';
   }
+  
 }

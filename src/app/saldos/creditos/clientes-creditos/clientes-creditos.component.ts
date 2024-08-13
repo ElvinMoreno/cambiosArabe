@@ -16,6 +16,7 @@ import { catchError, of } from 'rxjs';
 export class ClientesCreditosComponent implements OnInit {
   clientes: Cliente[] = [];
   errorMessage: string | null = null;
+  selectedCliente: Cliente | null = null;  // Cliente seleccionado para el modal
 
   constructor(private clienteService: ClienteService) {}
 
@@ -33,12 +34,19 @@ export class ClientesCreditosComponent implements OnInit {
         })
       )
       .subscribe(data => {
-        // Filtra solo los clientes que tienen permitido el crédito
         this.clientes = data.filter(cliente => cliente.permitirCredito);
       });
   }
 
   getTotalCredito(cliente: Cliente): number {
     return cliente.creditos.reduce((total, credito) => total + credito.precio, 0);
+  }
+
+  openCreditoDetalle(cliente: Cliente): void {
+    this.selectedCliente = cliente;  // Asignar el cliente seleccionado para mostrar en el modal
+  }
+
+  closeModal(): void {
+    this.selectedCliente = null;  // Cerrar el modal
   }
 }
