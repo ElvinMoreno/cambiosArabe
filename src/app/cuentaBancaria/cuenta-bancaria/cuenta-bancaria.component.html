@@ -1,7 +1,13 @@
 <div class="container">
   <mat-tab-group [(selectedIndex)]="selectedTabIndex">
-    <mat-tab label="Pesos">
-      <app-cuenta-colombiana></app-cuenta-colombiana>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <div>
+          <span style="display: block; font-size: 0.75rem; color: #8BC94D;">Pesos:</span>
+          <span>{{ totalPesosLabel }}</span>
+        </div>
+      </ng-template>
+      <app-cuenta-colombiana (totalPesosEmitter)="actualizarTotalPesos($event)"></app-cuenta-colombiana>
     </mat-tab>
     <mat-tab label="BS">
       <app-cuenta-venezolana></app-cuenta-venezolana>

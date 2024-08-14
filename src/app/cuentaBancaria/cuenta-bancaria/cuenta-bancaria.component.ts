@@ -5,11 +5,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { CuentaColombianaComponent } from './cuenta-colombiana/cuenta-colombiana.component';
 import { CuentaVenezolanaComponent } from './cuenta-venezolana/cuenta-venezolana.component';
 import { CajaComponent } from './cuenta-colombiana/caja/caja.component';
-import { CajaService } from '../../services/caja.service'; // Importar el servicio
-import { catchError, of } from 'rxjs';
 import { ClientesCreditosComponent } from "../../saldos/creditos/clientes-creditos/clientes-creditos.component";
 import { CreditosComponent } from '../../saldos/creditos/creditos.component';
-
 
 @Component({
   selector: 'app-cuenta-bancaria',
@@ -23,33 +20,23 @@ import { CreditosComponent } from '../../saldos/creditos/creditos.component';
     CajaComponent,
     ClientesCreditosComponent,
     CreditosComponent
-],
+  ],
   templateUrl: './cuenta-bancaria.component.html',
   styleUrls: ['./cuenta-bancaria.component.css']
 })
 export class CuentaBancariaComponent implements OnInit {
-  selectedTabIndex = 0;  // Índice de la pestaña seleccionada
-  montoCaja: number | null = null;
+  selectedTabIndex = 0;
+  totalPesos: number | null = null;
 
-  constructor(private cajaService: CajaService) {}
+  constructor() {}
 
-  ngOnInit() {
-    this.cajaService.getCajaDatos()
-      .pipe(
-        catchError(error => {
-          console.error('Error al obtener datos de la caja:', error);
-          return of(null);
-        })
-      )
-      .subscribe(data => {
-        if (data) {
-          this.montoCaja = data.monto;
-        }
-      });
+  ngOnInit() {}
+
+  actualizarTotalPesos(totalPesos: number) {
+    this.totalPesos = totalPesos;
   }
 
-  get cajaLabel(): string {
-    return this.montoCaja !== null ? `$${this.montoCaja}` : '$';
+  get totalPesosLabel(): string {
+    return this.totalPesos !== null ? `$${Math.trunc(this.totalPesos/1000)}` : '$';
   }
-  
 }
