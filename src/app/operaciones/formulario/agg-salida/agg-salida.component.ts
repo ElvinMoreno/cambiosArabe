@@ -74,7 +74,7 @@ export class AggSalidaComponent implements OnInit {
     this.form = this.fb.group({
       monto: ['', Validators.required],
       metodoPago: ['', Validators.required],
-      destino: ['', Validators.required],
+    
       cuentaEntrante: [''],
       descripcionGasto: ['', Validators.required],
       proveedor: ['']

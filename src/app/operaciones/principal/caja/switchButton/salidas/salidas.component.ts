@@ -46,14 +46,10 @@ export class SalidasComponent implements OnInit {
       width: '600px'
     });
 
-    dialogRef.componentInstance.confirmar.subscribe((data: Retiro) => {
-      console.log(data);
-      this.dataSource.push(data); // Añadir nueva salida a la dataSource
-      this.dataSource = [...this.dataSource]; // Actualizar dataSource
-    });
-
-    dialogRef.componentInstance.cancelar.subscribe(() => {
-      dialogRef.close();
+    // Manejar el cierre del diálogo
+    dialogRef.afterClosed().subscribe(result => {
+      // Recargar las salidas (retiros) después de cerrar el diálogo
+      this.loadRetiros();
     });
   }
 }
