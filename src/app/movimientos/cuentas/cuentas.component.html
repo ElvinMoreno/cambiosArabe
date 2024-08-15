@@ -1,0 +1,16 @@
+<div class="container">
+  <mat-tab-group [(selectedIndex)]="selectedIndex" (selectedIndexChange)="cambiarVista($event)">
+    <mat-tab label="Revisar">
+    </mat-tab>
+    <mat-tab label="Usar">
+    </mat-tab>
+    <mat-tab label="Retirar">
+    </mat-tab>
+  </mat-tab-group>
+
+  <ng-container [ngSwitch]="vistaActual">
+    <app-revisar *ngSwitchCase="'revisar'"></app-revisar>
+    <app-uso-monto *ngSwitchCase="'uso'"></app-uso-monto>
+    <app-retiro-total *ngSwitchCase="'retiro'"></app-retiro-total>
+  </ng-container>
+</div>

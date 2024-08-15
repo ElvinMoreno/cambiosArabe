@@ -1,12 +1,12 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { CuentaBancaria } from '../../../interfaces/cuenta-bancaria';
-import { CuentaBancariaService } from '../../../services/cuenta-bancaria.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
+import { CuentaBancaria } from '../../../../interfaces/cuenta-bancaria';
+import { CuentaBancariaService } from '../../../../services/cuenta-bancaria.service';
 
 @Component({
   selector: 'app-modal-bancos',

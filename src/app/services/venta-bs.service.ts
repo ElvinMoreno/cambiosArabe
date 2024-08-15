@@ -72,21 +72,28 @@ export class VentaBsService {
       .pipe(catchError(this.handleError));
   }
 
-  getVentasEntradas(): Observable<VentaPagos[]> {
+  getVentasEntradas(cuentaBancariaId: number): Observable<VentaPagos[]> {
     const headers = this.getHeaders();
-    return this.http.get<VentaPagos[]>(`${this.apiUrl}/ventas-entradas`, { headers })
+    return this.http.get<VentaPagos[]>(`${this.apiUrl}/entradas/${cuentaBancariaId}`, { headers })
       .pipe(catchError(this.handleError));
   }
 
-  confirmarVentaEntrada(dto: VentaPagos): Observable<string> {
+  confirmarVentasEntrada(ventas: VentaPagos[]): Observable<void> {
     const headers = this.getHeaders();
-    return this.http.post(`${this.apiUrl}/entrada`, dto, { headers, responseType: 'text' })
+    return this.http.post<void>(`${this.apiUrl}/confirmar-entradas`, ventas, { headers })
       .pipe(catchError(this.handleError));
   }
 
   confirmarVentaSalida(dto: VentaPagos): Observable<string> {
     const headers = this.getHeaders();
     return this.http.post(`${this.apiUrl}/salida`, dto, { headers, responseType: 'text' })
+      .pipe(catchError(this.handleError));
+  }
+
+  // Método para eliminar una venta por ID
+  eliminarVentaPorId(ventaId: number): Observable<void> {
+    const headers = this.getHeaders();
+    return this.http.delete<void>(`${this.apiUrl}/${ventaId}`, { headers })
       .pipe(catchError(this.handleError));
   }
 

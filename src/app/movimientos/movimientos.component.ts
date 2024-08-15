@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ConfirmarComponent } from './confirmar/confirmar.component';
+import { CuentasComponent } from './cuentas/cuentas.component';
 import { MatButtonModule } from '@angular/material/button';
+import { CommonModule } from '@angular/common';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { ConfirmarEntradaComponent } from './confirmar-entrada/confirmar-entrada.component';
-import { ConfirmarSalidaComponent } from './confirmar-salida/confirmar-salida.component';
 
 @Component({
   selector: 'app-movimientos',
@@ -14,14 +14,14 @@ import { ConfirmarSalidaComponent } from './confirmar-salida/confirmar-salida.co
     MatButtonModule,
     CommonModule,
     MatTabsModule,
-    ConfirmarEntradaComponent,
-    ConfirmarSalidaComponent
+    ConfirmarComponent,
+    CuentasComponent
   ],
   templateUrl: './movimientos.component.html',
   styleUrls: ['./movimientos.component.css']
 })
 export class MovimientosComponent {
-  vistaActual: 'entradas' | 'salidas' = 'entradas';
+  vistaActual: 'confirmar' | 'cuentas' = 'confirmar';
   selectedIndex: number = 0;
 
   constructor(private router: Router, public dialog: MatDialog) {}
@@ -31,7 +31,7 @@ export class MovimientosComponent {
   }
 
   cambiarVista(index: number) {
-    const vistas = ['entradas', 'salidas'];
-    this.vistaActual = vistas[index] as 'entradas' | 'salidas';
+    const vistas = ['confirmar', 'cuentas'];
+    this.vistaActual = vistas[index] as 'confirmar' | 'cuentas';
   }
 }

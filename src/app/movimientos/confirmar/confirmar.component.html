@@ -1,0 +1,13 @@
+<div class="container">
+  <mat-tab-group [(selectedIndex)]="selectedIndex" (selectedIndexChange)="cambiarVista($event)">
+    <mat-tab label="Ventas por Confirmar">
+    </mat-tab>
+    <mat-tab label="Salidas por Confirmar">
+    </mat-tab>
+  </mat-tab-group>
+
+  <ng-container [ngSwitch]="vistaActual">
+    <app-confirmar-entrada *ngSwitchCase="'entradas'"></app-confirmar-entrada>
+    <app-confirmar-salida *ngSwitchCase="'salidas'"></app-confirmar-salida>
+  </ng-container>
+</div>

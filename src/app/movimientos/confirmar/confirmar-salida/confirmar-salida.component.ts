@@ -1,16 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { VentaBsService } from '../../services/venta-bs.service';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
-import { ConfirmarAccionComponent } from '../../confirmar-accion/confirmar-accion.component';
-import { VentaPagos } from '../../interfaces/venta-pagos';
 import { ModalBancosComponent } from './modal-bancos/modal-bancos.component';
-import { VentaBs } from '../../interfaces/venta-bs';
+import { VentaPagos } from '../../../interfaces/venta-pagos';
+import { VentaBsService } from '../../../services/venta-bs.service';
+import { ConfirmarAccionComponent } from '../../../confirmar-accion/confirmar-accion.component';
+import { VentaBs } from '../../../interfaces/venta-bs';
+
 
 @Component({
   selector: 'app-confirmar-salida',

@@ -1,0 +1,21 @@
+.table-container{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px;
+  justify-content: center;
+}
+
+.filter-container {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px;
+}
+
+.mat-form-field {
+  width: 300px;
+}
+
+.table-container {
+  padding: 20px;
+}

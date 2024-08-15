@@ -1,0 +1,10 @@
+<!-- Cards para mostrar la información -->
+<div class="cards-container">
+  <mat-card *ngFor="let element of dataSource" class="card border-blue" (click)="openVentasCuentasDialog(element.id)">
+    <mat-card-content>
+      <p><strong>Nombre de la cuenta:</strong> {{element.nombreCuenta}}</p>
+      <p><strong>Monto:</strong> {{element.monto | currency}}</p>
+      <p><strong>Responsable:</strong> {{element.responsable}}</p>
+    </mat-card-content>
+  </mat-card>
+</div>
