@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatCardModule } from '@angular/material/card';
@@ -16,12 +16,12 @@ import { catchError, of } from 'rxjs';
   selector: 'app-cuenta-colombiana',
   standalone: true,
   imports: [
+    CommonModule,
     MatCardModule,
+    MatTabsModule,
     MatIconModule,
     MatDividerModule,
-    CommonModule,
     FlexLayoutModule,
-    MatTabsModule,
     ListarCuentasColombianasComponent,
     ListarMovimientosColombianasComponent,
     CajaComponent,
@@ -30,7 +30,8 @@ import { catchError, of } from 'rxjs';
   styleUrls: ['./cuenta-colombiana.component.css']
 })
 export class CuentaColombianaComponent implements OnInit {
-  selectedTabIndex = 0;  // Índice de la pestaña seleccionada
+  @Output() totalPesosEmitter = new EventEmitter<number>();  // Emite la suma de montos al padre
+  selectedTabIndex = 0;
   montoCaja: number | null = null;
   totalSaldoCuentas: number | null = null;
 
@@ -52,6 +53,7 @@ export class CuentaColombianaComponent implements OnInit {
       .subscribe(data => {
         if (data) {
           this.montoCaja = data.monto;
+          this.emitirTotalPesos();
         }
       });
   }
@@ -66,7 +68,15 @@ export class CuentaColombianaComponent implements OnInit {
       )
       .subscribe(cuentas => {
         this.totalSaldoCuentas = cuentas.reduce((total, cuenta) => total + (cuenta.monto || 0), 0);
+        this.emitirTotalPesos();
       });
+  }
+
+  emitirTotalPesos() {
+    if (this.montoCaja !== null && this.totalSaldoCuentas !== null) {
+      const totalPesos = this.montoCaja + this.totalSaldoCuentas;
+      this.totalPesosEmitter.emit(totalPesos);
+    }
   }
 
   get cajaLabel(): string {
@@ -76,5 +86,4 @@ export class CuentaColombianaComponent implements OnInit {
   get cuentasLabel(): string {
     return this.totalSaldoCuentas !== null ? `$${Math.trunc(this.totalSaldoCuentas / 1000)}` : '$';
   }
-  
 }
