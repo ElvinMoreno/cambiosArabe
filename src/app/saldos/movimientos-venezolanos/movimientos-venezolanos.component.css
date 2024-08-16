@@ -1,0 +1,12 @@
+.table-container {
+    max-height: 400px; /* Ajusta este valor según sea necesario */
+    overflow-y: auto; /* Habilita el scroll vertical */
+    margin-top: 15px;
+  }
+  
+  /* Otros estilos... */
+  
+  @media (max-width: 768px) {
+    /* Estilos para la tabla en dispositivos móviles */
+  }
+  
