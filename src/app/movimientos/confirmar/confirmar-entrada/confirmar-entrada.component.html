@@ -1,6 +1,11 @@
 <!-- Cards para mostrar la información -->
 <div class="cards-container">
-  <mat-card *ngFor="let element of dataSource" class="card border-blue" (click)="openVentasCuentasDialog(element.id)">
+  <mat-card *ngFor="let element of dataSource"
+    [matBadge]="element.totalVentas"
+    matBadgeColor="accent"
+    class="card border-blue"
+    matBadgeSize="large"
+    (click)="openVentasCuentasDialog(element.id)">
     <mat-card-content>
       <p><strong>Nombre de la cuenta:</strong> {{element.nombreCuenta}}</p>
       <p><strong>Monto:</strong> {{element.monto | currency}}</p>

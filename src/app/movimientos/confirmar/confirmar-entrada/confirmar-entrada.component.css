@@ -22,7 +22,7 @@
 .card mat-card-actions {
   display: flex;
   justify-content: flex-end;
-  padding: 16px;
+
 }
 
 .check-button {
@@ -35,3 +35,5 @@
     flex-direction: column;
   }
 }
+
+
