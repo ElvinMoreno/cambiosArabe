@@ -1,3 +1,4 @@
+<!-- Siempre se muestra la lista de cuentas -->
 <div class="agregar-proveedor">
   <button mat-flat-button class="btn2 btn-agregar" (click)="openCrearCuentaBancaria()">
     <mat-icon>add</mat-icon>
@@ -6,8 +7,9 @@
 
 <div class="card-container">
   <mat-card *ngFor="let cuenta of cuentasBancarias"
-  [ngClass]="getCardClass(cuenta.nombreBanco!)"
-            class="example-card" appearance="outlined">
+            [ngClass]="getCardClass(cuenta.nombreBanco!)"
+            class="example-card" appearance="outlined"
+            (click)="mostrarMovimientosDeCuenta(cuenta)">
     <mat-card-content>
       <div class="card-grid">
         <div class="grid-item grid-item-1-1">
@@ -29,7 +31,7 @@
           <p>{{ cuenta.nombreBanco }}</p>
         </div>
         <div class="grid-item grid-item-4-2">
-          <mat-icon class="settings-icon" (click)="openActualizarModal(cuenta)">settings</mat-icon>
+          <mat-icon class="settings-icon" (click)="openActualizarModal(cuenta); $event.stopPropagation()">settings</mat-icon>
         </div>
         <div class="grid-item grid-item-5-1-2">
           <p>Responsable: {{ cuenta.responsable }}</p>

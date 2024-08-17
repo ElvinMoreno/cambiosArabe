@@ -65,7 +65,7 @@
   }
 
   .movimiento-card p {
-      margin: 5px 0;
+      margin: 0px 0;
   }
 
   .movimiento {
@@ -80,7 +80,7 @@
       gap: 16px;
       align-items: center;
       background-color: #f7faff;
-      padding: 8px;
+      padding: 4px;
       position: sticky;
       top: 0;
       z-index: 10; /* Asegura que esté por encima de las tarjetas */

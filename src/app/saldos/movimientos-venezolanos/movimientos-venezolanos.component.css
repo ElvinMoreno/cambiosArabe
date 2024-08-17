@@ -1,12 +1,178 @@
 .table-container {
-    max-height: 400px; /* Ajusta este valor según sea necesario */
-    overflow-y: auto; /* Habilita el scroll vertical */
     margin-top: 15px;
+    padding: 10px;
   }
   
-  /* Otros estilos... */
+  /* Encabezado de la tabla */
+  .table-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: #f2f2f2;
+    font-weight: bold;
+    text-transform: uppercase;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 10px;
+  }
   
+  .header-item {
+    width: 30%;
+    text-align: left;
+  }
+  
+  /* Tarjetas */
+  .card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    background-color: #fff;
+    transition: transform 0.3s ease;
+  }
+  
+  .card:hover {
+    transform: scale(1.02);
+  }
+  
+  .card-content {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .card-item {
+    width: 30%;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  
+  .card-value {
+    color: #3b3b3b;
+    text-align: left;
+  }
+
+  .custom-dialog-container {
+    border-radius: 12px; /* Ajusta el borde redondeado */
+    padding: 0; /* Eliminar padding para un mejor control */
+    background-color: #fff; /* Asegura un fondo blanco */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Añadir sombra para un efecto más estilizado */
+  }
+  
+  .mat-dialog-container {
+    padding: 20px; /* Ajustar padding si es necesario */
+    border-radius: inherit; /* Asegura que herede el borde redondeado de la clase custom */
+  }
+  
+  .dialog-title {
+    color: #5E94FF;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+    padding-top: 20px;
+  }
+  
+  .dialog-content {
+    font-size: 1rem;
+    color: #333;
+    padding: 20px;
+    line-height: 1.6;
+    text-align: center; /* Centrar el texto */
+  }
+  
+  .dialog-content p {
+    margin: 10px 0;
+  }
+  
+  .monto {
+    font-weight: bold;
+  }
+  
+  .dialog-actions {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    border-top: 1px solid #eee;
+  }
+  
+  .close-button {
+    background-color: #5E94FF;
+    color: white;
+    padding: 10px 30px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    transition: background-color 0.3s ease;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Añadir sombra para un efecto más destacado */
+  }
+  
+  .close-button:hover {
+    background-color: #4a7ccc;
+  }
+  
+
+  
+
+  .back-button {
+    background: linear-gradient(135deg, #5E94FF, #4A7CCC);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15); /* Sombra más suave */
+    border: none; /* Eliminar el borde */
+  }
+  
+  .back-button mat-icon {
+    margin-right: 10px;
+    font-size: 1.5rem;
+  }
+  
+  .back-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0px 12px 20px rgba(94, 148, 255, 0.4);
+  }
+  
+  .back-button:active {
+    transform: translateY(2px);
+    box-shadow: 0px 6px 10px rgba(94, 148, 255, 0.2);
+  }
+  
+  .back-button:focus {
+    outline: none;
+    box-shadow: 0px 0px 0px 4px rgba(94, 148, 255, 0.5);
+  }
+  
+  
+  /* Estilos específicos para dispositivos móviles */
   @media (max-width: 768px) {
-    /* Estilos para la tabla en dispositivos móviles */
+    .table-header {
+      display: flex; /* Asegura que el encabezado también se muestre en móviles */
+    }
+  
+    .card-content {
+      flex-direction: row; /* Alineación en fila para las tarjetas en móviles */
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+  
+    .card-item {
+      width: 30%;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+  
+    .card-value {
+      font-size: 1rem;
+    }
   }
   

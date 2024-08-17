@@ -7,24 +7,25 @@
     <h6>Monto: {{ monto | currency }}</h6>
   </div>
 
-  <div class="movimiento">
+  <div class="movimiento" >
     <h4 style="color: #5E94FF;">Movimientos</h4>
   </div>
+  
 
   <!-- Vista de escritorio: Tabla -->
   <div class="tabla-movimientos" *ngIf="!isMobile">
     <table mat-table [dataSource]="movimientos" class="mat-elevation-z8">
       <!-- Columnas -->
       <ng-container matColumnDef="hora">
-        <th mat-header-cell *matHeaderCellDef> Hora </th>
-        <td mat-cell *matCellDef="let movimiento"> {{ movimiento.hora }} </td>
+        <th mat-header-cell *matHeaderCellDef> fecha</th>
+        <td mat-cell *matCellDef="let movimiento"> {{ movimiento.fecha  }} </td>
       </ng-container>
       <ng-container matColumnDef="tipoMovimiento">
         <th mat-header-cell *matHeaderCellDef> Tipo Movimiento </th>
         <td mat-cell *matCellDef="let movimiento"> {{ movimiento.tipoMovimiento }} </td>
       </ng-container>
       <ng-container matColumnDef="monto">
-        <th mat-header-cell *matHeaderCellDef> Saldo </th>
+        <th mat-header-cell *matHeaderCellDef> Monto </th>
         <td mat-cell *matCellDef="let movimiento"> {{ movimiento.monto | currency }} </td>
       </ng-container>
       <ng-container matColumnDef="descripcion">
@@ -43,18 +44,12 @@
 
   <!-- Vista móvil: Tarjetas -->
   <div class="card-movimientos" *ngIf="isMobile">
-    <!-- Encabezados fijos para vista móvil -->
-    <div class="mobile-header">
-      <div><strong>Tipo</strong></div>
-      <div><strong>Saldo</strong></div>
-      <div><strong>Descripción</strong></div>
-    </div>
-
     <mat-card *ngFor="let movimiento of movimientos" class="movimiento-card">
-      <mat-card-content class="card-grid">
-        <p>{{ movimiento.tipoMovimiento }}</p>
-        <p>{{ movimiento.monto | currency }}</p>
-        <p>{{ movimiento.descripcion }}</p>
+      <mat-card-content>
+        <p><strong>Tipo:</strong> {{ movimiento.tipoMovimiento }}</p>
+        <p><strong>Monto:</strong> {{ movimiento.monto | currency }}</p>
+        <p><strong>Descripción:</strong> {{ movimiento.descripcion }}</p>
+        <p><strong>Entrada:</strong> {{ movimiento.entrada ? 'Sí' : 'No' }}</p>
       </mat-card-content>
     </mat-card>
   </div>

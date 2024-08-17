@@ -1,0 +1,12 @@
+<h5 mat-dialog-title class="dialog-title">Detalles del Movimiento</h5>
+<div mat-dialog-content class="dialog-content">
+  <p><strong>Fecha:</strong> {{ data.fecha | date:'fullDate' }}</p>
+  <p><strong>Tipo de Movimiento:</strong> {{ data.tipoMovimiento }}</p>
+  <p><strong>Monto:</strong> <span class="monto" [style.color]="data.monto > 0 ? '#5E94FF' : 'red'">{{ data.monto | currency:'USD' }}</span></p>
+  <p><strong>Descripción:</strong> {{ data.descripcion }}</p>
+  <p><strong>Cuenta Bancaria:</strong> {{ data.nombreCuentaBancaria }}</p>
+  <p><strong>Entrada:</strong> {{ data.entrada ? 'Sí' : 'No' }}</p>
+</div>
+<div mat-dialog-actions class="dialog-actions">
+  <button mat-button (click)="closeDialog()" class="close-button">Cerrar</button>
+</div>

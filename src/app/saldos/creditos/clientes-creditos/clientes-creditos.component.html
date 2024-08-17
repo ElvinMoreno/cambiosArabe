@@ -21,7 +21,7 @@
         <ul>
           <li *ngFor="let credito of selectedCliente.creditos">
             <p>Monto: {{ credito.precio | currency }}</p>
-            <p>Fecha de Registro: {{ credito.fechaRegistro | date }}</p>
+            <p>Fecha de Registro: {{ credito.fechaRegistro| date }}</p>
             <p>Bolívares: {{ credito.bolivares | currency }}</p>
           </li>
         </ul>

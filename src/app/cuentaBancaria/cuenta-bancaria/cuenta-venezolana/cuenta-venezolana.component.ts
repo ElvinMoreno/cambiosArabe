@@ -1,10 +1,10 @@
-// cuenta-venezolana.component.ts
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
-import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog'; // Asegúrate de tener estas importaciones correctas
 import { CuentaBancaria } from '../../../interfaces/cuenta-bancaria';
 import { CuentaBancariaService } from '../../../services/cuenta-bancaria.service';
 import { ActualizarCuentaBancariaComponent } from '../actualizar-cuenta-bancaria/actualizar-cuenta-bancaria.component';
@@ -17,7 +17,8 @@ import { CrearCuentaBancariaVComponent } from '../crear-cuenta-bancaria-v/crear-
     MatCardModule,
     MatIconModule,
     MatDividerModule,
-    CommonModule
+    CommonModule,
+    MatDialogModule // Asegúrate de incluir MatDialogModule en imports
   ],
   templateUrl: './cuenta-venezolana.component.html',
   styleUrls: ['./cuenta-venezolana.component.css']
@@ -25,7 +26,11 @@ import { CrearCuentaBancariaVComponent } from '../crear-cuenta-bancaria-v/crear-
 export class CuentaVenezolanaComponent implements OnInit {
   cuentasBancarias: CuentaBancaria[] = [];
 
-  constructor(private cuentaBancariaService: CuentaBancariaService, public dialog: MatDialog) {}
+  constructor(
+    private cuentaBancariaService: CuentaBancariaService, 
+    public dialog: MatDialog, // Inyección de MatDialog corregida
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadCuentasVenezolanas();
@@ -36,7 +41,7 @@ export class CuentaVenezolanaComponent implements OnInit {
       width: '600px',
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result: boolean) => {
       if (result) {
         this.loadCuentasVenezolanas();
       }
@@ -46,6 +51,7 @@ export class CuentaVenezolanaComponent implements OnInit {
   loadCuentasVenezolanas(): void {
     this.cuentaBancariaService.getCuentasVenezolanas().subscribe(
       (data: CuentaBancaria[]) => {
+        console.log('Cuentas bancarias cargadas:', data);
         this.cuentasBancarias = data;
       },
       error => {
@@ -60,11 +66,15 @@ export class CuentaVenezolanaComponent implements OnInit {
       data: { cuentaBancaria: cuenta }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result: boolean) => {
       if (result) {
         this.loadCuentasVenezolanas();
       }
     });
+  }
+
+  mostrarMovimientosDeCuenta(cuenta: CuentaBancaria): void {
+    this.router.navigate(['/operaciones/movimientos-venezolanos', cuenta.id]);
   }
 
   getCardClass(nombreBanco: string): string {

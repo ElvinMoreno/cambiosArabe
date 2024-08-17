@@ -17,8 +17,10 @@ import { ConfiguracionComponent } from './configuraciones/configuracion/configur
 import { UsuariosComponent } from './usuarios/usuarios.component';
 import { TasaComponent } from './tasa/tasa.component';
 import { MovimientosComponent } from './movimientos/movimientos.component';
+import { MovimientosVenezolanosComponent } from './saldos/movimientos-venezolanos/movimientos-venezolanos.component';
 
 export const routes: Routes = [
+
   {
     path: '',
     redirectTo: 'login',
@@ -42,21 +44,22 @@ export const routes: Routes = [
           { path: '', redirectTo: 'bolivares', pathMatch: 'full' }
         ]
       },
-      {path: 'index',
-        component: ContentPolaniaComponent},
-      {path:'tasa', component: TasaComponent},
+      { path: 'index', component: ContentPolaniaComponent },
+      { path: 'tasa', component: TasaComponent },
       { path: 'configuracion', component: ConfiguracionComponent },
       { path: 'detalle-davidplata', component: DetalleDavidplataComponent },
-      {
-        path: 'cuentaBancaria', component: CuentaBancariaComponent
-      },
+      { path: 'cuentaBancaria', component: CuentaBancariaComponent },
       { path: 'detalle-bancolombia1', component: DetalleBancolombia1Component },
       { path: 'detalle-bancolombia2', component: DetalleBancolombia2Component },
       { path: 'detalle-movimiento-davidplata', component: DetalleMovimientoDavidplataComponent },
-      { path: 'detalle-movimiento-bancolombia1', component: DetalleMovimientoBancolombia1Component},
-      {path: 'detalle-movimiento-bancolombia2', component: DetalleMovimientoBancolombia2Component},
-      {path: 'proveedores', component: UsuariosComponent},
-      {path: 'movimientos', component: MovimientosComponent}
+      { path: 'detalle-movimiento-bancolombia1', component: DetalleMovimientoBancolombia1Component },
+      { path: 'detalle-movimiento-bancolombia2', component: DetalleMovimientoBancolombia2Component },
+      { path: 'proveedores', component: UsuariosComponent },
+      { path: 'movimientos', component: MovimientosComponent },
+      
+      // Nueva ruta para movimientos venezolanos
+      { path: 'movimientos-venezolanos/:cuentaId', component: MovimientosVenezolanosComponent }
     ]
   }
 ];
+

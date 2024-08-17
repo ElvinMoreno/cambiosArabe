@@ -1,7 +1,7 @@
-import { Movimiento } from "./movimiento";
+import { MovimientoDiaDTO } from "./MovimientoDiaDTO";
 
 export interface Descripcion {
   id?: number;
   texto: string;
-  movimiento?: Movimiento[];
+  movimiento?: MovimientoDiaDTO[];
 }

@@ -1,32 +1,32 @@
-<div *ngIf="dataSource && dataSource.data && dataSource.data.length > 0" class="table-container">
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-      <!-- Columna 'fecha' -->
-      <ng-container matColumnDef="fecha">
-        <th mat-header-cell *matHeaderCellDef> Fecha </th>
-        <td mat-cell *matCellDef="let movimiento" data-label="Fecha"> 
-          {{ movimiento.fecha | date:'short' }} 
-        </td>
-      </ng-container>
+<!-- Botón para regresar -->
+<button mat-button (click)="goBack()" class="back-button">
+    <mat-icon>arrow_back</mat-icon> Regresar
+  </button>
   
-      <!-- Columna 'descripcion' -->
-      <ng-container matColumnDef="descripcion">
-        <th mat-header-cell *matHeaderCellDef> Descripción </th>
-        <td mat-cell *matCellDef="let movimiento" data-label="Descripción"> 
-          {{ movimiento.descripcion }} 
-        </td>
-      </ng-container>
+  <div *ngIf="dataSource.data.length > 0" class="table-container">
+      <div class="table-header">
+        <div class="header-item">Fecha</div>
+        <div class="header-item">Movimiento</div>
+        <div class="header-item">Caja</div>
+      </div>
   
-      <!-- Columna 'monto' -->
-      <ng-container matColumnDef="monto">
-        <th mat-header-cell *matHeaderCellDef> Monto </th>
-        <td mat-cell *matCellDef="let movimiento" data-label="Monto"> 
-          {{ movimiento.monto | currency:'USD' }} 
-        </td>
-      </ng-container>
-  
-      <!-- Header y filas -->
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
+      <!-- Tarjetas -->
+      <div *ngFor="let movimiento of dataSource.data" class="card" (click)="openDetalleDialog(movimiento)">
+        <div class="card-content">
+          <div class="card-item">
+            <span class="card-value">
+              {{ isToday(movimiento.fecha) ? (movimiento.fecha | date:'shortTime') : (movimiento.fecha | date:'shortDate') }}
+            </span>
+          </div>
+          <div class="card-item">
+            <span class="card-value">{{ movimiento.tipoMovimiento }}</span>
+          </div>
+          <div class="card-item">
+            <span class="card-value" [style.color]="movimiento.monto > 0 ? 'green' : 'red'">
+              + {{ movimiento.monto | currency:'USD' }}
+            </span>
+          </div>
+        </div>
+      </div>
   </div>
   
