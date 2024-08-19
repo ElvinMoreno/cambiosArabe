@@ -7,6 +7,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { CuentaBancariaService } from '../../../../services/cuenta-bancaria.service';
 import { CuentaBancaria } from '../../../../interfaces/cuenta-bancaria';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { CrearCuentaBancariaComponent } from '../../crear-cuenta-bancaria/crear-cuenta-bancaria.component';
 import { ActualizarCuentaBancariaComponent } from '../../actualizar-cuenta-bancaria/actualizar-cuenta-bancaria.component';
 
@@ -26,7 +27,10 @@ import { ActualizarCuentaBancariaComponent } from '../../actualizar-cuenta-banca
 export class ListarCuentasColombianasComponent implements OnInit {
   cuentasBancarias: CuentaBancaria[] = [];
 
-  constructor(private cuentaBancariaService: CuentaBancariaService, public dialog: MatDialog) {}
+  constructor(
+    private cuentaBancariaService: CuentaBancariaService, 
+    public dialog: MatDialog,
+    private router: Router) {}
 
   ngOnInit(): void {
     this.loadCuentasColombianas();
@@ -67,4 +71,10 @@ export class ListarCuentasColombianasComponent implements OnInit {
       }
     });
   }
+
+  mostrarMovimientosDeCuenta(cuenta: CuentaBancaria): void {
+    this.router.navigate(['/operaciones/movimientos-venezolanos', cuenta.id], { queryParams: { esColombiana: true } });
+}
+
+
 }

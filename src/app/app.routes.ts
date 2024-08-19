@@ -17,7 +17,7 @@ import { ConfiguracionComponent } from './configuraciones/configuracion/configur
 import { UsuariosComponent } from './usuarios/usuarios.component';
 import { TasaComponent } from './tasa/tasa.component';
 import { MovimientosComponent } from './movimientos/movimientos.component';
-import { MovimientosVenezolanosComponent } from './saldos/movimientos-venezolanos/movimientos-venezolanos.component';
+import { MovimientosVenezolanosComponent } from './shared/movimientos-general-componente/movimientos-venezolanos.component';
 
 export const routes: Routes = [
 
