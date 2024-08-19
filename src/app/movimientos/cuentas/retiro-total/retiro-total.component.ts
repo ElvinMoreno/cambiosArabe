@@ -5,6 +5,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { CuentaBancaria } from '../../../interfaces/cuenta-bancaria';
 import { CuentaBancariaService } from '../../../services/cuenta-bancaria.service';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { ConfirmarAccionComponent } from '../../../confirmar-accion/confirmar-accion.component';
 
 @Component({
   selector: 'app-retiro-total',
@@ -13,7 +15,8 @@ import { MatIconModule } from '@angular/material/icon';
     CommonModule,
     MatCardModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatDialogModule
   ],
   templateUrl: './retiro-total.component.html',
   styleUrls: ['./retiro-total.component.css']
@@ -21,7 +24,10 @@ import { MatIconModule } from '@angular/material/icon';
 export class RetiroTotalComponent implements OnInit {
   cuentasColombianas: CuentaBancaria[] = [];
 
-  constructor(private cuentaBancariaService: CuentaBancariaService) {}
+  constructor(
+    private cuentaBancariaService: CuentaBancariaService,
+    private dialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
     this.loadCuentasColombianas();
@@ -39,8 +45,22 @@ export class RetiroTotalComponent implements OnInit {
   }
 
   realizarRetiro(cuenta: CuentaBancaria): void {
-    // Lógica para realizar el retiro
-    console.log(`Realizando retiro de la cuenta: ${cuenta.nombreBanco}`);
-    // Aquí puedes agregar la lógica para el retiro, como abrir un diálogo o realizar una solicitud a un servicio
+    const dialogRef = this.dialog.open(ConfirmarAccionComponent, {
+      width: '300px',
+      data: {
+        message: '¿Está seguro de retirar todo el dinero de la cuenta?',
+        accion: 'Retiro'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Aquí va la lógica de retiro
+        console.log(`Retirando todo el dinero de la cuenta: ${cuenta.nombreBanco}`);
+        // Llamada al servicio para realizar el retiro
+      } else {
+        console.log('Retiro cancelado.');
+      }
+    });
   }
 }
