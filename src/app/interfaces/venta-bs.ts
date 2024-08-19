@@ -5,7 +5,7 @@ import { MetodoPago } from './metodo-pago';
 export interface VentaBs {
   id?: number;
   cuentaBancariaBolivares: CuentaBancaria;
-  cuentaBancariaPesos: CuentaBancaria;
+  cuentaBancariaPesos?: CuentaBancaria;
   metodoPago: MetodoPago;
   cliente: Cliente;
   tasaVenta?: number;
@@ -13,6 +13,7 @@ export interface VentaBs {
   referencia?: string;
   bolivaresVendidos?: number;
   precio?: number;
+  nombreCuenta?: string;
   comision?: number;
   nombreCuentaDestinatario?: string;
   cedula?: number;
