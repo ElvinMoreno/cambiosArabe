@@ -40,6 +40,7 @@ import { VentaBsService } from '../../../../../services/venta-bs.service';
 export class VentasBolivaresComponent implements OnInit {
   displayedColumns: string[] = ['cuentaCop', 'metodoPago', 'cliente', 'tasa', 'fecha', 'bolivares', 'pesos'];
   dataSource = new MatTableDataSource<VentaBs>();
+  originalData: VentaBs[] = []; // Variable para almacenar el conjunto de datos original
   paginatedDataSource: VentaBs[] = [];
   isMobile = false;
   pageSize = 5;
@@ -72,6 +73,7 @@ export class VentasBolivaresComponent implements OnInit {
   loadVentas(): void {
     this.ventaBsService.getAllVentasBs().subscribe(
       (data: VentaBs[]) => {
+        this.originalData = data; // Almacena los datos originales
         this.dataSource.data = data;
         this.dataSource.paginator = this.paginator;
         this.applyDateFilter();  // Aplicar el filtro inicial
@@ -86,13 +88,14 @@ export class VentasBolivaresComponent implements OnInit {
   applyDateFilter(): void {
     if (this.selectedDate) {
       const selectedDateStr = this.formatDate(this.selectedDate); // Formato dd/MM/yyyy
-      this.dataSource.data = this.dataSource.data.filter(item => {
+      this.dataSource.data = this.originalData.filter(item => { // Filtra sobre los datos originales
         const itemDateStr = this.formatDate(new Date(item.fechaVenta));
         return itemDateStr === selectedDateStr;
       });
       this.updateMobileData();
     } else {
-      this.loadVentas(); // Si no hay fechas seleccionadas, carga todos los datos
+      this.dataSource.data = this.originalData; // Restablece los datos originales si no hay filtro
+      this.updateMobileData();
     }
   }
 
@@ -101,6 +104,12 @@ export class VentasBolivaresComponent implements OnInit {
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
+  }
+
+  clearDate(): void {
+    this.selectedDate = null; // Limpiar la fecha seleccionada
+    this.dataSource.data = this.originalData; // Restaurar los datos originales
+    this.updateMobileData(); // Actualizar la vista para dispositivos móviles
   }
 
   updateMobileData() {
