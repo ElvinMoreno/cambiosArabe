@@ -53,15 +53,29 @@ export class VentasCuentasComponent implements OnInit {
   }
 
   confirmarEntradas(): void {
-    this.ventaBsService.confirmarVentasEntrada(this.dataSource).subscribe(
-      () => {
-        console.log('Ventas confirmadas con éxito');
-        this.dialogRef.close(true);
-      },
-      (error) => {
-        console.error('Error al confirmar las ventas:', error);
+    const dialogRef = this.dialog.open(ConfirmarAccionComponent, {
+      width: '300px',
+      data: {
+        message: '¿Está seguro que desea confirmar la entrada de pesos?',
+        accion: 'Confirmar Entradas'
       }
-    );
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.ventaBsService.confirmarVentasEntrada(this.dataSource).subscribe(
+          () => {
+            console.log('Ventas confirmadas con éxito');
+            this.dialogRef.close(true);
+          },
+          (error) => {
+            console.error('Error al confirmar las ventas:', error);
+          }
+        );
+      } else {
+        console.log('Confirmación de entradas cancelada.');
+      }
+    });
   }
 
   eliminarVenta(ventaId: number): void {

@@ -12,6 +12,7 @@ import { VentaPagos } from '../../../interfaces/venta-pagos';
 import { forkJoin, map } from 'rxjs';
 import { VentaBsService } from '../../../services/venta-bs.service';
 import { MatBadgeModule } from '@angular/material/badge';
+import { ConfirmarAccionComponent } from '../../../confirmar-accion/confirmar-accion.component';  // Importa el componente de confirmación
 
 @Component({
   selector: 'app-confirmar-entrada',
@@ -28,7 +29,7 @@ import { MatBadgeModule } from '@angular/material/badge';
   styleUrls: ['./confirmar-entrada.component.css']
 })
 export class ConfirmarEntradaComponent implements OnInit {
-  dataSource: any[] = []; // Incluye los datos de las cuentas y las ventas
+  dataSource: any[] = [];
   isMobile = false;
 
   constructor(
@@ -57,15 +58,19 @@ export class ConfirmarEntradaComponent implements OnInit {
           return this.ventaBsService.getVentasEntradas(cuenta.id!).pipe(
             map((ventas: VentaPagos[] | null) => {
               const totalPesosRecibidos = ventas ? ventas.reduce((sum, venta) => sum + venta.pesosRecibidos, 0) : 0;
-              const totalVentas = ventas ? ventas.length : 0; // Contar la cantidad de ventas
-              return { ...cuenta, monto: cuenta.monto! + totalPesosRecibidos, totalVentas }; // Añadir totalVentas
+              const totalVentas = ventas ? ventas.length : 0;
+              return {
+                ...cuenta,
+                monto: cuenta.monto! + totalPesosRecibidos,
+                totalVentas,
+                ventas // Incluimos las ventas en el objeto
+              };
             })
           );
         });
 
         forkJoin(cuentasProcesadas).subscribe(
           cuentasFinales => {
-            // Filtrar cuentas que tienen totalVentas >= 1
             this.dataSource = cuentasFinales.filter(cuenta => cuenta.totalVentas >= 1);
           },
           (error) => {
@@ -85,7 +90,36 @@ export class ConfirmarEntradaComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      this.loadCuentas(); // Recargar las cuentas bancarias al cerrar el diálogo
+      this.loadCuentas();
     });
+  }
+
+  confirmarVenta(cuenta: any): void {
+    if (cuenta.ventas && cuenta.ventas.length === 1) {
+      const venta = cuenta.ventas[0];
+      const dialogRef = this.dialog.open(ConfirmarAccionComponent, {
+        width: '300px',
+        data: {
+          message: '¿Está seguro que desea confirmar la entrada de pesos?',
+          accion: 'Confirmar Venta'
+        }
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.ventaBsService.confirmarVentasEntrada([venta]).subscribe(
+            () => {
+              console.log('Venta confirmada con éxito');
+              this.loadCuentas();
+            },
+            (error) => {
+              console.error('Error al confirmar la venta:', error);
+            }
+          );
+        } else {
+          console.log('Confirmación cancelada.');
+        }
+      });
+    }
   }
 }

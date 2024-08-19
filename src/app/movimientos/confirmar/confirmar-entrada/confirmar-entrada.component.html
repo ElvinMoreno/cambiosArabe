@@ -1,4 +1,3 @@
-<!-- Cards para mostrar la información -->
 <div class="cards-container">
   <mat-card *ngFor="let element of dataSource"
     [matBadge]="element.totalVentas"
@@ -8,8 +7,16 @@
     (click)="openVentasCuentasDialog(element.id)">
     <mat-card-content>
       <p><strong>Nombre de la cuenta:</strong> {{element.nombreCuenta}}</p>
-      <p><strong>Monto:</strong> {{element.monto | currency}}</p>
+      <p>
+        <strong>Monto:</strong> {{element.monto | currency}}
+        <span *ngIf="element.totalVentas === 1">
+          ({{element.ventas[0].pesosRecibidos | currency}})
+        </span>
+      </p>
       <p><strong>Responsable:</strong> {{element.responsable}}</p>
+      <button mat-icon-button *ngIf="element.totalVentas === 1" (click)="confirmarVenta(element); $event.stopPropagation()">
+        <mat-icon>check</mat-icon>
+      </button>
     </mat-card-content>
   </mat-card>
 </div>
