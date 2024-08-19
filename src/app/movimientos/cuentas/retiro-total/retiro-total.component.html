@@ -1,1 +1,18 @@
-<p>retiro-total works!</p>
+<div class="cards-container">
+  <mat-card *ngFor="let cuenta of cuentasColombianas" class="example-card" appearance="outlined">
+    <mat-card-header>
+      <mat-card-title>{{ cuenta.nombreBanco }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <p><strong>Monto:</strong> {{ cuenta.monto | currency }}</p>
+      <p><strong>Límite CB:</strong> {{ cuenta.limiteCB }}</p>
+      <p><strong>Límite Monto:</strong> {{ cuenta.limiteMonto | currency }}</p>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="primary"
+      (click)="realizarRetiro(cuenta)">
+      <mat-icon>arrow_downward</mat-icon>
+      Retirar</button>
+    </mat-card-actions>
+  </mat-card>
+</div>

@@ -38,11 +38,11 @@ export class MovimientoService {
   
 
   /**
-   * Método para obtener los movimientos de una cuenta venezolana específica.
+   * Método para obtener los movimientos de una cuenta venezolana y colombiana específica.
    * @param cuentaId - ID de la cuenta venezolana.
    * @returns Observable<MovimientoDiaDTO[]> - Lista de movimientos de la cuenta venezolana.
    */
-  getMovimientosVenezolanas(cuentaId: number): Observable<MovimientoDiaDTO[]> {
+  getMovimientos(cuentaId: number): Observable<MovimientoDiaDTO[]> {
     const headers = this.getHeaders();
     return this.http.get<MovimientoDiaDTO[]>(`${this.apiUrl}/cuentas/${cuentaId}`, { headers })
       .pipe(

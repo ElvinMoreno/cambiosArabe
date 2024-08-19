@@ -1,11 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
+import { provideNativeDateAdapter } from '@angular/material/core';
 
 import { BancolombiaComponent } from '../../../../formulario/bancolombia/bancolombia.component';
 import { VentaBs } from '../../../../../interfaces/venta-bs';
@@ -20,15 +26,28 @@ import { VentaBsService } from '../../../../../services/venta-bs.service';
     CommonModule,
     MatDialogModule,
     MatIconModule,
-    MatCardModule
+    MatCardModule,
+    MatPaginatorModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule
   ],
+  providers: [provideNativeDateAdapter()],
   templateUrl: './ventas-bolivares.component.html',
   styleUrls: ['./ventas-bolivares.component.css']
 })
 export class VentasBolivaresComponent implements OnInit {
   displayedColumns: string[] = ['cuentaCop', 'metodoPago', 'cliente', 'tasa', 'fecha', 'bolivares', 'pesos'];
-  dataSource: VentaBs[] = [];
+  dataSource = new MatTableDataSource<VentaBs>();
+  originalData: VentaBs[] = []; // Variable para almacenar el conjunto de datos original
+  paginatedDataSource: VentaBs[] = [];
   isMobile = false;
+  pageSize = 5;
+  pageSizeOptions = [5, 10, 25];
+  selectedDate: Date | null = null;
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
     public dialog: MatDialog,
@@ -45,18 +64,64 @@ export class VentasBolivaresComponent implements OnInit {
     this.breakpointObserver.observe([Breakpoints.Handset])
       .subscribe(result => {
         this.isMobile = result.matches;
+        if (this.isMobile) {
+          this.updateMobileData();
+        }
       });
   }
 
   loadVentas(): void {
     this.ventaBsService.getAllVentasBs().subscribe(
       (data: VentaBs[]) => {
-        this.dataSource = data;
+        this.originalData = data; // Almacena los datos originales
+        this.dataSource.data = data;
+        this.dataSource.paginator = this.paginator;
+        this.applyDateFilter();  // Aplicar el filtro inicial
+        this.updateMobileData();
       },
       (error) => {
         console.error('Error al cargar las ventas:', error);
       }
     );
+  }
+
+  applyDateFilter(): void {
+    if (this.selectedDate) {
+      const selectedDateStr = this.formatDate(this.selectedDate); // Formato dd/MM/yyyy
+      this.dataSource.data = this.originalData.filter(item => { // Filtra sobre los datos originales
+        const itemDateStr = this.formatDate(new Date(item.fechaVenta));
+        return itemDateStr === selectedDateStr;
+      });
+      this.updateMobileData();
+    } else {
+      this.dataSource.data = this.originalData; // Restablece los datos originales si no hay filtro
+      this.updateMobileData();
+    }
+  }
+
+  formatDate(date: Date): string {
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  }
+
+  clearDate(): void {
+    this.selectedDate = null; // Limpiar la fecha seleccionada
+    this.dataSource.data = this.originalData; // Restaurar los datos originales
+    this.updateMobileData(); // Actualizar la vista para dispositivos móviles
+  }
+
+  updateMobileData() {
+    if (this.isMobile) {
+      this.paginatedDataSource = this.dataSource.data.slice(0, this.pageSize);
+    }
+  }
+
+  onPageChange(event: PageEvent) {
+    const startIndex = event.pageIndex * event.pageSize;
+    const endIndex = startIndex + event.pageSize;
+    this.paginatedDataSource = this.dataSource.data.slice(startIndex, endIndex);
   }
 
   openDialog(): void {
@@ -66,10 +131,7 @@ export class VentasBolivaresComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      // Siempre recargar las ventas cuando se cierra el diálogo
       this.loadVentas();
-
-      // Si se confirmó una nueva venta, guardarla
       if (result) {
         this.onConfirmar(result);
       }

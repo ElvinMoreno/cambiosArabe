@@ -54,12 +54,6 @@
   margin-right: -0.3rem;
 }
 
-.btn-filtro {
-  background-color: #f0f0f0;
-  color: black;
-  font-weight: bold;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
 
 .admin {
   font-size: 1.1rem;
@@ -67,12 +61,6 @@
   font-weight: bold;
 }
 
-h2 {
-  font-size: 2rem;
-  color: #4a90e2;
-  margin: 0;
-  font-weight: bold;
-}
 
 /* Tabla estilos */
 :host ::ng-deep .custom-header-cell {
@@ -82,14 +70,8 @@ h2 {
 }
 
 .table-container {
-  display: flex;
-  justify-content: center;
+  display: block;
   padding: 1rem;
-}
-
-.centered-table {
-  width: 100%;
-  overflow-x: auto;
 }
 
 .custom-table {
@@ -104,6 +86,7 @@ h2 {
   border: 1px solid #ddd;
 }
 
+
 /* Media query to maintain the same structure on smaller screens */
 @media (max-width: 768px) {
   .grid-container {
@@ -116,9 +99,6 @@ h2 {
     justify-self: center;
   }
 
-  .table-container {
-    padding: 0.5rem;
-  }
 
   .custom-table, .custom-table th, .custom-table td {
     display: table-cell;
