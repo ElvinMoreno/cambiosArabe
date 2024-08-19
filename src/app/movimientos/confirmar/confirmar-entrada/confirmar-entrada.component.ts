@@ -101,7 +101,7 @@ export class ConfirmarEntradaComponent implements OnInit {
         width: '300px',
         data: {
           message: '¿Está seguro que desea confirmar la entrada de pesos?',
-          accion: 'Confirmar Venta'
+          accion: 'Venta'
         }
       });
 
