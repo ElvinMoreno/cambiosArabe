@@ -73,7 +73,8 @@ export class ListarCuentasColombianasComponent implements OnInit {
   }
 
   mostrarMovimientosDeCuenta(cuenta: CuentaBancaria): void {
-    this.router.navigate(['/operaciones/movimientos-venezolanos', cuenta.id]);
-  }
+    this.router.navigate(['/operaciones/movimientos-venezolanos', cuenta.id], { queryParams: { esColombiana: true } });
+}
+
 
 }

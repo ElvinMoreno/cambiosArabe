@@ -22,9 +22,11 @@ import { Router } from '@angular/router';
   templateUrl: './movimientos-venezolanos.component.html',
   styleUrls: ['./movimientos-venezolanos.component.css']
 })
+
 export class MovimientosVenezolanosComponent implements OnInit {
   movimientos: MovimientoDiaDTO[] = [];
-  nombreCuentaBancaria: string = '';  // Nueva propiedad para almacenar el nombre de la cuenta bancaria
+  nombreCuentaBancaria: string = '';
+  esCuentaColombiana: boolean = false;  // Nueva propiedad para identificar el tipo de cuenta
 
   constructor(
     private movimientoService: MovimientoService,
@@ -34,8 +36,9 @@ export class MovimientosVenezolanosComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
-      const cuentaId = Number(params.get('cuentaId'));
+    this.route.queryParams.subscribe(params => {
+      this.esCuentaColombiana = params['esColombiana'] === 'true';
+      const cuentaId = Number(this.route.snapshot.paramMap.get('cuentaId'));
       if (cuentaId) {
         this.loadMovimientos(cuentaId);
       }
@@ -47,7 +50,7 @@ export class MovimientosVenezolanosComponent implements OnInit {
       (data: MovimientoDiaDTO[]) => {
         this.movimientos = data.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
         if (data.length > 0) {
-          this.nombreCuentaBancaria = data[0].nombreCuentaBancaria;  // Asigna el nombre de la cuenta bancaria
+          this.nombreCuentaBancaria = data[0].nombreCuentaBancaria;
         }
       },
       error => {
@@ -77,7 +80,11 @@ export class MovimientosVenezolanosComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/operaciones/cuentaBancaria'], { queryParams: { tab: 1 } });
+    if (this.esCuentaColombiana) {
+      this.router.navigate(['/operaciones/cuentaBancaria'], { queryParams: { tab: 0, subTab: 1 } });
+    } else {
+      this.router.navigate(['/operaciones/cuentaBancaria'], { queryParams: { tab: 1 } });
+    }
   }
 
   isToday(dateString: string): boolean {

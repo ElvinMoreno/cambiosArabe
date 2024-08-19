@@ -51,7 +51,6 @@ export class CuentaVenezolanaComponent implements OnInit {
   loadCuentasVenezolanas(): void {
     this.cuentaBancariaService.getCuentasVenezolanas().subscribe(
       (data: CuentaBancaria[]) => {
-        console.log('Cuentas bancarias cargadas:', data);
         this.cuentasBancarias = data;
       },
       error => {

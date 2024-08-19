@@ -11,6 +11,7 @@ import { CajaComponent } from './caja/caja.component';
 import { CajaService } from '../../../services/caja.service';
 import { CuentaBancariaService } from '../../../services/cuenta-bancaria.service';
 import { catchError, of } from 'rxjs';
+import { ActivatedRoute, Params } from '@angular/router'; // Importar Params
 
 @Component({
   selector: 'app-cuenta-colombiana',
@@ -35,12 +36,19 @@ export class CuentaColombianaComponent implements OnInit {
   montoCaja: number | null = null;
   totalSaldoCuentas: number | null = null;
 
-  constructor(private cajaService: CajaService, private cuentaBancariaService: CuentaBancariaService) {}
+  constructor(private cajaService: CajaService, private cuentaBancariaService: CuentaBancariaService, private route: ActivatedRoute) {}
 
   ngOnInit() {
+    // Escuchar los parámetros para seleccionar la sub-tab correcta
+    this.route.queryParams.subscribe((params: Params) => {
+      const subTabIndex = params['subTab'] ? Number(params['subTab']) : 0;
+      this.selectedTabIndex = subTabIndex;
+    });
+  
     this.cargarMontoCaja();
     this.cargarTotalSaldoCuentas();
   }
+  
 
   cargarMontoCaja() {
     this.cajaService.getCajaDatos()
