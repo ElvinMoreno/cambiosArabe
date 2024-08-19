@@ -1,46 +1,56 @@
 <div class="caja-container">
-  <h4 style="color: #5E94FF;">Datos de la Caja</h4>
-  <div *ngIf="errorMessage" class="error-message">
-    {{ errorMessage }}
-  </div>
-  <div *ngIf="monto !== null">
-    <h6>Monto: {{ monto | currency }}</h6>
-  </div>
+  
 
-  <div class="movimiento" >
+  <div class="movimiento">
     <h4 style="color: #5E94FF;">Movimientos</h4>
   </div>
-  
 
   <!-- Vista de escritorio: Tabla -->
   <div class="tabla-movimientos" *ngIf="!isMobile">
     <table mat-table [dataSource]="movimientos" class="mat-elevation-z8">
-      <!-- Columnas -->
-      <ng-container matColumnDef="hora">
-        <th mat-header-cell *matHeaderCellDef> fecha</th>
-        <td mat-cell *matCellDef="let movimiento"> {{ movimiento.fecha  }} </td>
+      <!-- Columna Fecha -->
+      <ng-container matColumnDef="fecha">
+        <th mat-header-cell *matHeaderCellDef> Fecha </th>
+        <td mat-cell *matCellDef="let movimiento">
+          <ng-container *ngIf="isToday(movimiento.fecha); else notToday">
+            {{ movimiento.fecha | date:'shortTime' }} <!-- Muestra solo la hora -->
+          </ng-container>
+          <ng-template #notToday>
+            {{ movimiento.fecha | date:'shortDate' }} <!-- Muestra solo la fecha -->
+          </ng-template>
+        </td>
       </ng-container>
+  
+      <!-- Columna Tipo de Movimiento -->
       <ng-container matColumnDef="tipoMovimiento">
         <th mat-header-cell *matHeaderCellDef> Tipo Movimiento </th>
         <td mat-cell *matCellDef="let movimiento"> {{ movimiento.tipoMovimiento }} </td>
       </ng-container>
+  
+      <!-- Columna Monto -->
       <ng-container matColumnDef="monto">
         <th mat-header-cell *matHeaderCellDef> Monto </th>
         <td mat-cell *matCellDef="let movimiento"> {{ movimiento.monto | currency }} </td>
       </ng-container>
+  
+      <!-- Columna Descripción -->
       <ng-container matColumnDef="descripcion">
         <th mat-header-cell *matHeaderCellDef> Descripción </th>
         <td mat-cell *matCellDef="let movimiento"> {{ movimiento.descripcion }} </td>
       </ng-container>
+  
+      <!-- Columna Entrada -->
       <ng-container matColumnDef="entrada">
         <th mat-header-cell *matHeaderCellDef> Entrada </th>
         <td mat-cell *matCellDef="let movimiento"> {{ movimiento.entrada ? 'Sí' : 'No' }} </td>
       </ng-container>
+  
       <!-- Filas -->
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
   </div>
+  
 
   <!-- Vista móvil: Tarjetas -->
   <div class="card-movimientos" *ngIf="isMobile">

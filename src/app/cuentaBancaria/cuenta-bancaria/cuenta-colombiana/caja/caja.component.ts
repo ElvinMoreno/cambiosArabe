@@ -55,9 +55,16 @@ export class CajaComponent implements OnInit {
   onResize(event: Event): void {
     this.checkScreenSize();
   }
-  
 
   checkScreenSize() {
     this.isMobile = window.innerWidth <= 768; // Consideramos 768px como el umbral para móviles
+  }
+
+  isToday(dateString: string | Date): boolean {
+    const date = new Date(dateString);
+    const today = new Date();
+    return date.getDate() === today.getDate() &&
+           date.getMonth() === today.getMonth() &&
+           date.getFullYear() === today.getFullYear();
   }
 }

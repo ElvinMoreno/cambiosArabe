@@ -5,8 +5,8 @@ import { MovimientoDiaDTO } from '../../interfaces/MovimientoDiaDTO';
 import { MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import { ActivatedRoute } from '@angular/router'; // Importa ActivatedRoute para obtener el parámetro de la ruta
-import { MatDialog, MatDialogModule } from '@angular/material/dialog'; // Importa MatDialog
+import { ActivatedRoute } from '@angular/router';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DetalleMovimientoCompGenComponent } from '../../shared/detalle-movimiento-comp-gen/detalle-movimiento-comp-gen.component';
 import { Router } from '@angular/router';
 
@@ -17,24 +17,20 @@ import { Router } from '@angular/router';
     CommonModule,
     MatTableModule,
     MatIconModule,
-    MatDialogModule // Asegúrate de incluir MatDialogModule
+    MatDialogModule
   ],
   templateUrl: './movimientos-venezolanos.component.html',
   styleUrls: ['./movimientos-venezolanos.component.css']
 })
-export class MovimientosVenezolanosComponent implements OnInit, AfterViewInit {
-  @ViewChild(MatTable) table!: MatTable<any>;
-  displayedColumns: string[];
-  dataSource = new MatTableDataSource<MovimientoDiaDTO>();
+export class MovimientosVenezolanosComponent implements OnInit {
+  movimientos: MovimientoDiaDTO[] = [];
 
   constructor(
     private movimientoService: MovimientoService,
     private route: ActivatedRoute,
-    private router: Router,  // Inyecta Router
-    public dialog: MatDialog  // Inyecta MatDialog
-  ) {
-    this.displayedColumns = ['fecha', 'descripcion', 'monto'];
-  }
+    private router: Router,
+    public dialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
@@ -45,16 +41,10 @@ export class MovimientosVenezolanosComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngAfterViewInit(): void {
-    window.addEventListener('resize', () => {
-      this.table.renderRows();
-    });
-  }
-
   loadMovimientos(cuentaId: number): void {
     this.movimientoService.getMovimientosVenezolanas(cuentaId).subscribe(
       (data: MovimientoDiaDTO[]) => {
-        this.dataSource.data = data.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
+        this.movimientos = data.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
       },
       error => {
         console.error('Error al obtener los movimientos:', error);
@@ -62,20 +52,30 @@ export class MovimientosVenezolanosComponent implements OnInit, AfterViewInit {
     );
   }
 
-  // Función para abrir el diálogo con los detalles del movimiento
-  openDetalleDialog(movimiento: MovimientoDiaDTO): void {
+  openDialog(movimiento: MovimientoDiaDTO): void {
     this.dialog.open(DetalleMovimientoCompGenComponent, {
       width: '400px',
-      panelClass: 'custom-dialog-container', // Clase personalizada para aplicar los estilos
-      data: movimiento
+      data: {
+        title: 'Detalles del Movimiento',
+        data: movimiento,
+        fields: [
+          { label: 'Fecha', key: 'fecha', format: 'date' },
+          { label: 'Tipo de Movimiento', key: 'tipoMovimiento' },
+          { label: 'Monto', key: 'monto', format: 'currency' },
+          { label: 'Descripción', key: 'descripcion' },
+          { label: 'Cuenta Bancaria', key: 'nombreCuentaBancaria' },
+          { label: 'Entrada', key: 'entrada' }
+        ],
+        showCloseButton: true,
+        closeButtonLabel: 'Cerrar'
+      }
     });
   }
 
-  // Nueva función para regresar a la vista de cuenta bancaria en el tab de BS
   goBack(): void {
     this.router.navigate(['/operaciones/cuentaBancaria'], { queryParams: { tab: 1 } });
   }
-  
+
   isToday(dateString: string): boolean {
     const date = new Date(dateString);
     const today = new Date();
