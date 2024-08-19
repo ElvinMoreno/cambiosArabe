@@ -1,23 +1,56 @@
-.center-container {
+/* Botón "Regresar" */
+.back-button {
+    background: linear-gradient(135deg, #5E94FF, #4A7CCC);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
     display: flex;
-    justify-content: center; /* Centra horizontalmente */
-    padding: 20px 0; /* Espacio alrededor para centrar mejor */
+    align-items: center;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border: none;
+    cursor: pointer;
   }
   
+  .back-button mat-icon {
+    margin-right: 8px;
+    font-size: 1.2rem;
+  }
+  
+  .back-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0px 8px 16px rgba(94, 148, 255, 0.4);
+  }
+  
+  /* Contenedor principal centrado */
+  .center-container {
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+  }
+  
+  /* Contenedor de la tabla */
   .table-container {
     margin-top: 15px;
     padding: 10px;
     width: 100rem;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
   
+  /* Cabecera de la tabla */
   .table-header {
     display: flex;
     justify-content: space-between;
-    padding: 10px;
-    background-color: #f2f2f2;
+    padding: 12px;
+    background-color: #5E94FF;
+    color: white;
     font-weight: bold;
     text-transform: uppercase;
-    border: 1px solid #ddd;
     border-radius: 8px;
     position: sticky;
     top: 0;
@@ -26,18 +59,41 @@
   
   .header-item {
     width: 30%;
-    text-align: center; /* Centramos el texto */
+    text-align: center;
     display: flex;
-    justify-content: center; /* Centra horizontalmente el contenido */
-    align-items: center; /* Centra verticalmente el contenido */
+    justify-content: center;
+    align-items: center;
   }
   
+  /* Contenido scrolleable */
   .scrollable-content {
-    max-height: 50rem; /* Ajusta esta altura según sea necesario */
+    max-height: 50rem;
     overflow-y: auto;
     padding-right: 10px;
+    scrollbar-width: thin;
+    scrollbar-color: #5E94FF #f1f1f1;
   }
   
+  /* Personalización del scroll */
+  .scrollable-content::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .scrollable-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 8px;
+  }
+  
+  .scrollable-content::-webkit-scrollbar-thumb {
+    background: #5E94FF;
+    border-radius: 8px;
+  }
+  
+  .scrollable-content::-webkit-scrollbar-thumb:hover {
+    background: #4a7ccc;
+  }
+  
+  /* Estilos de las tarjetas */
   .card {
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -45,55 +101,53 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     padding: 15px;
     background-color: #fff;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
   
   .card:hover {
-    transform: scale(1.02);
+    transform: translateY(-3px);
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.15);
   }
   
   .card-content {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr; /* Tres columnas de igual tamaño */
-    grid-template-rows: 1rem 1rem; /* Dos filas */
-    column-gap: 10px; /* Espacio entre columnas */
-    row-gap: 5px; /* Espacio reducido entre filas */
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1rem 1rem;
+    column-gap: 10px;
+    row-gap: 5px;
     align-items: center;
     justify-items: center;
   }
   
-  /* Estilos para las posiciones específicas */
+  /* Estilos específicos para las posiciones */
   .card-item.fecha {
-    grid-column: 1 / 2; /* Primera columna */
-    grid-row: 1 / 3; /* Ocupa ambas filas */
+    grid-column: 1 / 2;
+    grid-row: 1 / 3;
     display: flex;
     align-items: center;
   }
   
   .card-item.tipo-movimiento {
-    grid-column: 2 / 3; /* Segunda columna */
-    grid-row: 1 / 2; /* Primera fila */
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
     display: flex;
     align-items: center;
   }
   
   .card-item.monto {
-    grid-column: 2 / 3; /* Segunda columna */
-    grid-row: 2 / 3; /* Segunda fila */
+    grid-column: 2 / 3;
+    grid-row: 2 / 3;
     display: flex;
     align-items: center;
+
+    color: #5E94FF;
   }
   
   .card-item.saldo-actual {
-    grid-column: 3 / 4; /* Tercera columna */
-    grid-row: 1 / 3; /* Ocupa ambas filas */
+    grid-column: 3 / 4;
+    grid-row: 1 / 3;
     display: flex;
     align-items: center;
-  }
-  
-  /* Asegúrate de que los textos estén alineados y estilos generales */
-  .card-item {
-    padding: 10px;
   }
   
   .card-value {
