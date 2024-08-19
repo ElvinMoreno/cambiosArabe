@@ -20,7 +20,6 @@ export class AccesoService {
   }
 
   login(objeto: Login): Observable<ResponseAcceso> {
-    console.log('Enviando datos de login:', objeto);
     return this.http.post<ResponseAcceso>(`${this.baseUrl}auth/login`, objeto);
   }
 

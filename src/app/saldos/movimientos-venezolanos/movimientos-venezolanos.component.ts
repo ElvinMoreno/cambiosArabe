@@ -24,6 +24,7 @@ import { Router } from '@angular/router';
 })
 export class MovimientosVenezolanosComponent implements OnInit {
   movimientos: MovimientoDiaDTO[] = [];
+  nombreCuentaBancaria: string = '';  // Nueva propiedad para almacenar el nombre de la cuenta bancaria
 
   constructor(
     private movimientoService: MovimientoService,
@@ -45,6 +46,9 @@ export class MovimientosVenezolanosComponent implements OnInit {
     this.movimientoService.getMovimientosVenezolanas(cuentaId).subscribe(
       (data: MovimientoDiaDTO[]) => {
         this.movimientos = data.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
+        if (data.length > 0) {
+          this.nombreCuentaBancaria = data[0].nombreCuentaBancaria;  // Asigna el nombre de la cuenta bancaria
+        }
       },
       error => {
         console.error('Error al obtener los movimientos:', error);
