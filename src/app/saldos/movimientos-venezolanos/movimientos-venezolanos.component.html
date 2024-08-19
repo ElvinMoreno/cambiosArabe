@@ -1,32 +1,48 @@
-<div *ngIf="dataSource && dataSource.data && dataSource.data.length > 0" class="table-container">
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-      <!-- Columna 'fecha' -->
-      <ng-container matColumnDef="fecha">
-        <th mat-header-cell *matHeaderCellDef> Fecha </th>
-        <td mat-cell *matCellDef="let movimiento" data-label="Fecha"> 
-          {{ movimiento.fecha | date:'short' }} 
-        </td>
-      </ng-container>
+<!-- Botón para regresar -->
+<button mat-button (click)="goBack()" class="back-button">
+  <mat-icon>arrow_back</mat-icon> {{ nombreCuentaBancaria }}
+</button>
+
+<div class="center-container">
+    <div *ngIf="movimientos.length > 0; else noDataTemplate" class="table-container">
+      <div class="table-header">
+        <div class="header-item">Fecha</div>
+        <div class="header-item">Movimiento</div>
+        <div class="header-item">Monto</div>
+      </div>
   
-      <!-- Columna 'descripcion' -->
-      <ng-container matColumnDef="descripcion">
-        <th mat-header-cell *matHeaderCellDef> Descripción </th>
-        <td mat-cell *matCellDef="let movimiento" data-label="Descripción"> 
-          {{ movimiento.descripcion }} 
-        </td>
-      </ng-container>
-  
-      <!-- Columna 'monto' -->
-      <ng-container matColumnDef="monto">
-        <th mat-header-cell *matHeaderCellDef> Monto </th>
-        <td mat-cell *matCellDef="let movimiento" data-label="Monto"> 
-          {{ movimiento.monto | currency:'USD' }} 
-        </td>
-      </ng-container>
-  
-      <!-- Header y filas -->
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
+      <!-- Contenedor scrolleable -->
+      <div class="scrollable-content">
+        <!-- Tarjetas -->
+        <div *ngFor="let movimiento of movimientos" class="card" (click)="openDialog(movimiento)">
+          <div class="card-content">
+            <!-- Fecha - ocupará la primera columna y ambas filas -->
+            <div class="card-item fecha">
+              <span class="card-value">
+                {{ isToday(movimiento.fecha) ? (movimiento.fecha | date:'shortTime') : (movimiento.fecha | date:'shortDate') }}
+              </span>
+            </div>
+            <!-- Tipo de Movimiento - segunda columna, primera fila -->
+            <div class="card-item tipo-movimiento">
+              <span class="card-value">{{ movimiento.tipoMovimiento }}</span>
+            </div>
+            <!-- Monto - segunda columna, segunda fila -->
+            <div class="card-item monto">
+              <span class="card-value" [style.color]="movimiento.entrada ? 'green' : 'red'">
+                {{ movimiento.monto | currency:'USD' }}
+              </span>
+            </div>
+            <!-- Saldo Actual - tercera columna, ambas filas -->
+            <div class="card-item saldo-actual">
+              <span class="card-value">{{ movimiento.saldoActual | currency:'USD' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   
+
+<ng-template #noDataTemplate>
+  <p>No hay movimientos disponibles.</p>
+</ng-template>

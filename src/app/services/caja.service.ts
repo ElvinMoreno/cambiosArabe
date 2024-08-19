@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { CuentaBancaria } from '../interfaces/cuenta-bancaria';
-import { Movimiento} from '../interfaces/movimiento';
+import { MovimientoDiaDTO} from '../interfaces/MovimientoDiaDTO';
 import { appsetting } from '../settings/appsetting';
 
 @Injectable({
@@ -33,9 +33,9 @@ export class CajaService {
       );
   }
 
-  getMovimientosCaja(): Observable<Movimiento[]> {
+  getMovimientosCaja(): Observable<MovimientoDiaDTO[]> {
     const headers = this.getHeaders();
-    return this.http.get<Movimiento[]>(`${this.apiUrl}/movimientos`, { headers })
+    return this.http.get<MovimientoDiaDTO[]>(`${this.apiUrl}/movimientos`, { headers })
       .pipe(
         catchError(this.handleError)
       );

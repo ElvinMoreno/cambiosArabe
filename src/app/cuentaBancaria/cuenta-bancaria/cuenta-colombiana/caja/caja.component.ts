@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { CajaService } from '../../../../services/caja.service';
-import { Movimiento } from '../../../../interfaces/movimiento';
+import { MovimientoDiaDTO } from '../../../../interfaces/MovimientoDiaDTO';
 import { catchError, of } from 'rxjs';
 
 @Component({
@@ -15,9 +15,9 @@ import { catchError, of } from 'rxjs';
 })
 export class CajaComponent implements OnInit {
   monto: number | null = null;
-  movimientos: Movimiento[] = [];
+  movimientos: MovimientoDiaDTO[] = [];
   errorMessage: string | null = null;
-  displayedColumns: string[] = ['hora', 'tipoMovimiento', 'monto', 'descripcion', 'entrada'];
+  displayedColumns: string[] = ['fecha', 'tipoMovimiento', 'monto', 'descripcion', 'entrada'];
   isMobile: boolean = false;
 
   constructor(private cajaService: CajaService) { }
@@ -55,9 +55,16 @@ export class CajaComponent implements OnInit {
   onResize(event: Event): void {
     this.checkScreenSize();
   }
-  
 
   checkScreenSize() {
     this.isMobile = window.innerWidth <= 768; // Consideramos 768px como el umbral para móviles
+  }
+
+  isToday(dateString: string | Date): boolean {
+    const date = new Date(dateString);
+    const today = new Date();
+    return date.getDate() === today.getDate() &&
+           date.getMonth() === today.getMonth() &&
+           date.getFullYear() === today.getFullYear();
   }
 }

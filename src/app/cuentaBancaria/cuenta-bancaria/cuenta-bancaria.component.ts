@@ -7,6 +7,7 @@ import { CuentaVenezolanaComponent } from './cuenta-venezolana/cuenta-venezolana
 import { CajaComponent } from './cuenta-colombiana/caja/caja.component';
 import { ClientesCreditosComponent } from "../../saldos/creditos/clientes-creditos/clientes-creditos.component";
 import { CreditosComponent } from '../../saldos/creditos/creditos.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-cuenta-bancaria',
@@ -25,12 +26,18 @@ import { CreditosComponent } from '../../saldos/creditos/creditos.component';
   styleUrls: ['./cuenta-bancaria.component.css']
 })
 export class CuentaBancariaComponent implements OnInit {
-  selectedTabIndex = 0;
+  selectedTabIndex = 0;  // Por defecto, el tab de Pesos
   totalPesos: number | null = null;
 
-  constructor() {}
+  constructor(private route: ActivatedRoute) {}  // Inyecta ActivatedRoute
 
-  ngOnInit() {}
+  ngOnInit() {
+    // Obtén el parámetro 'tab' de la ruta y úsalo para establecer el índice del tab
+    this.route.queryParams.subscribe(params => {
+      const tabIndex = params['tab'] ? Number(params['tab']) : 0;
+      this.selectedTabIndex = tabIndex;
+    });
+  }
 
   actualizarTotalPesos(totalPesos: number) {
     this.totalPesos = totalPesos;

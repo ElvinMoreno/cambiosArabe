@@ -45,7 +45,7 @@ export class LoginComponent {
 
     this.accesoService.login(objeto).subscribe({
       next: (data) => {
-        console.log('Respuesta de la API:', data);
+
         if (data.statusCode === 200) {
           localStorage.setItem('token', data.token);
           this.router.navigate(['operaciones']);

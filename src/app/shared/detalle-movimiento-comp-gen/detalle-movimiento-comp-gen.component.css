@@ -1,0 +1,53 @@
+.dialog-title {
+    color: #5E94FF;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+    padding-top: 10px;
+    margin-top: 2rem;
+  }
+  
+  .dialog-content {
+    font-size: 1rem;
+    color: #333;
+    padding: 20px;
+    line-height: 1.6;
+    text-align: center; /* Centrar el texto */
+  }
+  
+  .dialog-content p {
+    margin: 10px 0;
+  }
+  
+  .monto {
+    font-weight: bold;
+  }
+  
+  .dialog-actions {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    border-top: 1px solid #eee;
+  }
+  
+  .close-button {
+    background-color: #5E94FF;
+    color: white;
+    padding: 10px 30px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    transition: background-color 0.3s ease;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Añadir sombra para un efecto más destacado */
+  }
+  
+  .close-button:hover {
+    background-color: #4a7ccc;
+  }
+  
+  .mat-dialog-container {
+/* Ajustar el borde redondeado */
+    padding: 10px 0; /* Añadir padding interno para separar el contenido del borde */
+  }
+  
