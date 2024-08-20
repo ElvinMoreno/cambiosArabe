@@ -40,6 +40,7 @@
     letter-spacing: 0.5px;
     transition: background-color 0.3s ease;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Añadir sombra para un efecto más destacado */
+    border: none;
   }
   
   .close-button:hover {

@@ -17,7 +17,7 @@ import { DetalleMovimientoCompGenComponent } from '../../../../shared/detalle-mo
 })
 export class CajaComponent implements OnInit {
   monto: number | null = null;
-  movimientos: MovimientoDiaDTO[] = [];
+  movimientos: MovimientoDiaDTO[] = []; // Inicializado como un array vacío
   errorMessage: string | null = null;
   isMobile: boolean = false;
 
@@ -48,7 +48,8 @@ export class CajaComponent implements OnInit {
         })
       )
       .subscribe(data => {
-        this.movimientos = data;
+        // Ordenar los movimientos por fecha, mostrando los más recientes primero
+        this.movimientos = data.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
       });
   }
 
