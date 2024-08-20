@@ -1,32 +1,28 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { MatTableDataSource, MatTable } from '@angular/material/table';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MovimientoService } from '../../services/movimiento.service';
 import { MovimientoDiaDTO } from '../../interfaces/MovimientoDiaDTO';
-import { MatTableModule } from '@angular/material/table';
-import { CommonModule } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
-import { ActivatedRoute } from '@angular/router';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { DetalleMovimientoCompGenComponent } from '../detalle-movimiento-comp-gen/detalle-movimiento-comp-gen.component';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MatIcon } from '@angular/material/icon';
+import { MovimientosTableComponent } from '../../shared/movimientos-table/movimientos-table.component'; // Importa MovimientosTableComponent
 
 @Component({
   selector: 'app-movimientos-venezolanos',
   standalone: true,
   imports: [
     CommonModule,
-    MatTableModule,
-    MatIconModule,
-    MatDialogModule
+    MatDialogModule,
+    MovimientosTableComponent,
+    MatIcon // Asegúrate de importar MovimientosTableComponent
   ],
   templateUrl: './movimientos-venezolanos.component.html',
   styleUrls: ['./movimientos-venezolanos.component.css']
 })
-
 export class MovimientosVenezolanosComponent implements OnInit {
   movimientos: MovimientoDiaDTO[] = [];
   nombreCuentaBancaria: string = '';
-  esCuentaColombiana: boolean = false;  // Nueva propiedad para identificar el tipo de cuenta
+  esCuentaColombiana: boolean = false;
 
   constructor(
     private movimientoService: MovimientoService,
@@ -59,39 +55,11 @@ export class MovimientosVenezolanosComponent implements OnInit {
     );
   }
 
-  openDialog(movimiento: MovimientoDiaDTO): void {
-    this.dialog.open(DetalleMovimientoCompGenComponent, {
-      width: '400px',
-      data: {
-        title: 'Detalles del Movimiento',
-        data: movimiento,
-        fields: [
-          { label: 'Fecha', key: 'fecha', format: 'date' },
-          { label: 'Tipo de Movimiento', key: 'tipoMovimiento' },
-          { label: 'Monto', key: 'monto', format: 'currency' },
-          { label: 'Descripción', key: 'descripcion' },
-          { label: 'Cuenta Bancaria', key: 'nombreCuentaBancaria' },
-          { label: 'Entrada', key: 'entrada' }
-        ],
-        showCloseButton: true,
-        closeButtonLabel: 'Cerrar'
-      }
-    });
-  }
-
   goBack(): void {
     if (this.esCuentaColombiana) {
       this.router.navigate(['/operaciones/cuentaBancaria'], { queryParams: { tab: 0, subTab: 1 } });
     } else {
       this.router.navigate(['/operaciones/cuentaBancaria'], { queryParams: { tab: 1 } });
     }
-  }
-
-  isToday(dateString: string): boolean {
-    const date = new Date(dateString);
-    const today = new Date();
-    return date.getDate() === today.getDate() &&
-           date.getMonth() === today.getMonth() &&
-           date.getFullYear() === today.getFullYear();
   }
 }
