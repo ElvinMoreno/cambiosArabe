@@ -6,6 +6,8 @@ import { ConfirmarEntradaComponent } from './confirmar-entrada/confirmar-entrada
 import { ConfirmarSalidaComponent } from './confirmar-salida/confirmar-salida.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { VentaPagos } from '../../interfaces/venta-pagos';
+import { VentaBsService } from '../../services/venta-bs.service';
 
 @Component({
   selector: 'app-confirmar',
@@ -18,16 +20,37 @@ import { Router } from '@angular/router';
     ConfirmarSalidaComponent
   ],
   templateUrl: './confirmar.component.html',
-  styleUrl: './confirmar.component.css'
+  styleUrls: ['./confirmar.component.css']
 })
 export class ConfirmarComponent {
   vistaActual: 'entradas' | 'salidas' = 'entradas';
+  dataSource: VentaPagos[] = [];
   selectedIndex: number = 0;
+  totalBolivares: number = 0;
 
-  constructor(private router: Router, public dialog: MatDialog) {}
+  constructor(private router: Router,
+    public dialog: MatDialog,
+    private ventaBsService: VentaBsService,
+  ) {}
 
   ngOnInit() {
-    // La vista 'entradas' ya está establecida por defecto
+    this.totalBolivares = this.loadVentas();
+  }
+
+  loadVentas(): number {
+    let totalBolivares = 0;
+    this.ventaBsService.getVentasSalidas().subscribe(
+      (data: VentaPagos[]) => {
+        this.dataSource = data;
+        totalBolivares = data.reduce((sum, venta) => sum + venta.bolivaresEnviar, 0);
+        this.totalBolivares = totalBolivares;  // Asigna el total de bolívares a la propiedad
+        console.log('Total Bolívares Enviar:', totalBolivares);
+      },
+      (error) => {
+        console.error('Error al cargar las ventas:', error);
+      }
+    );
+    return totalBolivares;
   }
 
   cambiarVista(index: number) {

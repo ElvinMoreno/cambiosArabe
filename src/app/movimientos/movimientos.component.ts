@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { ConfirmarBsComponent } from "./confirmar-bs/confirmar-bs.component";
 
 @Component({
   selector: 'app-movimientos',
@@ -15,13 +16,14 @@ import { Router } from '@angular/router';
     CommonModule,
     MatTabsModule,
     ConfirmarComponent,
-    CuentasComponent
-  ],
+    CuentasComponent,
+    ConfirmarBsComponent
+],
   templateUrl: './movimientos.component.html',
   styleUrls: ['./movimientos.component.css']
 })
 export class MovimientosComponent {
-  vistaActual: 'confirmar' | 'cuentas' = 'confirmar';
+  vistaActual: 'confirmar' | 'confirmarBs' | 'cuentas'= 'confirmar';
   selectedIndex: number = 0;
 
   constructor(private router: Router, public dialog: MatDialog) {}
@@ -31,7 +33,7 @@ export class MovimientosComponent {
   }
 
   cambiarVista(index: number) {
-    const vistas = ['confirmar', 'cuentas'];
-    this.vistaActual = vistas[index] as 'confirmar' | 'cuentas';
+    const vistas = ['confirmar', 'confirmarBs', 'cuentas'];
+    this.vistaActual = vistas[index] as 'confirmar' | 'confirmarBs' | 'cuentas';
   }
 }
