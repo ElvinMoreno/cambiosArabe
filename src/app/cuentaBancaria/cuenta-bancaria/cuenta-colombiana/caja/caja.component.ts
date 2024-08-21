@@ -7,11 +7,12 @@ import { CajaService } from '../../../../services/caja.service';
 import { MovimientoDiaDTO } from '../../../../interfaces/MovimientoDiaDTO';
 import { catchError, of } from 'rxjs';
 import { DetalleMovimientoCompGenComponent } from '../../../../shared/detalle-movimiento-comp-gen/detalle-movimiento-comp-gen.component';
+import { MovimientosTableComponent } from '../../../../shared/movimientos-table/movimientos-table.component'; // Importar el componente
 
 @Component({
   selector: 'app-caja',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatTableModule, MatDialogModule],
+  imports: [CommonModule, MatCardModule, MatTableModule, MatDialogModule, MovimientosTableComponent], // Asegúrate de importar MovimientosTableComponent
   templateUrl: './caja.component.html',
   styleUrls: ['./caja.component.css']
 })
@@ -21,7 +22,7 @@ export class CajaComponent implements OnInit {
   errorMessage: string | null = null;
   isMobile: boolean = false;
 
-  constructor(private cajaService: CajaService, public dialog: MatDialog) { }
+  constructor(private cajaService: CajaService, public dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.checkScreenSize();
@@ -60,14 +61,6 @@ export class CajaComponent implements OnInit {
 
   checkScreenSize() {
     this.isMobile = window.innerWidth <= 768;
-  }
-
-  isToday(dateString: string | Date): boolean {
-    const date = new Date(dateString);
-    const today = new Date();
-    return date.getDate() === today.getDate() &&
-           date.getMonth() === today.getMonth() &&
-           date.getFullYear() === today.getFullYear();
   }
 
   openDialog(movimiento: MovimientoDiaDTO): void {

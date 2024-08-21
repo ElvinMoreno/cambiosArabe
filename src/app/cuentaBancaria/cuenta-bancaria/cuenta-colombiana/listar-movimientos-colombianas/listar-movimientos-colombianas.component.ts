@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MovimientoDiaDTO } from '../../../../interfaces/MovimientoDiaDTO';
-import { MovimientoService } from '../../../../services/movimiento.service'; // Importa correctamente el servicio
+import { MovimientoService } from '../../../../services/movimiento.service';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { MovimientosTableComponent } from '../../../../shared/movimientos-table/movimientos-table.component';
 
 @Component({
   selector: 'app-listar-movimientos-colombianas',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MovimientosTableComponent], // Importar el nuevo componente
   templateUrl: './listar-movimientos-colombianas.component.html',
   styleUrls: ['./listar-movimientos-colombianas.component.css']
 })
@@ -16,7 +17,7 @@ export class ListarMovimientosColombianasComponent implements OnInit {
   movimientos: MovimientoDiaDTO[] = [];
   errorMessage: string | null = null;
 
-  constructor(private movimientoService: MovimientoService) {} // Inyecta MovimientoService
+  constructor(private movimientoService: MovimientoService) {}
 
   ngOnInit(): void {
     this.loadMovimientosColombianas();

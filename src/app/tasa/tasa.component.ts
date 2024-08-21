@@ -7,6 +7,7 @@ import { TasaService } from '../services/tasa.service';
 import { Tasa } from '../interfaces/tasa';
 import html2canvas from 'html2canvas';
 import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-tasa',
@@ -58,35 +59,50 @@ export class TasaComponent implements OnInit {
   }
 
   saveItem() {
+    // Especifica el tipo del array de observables
+    const updateObservables: Observable<Tasa>[] = [];
+  
     this.tasas.forEach((item: Tasa & { editable: boolean }) => {
       if (item.editable) {
-        this.tasaService.updateTasa(item.id!, item).subscribe(
-          (updatedItem: Tasa) => {
-            item.editable = false;
-  
-            if (item.id === 1) { // Si es la tasa base, recalcula todas las demás
-              this.tasas.forEach(otherItem => {
-                if (otherItem.id !== 1) {
-                  otherItem.tasaVenta = item.tasaVenta! + otherItem.sumaTasa!;
-                  otherItem.pesos = this.calculatePesos(otherItem.bolivares!, otherItem.tasaVenta!);
-                }
-              });
-            } else { 
-              item.pesos = this.calculatePesos(item.bolivares!, item.tasaVenta!);
-            }
-  
-            console.log('Item guardado:', updatedItem);
-  
-            // Recarga los datos sin recargar la página
-            this.loadTasas();
-          },
-          (error: any) => {
-            console.error('Error al guardar la tasa:', error);
-          }
-        );
+        // Agrega cada actualización al array de observables
+        updateObservables.push(this.tasaService.updateTasa(item.id!, item));
       }
     });
+  
+    // Ejecuta todas las solicitudes de actualización en paralelo
+    Promise.all(updateObservables.map(obs => obs.toPromise())).then(
+      (updatedItems) => {
+        updatedItems.forEach((updatedItem) => {
+          if (updatedItem) { // Verificar que updatedItem no sea undefined
+            const item = this.tasas.find(tasa => tasa.id === updatedItem.id);
+            if (item) {
+              item.editable = false;
+  
+              if (item.id === 1) { // Si es la tasa base, recalcula todas las demás
+                this.tasas.forEach(otherItem => {
+                  if (otherItem.id !== 1) {
+                    otherItem.tasaVenta = updatedItem.tasaVenta! + otherItem.sumaTasa!;
+                    otherItem.pesos = this.calculatePesos(otherItem.bolivares!, otherItem.tasaVenta!);
+                  }
+                });
+              } else {
+                item.pesos = this.calculatePesos(item.bolivares!, item.tasaVenta!);
+              }
+            }
+          }
+        });
+  
+        console.log('Todas las tasas han sido actualizadas:', updatedItems);
+  
+        // Recarga los datos sin recargar la página
+        this.loadTasas();
+      }
+    ).catch((error) => {
+      console.error('Error al guardar las tasas:', error);
+    });
   }
+  
+  
   
   
 

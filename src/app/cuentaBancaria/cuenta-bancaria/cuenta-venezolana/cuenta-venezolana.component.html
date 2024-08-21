@@ -1,11 +1,10 @@
-<!-- Siempre se muestra la lista de cuentas -->
-<div class="agregar-proveedor">
-  <button mat-flat-button class="btn2 btn-agregar" (click)="openCrearCuentaBancaria()">
-    <mat-icon>add</mat-icon>
-  </button>
-</div>
+<!-- Botón para regresar (visible solo si se están mostrando los movimientos) -->
+<button *ngIf="mostrandoMovimientos" mat-button (click)="regresarAListaDeCuentas()" class="back-button">
+  <mat-icon>arrow_back</mat-icon> {{ nombreCuentaBancaria }}
+</button>
 
-<div class="card-container">
+<!-- Siempre se muestra la lista de cuentas -->
+<div *ngIf="!mostrandoMovimientos" class="card-container">
   <mat-card *ngFor="let cuenta of cuentasBancarias"
             [ngClass]="getCardClass(cuenta.nombreBanco!)"
             class="example-card" appearance="outlined"
@@ -39,4 +38,9 @@
       </div>
     </mat-card-content>
   </mat-card>
+</div>
+
+<!-- Mostrar la tabla de movimientos cuando se selecciona una cuenta -->
+<div *ngIf="mostrandoMovimientos" class="center-container">
+  <app-movimientos-table [movimientos]="movimientos"></app-movimientos-table>
 </div>

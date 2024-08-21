@@ -1,44 +1,7 @@
 <div class="center-container">
-  <div *ngIf="movimientos.length > 0; else noDataTemplate" class="table-container">
-    <div class="table-header">
-      <div class="header-item">Fecha</div>
-      <div class="header-item">Monto</div>
-      <div class="header-item">Saldo</div>
-    </div>
+  <app-movimientos-table [movimientos]="movimientos"></app-movimientos-table>
 
-    <!-- Contenedor scrolleable -->
-    <div class="scrollable-content">
-      <!-- Tarjetas -->
-      <div *ngFor="let movimiento of movimientos" class="card" (click)="openDialog(movimiento)">
-        <div class="card-content">
-          <!-- Fecha -->
-          <div class="card-item fecha">
-            <span class="card-value">
-              {{ isToday(movimiento.fecha) ? (movimiento.fecha | date:'shortTime') : (movimiento.fecha | date:'shortDate') }}
-            </span>
-          </div>
-          <!-- Monto -->
-          <div class="card-item monto">
-            <span class="card-value" [style.color]="movimiento.entrada ? 'green' : 'red'">
-              {{ movimiento.monto | currency:'USD' }}
-            </span>
-          </div>
-
-          <div class="card-item movimeinto">
-            <span class="card-value">
-              {{movimiento.tipoMovimiento}}
-            </span>
-          </div>
-          <!-- Saldo -->
-          <div class="card-item saldo-actual">
-            <span class="card-value">{{ movimiento.saldoActual| currency:'USD' }}</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <ng-template #noDataTemplate>
+    <p>No hay movimientos disponibles.</p>
+  </ng-template>
 </div>
-
-<ng-template #noDataTemplate>
-  <p>No hay movimientos disponibles.</p>
-</ng-template>

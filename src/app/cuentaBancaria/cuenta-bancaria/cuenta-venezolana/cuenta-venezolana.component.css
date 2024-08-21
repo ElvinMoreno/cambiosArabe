@@ -158,6 +158,39 @@ mat-card {
   cursor: pointer;
 }
 
+
+.back-button {
+  background: linear-gradient(135deg, #5E94FF, #4A7CCC); /* Degradado en azul */
+  color: white; /* Color del texto */
+  padding: 10px 20px; /* Espaciado interno */
+  border-radius: 8px; /* Bordes redondeados */
+  display: flex; /* Para alinear el ícono y el texto */
+  align-items: center; /* Centrar verticalmente el contenido */
+  font-weight: bold; /* Negrita para el texto */
+  text-transform: uppercase; /* Texto en mayúsculas */
+  letter-spacing: 0.5px; /* Espaciado entre letras */
+  transition: transform 0.2s ease, box-shadow 0.2s ease; /* Animaciones suaves */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Sombra */
+  border: none; /* Sin borde */
+  cursor: pointer; /* Cambia el cursor a una mano al pasar sobre el botón */
+  margin-top: 1rem; /* Margen superior */
+}
+
+.back-button mat-icon {
+  margin-right: 8px; /* Espacio entre el ícono y el texto */
+  font-size: 1.2rem; /* Tamaño del ícono */
+}
+
+.back-button:hover {
+  transform: translateY(-3px); /* Efecto de elevación al pasar el cursor */
+  box-shadow: 0px 8px 16px rgba(94, 148, 255, 0.4); /* Sombra más pronunciada */
+}
+
+.back-button:active {
+  transform: translateY(0); /* Vuelve a su posición original al hacer clic */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Sombra menos pronunciada */
+}
+
 /* Media query for responsive design */
 /* Media query for responsive design */
 @media (max-width: 768px) {

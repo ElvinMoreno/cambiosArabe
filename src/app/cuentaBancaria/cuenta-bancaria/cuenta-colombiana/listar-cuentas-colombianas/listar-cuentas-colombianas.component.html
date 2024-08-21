@@ -1,22 +1,24 @@
-<div class="agregar-proveedor">
+<div *ngIf="!mostrandoMovimientos; else movimientosTemplate">
+  <!-- Vista de cuentas colombianas -->
+  <div class="agregar-proveedor">
     <button mat-flat-button class="btn2 btn-agregar" (click)="openCrearCuentaBancaria()">
       <mat-icon>add</mat-icon>
     </button>
   </div>
-  
+
   <div class="card-container">
     <mat-card *ngFor="let cuenta of cuentasBancarias"
               [ngClass]="{'contentAmarillo': cuenta.nombreCuenta !== 'davidplata', 'contentDavidPlata': cuenta.nombreCuenta === 'davidplata'}"
               class="example-card" appearance="outlined" (click)="mostrarMovimientosDeCuenta(cuenta)">
       <mat-card-content>
         <div class="card-grid">
+          <!-- Información de la cuenta -->
           <div class="grid-item grid-item-1-1">
             <p>{{ cuenta.nombreCuenta }}</p>
           </div>
           <div class="grid-item grid-item-1-2">
             <p><span class="hide-on-mobile">Cupos CV:</span>{{ cuenta.limiteCB }}</p>
-        </div>
-        
+          </div>
           <div class="grid-item grid-item-2-1">
             <p>Saldo</p>
           </div>
@@ -35,9 +37,23 @@
           <div class="grid-item grid-item-4-2">
             <mat-icon class="settings-icon" (click)="openActualizarModal(cuenta)">settings</mat-icon>
           </div>
-          
         </div>
       </mat-card-content>
     </mat-card>
   </div>
+</div>
 
+<!-- Vista de movimientos -->
+<ng-template #movimientosTemplate>
+  <button mat-button (click)="regresarAListaDeCuentas()" class="back-button">
+    <mat-icon>arrow_back</mat-icon> {{ nombreCuentaBancaria }}
+  </button>
+
+  <div class="center-container">
+    <app-movimientos-table [movimientos]="movimientos"></app-movimientos-table>
+
+    <ng-template #noDataTemplate>
+      <p>No hay movimientos disponibles.</p>
+    </ng-template>
+  </div>
+</ng-template>

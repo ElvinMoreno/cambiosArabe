@@ -30,7 +30,6 @@
         <td *ngIf="item.editable"><input [(ngModel)]="item.bolivares" class="form-control" (input)="updatePesos(item)"></td>
 
         <td>{{ item.tasaVenta }}</td>
-
         <td>{{ item.pesos }}</td>
 
         <td *ngIf="!item.editable">{{ item.sumaTasa }}</td>
