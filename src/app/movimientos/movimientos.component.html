@@ -1,13 +1,16 @@
 <div class="container">
   <mat-tab-group [(selectedIndex)]="selectedIndex" (selectedIndexChange)="cambiarVista($event)">
-    <mat-tab label="Confirmar">
+    <mat-tab label="Confirmar Cop">
     </mat-tab>
+    <!-- <mat-tab label="Confirmar Bs">
+    </mat-tab> -->
     <mat-tab label="Cuentas">
     </mat-tab>
   </mat-tab-group>
 
   <ng-container [ngSwitch]="vistaActual">
     <app-confirmar *ngSwitchCase="'confirmar'"></app-confirmar>
+    <!-- <app-confirmar-bs *ngSwitchCase="'confirmarBs'"></app-confirmar-bs> -->
     <app-cuentas *ngSwitchCase="'cuentas'"></app-cuentas>
   </ng-container>
 </div>

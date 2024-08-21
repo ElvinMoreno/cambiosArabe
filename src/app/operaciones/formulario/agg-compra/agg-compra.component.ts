@@ -69,7 +69,6 @@ export class AggCompraComponent implements OnInit {
       descripcionId: ['', [Validators.required]],
       tasaCompra: ['', [Validators.required]],
       montoBs: ['', [Validators.required, Validators.min(0)]],
-      referencia: ['', [Validators.required]]
     });
     this.currentDate = new Date().toISOString().substring(0, 16);
   }
@@ -84,7 +83,10 @@ export class AggCompraComponent implements OnInit {
     this.token = responseAcceso.token;
 
     this.metodoPagoService.getAllMetodosPago().subscribe({
-      next: (data: any[]) => this.metodosPago = data,
+      next: (data: any[]) => {
+        this.metodosPago = data;
+        this.form.patchValue({ metodoPagoId: 3 }); // Establecer método de pago predeterminado
+      },
       error: (error) => console.error('Error al cargar los métodos de pago', error)
     });
 
@@ -99,12 +101,18 @@ export class AggCompraComponent implements OnInit {
     });
 
     this.proveedorService.getAllProveedores().subscribe({
-      next: (data: any[]) => this.proveedores = data,
+      next: (data: any[]) => {
+        this.proveedores = data;
+        this.form.patchValue({ proveedorId: 1 }); // Establecer proveedor predeterminado
+      },
       error: (error) => console.error('Error al cargar los proveedores', error)
     });
 
-    this.descripcionService.getAllDescripciones().subscribe({ // Cargar descripciones
-      next: (data: any[]) => this.descripciones = data,
+    this.descripcionService.getAllDescripciones().subscribe({
+      next: (data: any[]) => {
+        this.descripciones = data;
+        this.form.patchValue({ descripcionId: 1 }); // Establecer proveedor predeterminado
+      },
       error: (error) => console.error('Error al cargar las descripciones', error)
     });
 
@@ -140,7 +148,6 @@ export class AggCompraComponent implements OnInit {
     });
   }
 
-
   onMetodoPagoChange(): void {
     const metodoPagoId = this.form.get('metodoPagoId')?.value;
     this.showCuentaBancariaPesos = metodoPagoId === '1';
@@ -160,10 +167,10 @@ export class AggCompraComponent implements OnInit {
 
       const compra: CompraBsDTO = {
         cuentaBancariaBsId: parseInt(formValue.cuentaBancariaBs, 10),
-        cuentaBancariaPesosId:parseInt(formValue.cuentaBancariaPesos, 10),
+        cuentaBancariaPesosId: parseInt(formValue.cuentaBancariaPesos, 10),
         proveedorId: parseInt(formValue.proveedorId, 10),
         metodoPagoId: parseInt(formValue.metodoPagoId, 10),
-        descripcionId: parseInt(formValue.descripcionId, 10), // Añadir este campo
+        descripcionId: parseInt(formValue.descripcionId, 10),
         tasaCompra: parseFloat(formValue.tasaCompra),
         montoBs: parseFloat(formValue.montoBs),
         fechaCompra: formValue.fechaCompra ? new Date(formValue.fechaCompra).toISOString() : new Date().toISOString(),
