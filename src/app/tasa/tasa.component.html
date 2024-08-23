@@ -2,7 +2,7 @@
 <div class="button-group-horizontal">
   <button (click)="openActualizarTasaDialog()" class="btn-actualizar-tasa">
     <mat-icon>update</mat-icon>
-    <span class="btn-text" >Actualizar Tasa</span>
+    <span class="btn-text">Actualizar Tasa</span>
   </button>
   <button (click)="downloadTableAsImage()" class="btn-actualizar-tasa">
     <mat-icon>image</mat-icon>
@@ -28,10 +28,8 @@
       <tr *ngFor="let item of tasas; let i = index">
         <td *ngIf="!item.editable">{{ item.bolivares }}</td>
         <td *ngIf="item.editable"><input [(ngModel)]="item.bolivares" class="form-control" (input)="updatePesos(item)"></td>
-
         <td>{{ item.tasaVenta }}</td>
         <td>{{ item.pesos }}</td>
-
         <td *ngIf="!item.editable">{{ item.sumaTasa }}</td>
         <td *ngIf="item.editable"><input [(ngModel)]="item.sumaTasa" class="form-control" (input)="updatePesos(item)"></td>
       </tr>
@@ -51,4 +49,7 @@
       <span class="btn-text">Cancelar</span>
     </button>
   </div>
+
+  <!-- Aquí se muestra la imagen generada -->
+  <img #generatedImage [src]="imageSrc" style="margin-top: 20px; max-width: 100%;" />
 </div>
