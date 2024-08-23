@@ -23,7 +23,8 @@ import { ConfirmarBsComponent } from "./confirmar-bs/confirmar-bs.component";
   styleUrls: ['./movimientos.component.css']
 })
 export class MovimientosComponent {
-  vistaActual: 'confirmar' | 'confirmarBs' | 'cuentas'= 'confirmar';
+  // vistaActual: 'confirmar' | 'confirmarBs' | 'cuentas'= 'confirmar';
+  vistaActual: 'confirmar' | 'cuentas'= 'confirmar';
   selectedIndex: number = 0;
 
   constructor(private router: Router, public dialog: MatDialog) {}
@@ -33,7 +34,9 @@ export class MovimientosComponent {
   }
 
   cambiarVista(index: number) {
-    const vistas = ['confirmar', 'confirmarBs', 'cuentas'];
-    this.vistaActual = vistas[index] as 'confirmar' | 'confirmarBs' | 'cuentas';
+    // const vistas = ['confirmar', 'confirmarBs', 'cuentas'];
+    const vistas = ['confirmar', 'cuentas'];
+    // this.vistaActual = vistas[index] as 'confirmar' | 'confirmarBs' | 'cuentas';
+    this.vistaActual = vistas[index] as 'confirmar' | 'cuentas';
   }
 }
