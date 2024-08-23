@@ -167,81 +167,99 @@ export class TasaComponent implements OnInit {
   }
 
   async downloadTableAsImage(): Promise<void> {
-    const canvas = await html2canvas(this.captureElement.nativeElement);
-    const imageData = canvas.toDataURL('image/jpeg');
+    try {
+      const canvas = await html2canvas(this.captureElement.nativeElement);
 
-    const img = new Image();
-    img.src = '../assets/sourceImag/plantillaTasa.jpg'; // Ruta a tu imagen de plantilla
-    img.onload = () => {
-      const imgCanvas = document.createElement('canvas');
-      const context = imgCanvas.getContext('2d')!;
 
-      imgCanvas.width = 1080;
-      imgCanvas.height = 1080;
+      const img = new Image();
+      img.src = '../assets/sourceImag/plantillaTasa.jpg'; // Asegúrate de que esta ruta sea correcta y accesible
 
-      context.drawImage(img, 0, 0);
+      img.onload = () => {
+        const imgCanvas = document.createElement('canvas');
+        const context = imgCanvas.getContext('2d')!;
 
-      // Agregar la fecha actual en la parte superior derecha
-      const today = new Date();
-      const dateString = this.formatDate(today);
-      const datePadding = 20;
-      const boxWidth = 300;
-      const boxHeight = 70;
-      context.fillStyle = 'rgba(0, 0, 0, 0.6)';
-      context.fillRect(imgCanvas.width - boxWidth - 50, 50, boxWidth, boxHeight);
-      context.fillStyle = '#fff';
-      context.font = 'bold 45px Arial';
-      context.textBaseline = 'middle';
-      context.fillText(dateString, imgCanvas.width - boxWidth / 1.10 - 50, 50 + boxHeight / 2);
+        imgCanvas.width = 1080;
+        imgCanvas.height = 1080;
 
-      // Agregar los títulos de las columnas
-      const columnSpacing = 280;
-      const titles = ['PESOS', 'TASA', 'BS'];
-      const baseXOffset = imgCanvas.width / 2 - (3 * columnSpacing) / 3;
-      const boxWidthTitle = 250;
+        context.drawImage(img, 0, 0);
 
-      titles.forEach((title, i) => {
+        // Agregar la fecha actual en la parte superior derecha
+        const today = new Date();
+        const dateString = this.formatDate(today);
         context.fillStyle = 'rgba(0, 0, 0, 0.6)';
-        context.fillRect(baseXOffset + i * columnSpacing - boxWidthTitle / 2, 260, boxWidthTitle, boxHeight);
+        context.fillRect(imgCanvas.width - 300 - 50, 50, 300, 70);
         context.fillStyle = '#fff';
-        context.textAlign = 'center';
-        context.fillText(title, baseXOffset + i * columnSpacing, 300);
-      });
-
-      // Agregar los valores de la tabla
-      context.font = 'bold 45px Arial';
-      const lineHeight = 135;
-      const totalHeight = this.tasas.length * lineHeight;
-      let yOffset = (imgCanvas.height - totalHeight) / 2 + 100;
-
-      this.tasas.forEach((item, index) => {
-        const baseXOffset = imgCanvas.width / 2 - (3 * columnSpacing) / 3;
-        const textHeight = 80;
-        const boxWidthFixed = 250;
-        context.fillStyle = 'rgba(0, 0, 0, 0.6)';
-
-        const bolivaresText = this.formatNumber(item.bolivares ?? 0);
-        const tasaText = this.formatNumber(item.tasaVenta ?? 0);
-        const pesosText = `$${this.formatNumber(item.pesos ?? 0)}`;
-
-        context.fillRect(baseXOffset + 2 * columnSpacing - boxWidthFixed / 2, yOffset + index * lineHeight - textHeight / 2, boxWidthFixed, textHeight);
-        context.fillRect(baseXOffset + columnSpacing - boxWidthFixed / 2, yOffset + index * lineHeight - textHeight / 2, boxWidthFixed, textHeight);
-        context.fillRect(baseXOffset - boxWidthFixed / 2, yOffset + index * lineHeight - textHeight / 2, boxWidthFixed, textHeight);
-
-        context.fillStyle = '#fff';
-        context.textAlign = 'center';
+        context.font = 'bold 45px Arial';
         context.textBaseline = 'middle';
-        context.fillText(bolivaresText, baseXOffset + 2 * columnSpacing, yOffset + index * lineHeight);
-        context.fillStyle = '#FFD700';
-        context.fillText(tasaText, baseXOffset + columnSpacing, yOffset + index * lineHeight);
-        context.fillStyle = '#fff';
-        context.fillText(pesosText, baseXOffset, yOffset + index * lineHeight);
-      });
+        context.fillText(dateString, imgCanvas.width - 300 / 1.10 - 50, 50 + 70 / 2);
 
-      const finalImageData = imgCanvas.toDataURL('image/jpeg');
-      this.imageSrc = finalImageData;  // Actualizar la fuente de la imagen en el HTML
-    };
+        // Agregar los títulos de las columnas
+        const columnSpacing = 280;
+        const titles = ['PESOS', 'TASA', 'BS'];
+        const baseXOffset = imgCanvas.width / 2 - (3 * columnSpacing) / 3;
+        const boxWidthTitle = 250;
+
+        titles.forEach((title, i) => {
+          context.fillStyle = 'rgba(0, 0, 0, 0.6)';
+          context.fillRect(baseXOffset + i * columnSpacing - boxWidthTitle / 2, 260, boxWidthTitle, 70);
+          context.fillStyle = '#fff';
+          context.textAlign = 'center';
+          context.fillText(title, baseXOffset + i * columnSpacing, 300);
+        });
+
+        // Agregar los valores de la tabla
+        context.font = 'bold 45px Arial';
+        const lineHeight = 135;
+        const totalHeight = this.tasas.length * lineHeight;
+        let yOffset = (imgCanvas.height - totalHeight) / 2 + 100;
+
+        this.tasas.forEach((item, index) => {
+          const baseXOffset = imgCanvas.width / 2 - (3 * columnSpacing) / 3;
+          const textHeight = 80;
+          const boxWidthFixed = 250;
+          context.fillStyle = 'rgba(0, 0, 0, 0.6)';
+
+          const bolivaresText = this.formatNumber(item.bolivares ?? 0);
+          const tasaText = this.formatNumber(item.tasaVenta ?? 0);
+          const pesosText = `$${this.formatNumber(item.pesos ?? 0)}`;
+
+          context.fillRect(baseXOffset + 2 * columnSpacing - boxWidthFixed / 2, yOffset + index * lineHeight - textHeight / 2, boxWidthFixed, textHeight);
+          context.fillRect(baseXOffset + columnSpacing - boxWidthFixed / 2, yOffset + index * lineHeight - textHeight / 2, boxWidthFixed, textHeight);
+          context.fillRect(baseXOffset - boxWidthFixed / 2, yOffset + index * lineHeight - textHeight / 2, boxWidthFixed, textHeight);
+
+          context.fillStyle = '#fff';
+          context.textAlign = 'center';
+          context.textBaseline = 'middle';
+          context.fillText(bolivaresText, baseXOffset + 2 * columnSpacing, yOffset + index * lineHeight);
+          context.fillStyle = '#FFD700';
+          context.fillText(tasaText, baseXOffset + columnSpacing, yOffset + index * lineHeight);
+          context.fillStyle = '#fff';
+          context.fillText(pesosText, baseXOffset, yOffset + index * lineHeight);
+        });
+
+        // Generar el Data URL de la imagen final
+        const finalImageData = imgCanvas.toDataURL('image/jpeg');
+        this.imageSrc = finalImageData;  // Actualizar la fuente de la imagen en el HTML
+
+        // Crear un enlace de descarga y simular un clic en él para descargar la imagen
+        const link = document.createElement('a');
+        link.href = finalImageData;
+        link.download = 'tasa_table.jpg';
+        document.body.appendChild(link); // Necesario para Firefox
+        link.click();
+        document.body.removeChild(link); // Elimina el enlace después de usarlo
+      };
+
+      img.onerror = () => {
+        console.error('Error al cargar la imagen de plantilla.');
+      };
+
+    } catch (error) {
+      console.error('Error al generar la imagen:', error);
+    }
   }
+
+
 
 
   async downloadTableAsVideo(): Promise<void> {
