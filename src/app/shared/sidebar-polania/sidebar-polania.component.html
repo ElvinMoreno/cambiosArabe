@@ -4,7 +4,7 @@
   </button>
   <div class="sidenav" [ngClass]="{'sidenav-collapsed': collapsad, 'sidenav-hidden': isMobile && !collapsad}">
     <div class="logo-container">
-      <button class="logo" (click)="toggleCollapse()">C</button>
+      <button class="logo" (click)="toggleCollapse()"><img src="../../../assets/sourceImag/logoCambiosArabes.png" alt=""></button>
       <div class="logo-text" *ngIf="collapsad">Cambios Arabes</div>
       <button class="btn-close" *ngIf="collapsad" (click)="closeSidenav()">
         <i class="fal fa-times close-icon"></i>
