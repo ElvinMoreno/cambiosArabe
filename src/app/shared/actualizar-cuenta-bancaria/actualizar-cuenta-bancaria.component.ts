@@ -4,11 +4,11 @@ import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule, MatDialog } from '@angu
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { ReactiveFormsModule } from '@angular/forms';
-import { CuentaBancariaService } from '../../../services/cuenta-bancaria.service';
-import { CuentaBancaria } from '../../../interfaces/cuenta-bancaria';
+import { CuentaBancariaService } from '../../services/cuenta-bancaria.service';
+import { CuentaBancaria } from '../../interfaces/cuenta-bancaria';
 import { catchError, finalize } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { ConfirmarAccionComponent } from '../../../confirmar-accion/confirmar-accion.component';
+import { ConfirmarAccionComponent } from '../../confirmar-accion/confirmar-accion.component';
 
 
 @Component({

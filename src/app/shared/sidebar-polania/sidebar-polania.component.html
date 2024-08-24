@@ -18,6 +18,10 @@
         </a>
       </li>
     </ul>
+    <!-- Botón para cerrar sesión al final del sidenav -->
+    <button mat-icon-button class="btn-logout" (click)="logout()" aria-label="Cerrar sesión">
+      <mat-icon>power_settings_new</mat-icon> <!-- Icono de apagar -->
+    </button>
   </div>
   <div class="overlay" *ngIf="showOverlay" (click)="handleOverlayClick()"></div>
 </div>

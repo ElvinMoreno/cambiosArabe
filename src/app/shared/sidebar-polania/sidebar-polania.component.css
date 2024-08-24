@@ -6,7 +6,6 @@
   width: 5rem;
   min-width: 5rem;
   border-radius: 0.313rem;
-
   font-size: 24px;
   font-weight: 900;
   cursor: pointer;
@@ -77,6 +76,10 @@
   width: 7rem;
   height: 100%;
   box-shadow: 0 0 1.25rem rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column; /* Colocar elementos en columna */
+  justify-content: space-between; /* Distribuir espacio entre elementos */
+  padding-bottom: 2rem; /* Espaciado inferior */
 }
 
 .sidenav-collapsed {
@@ -153,8 +156,6 @@
   min-width: 2rem;
   margin: 0 1.5rem;
   text-align: center;
-
-
 }
 
 .sidenav-link-text {
@@ -180,10 +181,49 @@
   z-index: 1;
 }
 
+/* Estilo del botón de cerrar sesión */
+.btn-logout {
+  position: absolute; /* Posición absoluta para situar el botón en la parte inferior */
+  bottom: 1rem; /* Espaciado desde el borde inferior */
+  left: 50%; /* Centrar el botón horizontalmente */
+  transform: translateX(-50%); /* Ajuste para centrar completamente */
+  background: none; /* Sin fondo para el icono */
+  border: none; /* Sin borde */
+  color: #e65959; /* Color rojo para el icono de apagado */
+  cursor: pointer; /* Cambia el cursor a una mano al pasar sobre el botón */
+  border-radius: 50%; /* Bordes redondeados para que coincidan con el icono */
+  padding: 0.5rem; /* Añadir un poco de padding para que el icono no se pegue al borde */
+  transition: color 0.3s ease, box-shadow 0.3s ease; /* Animaciones suaves para el color y la sombra */
+}
+
+.btn-logout mat-icon {
+  font-size: 28px; /* Tamaño del icono */
+}
+
+.btn-logout:hover {
+  color: #ff4d4d; /* Cambiar color al pasar el cursor */
+  box-shadow: 0 0 10px 5px rgba(255, 77, 77, 0.5); /* Efecto de brillo al pasar el cursor */
+  animation: glow 1s infinite; /* Añadir animación de brillo infinito */
+}
+
+/* Efecto bombilla (brillo) para el botón */
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 5px rgba(255, 77, 77, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(255, 77, 77, 1);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(255, 77, 77, 0.5);
+  }
+}
+
 /* Media queries para diseño responsive */
 @media (max-width: 768px) {
   .sidenav {
     transform: translateX(-100%);
+    padding-bottom: 2rem; /* Espaciado inferior */
   }
 
   .sidenav-collapsed {

@@ -2,12 +2,13 @@ import { Component, EventEmitter, HostListener, OnInit, Output } from '@angular/
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbar } from '@angular/material/toolbar';
 import { MatIcon } from '@angular/material/icon';
-import { RouterModule, RouterOutlet } from '@angular/router';
+import { RouterModule, Router } from '@angular/router'; // Importa Router para la navegación
 import { MatNavList } from '@angular/material/list';
 import { MatDivider, MatDividerModule } from '@angular/material/divider';
 import { navbarData } from './nav-data';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import { AccesoService } from '../../services/acceso.service'; // Importa el servicio de acceso
 
 interface SideNavToggle {
   screenWidth: number;
@@ -22,10 +23,9 @@ interface SideNavToggle {
     MatSidenavModule,
     MatToolbar,
     MatIcon,
-    RouterOutlet,
+    RouterModule,
     MatNavList,
     MatDivider,
-    RouterModule,
     MatDividerModule,
     MatIconModule
   ],
@@ -39,6 +39,8 @@ export class SidebarPolaniaComponent implements OnInit {
   navData = navbarData;
   isMobile = false;
   showOverlay = false;
+
+  constructor(private accesoService: AccesoService, private router: Router) {} // Inyecta el servicio y Router
 
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
@@ -78,5 +80,11 @@ export class SidebarPolaniaComponent implements OnInit {
     if (this.isMobile) {
       this.closeSidenav();
     }
+  }
+
+  // Método para cerrar sesión
+  logout(): void {
+    localStorage.removeItem('token'); // Elimina el token del almacenamiento local
+    this.router.navigate(['/login']); // Redirige al usuario a la página de inicio de sesión
   }
 }

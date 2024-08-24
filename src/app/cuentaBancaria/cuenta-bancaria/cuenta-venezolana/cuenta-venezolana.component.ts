@@ -11,7 +11,7 @@ import { MovimientoService } from '../../../services/movimiento.service';
 import { MovimientoDiaDTO } from '../../../interfaces/MovimientoDiaDTO';
 import { MovimientosTableComponent } from '../../../shared/movimientos-table/movimientos-table.component';
 import { CrearCuentaBancariaVComponent } from '../crear-cuenta-bancaria-v/crear-cuenta-bancaria-v.component';
-import { ActualizarCuentaBancariaComponent } from '../actualizar-cuenta-bancaria/actualizar-cuenta-bancaria.component';
+import { ActualizarCuentaBancariaComponent } from '../../../shared/actualizar-cuenta-bancaria/actualizar-cuenta-bancaria.component';
 
 @Component({
   selector: 'app-cuenta-venezolana',
