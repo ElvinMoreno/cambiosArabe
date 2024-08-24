@@ -1,47 +1,56 @@
-<!-- Botón para regresar (visible solo si se están mostrando los movimientos) -->
-<button *ngIf="mostrandoMovimientos" mat-button (click)="regresarAListaDeCuentas()" class="back-button">
-  <mat-icon>arrow_back</mat-icon> {{ nombreCuentaBancaria }}
-</button>
+<div *ngIf="!mostrandoMovimientos; else movimientosTemplate">
+  <!-- Botón para agregar una nueva cuenta bancaria venezolana -->
+  <div class="agregar-proveedor">
+    <button mat-flat-button class="btn2 btn-agregar" (click)="openCrearCuentaBancaria()">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
 
-<!-- Siempre se muestra la lista de cuentas -->
-<div *ngIf="!mostrandoMovimientos" class="card-container">
-  <mat-card *ngFor="let cuenta of cuentasBancarias"
-            [ngClass]="getCardClass(cuenta.nombreBanco!)"
-            class="example-card" appearance="outlined"
-            (click)="mostrarMovimientosDeCuenta(cuenta)">
-    <mat-card-content>
-      <div class="card-grid">
-        <div class="grid-item grid-item-1-1">
-          <p>{{ cuenta.nombreCuenta }}</p>
+  <!-- Vista de cuentas venezolanas -->
+  <div class="card-container">
+    <mat-card *ngFor="let cuenta of cuentasBancarias"
+              [ngClass]="getCardClass(cuenta.nombreBanco!)"
+              class="example-card" appearance="outlined"
+              (click)="mostrarMovimientosDeCuenta(cuenta)">
+      <mat-card-content>
+        <div class="card-grid">
+          <div class="grid-item grid-item-1-1">
+            <p>{{ cuenta.nombreCuenta }}</p>
+          </div>
+          <div class="grid-item grid-item-1-2">
+            <p>Cupos CV: {{ cuenta.limiteCB }}</p>
+          </div>
+          <div class="grid-item grid-item-2-1">
+            <p>Saldo Actual</p>
+          </div>
+          <div class="grid-item grid-item-2-2">
+            <p>Capacidad: {{ cuenta.limiteMonto }}</p>
+          </div>
+          <div class="grid-item grid-item-3-1">
+            <p>$ {{ cuenta.monto | number:'1.2-2' }}</p>
+          </div>
+          <div class="grid-item grid-item-4-1">
+            <p>{{ cuenta.nombreBanco }}</p>
+          </div>
+          <div class="grid-item grid-item-4-2">
+            <mat-icon class="settings-icon" (click)="openActualizarModal(cuenta); $event.stopPropagation()">settings</mat-icon>
+          </div>
+          <div class="grid-item grid-item-5-1-2">
+            <p>Responsable: {{ cuenta.responsable }}</p>
+          </div>
         </div>
-        <div class="grid-item grid-item-1-2">
-          <p>Cupos CV: {{ cuenta.limiteCB }}</p>
-        </div>
-        <div class="grid-item grid-item-2-1">
-          <p>Saldo Actual</p>
-        </div>
-        <div class="grid-item grid-item-2-2">
-          <p>Capacidad: {{ cuenta.limiteMonto }}</p>
-        </div>
-        <div class="grid-item grid-item-3-1">
-          <p>$ {{ cuenta.monto | number:'1.2-2' }}</p>
-        </div>
-        <div class="grid-item grid-item-4-1">
-          <p>{{ cuenta.nombreBanco }}</p>
-        </div>
-        <div class="grid-item grid-item-4-2">
-          <mat-icon class="settings-icon" (click)="openActualizarModal(cuenta); $event.stopPropagation()">settings</mat-icon>
-        </div>
-        <div class="grid-item grid-item-5-1-2">
-          <p>Responsable: {{ cuenta.responsable }}</p>
-        </div>
-      </div>
-    </mat-card-content>
-  </mat-card>
+      </mat-card-content>
+    </mat-card>
+  </div>
 </div>
 
 <!-- Mostrar la tabla de movimientos cuando se selecciona una cuenta -->
-<div *ngIf="mostrandoMovimientos" class="center-container">
-  <app-movimientos-table [movimientos]="movimientos"></app-movimientos-table>
+<ng-template #movimientosTemplate>
+  <button mat-button (click)="regresarAListaDeCuentas()" class="back-button">
+    <mat-icon>arrow_back</mat-icon> {{ nombreCuentaBancaria }}
+  </button>
 
-
+  <div class="center-container">
+    <app-movimientos-table [movimientos]="movimientos"></app-movimientos-table>
+  </div>
+</ng-template>

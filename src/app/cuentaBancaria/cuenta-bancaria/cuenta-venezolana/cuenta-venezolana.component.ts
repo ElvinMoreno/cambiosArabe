@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, Output, EventEmitter } from '@angular/core'; // Importa Output y EventEmitter
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { CuentaBancariaService } from '../../../services/cuenta-bancaria.service';
-import { CompraService } from '../../../services/compra.service'; // Importa el servicio necesario
+import { CompraService } from '../../../services/compra.service';
 import { CuentaBancaria } from '../../../interfaces/cuenta-bancaria';
 import { MovimientoService } from '../../../services/movimiento.service';
 import { MovimientoDiaDTO } from '../../../interfaces/MovimientoDiaDTO';
@@ -32,7 +32,7 @@ export class CuentaVenezolanaComponent implements OnInit {
   movimientos: MovimientoDiaDTO[] = [];
   nombreCuentaBancaria: string = ''; // Inicializado como una cadena vacía
   mostrandoMovimientos: boolean = false;
-  @Output() equivalenteEnPesosEmitter = new EventEmitter<number>(); // Emite el valor al componente padre
+  @Output() equivalenteEnPesosEmitter = new EventEmitter<number>();
 
   constructor(
     private cuentaBancariaService: CuentaBancariaService,
@@ -44,7 +44,6 @@ export class CuentaVenezolanaComponent implements OnInit {
   ngOnInit(): void {
     this.loadCuentasVenezolanas();
 
-    // Calcula el equivalente en pesos para la primera cuenta bancaria venezolana (o puedes modificarlo según tus necesidades)
     this.cuentaBancariaService.getCuentasVenezolanas().subscribe(
       (data: CuentaBancaria[]) => {
         if (data.length > 0) {
@@ -73,7 +72,7 @@ export class CuentaVenezolanaComponent implements OnInit {
     this.compraService.calcularEquivalenteEnPesos(cuentaBancariaBsId).subscribe(
       (equivalente: number) => {
         console.log('Equivalente en pesos recibido:', equivalente);
-        this.equivalenteEnPesosEmitter.emit(equivalente); // Emite el valor hacia el componente padre
+        this.equivalenteEnPesosEmitter.emit(equivalente);
       },
       error => {
         console.error('Error al calcular el equivalente en pesos:', error);
@@ -82,7 +81,7 @@ export class CuentaVenezolanaComponent implements OnInit {
   }
 
   mostrarMovimientosDeCuenta(cuenta: CuentaBancaria): void {
-    this.nombreCuentaBancaria = cuenta.nombreCuenta || ''; // Asegurarse de que no sea null
+    this.nombreCuentaBancaria = cuenta.nombreCuenta || '';
     this.movimientoService.getMovimientos(cuenta.id).subscribe(
       (data: MovimientoDiaDTO[]) => {
         this.movimientos = data.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
