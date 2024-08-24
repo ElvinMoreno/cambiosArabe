@@ -55,6 +55,16 @@ export class CuentaBancariaComponent implements OnInit {
   }
 
   get equivalenteEnPesosLabel(): string {
-    return this.equivalenteEnPesos !== null ? `$${this.equivalenteEnPesos.toFixed(2)}` : '$';
+    return this.equivalenteEnPesos !== null ? `$${(this.equivalenteEnPesos/1000).toFixed(2)}` : '$';
+  }
+
+  // Nuevo método para calcular el balance total
+  get balanceLabel(): string {
+    if (this.equivalenteEnPesos !== null && this.totalPesos !== null) {
+      const totalBalance = (this.equivalenteEnPesos / 1000) + (this.totalPesos / 1000);
+      return `$${totalBalance.toFixed(2)}`;
+    } else {
+      return '$';
+    }
   }
 }
