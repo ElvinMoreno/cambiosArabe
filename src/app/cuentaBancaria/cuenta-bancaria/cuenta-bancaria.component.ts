@@ -8,6 +8,7 @@ import { CajaComponent } from './cuenta-colombiana/caja/caja.component';
 import { ClientesCreditosComponent } from "../../saldos/creditos/clientes-creditos/clientes-creditos.component";
 import { CreditosComponent } from '../../saldos/creditos/creditos.component';
 import { ActivatedRoute } from '@angular/router';
+import { CompraService } from '../../services/compra.service'; // Importa el servicio necesario
 
 @Component({
   selector: 'app-cuenta-bancaria',
@@ -28,8 +29,9 @@ import { ActivatedRoute } from '@angular/router';
 export class CuentaBancariaComponent implements OnInit {
   selectedTabIndex = 0;  // Por defecto, el tab de Pesos
   totalPesos: number | null = null;
+  equivalenteEnPesos: number | null = null; // Variable para almacenar el equivalente en pesos
 
-  constructor(private route: ActivatedRoute) {}  // Inyecta ActivatedRoute
+  constructor(private route: ActivatedRoute, private compraService: CompraService) {}  // Inyecta ActivatedRoute y CompraService
 
   ngOnInit() {
     // Obtén el parámetro 'tab' de la ruta y úsalo para establecer el índice del tab
@@ -39,11 +41,20 @@ export class CuentaBancariaComponent implements OnInit {
     });
   }
 
+  // Método para actualizar el equivalente en pesos cuando se recibe desde CuentaVenezolanaComponent
+  actualizarEquivalenteEnPesos(equivalente: number) {
+    this.equivalenteEnPesos = equivalente;
+  }
+
   actualizarTotalPesos(totalPesos: number) {
     this.totalPesos = totalPesos;
   }
 
   get totalPesosLabel(): string {
-    return this.totalPesos !== null ? `$${Math.trunc(this.totalPesos/1000)}` : '$';
+    return this.totalPesos !== null ? `$${Math.trunc(this.totalPesos / 1000)}` : '$';
+  }
+
+  get equivalenteEnPesosLabel(): string {
+    return this.equivalenteEnPesos !== null ? `$${this.equivalenteEnPesos.toFixed(2)}` : '$';
   }
 }

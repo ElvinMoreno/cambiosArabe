@@ -9,8 +9,14 @@
       </ng-template>
       <app-cuenta-colombiana (totalPesosEmitter)="actualizarTotalPesos($event)"></app-cuenta-colombiana>
     </mat-tab>
-    <mat-tab label="BS">
-      <app-cuenta-venezolana></app-cuenta-venezolana>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <div>
+          <span style="display: block; font-size: 0.75rem; color: #8BC94D;">BS</span>
+          <span>{{ equivalenteEnPesosLabel }}</span>
+        </div>
+      </ng-template>
+      <app-cuenta-venezolana (equivalenteEnPesosEmitter)="actualizarEquivalenteEnPesos($event)"></app-cuenta-venezolana>
     </mat-tab>
     <mat-tab label="Creditos">
       <app-creditos></app-creditos>
