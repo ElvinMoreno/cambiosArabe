@@ -8,6 +8,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { AccesoService } from './services/acceso.service';
 
+import {CloudinaryModule} from '@cloudinary/ng';
+import {fill} from "@cloudinary/url-gen/actions/resize";
 
 @Component({
   selector: 'app-root',
@@ -21,6 +23,7 @@ import { AccesoService } from './services/acceso.service';
     MatFormFieldModule,
     CommonModule,
     SidebarPolaniaComponent,
+    CloudinaryModule
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],

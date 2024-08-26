@@ -8,7 +8,8 @@
     <mat-icon>image</mat-icon>
     <span class="btn-text">Descargar Imagen</span>
   </button>
-  <button (click)="downloadTableAsVideo()" class="btn-actualizar-tasa">
+  <!-- <button (click)="downloadTableAsVideo()" class="btn-actualizar-tasa"> -->
+    <button  class="btn-actualizar-tasa">
     <mat-icon>videocam</mat-icon>
     <span class="btn-text">Descargar Video</span>
   </button>
@@ -50,7 +51,36 @@
       <mat-icon>cancel</mat-icon>
       <span class="btn-text">Cancelar</span>
     </button>
+
+    <!-- Input para seleccionar el archivo -->
+<!-- Input de archivo oculto -->
+<input
+  type="file"
+  id="fileInput"
+  (change)="onFileSelected($event)"
+  accept="image/*"
+  style="display: none;"
+/>
+
+<!-- Botón personalizado -->
+<label for="fileInput" class="custom-file-upload" class="btn-actualizar-tasa">
+  <mat-icon>cloud_upload</mat-icon>
+  <span>Seleccionar Imagen</span>
+</label>
+
+
+<!-- Botón para subir la imagen -->
+<button (click)="uploadImage()" class="btn-actualizar-tasa" [disabled]="!selectedFile">
+  <mat-icon>cloud_upload</mat-icon>
+  <span class="btn-text">Subir Imagen</span>
+</button>
+
+
+<!-- Botón para abrir la imagen en una nueva pestaña -->
+    <button (click)="openImageInNewTab()" [disabled]="!imageSrc" class="btn-actualizar-tasa">
+      <mat-icon>open_in_new</mat-icon>
+      <span class="btn-text">Ver Imagen</span>
+    </button>
   </div>
-  <img #generatedImage [src]="imageSrc" style="margin-top: 20px; max-width: 100%;" />
 
 </div>
