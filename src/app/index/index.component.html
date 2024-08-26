@@ -1,0 +1,21 @@
+<div class="tab-container">
+    <mat-tab-group [(selectedIndex)]="selectedTabIndex" class="custom-tab-group">
+      <mat-tab label="Dashboard">
+        <ng-template mat-tab-label>
+          <div>
+            <span style="display: block; font-size: 0.75rem; color: #8BC94D;">Dashboard</span>
+          </div>
+        </ng-template>
+        <app-dashboard></app-dashboard>
+      </mat-tab>
+      <mat-tab label="Balance">
+        <ng-template mat-tab-label>
+          <div>
+            <span style="display: block; font-size: 0.75rem; color: #8BC94D;">Balance</span>
+          </div>
+        </ng-template>
+        <app-balance></app-balance>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+  

@@ -23,7 +23,6 @@ export class CompraService {
     });
   }
 
-
   getCompras(): Observable<CompraBsDTO[]> {
     const headers = this.getHeaders();
     return this.http.get<CompraBsDTO[]>(`${this.apiUrl}/index`, { headers })
@@ -51,6 +50,14 @@ export class CompraService {
   updateCompra(id: number, dto: CompraBsDTO): Observable<CompraBsDTO> {
     const headers = this.getHeaders();
     return this.http.put<CompraBsDTO>(`${this.apiUrl}/${id}`, dto, { headers })
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  calcularEquivalenteEnPesos(cuentaBancariaBsId: number): Observable<number> {
+    const headers = this.getHeaders();
+    return this.http.get<number>(`${this.apiUrl}/equivalente-pesos/${cuentaBancariaBsId}`, { headers })
       .pipe(
         catchError(this.handleError)
       );

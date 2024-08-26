@@ -7,17 +7,13 @@ import { ContentPolaniaComponent } from './shared/content-polania/content-polani
 import { AuthGuard } from './guards/auth.guard';
 import { PrincipalComponent } from './operaciones/principal/principal.component';
 import { CuentaBancariaComponent } from './cuentaBancaria/cuenta-bancaria/cuenta-bancaria.component';
-import { DetalleDavidplataComponent } from './cuentaBancaria/detalle-Cuenta/detalle-davidplata/detalle-davidplata.component';
-import { DetalleBancolombia1Component } from './cuentaBancaria/detalle-Cuenta/detalle-bancolombia1/detalle-bancolombia1.component';
-import { DetalleBancolombia2Component } from './cuentaBancaria/detalle-Cuenta/detalle-bancolombia2/detalle-bancolombia2.component';
-import { DetalleMovimientoDavidplataComponent } from './cuentaBancaria/detalle-Cuenta/detalle-davidplata/detalle-movimiento/detalle-movimiento-davidplata/detalle-movimiento-davidplata.component';
-import { DetalleMovimientoBancolombia1Component } from './cuentaBancaria/detalle-Cuenta/detalle-bancolombia1/detalle-movimiento/detalle-movimiento-bancolombia1/detalle-movimiento-bancolombia1.component';
-import { DetalleMovimientoBancolombia2Component } from './cuentaBancaria/detalle-Cuenta/detalle-bancolombia2/detalle-movimiento/detalle-movimiento-bancolombia2/detalle-movimiento-bancolombia2.component';
 import { ConfiguracionComponent } from './configuraciones/configuracion/configuracion.component';
 import { UsuariosComponent } from './usuarios/usuarios.component';
 import { TasaComponent } from './tasa/tasa.component';
 import { MovimientosComponent } from './movimientos/movimientos.component';
 import { MovimientosVenezolanosComponent } from './shared/movimientos-general-componente/movimientos-venezolanos.component';
+import { DashboardComponent } from './index/dashboard/dashboard.component';
+import { IndexComponent } from './index/index.component';
 
 export const routes: Routes = [
 
@@ -44,16 +40,10 @@ export const routes: Routes = [
           { path: '', redirectTo: 'bolivares', pathMatch: 'full' }
         ]
       },
-      { path: 'index', component: ContentPolaniaComponent },
+      { path: 'index', component: IndexComponent },
       { path: 'tasa', component: TasaComponent },
       { path: 'configuracion', component: ConfiguracionComponent },
-      { path: 'detalle-davidplata', component: DetalleDavidplataComponent },
       { path: 'cuentaBancaria', component: CuentaBancariaComponent },
-      { path: 'detalle-bancolombia1', component: DetalleBancolombia1Component },
-      { path: 'detalle-bancolombia2', component: DetalleBancolombia2Component },
-      { path: 'detalle-movimiento-davidplata', component: DetalleMovimientoDavidplataComponent },
-      { path: 'detalle-movimiento-bancolombia1', component: DetalleMovimientoBancolombia1Component },
-      { path: 'detalle-movimiento-bancolombia2', component: DetalleMovimientoBancolombia2Component },
       { path: 'proveedores', component: UsuariosComponent },
       { path: 'movimientos', component: MovimientosComponent },
       

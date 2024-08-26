@@ -11,7 +11,7 @@ import { MovimientosTableComponent } from '../../../../shared/movimientos-table/
 import { MovimientoService } from '../../../../services/movimiento.service'; // Importa el servicio de movimientos
 import { MovimientoDiaDTO } from '../../../../interfaces/MovimientoDiaDTO';
 import { CrearCuentaBancariaComponent } from '../../crear-cuenta-bancaria/crear-cuenta-bancaria.component';
-import { ActualizarCuentaBancariaComponent } from '../../actualizar-cuenta-bancaria/actualizar-cuenta-bancaria.component';
+import { ActualizarCuentaBancariaComponent } from '../../../../shared/actualizar-cuenta-bancaria/actualizar-cuenta-bancaria.component';
 
 
 @Component({

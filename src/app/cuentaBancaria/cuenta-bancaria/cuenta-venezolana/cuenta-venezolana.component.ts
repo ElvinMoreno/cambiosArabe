@@ -1,17 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { CuentaBancariaService } from '../../../services/cuenta-bancaria.service';
+import { CompraService } from '../../../services/compra.service';
 import { CuentaBancaria } from '../../../interfaces/cuenta-bancaria';
 import { MovimientoService } from '../../../services/movimiento.service';
 import { MovimientoDiaDTO } from '../../../interfaces/MovimientoDiaDTO';
 import { MovimientosTableComponent } from '../../../shared/movimientos-table/movimientos-table.component';
 import { CrearCuentaBancariaVComponent } from '../crear-cuenta-bancaria-v/crear-cuenta-bancaria-v.component';
-import { ActualizarCuentaBancariaComponent } from '../actualizar-cuenta-bancaria/actualizar-cuenta-bancaria.component';
-
+import { ActualizarCuentaBancariaComponent } from '../../../shared/actualizar-cuenta-bancaria/actualizar-cuenta-bancaria.component';
 
 @Component({
   selector: 'app-cuenta-venezolana',
@@ -32,15 +32,29 @@ export class CuentaVenezolanaComponent implements OnInit {
   movimientos: MovimientoDiaDTO[] = [];
   nombreCuentaBancaria: string = ''; // Inicializado como una cadena vacía
   mostrandoMovimientos: boolean = false;
+  @Output() equivalenteEnPesosEmitter = new EventEmitter<number>();
 
   constructor(
     private cuentaBancariaService: CuentaBancariaService,
+    private compraService: CompraService,
     private movimientoService: MovimientoService,
     public dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
     this.loadCuentasVenezolanas();
+
+    this.cuentaBancariaService.getCuentasVenezolanas().subscribe(
+      (data: CuentaBancaria[]) => {
+        if (data.length > 0) {
+          const cuentaId = data[0].id; // Usando la primera cuenta bancaria como ejemplo
+          this.calcularEquivalenteEnPesos(cuentaId);
+        }
+      },
+      error => {
+        console.error('Error al obtener las cuentas bancarias venezolanas:', error);
+      }
+    );
   }
 
   loadCuentasVenezolanas(): void {
@@ -54,8 +68,20 @@ export class CuentaVenezolanaComponent implements OnInit {
     );
   }
 
+  calcularEquivalenteEnPesos(cuentaBancariaBsId: number): void {
+    this.compraService.calcularEquivalenteEnPesos(cuentaBancariaBsId).subscribe(
+      (equivalente: number) => {
+        console.log('Equivalente en pesos recibido:', equivalente);
+        this.equivalenteEnPesosEmitter.emit(equivalente);
+      },
+      error => {
+        console.error('Error al calcular el equivalente en pesos:', error);
+      }
+    );
+  }
+
   mostrarMovimientosDeCuenta(cuenta: CuentaBancaria): void {
-    this.nombreCuentaBancaria = cuenta.nombreCuenta || ''; // Asegurarse de que no sea null
+    this.nombreCuentaBancaria = cuenta.nombreCuenta || '';
     this.movimientoService.getMovimientos(cuenta.id).subscribe(
       (data: MovimientoDiaDTO[]) => {
         this.movimientos = data.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
