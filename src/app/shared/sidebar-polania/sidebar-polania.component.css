@@ -1,6 +1,6 @@
 /* Estilo del logo */
 .logo {
-  color: #ffffff;
+  color: transparent;
   background: transparent;
   text-align: center;
   width: 5rem;
@@ -18,7 +18,7 @@
   height: 100%; /* Mantener la proporción de aspecto de la imagen */
   max-width: 4rem; /* Establecer un tamaño máximo para el logo */
   max-height: 4rem; /* Establecer un tamaño máximo para el logo */
-  background-color: #ffffff;
+  background-color: transparent;
 }
 
 .logo:hover {
@@ -26,18 +26,26 @@
 }
 
 /* Estilo del texto del logo */
+ /* Importar la fuente atractiva */
+
 .logo-text {
   margin: 1rem;
-  font-size: 20px;
+  font-size: 20px; /* Tamaño de fuente un poco más grande */
   font-weight: 700;
-  color: #5E94FF;
+  color: #ffffff;
   text-align: center;
-  transition: color 0.3s ease;
+  font-family: 'Poppins', sans-serif; /* Aplicar la fuente atractiva */
+  letter-spacing: 1.5px; /* Aumentar el espaciado entre letras */
+  text-transform: uppercase; /* Transformar el texto a mayúsculas para un efecto más moderno */
+  transition: color 0.3s ease, transform 0.3s ease; /* Agregar transición para suavizar el cambio de color */
 }
 
 .logo-text:hover {
-  color: #4a7ccc;
+  color: #FFD700; /* Cambiar color al pasar el cursor */
+  transform: scale(1.05); /* Aumentar ligeramente el tamaño al pasar el cursor */
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.7); /* Añadir un efecto de sombra de texto dorada */
 }
+
 
 /* Otros estilos de tu sidenav */
 .sidenav-container {
@@ -68,7 +76,7 @@
 }
 
 .sidenav {
-  background: #ffffff;
+  background: #192841;
   transition: width 0.5s ease, transform 0.5s ease;
   position: fixed;
   z-index: 2;
@@ -144,7 +152,7 @@
   display: flex;
   align-items: center;
   height: 3rem;
-  color: #5E94FF;
+  color: #cacaca;
   text-decoration: none;
   border-radius: 0.5rem;
   transition: background-color 0.3s ease, color 0.3s ease;
@@ -163,12 +171,12 @@
 }
 
 .sidenav-nav-item:hover .sidenav-nav-link {
-  background-color: #5E94FF;
+  background-color: #2ed8c1;
   color: #ffffff;
 }
 
 .active .sidenav-link-icon, .active .sidenav-link-text {
-  color: #000000;
+  color: #33ac9c;
 }
 
 .overlay {
