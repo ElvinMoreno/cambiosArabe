@@ -1,0 +1,68 @@
+.balance-container {
+    padding: 20px;
+  }
+  
+  .custom-tab-group {
+    margin-bottom: 20px;
+  }
+  
+  .tab-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .charts-container {
+    display: flex;
+    justify-content: space-around;
+  }
+  
+  .chart {
+    width: 30%;
+    text-align: center;
+  }
+  
+  .chart p {
+    font-size: 18px;
+    color: #666;
+  }
+  
+  .chart h3 {
+    font-size: 24px;
+    color: #5e94ff;
+  }
+  
+  .table-container {
+    margin-top: 20px;
+    overflow-x: auto;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  
+  thead {
+    background-color: #4a90e2;
+    color: white;
+  }
+  
+  th, td {
+    padding: 10px;
+    text-align: center;
+  }
+  
+  tbody tr {
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  tbody tr:last-child {
+    border-bottom: none;
+  }
+  
+  tbody tr:hover {
+    background-color: #f1f1f1;
+  }
+  

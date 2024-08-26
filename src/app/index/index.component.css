@@ -1,0 +1,19 @@
+.custom-tab-group .mat-tab-header {
+    overflow-x: auto !important; /* Permitir desplazamiento horizontal en las pestañas */
+    white-space: nowrap; /* No permitir que el texto se rompa */
+    display: flex; /* Flex para soporte de scroll en pestañas */
+    -webkit-overflow-scrolling: touch; /* Suavizar el desplazamiento en dispositivos móviles */
+  }
+  
+  .custom-tab-group .mat-tab-label-container {
+    flex-grow: 1; /* Asegurar que las pestañas ocupen espacio suficiente para ser desplazadas */
+    display: flex; /* Flex para soporte de scroll en pestañas */
+  }
+  
+  /* Ocultar las flechas de navegación en dispositivos móviles */
+  @media (max-width: 768px) {
+    .custom-tab-group .mat-tab-header-pagination {
+      display: none; /* Oculta las flechas en dispositivos móviles */
+    }
+  }
+  

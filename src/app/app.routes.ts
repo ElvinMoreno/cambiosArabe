@@ -13,6 +13,7 @@ import { TasaComponent } from './tasa/tasa.component';
 import { MovimientosComponent } from './movimientos/movimientos.component';
 import { MovimientosVenezolanosComponent } from './shared/movimientos-general-componente/movimientos-venezolanos.component';
 import { DashboardComponent } from './index/dashboard/dashboard.component';
+import { IndexComponent } from './index/index.component';
 
 export const routes: Routes = [
 
@@ -39,7 +40,7 @@ export const routes: Routes = [
           { path: '', redirectTo: 'bolivares', pathMatch: 'full' }
         ]
       },
-      { path: 'index', component: DashboardComponent },
+      { path: 'index', component: IndexComponent },
       { path: 'tasa', component: TasaComponent },
       { path: 'configuracion', component: ConfiguracionComponent },
       { path: 'cuentaBancaria', component: CuentaBancariaComponent },
