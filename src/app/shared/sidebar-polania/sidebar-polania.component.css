@@ -171,12 +171,12 @@
 }
 
 .sidenav-nav-item:hover .sidenav-nav-link {
-  background-color: #2ed8c1;
+  background-color: #33ac9c;
   color: #ffffff;
 }
 
 .active .sidenav-link-icon, .active .sidenav-link-text {
-  color: #33ac9c;
+  color: #32ecd4;
 }
 
 .overlay {
