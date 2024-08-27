@@ -223,24 +223,23 @@ uploadImage(): void {
     return;
   }
 
-  const formData = new FormData();
-  formData.append('file', this.selectedFile); // Clave 'file' como se espera en el backend
+  const publicId = 'uroe8jwhkdzunwpkikte'; // Aquí definimos el public_id
 
-  console.log('FormData que se envía:', formData.get('file'));
-
-  this.cloudinaryService.uploadImage(formData).subscribe(
+  // Utilizamos el método del servicio que maneja la subida con sobreescritura
+  this.cloudinaryService.uploadImageWithOverwrite(this.selectedFile, publicId).subscribe(
     response => {
-      console.log('Imagen subida con éxito a Cloudinary:', response);
+      console.log('Imagen sobrescrita con éxito en Cloudinary:', response);
       if (response && response.secure_url) {
-        this.imageSrc = response.secure_url; // Usar la misma variable que el botón verifica
-        alert('Imagen subida exitosamente. Ahora puedes verla en una nueva pestaña.');
+        this.imageSrc = response.secure_url; // Actualizamos la fuente de la imagen para la vista previa
+        alert('Imagen sobrescrita exitosamente. Ahora puedes verla en una nueva pestaña.');
       }
     },
     error => {
-      console.error('Error subiendo la imagen a Cloudinary:', error);
+      console.error('Error sobrescribiendo la imagen en Cloudinary:', error);
     }
   );
 }
+
 
 
 
