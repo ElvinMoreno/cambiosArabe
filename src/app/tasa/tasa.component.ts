@@ -113,7 +113,7 @@ export class TasaComponent implements OnInit {
 
   openActualizarTasaDialog(): void {
     const dialogRef = this.dialog.open(ActualizarTasaModalComponent);
-  
+
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         const tasaItem = this.tasas.find(item => item.id === 1); // Encuentra la tasa principal
@@ -127,7 +127,7 @@ export class TasaComponent implements OnInit {
                   if (item.id! > 1) {
                     item.tasaVenta = updatedItem.tasaVenta! + item.sumaTasa!;
                     item.pesos = this.calculatePesos(item.bolivares!, item.tasaVenta!);
-                    
+
                     // Aquí actualizamos las otras tasas en la base de datos
                     this.tasaService.updateTasa(item.id!, item).subscribe(
                       updatedItem => {
@@ -149,7 +149,7 @@ export class TasaComponent implements OnInit {
       }
     });
   }
-  
+
 
   formatDate(date: Date): string {
     const day = ('0' + date.getDate()).slice(-2);
@@ -265,124 +265,124 @@ openImageInNewTab(): void {
   }
 }
 
-  addTableDataToCanvas(context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
-    const columnSpacing = 280;
-    const titles = ['PESOS', 'TASA', 'BS'];
-    const baseXOffset = canvas.width / 2 - (3 * columnSpacing) / 3;
-    const boxWidthTitle = 250;
+addTableDataToCanvas(context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
+  const columnSpacing = 280;
+  const titles = ['PESOS', 'TASA', 'BS'];
+  const baseXOffset = canvas.width / 2 - (3 * columnSpacing) / 3;
+  const boxWidthTitle = 250;
 
-    titles.forEach((title, i) => {
-      context.fillStyle = 'rgba(0, 0, 0, 0.6)';
-      context.fillRect(baseXOffset + i * columnSpacing - boxWidthTitle / 2, 260, boxWidthTitle, 70);
-      context.fillStyle = '#fff';
-      context.textAlign = 'center';
-      context.fillText(title, baseXOffset + i * columnSpacing, 300);
-    });
+  titles.forEach((title, i) => {
+    context.fillStyle = 'rgba(0, 0, 0, 0.6)';
+    context.fillRect(baseXOffset + i * columnSpacing - boxWidthTitle / 2, 260, boxWidthTitle, 70);
+    context.fillStyle = '#fff';
+    context.textAlign = 'center';
+    context.fillText(title, baseXOffset + i * columnSpacing, 300);
+  });
 
-    context.font = 'bold 45px Arial';
-    const lineHeight = 135;
-    const totalHeight = this.tasas.length * lineHeight;
-    let yOffset = (canvas.height - totalHeight) / 2 + 100;
+  context.font = 'bold 45px Arial';
+  const lineHeight = 135;
+  const totalHeight = this.tasas.length * lineHeight;
+  let yOffset = (canvas.height - totalHeight) / 2 + 100;
 
-    this.tasas.forEach((item, index) => {
-      const textHeight = 80;
-      const boxWidthFixed = 250;
-      context.fillStyle = 'rgba(0, 0, 0, 0.6)';
+  this.tasas.forEach((item, index) => {
+    const textHeight = 80;
+    const boxWidthFixed = 250;
+    context.fillStyle = 'rgba(0, 0, 0, 0.6)';
 
-      const bolivaresText = this.formatNumber(item.bolivares ?? 0);
-      const tasaText = this.formatNumber(item.tasaVenta ?? 0);
-      const pesosText = `$${this.formatNumber(item.pesos ?? 0)}`;
+    const bolivaresText = this.formatNumber(item.bolivares ?? 0);
+    const tasaText = this.formatNumber(item.tasaVenta ?? 0);
+    const pesosText = `$${this.formatNumber(item.pesos ?? 0)}`;
 
-      context.fillRect(baseXOffset + 2 * columnSpacing - boxWidthFixed / 2, yOffset + index * lineHeight - textHeight / 2, boxWidthFixed, textHeight);
-      context.fillRect(baseXOffset + columnSpacing - boxWidthFixed / 2, yOffset + index * lineHeight - textHeight / 2, boxWidthFixed, textHeight);
-      context.fillRect(baseXOffset - boxWidthFixed / 2, yOffset + index * lineHeight - textHeight / 2, boxWidthFixed, textHeight);
+    context.fillRect(baseXOffset + 2 * columnSpacing - boxWidthFixed / 2, yOffset + index * lineHeight - textHeight / 2, boxWidthFixed, textHeight);
+    context.fillRect(baseXOffset + columnSpacing - boxWidthFixed / 2, yOffset + index * lineHeight - textHeight / 2, boxWidthFixed, textHeight);
+    context.fillRect(baseXOffset - boxWidthFixed / 2, yOffset + index * lineHeight - textHeight / 2, boxWidthFixed, textHeight);
 
-      context.fillStyle = '#fff';
-      context.textAlign = 'center';
-      context.textBaseline = 'middle';
-      context.fillText(bolivaresText, baseXOffset + 2 * columnSpacing, yOffset + index * lineHeight);
-      context.fillStyle = '#FFD700';
-      context.fillText(tasaText, baseXOffset + columnSpacing, yOffset + index * lineHeight);
-      context.fillStyle = '#fff';
-      context.fillText(pesosText, baseXOffset, yOffset + index * lineHeight);
-    });
-  }
+    context.fillStyle = '#fff';
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillText(bolivaresText, baseXOffset + 2 * columnSpacing, yOffset + index * lineHeight);
+    context.fillStyle = '#FFD700';
+    context.fillText(tasaText, baseXOffset + columnSpacing, yOffset + index * lineHeight);
+    context.fillStyle = '#fff';
+    context.fillText(pesosText, baseXOffset, yOffset + index * lineHeight);
+  });
+}
 
 
-  // async downloadTableAsVideo(): Promise<void> {
-  //   const ffmpeg = createFFmpeg({ log: true });
-  //   await ffmpeg.load();
+// async downloadTableAsVideo(): Promise<void> {
+//   const ffmpeg = createFFmpeg({ log: true });
+//   await ffmpeg.load();
 
-  //   // Ruta a tu video de plantilla
-  //   const videoTemplatePath = '../assets/sourceImag/plantillaTasa.mp4';
+//   // Ruta a tu video de plantilla
+//   const videoTemplatePath = '../assets/sourceImag/plantillaTasa.mp4';
 
-  //   // Escribir el archivo de video de plantilla en el sistema de archivos de FFmpeg
-  //   const videoData = await fetch(videoTemplatePath).then(res => res.arrayBuffer());
-  //   ffmpeg.FS('writeFile', 'template.mp4', new Uint8Array(videoData));
+//   // Escribir el archivo de video de plantilla en el sistema de archivos de FFmpeg
+//   const videoData = await fetch(videoTemplatePath).then(res => res.arrayBuffer());
+//   ffmpeg.FS('writeFile', 'template.mp4', new Uint8Array(videoData));
 
-  //   // Generar la imagen del canvas
-  //   const canvas = await html2canvas(this.captureElement.nativeElement);
-  //   const imgDataUrl = canvas.toDataURL('image/jpeg');
-  //   const imgData = await fetch(imgDataUrl).then(res => res.arrayBuffer());
-  //   ffmpeg.FS('writeFile', 'frame.jpg', new Uint8Array(imgData));
+//   // Generar la imagen del canvas
+//   const canvas = await html2canvas(this.captureElement.nativeElement);
+//   const imgDataUrl = canvas.toDataURL('image/jpeg');
+//   const imgData = await fetch(imgDataUrl).then(res => res.arrayBuffer());
+//   ffmpeg.FS('writeFile', 'frame.jpg', new Uint8Array(imgData));
 
-  //   // Combinar la imagen con el video de plantilla
-  //   await ffmpeg.run(
-  //     '-i', 'template.mp4',
-  //     '-i', 'frame.jpg',
-  //     '-filter_complex', 'overlay',
-  //     '-c:v', 'libx264',
-  //     '-r', '30',
-  //     '-pix_fmt', 'yuv420p',
-  //     'output.mp4'
-  //   );
+//   // Combinar la imagen con el video de plantilla
+//   await ffmpeg.run(
+//     '-i', 'template.mp4',
+//     '-i', 'frame.jpg',
+//     '-filter_complex', 'overlay',
+//     '-c:v', 'libx264',
+//     '-r', '30',
+//     '-pix_fmt', 'yuv420p',
+//     'output.mp4'
+//   );
 
-  //   // Leer el archivo de salida y descargarlo
-  //   const data = ffmpeg.FS('readFile', 'output.mp4');
-  //   const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
-  //   const videoUrl = URL.createObjectURL(videoBlob);
+//   // Leer el archivo de salida y descargarlo
+//   const data = ffmpeg.FS('readFile', 'output.mp4');
+//   const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
+//   const videoUrl = URL.createObjectURL(videoBlob);
 
-  //   const link = document.createElement('a');
-  //   link.href = videoUrl;
-  //   link.download = 'tasa_table.mp4';
-  //   link.click();
-  // }
+//   const link = document.createElement('a');
+//   link.href = videoUrl;
+//   link.download = 'tasa_table.mp4';
+//   link.click();
+// }
 }
 
 @Component({
-  selector: 'actualizar-tasa-modal',
-  standalone: true,
-  imports: [FormsModule, CommonModule],
-  template: `
-    <div class="modal-overlay">
-      <div class="modal-content">
-        <h2>Actualizar Tasa</h2>
-        <div class="separator"></div>
-        <form (ngSubmit)="onGuardar()">
-          <div class="form-group">
-            <label for="tasa">Tasa <span class="required">*</span></label>
-            <input id="tasa" type="number" [(ngModel)]="tasa" name="tasa" class="form-control" required>
-          </div>
-          <div class="button-group">
-            <button type="button" class="btn-cancelar" (click)="onCancelar()">Cancelar</button>
-            <button type="submit" class="btn-confirmar">Guardar</button>
-          </div>
-        </form>
-      </div>
+selector: 'actualizar-tasa-modal',
+standalone: true,
+imports: [FormsModule, CommonModule],
+template: `
+  <div class="modal-overlay">
+    <div class="modal-content">
+      <h2>Actualizar Tasa</h2>
+      <div class="separator"></div>
+      <form (ngSubmit)="onGuardar()">
+        <div class="form-group">
+          <label for="tasa">Tasa <span class="required">*</span></label>
+          <input id="tasa" type="number" [(ngModel)]="tasa" name="tasa" class="form-control" required>
+        </div>
+        <div class="button-group">
+          <button type="button" class="btn-cancelar" (click)="onCancelar()">Cancelar</button>
+          <button type="submit" class="btn-confirmar">Guardar</button>
+        </div>
+      </form>
     </div>
-  `,
-  styleUrls: ['./tasa.component.css']
+  </div>
+`,
+styleUrls: ['./tasa.component.css']
 })
 export class ActualizarTasaModalComponent {
-  tasa!: number;
+tasa!: number;
 
-  constructor(public dialogRef: MatDialogRef<ActualizarTasaModalComponent>) {}
+constructor(public dialogRef: MatDialogRef<ActualizarTasaModalComponent>) {}
 
-  onGuardar(): void {
-    this.dialogRef.close(this.tasa);
-  }
+onGuardar(): void {
+  this.dialogRef.close(this.tasa);
+}
 
-  onCancelar(): void {
-    this.dialogRef.close();
-  }
+onCancelar(): void {
+  this.dialogRef.close();
+}
 }

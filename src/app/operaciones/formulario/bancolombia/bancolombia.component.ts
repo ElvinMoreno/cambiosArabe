@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output, OnInit, Inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CommonModule, formatDate } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -50,6 +50,7 @@ export class BancolombiaComponent implements OnInit {
   isSubmitting = false;
   isTasaEditable = false;
   isTasaVisible = false;
+  isClienteFinalVisible = false; // Nueva propiedad para controlar la visibilidad
   tasaLabel = 'Tasa';
 
   constructor(
@@ -73,6 +74,7 @@ export class BancolombiaComponent implements OnInit {
       cantidad: ['', Validators.required],
       tasa: [{ value: '', disabled: true }],
       cedula: ['', Validators.required],
+      clienteFinal: ['']  // Nuevo FormControl para el campo "Cliente Final"
     });
 
     const today = new Date();
@@ -147,7 +149,18 @@ export class BancolombiaComponent implements OnInit {
         this.updateConversionAutomatica(cantidadValue);
       }
     });
-  }
+  // Escuchar cambios en el select de cliente para mostrar/ocultar el campo "Cliente Final"
+  this.form.get('cliente')?.valueChanges.subscribe(value => {
+    this.isClienteFinalVisible = (value === '1');  // Mostrar el campo solo si el cliente con id 1 está seleccionado
+    if (this.isClienteFinalVisible) {
+      this.form.get('clienteFinal')?.setValidators(Validators.required);
+    } else {
+      this.form.get('clienteFinal')?.clearValidators();
+      this.form.get('clienteFinal')?.setValue('');
+    }
+    this.form.get('clienteFinal')?.updateValueAndValidity();
+  });
+}
 
   updateConversionAutomatica(value: number): void {
     const tasaActual = this.form.get('tasa')?.value;
@@ -244,6 +257,7 @@ export class BancolombiaComponent implements OnInit {
       nombreCuenta: formValues.nombreCuenta,
       cedula: formValues.cedula,
       numeroCuenta: formValues.numeroCuenta,
+      nombreClienteFinal: formValues.clienteFinal,
       entrada: false,
       salida: false
     };

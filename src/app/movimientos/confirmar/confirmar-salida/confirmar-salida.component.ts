@@ -12,6 +12,8 @@ import { VentaBsService } from '../../../services/venta-bs.service';
 import { ConfirmarAccionComponent } from '../../../confirmar-accion/confirmar-accion.component';
 import { VentaBs } from '../../../interfaces/venta-bs';
 
+import Swal from 'sweetalert2';
+
 
 @Component({
   selector: 'app-confirmar-salida',
@@ -74,17 +76,40 @@ export class ConfirmarSalidaComponent implements OnInit {
   }
 
   confirmarVentaSalida(venta: VentaPagos): void {
-    console.log('Cuerpo de la petición:', venta);
+    // Aquí asumimos que 'venta' ya contiene la propiedad 'nombreClienteFinal'
+    const nombreClienteFinal = venta.nombreClienteFinal || 'N/A';
+
+    // Primero, se realiza la confirmación de la venta con el servicio
     this.ventaBsService.confirmarVentaSalida(venta).subscribe(
       response => {
         console.log('Venta confirmada', response);
-        this.loadVentas();  // Recargar las ventas después de la confirmación
+
+        // Mostrar SweetAlert después de la confirmación exitosa
+        Swal.fire({
+          title: 'Venta Confirmada',
+          text: `Mandar capture a: ${nombreClienteFinal}.`,
+          icon: 'success',
+          confirmButtonText: 'Aceptar'
+        });
+
+        // Recargar las ventas después de la confirmación
+        this.loadVentas();
       },
       error => {
         console.error('Error al confirmar la venta', error);
+
+        // Mostrar SweetAlert en caso de error al confirmar la venta
+        Swal.fire({
+          title: 'Error',
+          text: 'Ocurrió un error al confirmar la venta.',
+          icon: 'error',
+          confirmButtonText: 'Aceptar'
+        });
       }
     );
   }
+
+
 
   openBancosDialog(element: VentaPagos): void {
     const dialogRef = this.dialog.open(ModalBancosComponent, {
