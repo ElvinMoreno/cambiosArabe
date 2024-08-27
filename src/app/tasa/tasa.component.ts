@@ -113,29 +113,43 @@ export class TasaComponent implements OnInit {
 
   openActualizarTasaDialog(): void {
     const dialogRef = this.dialog.open(ActualizarTasaModalComponent);
-
+  
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        const tasaItem = this.tasas.find(item => item.id === 1);
+        const tasaItem = this.tasas.find(item => item.id === 1); // Encuentra la tasa principal
         if (tasaItem) {
-          tasaItem.tasaVenta = result;
+          tasaItem.tasaVenta = result; // Actualiza la tasa principal con el nuevo valor
           this.tasaService.updateTasa(tasaItem.id!, tasaItem).subscribe(
             updatedItem => {
-              this.tasas.forEach(item => {
-                if (item.id! > 1) {
-                  item.tasaVenta = tasaItem.tasaVenta! + item.sumaTasa!;
-                  item.pesos = this.calculatePesos(item.bolivares!, item.tasaVenta!);
-                }
-              });
+              // Actualiza las tasas de los otros elementos
+              if (updatedItem) {
+                this.tasas.forEach(item => {
+                  if (item.id! > 1) {
+                    item.tasaVenta = updatedItem.tasaVenta! + item.sumaTasa!;
+                    item.pesos = this.calculatePesos(item.bolivares!, item.tasaVenta!);
+                    
+                    // Aquí actualizamos las otras tasas en la base de datos
+                    this.tasaService.updateTasa(item.id!, item).subscribe(
+                      updatedItem => {
+                        console.log('Tasa actualizada:', updatedItem);
+                      },
+                      error => {
+                        console.error('Error al actualizar las tasas secundarias:', error);
+                      }
+                    );
+                  }
+                });
+              }
             },
             error => {
-              console.error('Error al actualizar la tasa:', error);
+              console.error('Error al actualizar la tasa principal:', error);
             }
           );
         }
       }
     });
   }
+  
 
   formatDate(date: Date): string {
     const day = ('0' + date.getDate()).slice(-2);
