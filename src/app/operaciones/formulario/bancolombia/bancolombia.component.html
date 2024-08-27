@@ -30,7 +30,7 @@
 
          <!-- Nuevo campo para "Cliente Final" -->
          <div class="form-group" *ngIf="isClienteFinalVisible" [ngClass]="{'has-error': form.get('clienteFinal')?.invalid && form.get('clienteFinal')?.touched}">
-          <label for="clienteFinal">Cliente Final <span class="required">*</span></label>
+          <label for="clienteFinal">Cliente Contacto <span class="required">*</span></label>
           <input id="clienteFinal" type="text" formControlName="clienteFinal" placeholder="Ingrese el cliente final">
         </div>
 
