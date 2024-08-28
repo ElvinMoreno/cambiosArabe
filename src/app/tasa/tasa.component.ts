@@ -163,58 +163,58 @@ export class TasaComponent implements OnInit {
   }
 
   async downloadTableAsImage(): Promise<void> {
-  try {
-    // Captura el contenido del elemento y genera un canvas
-    const canvas = await html2canvas(this.captureElement.nativeElement);
+    try {
+      // Captura el contenido del elemento y genera un canvas
+      const canvas = await html2canvas(this.captureElement.nativeElement);
 
-    // Carga la imagen de plantilla
-    const img = new Image();
-    img.src = '../assets/sourceImag/plantillaTasa.jpg';
+      // Carga la imagen de plantilla
+      const img = new Image();
+      img.src = '../assets/sourceImag/plantillaTasa.jpg';
 
-    img.onload = () => {
-      // Crear un canvas para la imagen final
-      const imgCanvas = document.createElement('canvas');
-      const context = imgCanvas.getContext('2d')!;
-      imgCanvas.width = 1080;
-      imgCanvas.height = 1080;
+      img.onload = () => {
+        const imgCanvas = document.createElement('canvas');
+        const context = imgCanvas.getContext('2d')!;
+        imgCanvas.width = 1080;
+        imgCanvas.height = 1080;
 
-      // Dibuja la imagen de plantilla en el canvas
-      context.drawImage(img, 0, 0);
+        // Dibuja la imagen de plantilla en el canvas
+        context.drawImage(img, 0, 0);
 
-      // Añade la fecha al canvas
-      const today = new Date();
-      const dateString = this.formatDate(today);
-      context.fillStyle = 'rgba(0, 0, 0, 0.6)';
-      context.fillRect(imgCanvas.width - 350, 50, 300, 70);
-      context.fillStyle = '#fff';
-      context.font = 'bold 45px Arial';
-      context.textBaseline = 'middle';
-      context.fillText(dateString, imgCanvas.width - 275, 85);
+        // Añade la fecha al canvas
+        const today = new Date();
+        const dateString = this.formatDate(today);
+        context.fillStyle = 'rgba(0, 0, 0, 0.6)';
+        context.fillRect(imgCanvas.width - 305, 50, 300, 70);
+        context.fillStyle = '#fff';
+        context.font = 'bold 45px Arial';
+        context.textBaseline = 'middle';
+        context.fillText(dateString, imgCanvas.width - 275, 85);
 
-      // Añade los datos de la tabla al canvas
-      this.addTableDataToCanvas(context, imgCanvas);
+        // Añade los datos de la tabla al canvas
+        this.addTableDataToCanvas(context, imgCanvas);
 
-      // Convierte el canvas a Blob y descarga la imagen
-      imgCanvas.toBlob(blob => {
-        if (blob) {
-          const url = URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.href = url;
-          link.download = 'imagen_tasa.jpg';
-          link.click();
-          URL.revokeObjectURL(url); // Liberar memoria
-        }
-      }, 'image/jpeg');
-    };
+        // Convierte el canvas a Blob y descarga la imagen
+        imgCanvas.toBlob(blob => {
+          if (blob) {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'imagen_tasa.jpg';
+            link.click();
+            URL.revokeObjectURL(url);
+          }
+        }, 'image/jpeg');
+      };
 
-    img.onerror = () => {
-      console.error('Error al cargar la imagen de plantilla.');
-    };
+      img.onerror = () => {
+        console.error('Error al cargar la imagen de plantilla.');
+      };
 
-  } catch (error) {
-    console.error('Error al generar la imagen:', error);
+    } catch (error) {
+      console.error('Error al generar la imagen:', error);
+    }
   }
-}
+
 
 
  // Método para manejar la selección de archivo
