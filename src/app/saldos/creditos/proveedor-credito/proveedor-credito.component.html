@@ -1,1 +1,33 @@
-
+<div class="proveedores-container">
+    <h2>Proveedores y Deudas</h2>
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+  
+    <div class="proveedores-grid">
+      <div *ngFor="let proveedor of proveedores" class="proveedor-card" (click)="openCreditoDetalle(proveedor)">
+        <div class="card-title">{{ proveedor.nombre }}</div>
+        <div class="card-content">
+          <p><strong>Total Deuda:</strong> {{ getTotalDeuda(proveedor) | currency }}</p>
+          <p><strong>Abonos:</strong> {{ proveedor.abono | currency }}</p>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Modal Inline -->
+    <div class="modal" *ngIf="selectedProveedor">
+      <div class="modal-content">
+        <h2>Detalles de Deudas para {{ selectedProveedor.nombre }}</h2>
+        <ul>
+          <li *ngFor="let credito of selectedProveedor.creditosProveedor">
+            <p>Monto Total: {{ credito.monto | currency }}</p>
+            <p>Monto Restante: {{ credito.montoRestante | currency }}</p>
+            <p>Fecha de Registro: {{ credito.fechaRegistro | date }}</p>
+          </li>
+        </ul>
+        <p><strong>Total Deuda:</strong> {{ getTotalDeuda(selectedProveedor) | currency }}</p>
+        <button mat-button (click)="closeModal()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+  

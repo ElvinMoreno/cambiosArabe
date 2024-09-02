@@ -185,11 +185,11 @@ export class TasaComponent implements OnInit {
       const today = new Date();
       const dateString = this.formatDate(today);
       context.fillStyle = 'rgba(0, 0, 0, 0.6)';
-      context.fillRect(imgCanvas.width - 350, 50, 300, 70);
+      context.fillRect(imgCanvas.width - 420, 50, 400, 70);
       context.fillStyle = '#fff';
       context.font = 'bold 45px Arial';
       context.textBaseline = 'middle';
-      context.fillText(dateString, imgCanvas.width - 275, 85);
+      context.fillText(dateString, imgCanvas.width - 400, 85);
 
       // Añade los datos de la tabla al canvas
       this.addTableDataToCanvas(context, imgCanvas);
@@ -308,46 +308,6 @@ openImageInNewTab(): void {
       context.fillText(pesosText, baseXOffset, yOffset + index * lineHeight);
     });
   }
-
-
-  // async downloadTableAsVideo(): Promise<void> {
-  //   const ffmpeg = createFFmpeg({ log: true });
-  //   await ffmpeg.load();
-
-  //   // Ruta a tu video de plantilla
-  //   const videoTemplatePath = '../assets/sourceImag/plantillaTasa.mp4';
-
-  //   // Escribir el archivo de video de plantilla en el sistema de archivos de FFmpeg
-  //   const videoData = await fetch(videoTemplatePath).then(res => res.arrayBuffer());
-  //   ffmpeg.FS('writeFile', 'template.mp4', new Uint8Array(videoData));
-
-  //   // Generar la imagen del canvas
-  //   const canvas = await html2canvas(this.captureElement.nativeElement);
-  //   const imgDataUrl = canvas.toDataURL('image/jpeg');
-  //   const imgData = await fetch(imgDataUrl).then(res => res.arrayBuffer());
-  //   ffmpeg.FS('writeFile', 'frame.jpg', new Uint8Array(imgData));
-
-  //   // Combinar la imagen con el video de plantilla
-  //   await ffmpeg.run(
-  //     '-i', 'template.mp4',
-  //     '-i', 'frame.jpg',
-  //     '-filter_complex', 'overlay',
-  //     '-c:v', 'libx264',
-  //     '-r', '30',
-  //     '-pix_fmt', 'yuv420p',
-  //     'output.mp4'
-  //   );
-
-  //   // Leer el archivo de salida y descargarlo
-  //   const data = ffmpeg.FS('readFile', 'output.mp4');
-  //   const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
-  //   const videoUrl = URL.createObjectURL(videoBlob);
-
-  //   const link = document.createElement('a');
-  //   link.href = videoUrl;
-  //   link.download = 'tasa_table.mp4';
-  //   link.click();
-  // }
 }
 
 @Component({

@@ -28,7 +28,14 @@
       </ng-template>
       <!-- Contenido de la pestaña de balance si es necesario -->
     </mat-tab>
-    <mat-tab label="Creditos">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <div>
+          <span style="display: block; font-size: 0.75rem;">Créditos:</span>
+          <!-- Mostrar el balance de deudas con color dinámico -->
+          <span [ngStyle]="{'color': balanceDeudasStyle}">{{ balanceDeudasLabel }}</span>
+        </div>
+      </ng-template>
       <app-creditos></app-creditos>
     </mat-tab>
   </mat-tab-group>
