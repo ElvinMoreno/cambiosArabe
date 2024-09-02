@@ -21,4 +21,5 @@ export interface VentaBs {
   banco?: string;
   entrada?: boolean;
   salida?: boolean;
+  nombreClienteFinal?: string;
 }

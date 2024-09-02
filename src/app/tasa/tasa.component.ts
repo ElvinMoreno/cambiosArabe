@@ -113,7 +113,7 @@ export class TasaComponent implements OnInit {
 
   openActualizarTasaDialog(): void {
     const dialogRef = this.dialog.open(ActualizarTasaModalComponent);
-  
+
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         const tasaItem = this.tasas.find(item => item.id === 1); // Encuentra la tasa principal
@@ -127,7 +127,7 @@ export class TasaComponent implements OnInit {
                   if (item.id! > 1) {
                     item.tasaVenta = updatedItem.tasaVenta! + item.sumaTasa!;
                     item.pesos = this.calculatePesos(item.bolivares!, item.tasaVenta!);
-                    
+
                     // Aquí actualizamos las otras tasas en la base de datos
                     this.tasaService.updateTasa(item.id!, item).subscribe(
                       updatedItem => {
@@ -149,7 +149,7 @@ export class TasaComponent implements OnInit {
       }
     });
   }
-  
+
 
   formatDate(date: Date): string {
     const day = ('0' + date.getDate()).slice(-2);
@@ -163,58 +163,58 @@ export class TasaComponent implements OnInit {
   }
 
   async downloadTableAsImage(): Promise<void> {
-  try {
-    // Captura el contenido del elemento y genera un canvas
-    const canvas = await html2canvas(this.captureElement.nativeElement);
+    try {
+      // Captura el contenido del elemento y genera un canvas
+      const canvas = await html2canvas(this.captureElement.nativeElement);
 
-    // Carga la imagen de plantilla
-    const img = new Image();
-    img.src = '../assets/sourceImag/plantillaTasa.jpg';
+      // Carga la imagen de plantilla
+      const img = new Image();
+      img.src = '../assets/sourceImag/plantillaTasa.jpg';
 
-    img.onload = () => {
-      // Crear un canvas para la imagen final
-      const imgCanvas = document.createElement('canvas');
-      const context = imgCanvas.getContext('2d')!;
-      imgCanvas.width = 1080;
-      imgCanvas.height = 1080;
+      img.onload = () => {
+        const imgCanvas = document.createElement('canvas');
+        const context = imgCanvas.getContext('2d')!;
+        imgCanvas.width = 1080;
+        imgCanvas.height = 1080;
 
-      // Dibuja la imagen de plantilla en el canvas
-      context.drawImage(img, 0, 0);
+        // Dibuja la imagen de plantilla en el canvas
+        context.drawImage(img, 0, 0);
 
       // Añade la fecha al canvas
       const today = new Date();
       const dateString = this.formatDate(today);
       context.fillStyle = 'rgba(0, 0, 0, 0.6)';
-      context.fillRect(imgCanvas.width - 420, 50, 400, 70);
+      context.fillRect(imgCanvas.width - 350, 50, 300, 70);
       context.fillStyle = '#fff';
       context.font = 'bold 45px Arial';
       context.textBaseline = 'middle';
-      context.fillText(dateString, imgCanvas.width - 400, 85);
+      context.fillText(dateString, imgCanvas.width - 275, 85);
 
-      // Añade los datos de la tabla al canvas
-      this.addTableDataToCanvas(context, imgCanvas);
+        // Añade los datos de la tabla al canvas
+        this.addTableDataToCanvas(context, imgCanvas);
 
-      // Convierte el canvas a Blob y descarga la imagen
-      imgCanvas.toBlob(blob => {
-        if (blob) {
-          const url = URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.href = url;
-          link.download = 'imagen_tasa.jpg';
-          link.click();
-          URL.revokeObjectURL(url); // Liberar memoria
-        }
-      }, 'image/jpeg');
-    };
+        // Convierte el canvas a Blob y descarga la imagen
+        imgCanvas.toBlob(blob => {
+          if (blob) {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'imagen_tasa.jpg';
+            link.click();
+            URL.revokeObjectURL(url);
+          }
+        }, 'image/jpeg');
+      };
 
-    img.onerror = () => {
-      console.error('Error al cargar la imagen de plantilla.');
-    };
+      img.onerror = () => {
+        console.error('Error al cargar la imagen de plantilla.');
+      };
 
-  } catch (error) {
-    console.error('Error al generar la imagen:', error);
+    } catch (error) {
+      console.error('Error al generar la imagen:', error);
+    }
   }
-}
+
 
 
  // Método para manejar la selección de archivo
@@ -237,24 +237,23 @@ uploadImage(): void {
     return;
   }
 
-  const formData = new FormData();
-  formData.append('file', this.selectedFile); // Clave 'file' como se espera en el backend
+  const publicId = 'uroe8jwhkdzunwpkikte'; // Aquí definimos el public_id
 
-  console.log('FormData que se envía:', formData.get('file'));
-
-  this.cloudinaryService.uploadImage(formData).subscribe(
+  // Utilizamos el método del servicio que maneja la subida con sobreescritura
+  this.cloudinaryService.uploadImageWithOverwrite(this.selectedFile, publicId).subscribe(
     response => {
-      console.log('Imagen subida con éxito a Cloudinary:', response);
+      console.log('Imagen sobrescrita con éxito en Cloudinary:', response);
       if (response && response.secure_url) {
-        this.imageSrc = response.secure_url; // Usar la misma variable que el botón verifica
-        alert('Imagen subida exitosamente. Ahora puedes verla en una nueva pestaña.');
+        this.imageSrc = response.secure_url; // Actualizamos la fuente de la imagen para la vista previa
+        alert('Imagen sobrescrita exitosamente. Ahora puedes verla en una nueva pestaña.');
       }
     },
     error => {
-      console.error('Error subiendo la imagen a Cloudinary:', error);
+      console.error('Error sobrescribiendo la imagen en Cloudinary:', error);
     }
   );
 }
+
 
 
 
@@ -266,37 +265,37 @@ openImageInNewTab(): void {
   }
 }
 
-  addTableDataToCanvas(context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
-    const columnSpacing = 280;
-    const titles = ['PESOS', 'TASA', 'BS'];
-    const baseXOffset = canvas.width / 2 - (3 * columnSpacing) / 3;
-    const boxWidthTitle = 250;
+addTableDataToCanvas(context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
+  const columnSpacing = 280;
+  const titles = ['PESOS', 'TASA', 'BS'];
+  const baseXOffset = canvas.width / 2 - (3 * columnSpacing) / 3;
+  const boxWidthTitle = 250;
 
-    titles.forEach((title, i) => {
-      context.fillStyle = 'rgba(0, 0, 0, 0.6)';
-      context.fillRect(baseXOffset + i * columnSpacing - boxWidthTitle / 2, 260, boxWidthTitle, 70);
-      context.fillStyle = '#fff';
-      context.textAlign = 'center';
-      context.fillText(title, baseXOffset + i * columnSpacing, 300);
-    });
+  titles.forEach((title, i) => {
+    context.fillStyle = 'rgba(0, 0, 0, 0.6)';
+    context.fillRect(baseXOffset + i * columnSpacing - boxWidthTitle / 2, 260, boxWidthTitle, 70);
+    context.fillStyle = '#fff';
+    context.textAlign = 'center';
+    context.fillText(title, baseXOffset + i * columnSpacing, 300);
+  });
 
-    context.font = 'bold 45px Arial';
-    const lineHeight = 135;
-    const totalHeight = this.tasas.length * lineHeight;
-    let yOffset = (canvas.height - totalHeight) / 2 + 100;
+  context.font = 'bold 45px Arial';
+  const lineHeight = 135;
+  const totalHeight = this.tasas.length * lineHeight;
+  let yOffset = (canvas.height - totalHeight) / 2 + 100;
 
-    this.tasas.forEach((item, index) => {
-      const textHeight = 80;
-      const boxWidthFixed = 250;
-      context.fillStyle = 'rgba(0, 0, 0, 0.6)';
+  this.tasas.forEach((item, index) => {
+    const textHeight = 80;
+    const boxWidthFixed = 250;
+    context.fillStyle = 'rgba(0, 0, 0, 0.6)';
 
-      const bolivaresText = this.formatNumber(item.bolivares ?? 0);
-      const tasaText = this.formatNumber(item.tasaVenta ?? 0);
-      const pesosText = `$${this.formatNumber(item.pesos ?? 0)}`;
+    const bolivaresText = this.formatNumber(item.bolivares ?? 0);
+    const tasaText = this.formatNumber(item.tasaVenta ?? 0);
+    const pesosText = `$${this.formatNumber(item.pesos ?? 0)}`;
 
-      context.fillRect(baseXOffset + 2 * columnSpacing - boxWidthFixed / 2, yOffset + index * lineHeight - textHeight / 2, boxWidthFixed, textHeight);
-      context.fillRect(baseXOffset + columnSpacing - boxWidthFixed / 2, yOffset + index * lineHeight - textHeight / 2, boxWidthFixed, textHeight);
-      context.fillRect(baseXOffset - boxWidthFixed / 2, yOffset + index * lineHeight - textHeight / 2, boxWidthFixed, textHeight);
+    context.fillRect(baseXOffset + 2 * columnSpacing - boxWidthFixed / 2, yOffset + index * lineHeight - textHeight / 2, boxWidthFixed, textHeight);
+    context.fillRect(baseXOffset + columnSpacing - boxWidthFixed / 2, yOffset + index * lineHeight - textHeight / 2, boxWidthFixed, textHeight);
+    context.fillRect(baseXOffset - boxWidthFixed / 2, yOffset + index * lineHeight - textHeight / 2, boxWidthFixed, textHeight);
 
       context.fillStyle = '#fff';
       context.textAlign = 'center';
@@ -308,42 +307,44 @@ openImageInNewTab(): void {
       context.fillText(pesosText, baseXOffset, yOffset + index * lineHeight);
     });
   }
+
+
 }
 
 @Component({
-  selector: 'actualizar-tasa-modal',
-  standalone: true,
-  imports: [FormsModule, CommonModule],
-  template: `
-    <div class="modal-overlay">
-      <div class="modal-content">
-        <h2>Actualizar Tasa</h2>
-        <div class="separator"></div>
-        <form (ngSubmit)="onGuardar()">
-          <div class="form-group">
-            <label for="tasa">Tasa <span class="required">*</span></label>
-            <input id="tasa" type="number" [(ngModel)]="tasa" name="tasa" class="form-control" required>
-          </div>
-          <div class="button-group">
-            <button type="button" class="btn-cancelar" (click)="onCancelar()">Cancelar</button>
-            <button type="submit" class="btn-confirmar">Guardar</button>
-          </div>
-        </form>
-      </div>
+selector: 'actualizar-tasa-modal',
+standalone: true,
+imports: [FormsModule, CommonModule],
+template: `
+  <div class="modal-overlay">
+    <div class="modal-content">
+      <h2>Actualizar Tasa</h2>
+      <div class="separator"></div>
+      <form (ngSubmit)="onGuardar()">
+        <div class="form-group">
+          <label for="tasa">Tasa <span class="required">*</span></label>
+          <input id="tasa" type="number" [(ngModel)]="tasa" name="tasa" class="form-control" required>
+        </div>
+        <div class="button-group">
+          <button type="button" class="btn-cancelar" (click)="onCancelar()">Cancelar</button>
+          <button type="submit" class="btn-confirmar">Guardar</button>
+        </div>
+      </form>
     </div>
-  `,
-  styleUrls: ['./tasa.component.css']
+  </div>
+`,
+styleUrls: ['./tasa.component.css']
 })
 export class ActualizarTasaModalComponent {
-  tasa!: number;
+tasa!: number;
 
-  constructor(public dialogRef: MatDialogRef<ActualizarTasaModalComponent>) {}
+constructor(public dialogRef: MatDialogRef<ActualizarTasaModalComponent>) {}
 
-  onGuardar(): void {
-    this.dialogRef.close(this.tasa);
-  }
+onGuardar(): void {
+  this.dialogRef.close(this.tasa);
+}
 
-  onCancelar(): void {
-    this.dialogRef.close();
-  }
+onCancelar(): void {
+  this.dialogRef.close();
+}
 }

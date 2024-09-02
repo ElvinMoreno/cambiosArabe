@@ -9,4 +9,5 @@ export interface VentaPagos {
   numeroCuentaDestinatario: number;
   nombreCuentaDestinatario: string;
   responsable: string;
+  nombreClienteFinal?: string;
 }

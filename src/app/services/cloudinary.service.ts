@@ -1,6 +1,6 @@
 // cloudinary.service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { appsetting } from '../settings/appsetting';
@@ -24,15 +24,26 @@ export class CloudinaryService {
     });
   }
 
-  // Método actualizado para aceptar FormData directamente
+  // Método existente para subir una imagen
   uploadImage(formData: FormData): Observable<any> {
     const headers = this.getHeaders();
 
-    // Aquí usamos formData directamente como lo envía el componente
     return this.http.post(`${this.baseUrl}/upload`, formData, { headers })
       .pipe(catchError(this.handleError));
   }
 
+  // Nuevo método para sobrescribir una imagen existente
+  uploadImageWithOverwrite(file: File, publicId: string): Observable<any> {
+    const headers = this.getHeaders();
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('public_id', publicId); // Añadimos el public_id al FormData
+
+    return this.http.post(`${this.baseUrl}/upload/overwrite`, formData, { headers })
+      .pipe(catchError(this.handleError));
+  }
+
+  // Métodos existentes para obtener URLs optimizadas
   getOptimizedUrl(publicId: string): Observable<string> {
     const headers = this.getHeaders();
     return this.http.get(`${this.baseUrl}/optimize/${publicId}`, { headers, responseType: 'text' })
