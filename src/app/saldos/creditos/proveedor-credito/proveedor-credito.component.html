@@ -1,1 +1,45 @@
+<div class="proveedores-container">
+  <h2>Proveedores y Deudas</h2>
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
 
+  <!-- Contenedor de filtro por fecha -->
+  <div class="filter-container">
+    <label for="filterDate">Fecha:</label>
+    <input type="date" id="filterDate" [(ngModel)]="filterDate">
+    <button mat-button (click)="filtrarPorDia()">Filtrar</button>
+  </div>
+
+  <!-- Vista de detalles de deudas -->
+  <div *ngIf="selectedProveedor; else noDataTemplate" class="modal">
+    <div class="modal-content">
+      <h2>Detalles de Deudas para {{ selectedProveedor.nombre }}</h2>
+
+      <!-- Contenedor scrolleable de movimientos -->
+      <div class="scrollable-content">
+        <div *ngFor="let credito of creditosFiltrados" class="card">
+          <div class="card-content">
+            <div class="card-item fecha">
+              <span class="card-value">{{ credito.fechaRegistro | date:'shortDate' }}</span>
+            </div>
+            <div class="card-item monto">
+              <span class="card-value">{{ credito.monto | currency }}</span>
+            </div>
+            <div class="card-item saldo">
+              <span class="card-value">{{ credito.montoRestante | currency }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p><strong>Total Deuda:</strong> {{ getTotalDeuda(selectedProveedor) | currency }}</p>
+      <button mat-button (click)="closeModal()">Cerrar</button>
+    </div>
+  </div>
+
+  <!-- Plantilla en caso de no haber datos -->
+  <ng-template #noDataTemplate>
+    <p>No hay detalles de deuda disponibles.</p>
+  </ng-template>
+</div>

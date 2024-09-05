@@ -34,7 +34,7 @@
     "jspdf": "^2.5.1",
     "rxjs": "~7.8.0",
     "stompjs": "^2.3.3",
-    "sweetalert2": "^11.12.4",
+    "sweetalert2": "^11.13.2",
     "tslib": "^2.3.0",
     "undici": "^6.19.2",
     "whammy": "^0.0.1",

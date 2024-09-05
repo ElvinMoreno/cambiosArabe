@@ -1,17 +1,22 @@
 <div class="container">
-    <mat-tab-group [(selectedIndex)]="selectedTabIndex">  
-      <mat-tab label="Debo">
-        
-      </mat-tab>
-      <mat-tab>
-        <ng-template mat-tab-label>
-          <div>
-            <span style="display: block; font-size: 0.75rem; color: #8BC94D;">Deben</span>
-            <span>{{ totalCreditosLabel }}</span>
-          </div>
-        </ng-template>
-        <app-clientes-creditos></app-clientes-creditos>
-      </mat-tab>
-    </mat-tab-group>
-  </div>
-  
+  <mat-tab-group [(selectedIndex)]="selectedTabIndex">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <div>
+          <span style="display: block; font-size: 0.75rem; color: #c94d4d;">Debo</span>
+          <span>{{ totalDeudasProveedoresLabel }}</span> <!-- Mostrar el total de deudas con proveedores -->
+        </div>
+      </ng-template>
+      <app-proveedor-credito></app-proveedor-credito>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <div>
+          <span style="display: block; font-size: 0.75rem; color: #8BC94D;">Deben</span>
+          <span>{{ totalCreditosLabel }}</span>
+        </div>
+      </ng-template>
+      <app-clientes-creditos></app-clientes-creditos>
+    </mat-tab>
+  </mat-tab-group>
+</div>
