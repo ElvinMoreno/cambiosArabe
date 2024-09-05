@@ -184,11 +184,11 @@ export class TasaComponent implements OnInit {
       const today = new Date();
       const dateString = this.formatDate(today);
       context.fillStyle = 'rgba(0, 0, 0, 0.6)';
-      context.fillRect(imgCanvas.width - 350, 50, 300, 70);
+      context.fillRect(imgCanvas.width - 420, 50, 400, 70);
       context.fillStyle = '#fff';
       context.font = 'bold 45px Arial';
       context.textBaseline = 'middle';
-      context.fillText(dateString, imgCanvas.width - 275, 85);
+      context.fillText(dateString, imgCanvas.width - 400, 85);
 
         // Añade los datos de la tabla al canvas
         this.addTableDataToCanvas(context, imgCanvas);
