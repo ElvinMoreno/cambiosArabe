@@ -89,7 +89,7 @@
   <mat-card *ngFor="let element of dataSource" [ngClass]="{'border-red': !shouldRemoveBorder(element)}">
     <mat-card-content>
       <div class="card-content-row">
-        <p><strong>Banco destino:</strong> {{element.bancoDestino}}</p>
+        <p><strong>Banco destino:</strong> {{element.banco}}</p>
       </div>
       <div class="card-content-row">
         <p><strong>Nombre destinatario:</strong> {{element.nombreCuentaDestinatario}}</p>
@@ -98,26 +98,26 @@
         </button>
       </div>
       <div class="card-content-row">
-        <p><strong>Cédula destino:</strong> {{element.cedulaDestino}}</p>
-        <button mat-icon-button class="copy-button-card" (click)="copyToClipboard(element.cedulaDestino.toString(), element.id!, 'cedula')">
+        <p><strong>Cédula destino:</strong> {{element.cedula}}</p>
+        <button mat-icon-button class="copy-button-card" (click)="copyToClipboard(element.cedula.toString(), element.id!, 'cedula')">
           <mat-icon [ngClass]="{'copied': isCopied(element.id!, 'cedula')}">content_copy</mat-icon>
         </button>
       </div>
       <div class="card-content-row">
-        <p><strong>Cuenta destinatario:</strong> {{element.numeroCuentaDestinatario}}</p>
-        <button mat-icon-button class="copy-button-card" (click)="copyToClipboard(element.numeroCuentaDestinatario.toString(), element.id!, 'cuenta')">
+        <p><strong>Cuenta destinatario:</strong> {{element.numeroCuenta}}</p>
+        <button mat-icon-button class="copy-button-card" (click)="copyToClipboard(element.numeroCuenta.toString(), element.id!, 'cuenta')">
           <mat-icon [ngClass]="{'copied': isCopied(element.id!, 'cuenta')}">content_copy</mat-icon>
         </button>
       </div>
 
       <div class="card-content-row">
-        <p><strong>Bolívares:</strong> {{element.bolivaresEnviar}}</p>
-        <button mat-icon-button class="copy-button-card" (click)="copyToClipboard(element.bolivaresEnviar.toString(), element.id!, 'bolivares')">
+        <p><strong>Bolívares:</strong> {{element.bolivares}}</p>
+        <button mat-icon-button class="copy-button-card" (click)="copyToClipboard(element.bolivares.toString(), element.id!, 'bolivares')">
           <mat-icon [ngClass]="{'copied': isCopied(element.id!, 'bolivares')}">content_copy</mat-icon>
         </button>
       </div>
       <div class="card-content-row">
-        <p><strong>Cuenta usada:</strong> {{element.nombreCuentaBs}}</p>
+        <p><strong>Cuenta usada:</strong> {{element.nombreCuentaDestinatario}}</p>
       </div>
     </mat-card-content>
     <mat-card-actions>

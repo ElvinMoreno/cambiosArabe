@@ -60,7 +60,7 @@ export class ClienteComponent implements OnInit {
   getVentaBsPrice(cliente: Cliente): string {
     if (cliente.ventasBs && cliente.ventasBs.length > 0) {
       const totalVentaBs = cliente.ventasBs.reduce((total, venta) => {
-        return total + (venta.precio || 0);  // Evitar undefined
+        return total + (venta.precioVentaBs || 0);  // Evitar undefined
       }, 0);
       return totalVentaBs.toFixed(2);
     }

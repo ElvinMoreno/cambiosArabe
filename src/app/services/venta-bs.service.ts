@@ -5,6 +5,8 @@ import { catchError, tap, finalize } from 'rxjs/operators';
 import { VentaBs } from '../interfaces/venta-bs';
 import { appsetting } from '../settings/appsetting';
 import { VentaPagos } from '../interfaces/venta-pagos';
+import { Crearventa } from '../interfaces/crearventa';
+import { CuentaDestinatario } from '../interfaces/cuenta-destinatario';
 
 @Injectable({
   providedIn: 'root'
@@ -38,14 +40,14 @@ export class VentaBsService {
       .pipe(catchError(this.handleError));
   }
 
-  saveVentaBs(dto: VentaBs): Observable<void> {
+  saveVentaBs(dto: Crearventa): Observable<void> {
     if (this.isSaving) {
       return throwError(() => new Error('Solicitud ya en curso'));
     }
     this.isSaving = true;
 
     const headers = this.getHeaders();
-    return this.http.post<void>(`${this.apiUrl}`, dto, { headers })
+    return this.http.post<void>(`${this.apiUrl}/save`, dto, { headers })
       .pipe(
         tap(() => {
           this.isSaving = false;
@@ -66,9 +68,9 @@ export class VentaBsService {
       .pipe(catchError(this.handleError));
   }
 
-  getVentasSalidas(): Observable<VentaPagos[]> {
+  getVentasSalidas(): Observable<CuentaDestinatario[]> {
     const headers = this.getHeaders();
-    return this.http.get<VentaPagos[]>(`${this.apiUrl}/ventas-salida`, { headers })
+    return this.http.get<CuentaDestinatario[]>(`${this.apiUrl}/ventas-salida`, { headers })
       .pipe(catchError(this.handleError));
   }
 
