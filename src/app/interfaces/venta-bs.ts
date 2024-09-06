@@ -14,6 +14,7 @@ export interface VentaBs {
   comision: number;
   tasaVenta: number;
 
+
   nombreClienteFinal: string;
 
   banco: string;

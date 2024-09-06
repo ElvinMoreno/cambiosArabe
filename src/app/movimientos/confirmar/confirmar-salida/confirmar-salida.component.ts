@@ -66,43 +66,25 @@ export class ConfirmarSalidaComponent implements OnInit {
       }
     });
 
-    // dialogRef.afterClosed().subscribe(result => {
-    //   if (result) {
-    //     this.confirmarVentaSalida(element);
-    //   }
-    // });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.confirmarVentaSalida(element);
+      }
+    });
   }
 
-  // confirmarVentaSalida(venta: CuentaDestinatario): void {
-  //   const nombreCuenta = venta.nombreCuentaDestinatario || 'N/A';
-
-  //   this.ventaBsService.confirmarVentaSalida(venta).subscribe(
-  //     response => {
-  //       console.log('Venta confirmada', response);
-
-  //       Swal.fire({
-  //         title: 'Venta Confirmada',
-  //         text: `Mandar capture a: ${nombreCuenta}.`,
-  //         icon: 'success',
-  //         confirmButtonText: 'Aceptar'
-  //       });
-
-  //       this.loadVentas();
-  //     },
-  //     error => {
-  //       console.error('Error al confirmar la venta', error);
-
-  //       Swal.fire({
-  //         title: 'Error',
-  //         text: 'Ocurrió un error al confirmar la venta.',
-  //         icon: 'error',
-  //         confirmButtonText: 'Aceptar'
-  //       });
-  //     }
-  //   );
-  // }
-
   openBancosDialog(element: CuentaDestinatario): void {
+    if (!element.ventaBsId) {
+      console.error('Error: El ID de la venta es nulo.');
+      Swal.fire({
+        title: 'Error',
+        text: 'No se puede abrir el diálogo de bancos porque la venta no tiene un ID asociado.',
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+      });
+      return;
+    }
+
     const dialogRef = this.dialog.open(ModalBancosComponent, {
       data: { ventaId: element.ventaBsId }
     });
@@ -116,8 +98,23 @@ export class ConfirmarSalidaComponent implements OnInit {
               cuentaBancariaBs: result.cuentaId
             };
 
-            this.updateVentaBanco(result.ventaId, updatedVenta);
-            this.updatedVentas.add(result.ventaId);
+            // Actualizamos la venta con la nueva información del banco
+            this.ventaBsService.updateVentaBs(result.ventaId, updatedVenta).subscribe(
+              response => {
+                console.log('Venta actualizada con la cuenta bancaria seleccionada', response);
+                // Marcar venta como actualizada
+                this.updatedVentas.add(result.ventaId);
+
+                // Recargar la lista de ventas para reflejar los cambios
+                this.loadVentas();
+
+                // Confirmar la venta inmediatamente después de actualizar el banco
+                this.confirmarVentaSalida(element);
+              },
+              error => {
+                console.error('Error al actualizar la venta con la cuenta bancaria seleccionada', error);
+              }
+            );
           },
           error => {
             console.error('Error al obtener la venta por ID', error);
@@ -127,15 +124,49 @@ export class ConfirmarSalidaComponent implements OnInit {
     });
   }
 
+
   updateVentaBanco(ventaId: number, updatedVenta: VentaBs): void {
     this.ventaBsService.updateVentaBs(ventaId, updatedVenta).subscribe(
       response => {
         console.log('Venta actualizada con la cuenta bancaria seleccionada', response);
-        this.loadVentas();
+        this.loadVentas(); // Recargar la lista tras la actualización
       },
       error => {
         console.error('Error al actualizar la venta con la cuenta bancaria seleccionada', error);
       }
+    );
+  }
+
+  confirmarVentaSalida(venta: CuentaDestinatario): void {
+    const nombreCuenta = venta.nombreCuentaDestinatario || 'N/A';
+
+    // Envolver la venta en un array antes de enviar la petición
+    const ventasAConfirmar: CuentaDestinatario[] = [venta]; // Convertir a lista
+
+    // Confirmación de la venta
+    this.ventaBsService.confirmarVentaSalida(ventasAConfirmar).subscribe(
+      response => {
+        console.log('Venta confirmada', response);
+
+        Swal.fire({
+          title: 'Venta Confirmada',
+          text: `Mandar capture a: ${nombreCuenta}.`,
+          icon: 'success',
+          confirmButtonText: 'Aceptar'
+        });
+
+        this.loadVentas(); // Recargar las ventas tras la confirmación
+      },
+      // error => {
+      //   console.error('Error al confirmar la venta', error);
+
+      //   Swal.fire({
+      //     title: 'Error',
+      //     text: 'Ocurrió un error al confirmar la venta.',
+      //     icon: 'error',
+      //     confirmButtonText: 'Aceptar'
+      //   });
+      // }
     );
   }
 
@@ -161,6 +192,6 @@ export class ConfirmarSalidaComponent implements OnInit {
   }
 
   shouldRemoveBorder(element: CuentaDestinatario): boolean {
-    return !!element.ventaBsId;
+    return !!element.ventaBsId; // Comprobar si tiene un `ventaBsId` válido
   }
 }

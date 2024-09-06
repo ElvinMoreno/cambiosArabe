@@ -86,9 +86,9 @@ export class VentaBsService {
       .pipe(catchError(this.handleError));
   }
 
-  confirmarVentaSalida(dto: VentaPagos): Observable<string> {
+  confirmarVentaSalida(ventas: CuentaDestinatario[]): Observable<string> {
     const headers = this.getHeaders();
-    return this.http.post(`${this.apiUrl}/salida`, dto, { headers, responseType: 'text' })
+    return this.http.post(`${this.apiUrl}/salida`, ventas, { headers, responseType: 'text' })  // Enviar array de ventas
       .pipe(catchError(this.handleError));
   }
 
