@@ -186,7 +186,7 @@ export class TasaComponent implements OnInit {
       context.fillStyle = 'rgba(0, 0, 0, 0.6)';
       context.fillRect(imgCanvas.width - 420, 50, 400, 70);
       context.fillStyle = '#fff';
-      context.font = 'bold 45px Arial';
+      context.font = 'bold 45px "Kanit Medium"';
       context.textBaseline = 'middle';
       context.fillText(dateString, imgCanvas.width - 400, 85);
 
@@ -271,6 +271,8 @@ addTableDataToCanvas(context: CanvasRenderingContext2D, canvas: HTMLCanvasElemen
   const baseXOffset = canvas.width / 2 - (3 * columnSpacing) / 3;
   const boxWidthTitle = 250;
 
+  // Configura la fuente a 'Kanit Medium' para el texto de los títulos
+  context.font = 'bold 45px "Kanit Medium"';
   titles.forEach((title, i) => {
     context.fillStyle = 'rgba(0, 0, 0, 0.6)';
     context.fillRect(baseXOffset + i * columnSpacing - boxWidthTitle / 2, 260, boxWidthTitle, 70);
@@ -279,7 +281,6 @@ addTableDataToCanvas(context: CanvasRenderingContext2D, canvas: HTMLCanvasElemen
     context.fillText(title, baseXOffset + i * columnSpacing, 300);
   });
 
-  context.font = 'bold 45px Arial';
   const lineHeight = 135;
   const totalHeight = this.tasas.length * lineHeight;
   let yOffset = (canvas.height - totalHeight) / 2 + 100;
@@ -297,18 +298,19 @@ addTableDataToCanvas(context: CanvasRenderingContext2D, canvas: HTMLCanvasElemen
     context.fillRect(baseXOffset + columnSpacing - boxWidthFixed / 2, yOffset + index * lineHeight - textHeight / 2, boxWidthFixed, textHeight);
     context.fillRect(baseXOffset - boxWidthFixed / 2, yOffset + index * lineHeight - textHeight / 2, boxWidthFixed, textHeight);
 
-      context.fillStyle = '#fff';
-      context.textAlign = 'center';
-      context.textBaseline = 'middle';
-      context.fillText(bolivaresText, baseXOffset + 2 * columnSpacing, yOffset + index * lineHeight);
-      context.fillStyle = '#FFD700';
-      context.fillText(tasaText, baseXOffset + columnSpacing, yOffset + index * lineHeight);
-      context.fillStyle = '#fff';
-      context.fillText(pesosText, baseXOffset, yOffset + index * lineHeight);
-    });
-  }
-
-
+    // Usa 'Kanit Medium' para los textos de cada fila
+    context.fillStyle = '#fff';
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.font = 'bold 45px "Kanit Medium"';
+    context.fillText(bolivaresText, baseXOffset + 2 * columnSpacing, yOffset + index * lineHeight);
+    context.fillStyle = '#ffc600';
+    context.font = 'bold 45px "Kanit ExtraBold"'; 
+    context.fillText(tasaText, baseXOffset + columnSpacing, yOffset + index * lineHeight);
+    context.fillStyle = '#fff';
+    context.fillText(pesosText, baseXOffset, yOffset + index * lineHeight);
+  });
+}
 }
 
 @Component({

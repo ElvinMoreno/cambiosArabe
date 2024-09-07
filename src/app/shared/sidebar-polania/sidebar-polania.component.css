@@ -200,12 +200,13 @@
   color: #e65959; /* Color rojo para el icono de apagado */
   cursor: pointer; /* Cambia el cursor a una mano al pasar sobre el botón */
   border-radius: 50%; /* Bordes redondeados para que coincidan con el icono */
-  padding: 0.5rem; /* Añadir un poco de padding para que el icono no se pegue al borde */
+  padding: 0.4rem; /* Añadir un poco de padding para que el icono no se pegue al borde */
   transition: color 0.3s ease, box-shadow 0.3s ease; /* Animaciones suaves para el color y la sombra */
+  
 }
 
 .btn-logout mat-icon {
-  font-size: 28px; /* Tamaño del icono */
+  font-size: 2rem; /* Tamaño del icono */
 }
 
 .btn-logout:hover {
