@@ -140,20 +140,20 @@ export class VentasBolivaresComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.onConfirmar(result);
-      }
+      // Recargar las ventas después de cerrar el modal, independientemente del resultado
+      this.loadVentas();
     });
   }
 
-  onConfirmar(event: Crearventa) {
+  onConfirmar(event: Crearventa): void {
     this.ventaBsService.saveVentaBs(event).subscribe(
       () => {
-        this.loadVentas();
+        this.loadVentas();  // Recargar ventas después de guardar la venta
       },
       (error) => {
         console.error('Error al guardar la venta:', error);
       }
     );
   }
+
 }

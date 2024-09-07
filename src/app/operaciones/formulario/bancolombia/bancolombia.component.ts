@@ -57,6 +57,8 @@ export class BancolombiaComponent implements OnInit, OnDestroy {
   isClienteFinalVisible = false;
   tasaLabel = 'Tasa';
   subscriptions: Subscription = new Subscription();
+  formattedPrice: string = ''; // Variable para almacenar el valor formateado
+
 
   constructor(
     private fb: FormBuilder,
@@ -110,6 +112,7 @@ export class BancolombiaComponent implements OnInit, OnDestroy {
     this.form.patchValue({ fecha: this.currentDate });
     this.setupFormListeners();
     this.addCuentaDestinatario(); // Add an initial cuenta destinatario
+    this.formattedPrice = this.formatCurrency(this.form.get('precioVentaBs')?.value || 0);
 
     // Escuchar los cambios en el FormArray y sincronizar con el FormGroup principal
     this.form.get('cuentasDestinatario')?.valueChanges.subscribe((values: any[]) => {
@@ -126,6 +129,28 @@ export class BancolombiaComponent implements OnInit, OnDestroy {
     });
   }
 
+  // Método que maneja el evento input para formatear el valor
+  onInputChange(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    let rawValue = inputElement.value.replace(/\./g, ''); // Eliminar puntos que formatean el valor
+    rawValue = rawValue.replace(/[^0-9]/g, ''); // Eliminar caracteres no numéricos
+
+    const numericValue = parseFloat(rawValue || '0'); // Convertir el valor a número
+
+    // Formatear el valor a miles
+    this.formattedPrice = this.formatCurrency(numericValue);
+
+    // Actualizar el control del formulario con el valor numérico puro
+    this.form.get('precioVentaBs')?.setValue(numericValue);
+  }
+
+  // Formatear el valor con puntos de miles
+  formatCurrency(value: number): string {
+    return new Intl.NumberFormat('es-ES', {
+      minimumFractionDigits: 0, // No usamos decimales en este caso
+      maximumFractionDigits: 0,
+    }).format(value);
+  }
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe(); // Cleanup all subscriptions

@@ -55,8 +55,15 @@
         <div class="form-group">
           <label>{{ currentLabel }} <span class="required">*</span></label>
           <div class="input-button-group">
-            <input [type]="currentType" inputmode="decimal" formControlName="precioVentaBs" placeholder="Cantidad">
-            <button type="button" class="btn-toggle" (click)="toggleCantidad()"><mat-icon>swap_horiz</mat-icon></button>
+            <input
+            type="text"
+            inputmode="decimal"
+            formControlName="precioVentaBs"
+            placeholder="Cantidad"
+            (input)="onInputChange($event)"
+            [value]="formattedPrice"
+          />
+                      <button type="button" class="btn-toggle" (click)="toggleCantidad()"><mat-icon>swap_horiz</mat-icon></button>
             <button type="button" class="btn-toggle" (click)="makeTasaEditable()"><mat-icon>create</mat-icon></button>
           </div>
         </div>

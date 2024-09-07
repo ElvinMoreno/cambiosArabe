@@ -4,7 +4,7 @@
     <ng-container matColumnDef="banco">
       <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Banco </th>
       <td mat-cell *matCellDef="let element" data-title="Banco">
-        <span>{{element.bancoDestino}}</span>
+        <span>{{element.banco}}</span>
         <button mat-icon-button class="copy-button" (click)="copyToClipboard(element.bancoDestino, element.id, 'banco')">
           <mat-icon [ngClass]="{'copied': isCopied(element.id, 'banco')}">content_copy</mat-icon>
         </button>
@@ -15,7 +15,7 @@
     <ng-container matColumnDef="cedula">
       <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Cédula </th>
       <td mat-cell *matCellDef="let element" data-title="Cédula">
-        <span>{{element.cedulaDestino}}</span>
+        <span>{{element.cedula}}</span>
         <button mat-icon-button class="copy-button" (click)="copyToClipboard(element.cedulaDestino, element.id, 'cedula')">
           <mat-icon [ngClass]="{'copied': isCopied(element.id, 'cedula')}">content_copy</mat-icon>
         </button>
@@ -26,7 +26,7 @@
     <ng-container matColumnDef="cuenta">
       <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Cuenta </th>
       <td mat-cell *matCellDef="let element" data-title="Cuenta">
-        <span>{{element.numeroCuentaDestinatario}}</span>
+        <span>{{element.numeroCuenta}}</span>
         <button mat-icon-button class="copy-button" (click)="copyToClipboard(element.numeroCuentaDestinatario, element.id, 'cuenta')">
           <mat-icon [ngClass]="{'copied': isCopied(element.id, 'cuenta')}">content_copy</mat-icon>
         </button>
@@ -48,7 +48,7 @@
     <ng-container matColumnDef="bolivares">
       <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Bolívares </th>
       <td mat-cell *matCellDef="let element" data-title="Bolívares">
-        <span>{{element.bolivaresEnviar}}</span>
+        <span>{{element.bolivares | number: '1.2-2'}}</span>
         <button mat-icon-button class="copy-button" (click)="copyToClipboard(element.bolivaresEnviar, element.id, 'bolivares')">
           <mat-icon [ngClass]="{'copied': isCopied(element.id, 'bolivares')}">content_copy</mat-icon>
         </button>
@@ -59,7 +59,7 @@
     <ng-container matColumnDef="cuentaUsada">
       <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Cuenta Usada </th>
       <td mat-cell *matCellDef="let element" data-title="Cuenta Usada">
-        <span>{{element.nombreCuentaBs}}</span>
+        <span>{{element.bancoId}}</span>
         <button mat-icon-button class="copy-button" (click)="copyToClipboard(element.nombreCuentaBs, element.id, 'cuentaUsada')">
           <mat-icon [ngClass]="{'copied': isCopied(element.id, 'cuentaUsada')}">content_copy</mat-icon>
         </button>
