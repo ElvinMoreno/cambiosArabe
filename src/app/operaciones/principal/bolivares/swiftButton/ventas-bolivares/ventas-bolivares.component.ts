@@ -16,6 +16,8 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 import { BancolombiaComponent } from '../../../../formulario/bancolombia/bancolombia.component';
 import { VentaBs } from '../../../../../interfaces/venta-bs';
 import { VentaBsService } from '../../../../../services/venta-bs.service';
+import { Crearventa } from '../../../../../interfaces/crearventa';
+import { CuentaDestinatario } from '../../../../../interfaces/cuenta-destinatario';
 
 @Component({
   selector: 'ventas-bolivares',
@@ -40,14 +42,15 @@ import { VentaBsService } from '../../../../../services/venta-bs.service';
 export class VentasBolivaresComponent implements OnInit {
   displayedColumns: string[] = ['cuentaCop', 'metodoPago', 'cliente', 'tasa', 'fecha', 'bolivares', 'pesos'];
   dataSource = new MatTableDataSource<VentaBs>();
+  mobileDataSource = new MatTableDataSource<CuentaDestinatario>();
   originalData: VentaBs[] = []; // Variable para almacenar el conjunto de datos original
-  paginatedDataSource: VentaBs[] = [];
   isMobile = false;
   pageSize = 5;
   pageSizeOptions = [5, 10, 25];
   selectedDate: Date | null = null;
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild('desktopPaginator', { static: true }) desktopPaginator!: MatPaginator;
+  @ViewChild('mobilePaginator', { static: true }) mobilePaginator!: MatPaginator;
 
   constructor(
     public dialog: MatDialog,
@@ -66,23 +69,47 @@ export class VentasBolivaresComponent implements OnInit {
         this.isMobile = result.matches;
         if (this.isMobile) {
           this.updateMobileData();
+        } else {
+          this.dataSource.paginator = this.desktopPaginator;
         }
       });
   }
+
 
   loadVentas(): void {
     this.ventaBsService.getAllVentasBs().subscribe(
       (data: VentaBs[]) => {
         this.originalData = data; // Almacena los datos originales
         this.dataSource.data = data;
-        this.dataSource.paginator = this.paginator;
+        this.dataSource.paginator = this.desktopPaginator;
+
+        // Transformar los datos para vista móvil centrada en CuentaDestinatario
+        this.transformToMobileData(data);
+
         this.applyDateFilter();  // Aplicar el filtro inicial
-        this.updateMobileData();
       },
       (error) => {
         console.error('Error al cargar las ventas:', error);
       }
     );
+  }
+
+  transformToMobileData(data: VentaBs[]): void {
+    const mobileData: CuentaDestinatario[] = [];
+    data.forEach(venta => {
+      venta.cuentasDestinatario!.forEach(cuenta => {
+        mobileData.push({
+          ventaBsId: venta.id, // Ajustar si se necesita
+          nombreCuentaDestinatario: cuenta.nombreCuentaDestinatario,
+          cedula: cuenta.cedula,
+          numeroCuenta: cuenta.numeroCuenta,
+          bancoId: cuenta.bancoId,
+          bolivares: cuenta.bolivares
+        });
+      });
+    });
+    this.mobileDataSource.data = mobileData;
+    this.mobileDataSource.paginator = this.mobilePaginator;
   }
 
   applyDateFilter(): void {
@@ -114,15 +141,28 @@ export class VentasBolivaresComponent implements OnInit {
 
   updateMobileData() {
     if (this.isMobile) {
-      this.paginatedDataSource = this.dataSource.data.slice(0, this.pageSize);
+      const mobileData: CuentaDestinatario[] = [];
+      this.dataSource.data.forEach((venta: VentaBs) => {
+        venta.cuentasDestinatario!.forEach((cuenta: CuentaDestinatario) => {
+          mobileData.push({
+            ventaBsId: venta.id, // Suponiendo que VentaBs tiene un id
+            nombreCuentaDestinatario: cuenta.nombreCuentaDestinatario,
+            cedula: cuenta.cedula,
+            numeroCuenta: cuenta.numeroCuenta,
+            bancoId: cuenta.bancoId,
+            bolivares: cuenta.bolivares
+          });
+        });
+      });
+      this.mobileDataSource.data = mobileData;
+      this.mobileDataSource.paginator = this.mobilePaginator;
     }
   }
 
   onPageChange(event: PageEvent) {
-    const startIndex = event.pageIndex * event.pageSize;
-    const endIndex = startIndex + event.pageSize;
-    this.paginatedDataSource = this.dataSource.data.slice(startIndex, endIndex);
+    this.mobileDataSource.paginator = this.mobilePaginator;
   }
+
 
   openDialog(): void {
     const dialogRef = this.dialog.open(BancolombiaComponent, {
@@ -138,7 +178,8 @@ export class VentasBolivaresComponent implements OnInit {
     });
   }
 
-  onConfirmar(event: VentaBs) {
+  onConfirmar(event: Crearventa
+  ) {
     this.ventaBsService.saveVentaBs(event).subscribe(
       () => {
         this.loadVentas();

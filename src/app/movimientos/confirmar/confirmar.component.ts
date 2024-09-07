@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { VentaPagos } from '../../interfaces/venta-pagos';
 import { VentaBsService } from '../../services/venta-bs.service';
+import { CuentaDestinatario } from '../../interfaces/cuenta-destinatario';
 
 @Component({
   selector: 'app-confirmar',
@@ -24,7 +25,7 @@ import { VentaBsService } from '../../services/venta-bs.service';
 })
 export class ConfirmarComponent {
   vistaActual: 'entradas' | 'salidas' = 'entradas';
-  dataSource: VentaPagos[] = [];
+  dataSource: CuentaDestinatario[] = [];
   selectedIndex: number = 0;
   totalBolivares: number = 0;
 
@@ -40,9 +41,9 @@ export class ConfirmarComponent {
   loadVentas(): number {
     let totalBolivares = 0;
     this.ventaBsService.getVentasSalidas().subscribe(
-      (data: VentaPagos[]) => {
+      (data: CuentaDestinatario[]) => {
         this.dataSource = data;
-        totalBolivares = data.reduce((sum, venta) => sum + venta.bolivaresEnviar, 0);
+        totalBolivares = data.reduce((sum, venta) => sum + venta.bolivares, 0);
         this.totalBolivares = totalBolivares;  // Asigna el total de bolívares a la propiedad
         console.log('Total Bolívares Enviar:', totalBolivares);
       },

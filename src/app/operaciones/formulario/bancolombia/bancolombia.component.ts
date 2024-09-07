@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Output, OnInit, Inject } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
+import { Component, EventEmitter, Output, OnInit, Inject, OnDestroy } from '@angular/core';
+import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CommonModule, formatDate } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -16,6 +16,10 @@ import { CuentaBancariaService } from '../../../services/cuenta-bancaria.service
 import { TasaService } from '../../../services/tasa.service';
 import { Tasa } from '../../../interfaces/tasa';
 import { VentaBsService } from '../../../services/venta-bs.service';
+import { CuentaDestinatario } from '../../../interfaces/cuenta-destinatario';
+import { Crearventa } from '../../../interfaces/crearventa';
+import { Subscription } from 'rxjs';
+import { VentaBs } from '../../../interfaces/venta-bs';
 
 @Component({
   selector: 'app-bancolombia',
@@ -34,12 +38,12 @@ import { VentaBsService } from '../../../services/venta-bs.service';
   templateUrl: './bancolombia.component.html',
   styleUrls: ['./bancolombia.component.css'],
 })
-export class BancolombiaComponent implements OnInit {
+export class BancolombiaComponent implements OnInit, OnDestroy {
   @Output() cancelar = new EventEmitter<void>();
   @Output() confirmar = new EventEmitter<any>();
 
   form: FormGroup;
-  currentLabel = 'Cantidad pesos';  // Cambiado a 'Cantidad pesos'
+  currentLabel = 'Cantidad pesos';
   currentType = 'number';
   cuentasVenezolanas: any[] = [];
   cuentasColombianas: any[] = [];
@@ -50,8 +54,9 @@ export class BancolombiaComponent implements OnInit {
   isSubmitting = false;
   isTasaEditable = false;
   isTasaVisible = false;
-  isClienteFinalVisible = false; // Nueva propiedad para controlar la visibilidad
+  isClienteFinalVisible = false;
   tasaLabel = 'Tasa';
+  subscriptions: Subscription = new Subscription();
 
   constructor(
     private fb: FormBuilder,
@@ -64,65 +69,114 @@ export class BancolombiaComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.form = this.fb.group({
-      nombreCuenta: ['', Validators.required],
-      numeroCuenta: ['', Validators.required],
       fecha: ['', Validators.required],
       tipoPago: ['', Validators.required],
-      conversionAutomatica: [{ value: '', disabled: true }, Validators.required],
+      conversionAutomatica: [{ value: '', disabled: true }],
       cliente: ['', Validators.required],
       cuentaPesos: ['', Validators.required],
-      cantidad: ['', Validators.required],
-      tasa: [{ value: '', disabled: true }],
-      cedula: ['', Validators.required],
-      clienteFinal: ['']  // Nuevo FormControl para el campo "Cliente Final"
+      precioVentaBs: ['', Validators.required],
+      tasaVenta: [{ value: '', disabled: true }],
+      clienteFinal: [''],
+      cuentasDestinatario: this.fb.array([this.createCuentaDestinatario()]) // Inicializa con un control
     });
 
     const today = new Date();
     this.currentDate = formatDate(today, 'yyyy-MM-ddTHH:mm:ss.SSSZ', 'en-US');
   }
 
+
+  // Método para crear un nuevo FormGroup dentro de FormArray
+  createCuentaDestinatario(): FormGroup {
+    return this.fb.group({
+      nombreCuenta: ['', Validators.required],
+      numeroCuenta: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
+      cedula: ['', [Validators.required, Validators.pattern('^[0-9]*$')]]
+    });
+  }
+
+  addCuentaDestinatario(): void {
+    this.cuentasDestinatarioArray.push(this.createCuentaDestinatario());
+  }
+
+  get cuentasDestinatarioArray(): FormArray {
+    return this.form.get('cuentasDestinatario') as FormArray;
+  }
+
+
+
   ngOnInit(): void {
     this.loadInitialData();
     this.loadTasas();
     this.form.patchValue({ fecha: this.currentDate });
     this.setupFormListeners();
+    this.addCuentaDestinatario(); // Add an initial cuenta destinatario
+
+    // Escuchar los cambios en el FormArray y sincronizar con el FormGroup principal
+    this.form.get('cuentasDestinatario')?.valueChanges.subscribe((values: any[]) => {
+      if (values && values.length > 0) {
+        const firstAccount = values[0]; // Asumiendo que necesitas sincronizar el primer registro
+        if (firstAccount) {
+          this.form.patchValue({
+            nombreCuenta: firstAccount.nombreCuenta,
+            numeroCuenta: firstAccount.numeroCuenta,
+            cedula: firstAccount.cedula
+          }, { emitEvent: false });
+        }
+      }
+    });
+  }
+
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe(); // Cleanup all subscriptions
+  }
+  removeCuentaDestinatario(index: number): void {
+    this.cuentasDestinatarioArray.removeAt(index);
   }
 
   loadInitialData(): void {
-    this.clienteService.getAllClientes().subscribe(
-      (data: any[]) => {
-        this.clientes = data;
-      },
-      (error) => {
-        console.error('Error al cargar los clientes', error);
-      }
+    this.subscriptions.add(
+      this.clienteService.getAllClientes().subscribe(
+        (data: any[]) => {
+          this.clientes = data;
+        },
+        (error) => {
+          console.error('Error al cargar los clientes', error);
+        }
+      )
     );
 
-    this.metodoPagoService.getAllMetodosPago().subscribe(
-      (data: any[]) => {
-        this.metodosPago = data;
-      },
-      (error) => {
-        console.error('Error al cargar los métodos de pago', error);
-      }
+    this.subscriptions.add(
+      this.metodoPagoService.getAllMetodosPago().subscribe(
+        (data: any[]) => {
+          this.metodosPago = data;
+        },
+        (error) => {
+          console.error('Error al cargar los métodos de pago', error);
+        }
+      )
     );
 
-    this.cuentaBancariaService.getCuentasVenezolanas().subscribe(
-      (data: any[]) => {
-        this.cuentasVenezolanas = data;
-      },
-      (error) => {
-        console.error('Error al cargar las cuentas venezolanas', error);
-      }
+    this.subscriptions.add(
+      this.cuentaBancariaService.getCuentasVenezolanas().subscribe(
+        (data: any[]) => {
+          this.cuentasVenezolanas = data;
+        },
+        (error) => {
+          console.error('Error al cargar las cuentas venezolanas', error);
+        }
+      )
     );
 
-    this.cuentaBancariaService.getCuentasColombianas().subscribe(
-      (data: any[]) => {
-        this.cuentasColombianas = data;
-      },
-      (error) => {
-        console.error('Error al cargar las cuentas colombianas', error);
-      }
+    this.subscriptions.add(
+      this.cuentaBancariaService.getCuentasColombianas().subscribe(
+        (data: any[]) => {
+          this.cuentasColombianas = data;
+        },
+        (error) => {
+          console.error('Error al cargar las cuentas colombianas', error);
+        }
+      )
     );
   }
 
@@ -137,33 +191,40 @@ export class BancolombiaComponent implements OnInit {
     );
   }
 
+
   setupFormListeners(): void {
-    this.form.get('cantidad')?.valueChanges.subscribe(value => {
-      this.updateTasa(value);
-      this.updateConversionAutomatica(value);
-    });
+    this.subscriptions.add(
+      this.form.get('precioVentaBs')?.valueChanges.subscribe(value => {
+        this.updateTasa(value);
+        this.updateConversionAutomatica(value);
+      })
+    );
 
-    this.form.get('tasa')?.valueChanges.subscribe(() => {
-      const cantidadValue = this.form.get('cantidad')?.value;
-      if (cantidadValue) {
-        this.updateConversionAutomatica(cantidadValue);
-      }
-    });
-  // Escuchar cambios en el select de cliente para mostrar/ocultar el campo "Cliente Final"
-  this.form.get('cliente')?.valueChanges.subscribe(value => {
-    this.isClienteFinalVisible = (value === '1');  // Mostrar el campo solo si el cliente con id 1 está seleccionado
-    if (this.isClienteFinalVisible) {
-      this.form.get('clienteFinal')?.setValidators(Validators.required);
-    } else {
-      this.form.get('clienteFinal')?.clearValidators();
-      this.form.get('clienteFinal')?.setValue('');
-    }
-    this.form.get('clienteFinal')?.updateValueAndValidity();
-  });
-}
+    this.subscriptions.add(
+      this.form.get('tasaVenta')?.valueChanges.subscribe(() => {
+        const cantidadValue = this.form.get('precioVentaBs')?.value;
+        if (cantidadValue) {
+          this.updateConversionAutomatica(cantidadValue);
+        }
+      })
+    );
 
-  updateConversionAutomatica(value: number): void {
-    const tasaActual = this.form.get('tasa')?.value;
+    this.subscriptions.add(
+      this.form.get('cliente')?.valueChanges.subscribe(value => {
+        this.isClienteFinalVisible = (value === '1'); // Mostrar el campo solo si el cliente con id 1 está seleccionado
+        if (this.isClienteFinalVisible) {
+          this.form.get('clienteFinal')?.setValidators(Validators.required);
+        } else {
+          this.form.get('clienteFinal')?.clearValidators();
+          this.form.get('clienteFinal')?.setValue('');
+        }
+        this.form.get('clienteFinal')?.updateValueAndValidity();
+      })
+    );
+  }
+
+    updateConversionAutomatica(value: number): void {
+    const tasaActual = this.form.get('tasaVenta')?.value;
     if (tasaActual !== null && value) {
       let resultado: number;
       if (this.currentLabel === 'Cantidad bolívares') {
@@ -180,6 +241,11 @@ export class BancolombiaComponent implements OnInit {
   updateTasa(value: number): void {
     if (value === null || value === undefined) return;
 
+    if (this.tasas.length === 0) {
+      console.warn('El array de tasas está vacío. No se puede actualizar la tasa.');
+      return;
+    }
+
     if (this.currentLabel === 'Cantidad bolívares') {
       this.updateTasaByBolivares(value);
     } else {
@@ -187,27 +253,27 @@ export class BancolombiaComponent implements OnInit {
     }
   }
 
+
   updateTasaByBolivares(value: number): void {
-    for (let i = 0; i < this.tasas.length; i++) {
-      if (value >= this.tasas[i].bolivares!) {
-        this.form.patchValue({ tasa: this.tasas[i].tasaVenta });
-        return;
-      }
+    const matchingTasa = this.tasas.find(t => value >= t.bolivares!);
+    if (matchingTasa) {
+      this.form.patchValue({ tasaVenta: matchingTasa.tasaVenta });
+    } else {
+      this.form.patchValue({ tasaVenta: null });
     }
-    this.form.patchValue({ tasa: null });
   }
 
   updateTasaByPesos(value: number): void {
-    for (let i = 0; i < this.tasas.length; i++) {
-      if (value >= this.tasas[i].pesos!) {
-        this.form.patchValue({ tasa: this.tasas[i].tasaVenta });
-        return;
-      }
+    const matchingTasa = this.tasas.find(t => value >= t.pesos!);
+    if (matchingTasa) {
+      this.form.patchValue({ tasaVenta: matchingTasa.tasaVenta });
+    } else {
+      this.form.patchValue({ tasaVenta: null });
     }
-    this.form.patchValue({ tasa: null });
   }
 
-  toggleCantidad() {
+
+  toggleCantidad(): void {
     this.currentLabel = this.currentLabel === 'Cantidad bolívares' ? 'Cantidad pesos' : 'Cantidad bolívares';
     this.form.patchValue({
       cantidad: '',
@@ -215,72 +281,86 @@ export class BancolombiaComponent implements OnInit {
       tasa: null
     });
   }
-
-  makeTasaEditable() {
+  makeTasaEditable(): void {
     this.isTasaEditable = true;
-    this.isTasaVisible = true;  // Mostrar el campo de "tasa"
+    this.isTasaVisible = true; // Mostrar el campo de "tasa"
     this.tasaLabel = 'Tasa especial';
-    this.form.get('tasa')?.enable();
+    this.form.get('tasaVenta')?.enable(); // Asegúrate de habilitar el campo
   }
 
-  onConfirmar() {
-    if (this.form.valid && !this.isSubmitting) {
-      this.isSubmitting = true;
-      const ventaData = this.buildVentaData();
-      this.ventaBsService.saveVentaBs(ventaData).subscribe(
-        () => {
-          this.confirmar.emit(ventaData);
-          this.dialogRef.close();
-          this.isSubmitting = false;
-        },
-        (error) => {
-          console.error('Error al guardar la venta', error);
-          this.isSubmitting = false;
-        }
-      );
-    }
-  }
+onConfirmar(): void {
+  if (this.form.valid && !this.isSubmitting) {
+    this.isSubmitting = true;
 
-  buildVentaData(): any {
-    const formValues = this.form.value;
-    const fechaVenta = new Date(formValues.fecha).toISOString().split('T')[0] + 'T00:00:00.000Z';
-
-    let ventaData: any = {
-      cuentaBancariaBolivares: parseInt(formValues.cuentaBs),
-      cuentaBancariaPesos: parseInt(formValues.cuentaPesos),
-      descripcionId: 1,
-      clienteId: parseInt(formValues.cliente),
-      fechaVenta,
-      metodoPagoId: parseInt(formValues.tipoPago),
-      comision: parseFloat(formValues.comision),
-      tasaVenta: parseFloat(this.form.get('tasa')?.value),
-      nombreCuenta: formValues.nombreCuenta,
-      cedula: formValues.cedula,
-      numeroCuenta: formValues.numeroCuenta,
-      nombreClienteFinal: formValues.clienteFinal,
-      entrada: false,
-      salida: false
-    };
-
-    if (this.currentLabel === 'Cantidad bolívares') {
-      ventaData.bolivaresVendidos = parseFloat(formValues.cantidad);
-      ventaData.precioVentaBs = null;
-    } else {
-      ventaData.precioVentaBs = parseFloat(formValues.cantidad);
-      ventaData.bolivaresVendidos = null;
+    // Asegurarse de que tasaVenta no sea nulo antes de construir los datos
+    if (!this.form.get('tasaVenta')?.value) {
+      console.error('Error: tasaVenta es null o undefined.');
+      this.isSubmitting = false;
+      return;
     }
 
-    // Asegurarse de que todos los valores numéricos sean números
-    Object.keys(ventaData).forEach(key => {
-      if (typeof ventaData[key] === 'number' && isNaN(ventaData[key])) {
-        ventaData[key] = 0;
+    const ventaData = this.buildVentaData();
+
+    this.ventaBsService.saveVentaBs(ventaData).subscribe(
+      () => {
+        this.confirmar.emit(ventaData);
+        this.dialogRef.close();
+        this.isSubmitting = false;
+      },
+      (error) => {
+        console.error('Error al guardar la venta', error);
+        this.isSubmitting = false;
       }
-    });
-    console.log(ventaData);
-    return ventaData;
+    );
   }
+}
 
-  onCancelar() {
+
+buildVentaData(): Crearventa {
+  const formValues = this.form.value;
+
+  // Calcular el valor de bolivares como precioVentaBs / tasaVenta
+  const bolivares = formValues.precioVentaBs / formValues.tasaVenta;
+
+  // Construir el objeto VentaBs
+  const ventaBs: VentaBs = {
+    cuentaBancariaBs: formValues.cuentaBs,
+    cuentaBancariaPesos: formValues.cuentaPesos,
+    descripcionId: 1,
+    clienteId: formValues.cliente,
+    fechaVenta: formValues.fechaVenta,
+    referencia: formValues.referencia,
+    precioVentaBs: formValues.precioVentaBs,
+    metodoPagoId: formValues.tipoPago,
+    comision: formValues.comision,
+    tasaVenta: +formValues.tasaVenta,
+    nombreClienteFinal: formValues.clienteFinal,
+    banco: formValues.banco,
+    entrada: !!formValues.entrada,
+    salida: !!formValues.salida
+  };
+
+  // Construir el array de cuentas destinatario
+  const cuentasDestinatario: CuentaDestinatario[] = formValues.cuentasDestinatario.map((cd: any) => ({
+    nombreCuentaDestinatario: cd.nombreCuenta,
+    cedula: cd.cedula ? +cd.cedula : null,  // Convertir a número si es posible
+    numeroCuenta: cd.numeroCuenta,
+    bolivares: bolivares  // Asigna el valor calculado
+  }));
+
+  const ventaData: Crearventa = {
+    ventaBs: ventaBs,
+    cuentasDestinatario: cuentasDestinatario
+  };
+
+  console.log(ventaData); // Asegúrate de revisar esto para ver los datos capturados
+
+  return ventaData;
+}
+
+
+
+  onCancelar(): void {
     this.cancelar.emit();
     this.dialogRef.close();
   }

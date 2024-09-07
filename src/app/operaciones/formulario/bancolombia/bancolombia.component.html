@@ -4,18 +4,24 @@
     <div class="separator"></div>
     <form [formGroup]="form" (ngSubmit)="onConfirmar()">
       <div class="form-grid">
-        <!-- Campos del formulario -->
-        <div class="form-group" [ngClass]="{'has-error': form.get('nombreCuenta')?.invalid && form.get('nombreCuenta')?.touched}">
-          <label for="nombreCuenta">Nombre cuenta <span class="required">*</span></label>
-          <input id="nombreCuenta" type="text" formControlName="nombreCuenta" placeholder="Ingrese nombre de la cuenta">
-        </div>
-        <div class="form-group" [ngClass]="{'has-error': form.get('numeroCuenta')?.invalid && form.get('numeroCuenta')?.touched}">
-          <label for="numeroCuenta">Número de Cuenta <span class="required">*</span></label>
-          <input id="numeroCuenta" type="tel" inputmode="numeric" formControlName="numeroCuenta" placeholder="Ingrese número de cuenta">
-        </div>
-        <div class="form-group" [ngClass]="{'has-error': form.get('cedula')?.invalid && form.get('cedula')?.touched}">
-          <label for="cedula">Cédula <span class="required">*</span></label>
-          <input id="cedula" type="tel" inputmode="numeric" pattern="[0-9]*" formControlName="cedula" placeholder="Número de cédula">
+        <div formArrayName="cuentasDestinatario">
+          <div *ngFor="let cuenta of cuentasDestinatarioArray.controls; let i = index" [formGroupName]="i">
+            <div class="form-group" [ngClass]="{'has-error': cuenta.get('nombreCuenta')?.invalid && cuenta.get('nombreCuenta')?.touched}">
+              <label for="nombreCuenta{{i}}">Nombre cuenta <span class="required">*</span></label>
+              <input id="nombreCuenta{{i}}" type="text" formControlName="nombreCuenta" placeholder="Ingrese nombre de la cuenta">
+            </div>
+            <div class="form-group" [ngClass]="{'has-error': cuenta.get('numeroCuenta')?.invalid && cuenta.get('numeroCuenta')?.touched}">
+              <label for="numeroCuenta{{i}}">Número de Cuenta <span class="required">*</span></label>
+              <input id="numeroCuenta{{i}}" type="tel" inputmode="numeric" formControlName="numeroCuenta" placeholder="Ingrese número de cuenta">
+            </div>
+            <div class="form-group" [ngClass]="{'has-error': cuenta.get('cedula')?.invalid && cuenta.get('cedula')?.touched}">
+              <label for="cedula{{i}}">Cédula <span class="required">*</span></label>
+              <input id="cedula{{i}}" type="tel" inputmode="numeric" pattern="[0-9]*" formControlName="cedula" placeholder="Número de cédula">
+            </div>
+            <button mat-icon-button color="warn" type="button" (click)="removeCuentaDestinatario(i)" *ngIf="cuentasDestinatarioArray.length > 1">
+              <mat-icon>remove_circle</mat-icon>
+            </button>
+          </div>
         </div>
         <div class="form-group hidden">
           <label for="fecha">Fecha <span class="required">*</span></label>
@@ -49,21 +55,22 @@
         <div class="form-group">
           <label>{{ currentLabel }} <span class="required">*</span></label>
           <div class="input-button-group">
-            <input [type]="currentType" inputmode="decimal" formControlName="cantidad" placeholder="Cantidad">
+            <input [type]="currentType" inputmode="decimal" formControlName="precioVentaBs" placeholder="Cantidad">
             <button type="button" class="btn-toggle" (click)="toggleCantidad()"><mat-icon>swap_horiz</mat-icon></button>
             <button type="button" class="btn-toggle" (click)="makeTasaEditable()"><mat-icon>create</mat-icon></button>
           </div>
         </div>
-        <div class="form-group" *ngIf="isTasaVisible" [ngClass]="{'has-error': form.get('tasa')?.invalid && form.get('tasa')?.touched}">
+        <div class="form-group" *ngIf="isTasaVisible" [ngClass]="{'has-error': form.get('tasaVenta')?.invalid && form.get('tasaVenta')?.touched}">
           <label for="tasa">{{ tasaLabel }} <span class="required">*</span></label>
           <div class="input-button-group">
-            <input id="tasa" type="number" formControlName="tasa" [readonly]="!isTasaEditable" placeholder="Tasa del día">
+            <input id="tasaVenta" type="number" formControlName="tasaVenta" [readonly]="!isTasaEditable" placeholder="Tasa del día">
           </div>
         </div>
       </div>
       <div class="button-group">
-        <button type="submit" class="btn-confirmar" (click)="onConfirmar()">Confirmar Venta</button>
+        <button type="submit" class="btn-confirmar" (click)="onConfirmar()">Confirmar</button>
         <button type="button" class="btn-cancelar" (click)="onCancelar()">Cancelar</button>
+        <button type="button" class="btn-toggle" (click)="addCuentaDestinatario()"><mat-icon>add</mat-icon></button>
       </div>
     </form>
   </div>

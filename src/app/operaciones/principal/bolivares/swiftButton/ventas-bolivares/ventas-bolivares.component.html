@@ -68,23 +68,19 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
-  <mat-paginator [length]="dataSource.data.length" [pageSize]="10" [pageSizeOptions]="[10, 25, 50]" aria-label="Select page" ></mat-paginator>
+  <mat-paginator #desktopPaginator [length]="dataSource.data.length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" aria-label="Select page"></mat-paginator>
 </div>
-
 
 <!-- Cards para vista móvil -->
 <div class="cards-container" *ngIf="isMobile">
-  <mat-card *ngFor="let element of paginatedDataSource" class="card">
+  <mat-card *ngFor="let cuenta of mobileDataSource.data" class="card">
     <mat-card-content>
-      <p><strong>Cuenta cop:</strong> {{element.cuentaBancariaPesos?.nombreCuenta}}</p>
-      <p><strong>Pesos recibidos:</strong> {{element.precio}}</p>
-      <p><strong>Bolivares enviar:</strong> {{element.bolivaresVendidos}}</p>
-      <p><strong>Banco destino:</strong> {{element.banco}}</p>
-      <p><strong>Cedula destino:</strong> {{element.cedula}}</p>
-      <p><strong>Cuenta destinatario:</strong> {{element.numeroCuenta}}</p>
-      <p><strong>Fecha:</strong> {{element.fechaVenta | date:'dd/MM/yyyy'}}</p>
-      <p><strong>Nombre destinatario:</strong> {{element.nombreCuentaDestinatario}}</p>
+      <p><strong>Nombre destinatario:</strong> {{cuenta.nombreCuentaDestinatario}}</p>
+      <p><strong>Cédula:</strong> {{cuenta.cedula}}</p>
+      <p><strong>Cuenta destinatario:</strong> {{cuenta.numeroCuenta}}</p>
+      <p><strong>Banco destino ID:</strong> {{cuenta.banco}}</p>
+      <p><strong>Bolívares:</strong> {{cuenta.bolivares}}</p>
     </mat-card-content>
   </mat-card>
 </div>
-<mat-paginator *ngIf="isMobile" [length]="dataSource.data.length" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 25]" (page)="onPageChange($event)" aria-label="Select page"></mat-paginator>
+<!-- <mat-paginator #mobilePaginator *ngIf="isMobile" [length]="mobileDataSource.data.length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" (page)="onPageChange($event)" aria-label="Select page"></mat-paginator> -->

@@ -110,8 +110,16 @@ input.ng-invalid.ng-touched, select.ng-invalid.ng-touched {
 
 .button-group {
   display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
+  justify-content: space-between; /* Mantener botones separados */
+  margin-top: 20px; /* Espacio superior opcional */
+}
+
+.btn-confirmar {
+  margin-right: 10px; /* Añadir espacio a la derecha */
+}
+
+.btn-cancelar {
+  margin-left: 10px; /* Añadir espacio a la izquierda */
 }
 
 .btn-confirmar, .btn-cancelar {
@@ -120,10 +128,11 @@ input.ng-invalid.ng-touched, select.ng-invalid.ng-touched {
   border-radius: 4px;
   cursor: pointer;
   font-size: 1rem;
-  width: 45%;
+  width: 45%; /* Ajustar ancho para alineación */
   text-align: center;
   transition: background-color 0.3s ease;
 }
+
 
 .btn-confirmar {
   background-color: #5E94FF;
