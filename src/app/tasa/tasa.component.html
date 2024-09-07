@@ -6,7 +6,7 @@
   </button>
   <button (click)="downloadTableAsImage()" class="btn-actualizar-tasa">
     <mat-icon>image</mat-icon>
-    <span class="btn-text">Descargar Imagen</span>
+    <span class="btn-text">Descargar Imagen y Procesar</span>
   </button>
   <!-- <button (click)="downloadTableAsVideo()" class="btn-actualizar-tasa"> -->
     <button  class="btn-actualizar-tasa">
@@ -54,33 +54,20 @@
 
     <!-- Input para seleccionar el archivo -->
 <!-- Input de archivo oculto -->
+<!-- Input de archivo oculto que también activa la subida -->
 <input
   type="file"
   id="fileInput"
-  (change)="onFileSelected($event)"
+  (change)="onFileSelectedAndUpload($event)"
   accept="image/*"
   style="display: none;"
 />
 
-<!-- Botón personalizado -->
-<label for="fileInput" class="custom-file-upload" class="btn-actualizar-tasa">
+<!-- Botón personalizado para seleccionar la imagen -->
+<label for="fileInput" class="custom-file-upload btn-actualizar-tasa">
   <mat-icon>cloud_upload</mat-icon>
-  <span>Seleccionar Imagen</span>
+  <span>Seleccionar y Subir Imagen</span>
 </label>
 
-
-<!-- Botón para subir la imagen -->
-<button (click)="uploadImage()" class="btn-actualizar-tasa" [disabled]="!selectedFile">
-  <mat-icon>cloud_upload</mat-icon>
-  <span class="btn-text">Subir Imagen</span>
-</button>
-
-
-<!-- Botón para abrir la imagen en una nueva pestaña -->
-    <button (click)="openImageInNewTab()" [disabled]="!imageSrc" class="btn-actualizar-tasa">
-      <mat-icon>open_in_new</mat-icon>
-      <span class="btn-text">Ver Imagen</span>
-    </button>
-  </div>
 
 </div>

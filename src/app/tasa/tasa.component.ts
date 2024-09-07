@@ -155,6 +155,7 @@ export class TasaComponent implements OnInit {
     const day = ('0' + date.getDate()).slice(-2);
     const monthNames = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
     const month = monthNames[date.getMonth()];
+
     return `${day} ${month}`;
   }
 
@@ -216,54 +217,45 @@ export class TasaComponent implements OnInit {
   }
 
 
-
- // Método para manejar la selección de archivo
- onFileSelected(event: any): void {
-  const file: File = event.target.files[0];
-  if (file) {
-    // Validar el tamaño de la imagen antes de subir
-    if (file.size > 10 * 1024 * 1024) { // 10MB max
-      alert('El tamaño de la imagen excede el límite permitido de 10MB.');
-      return;
-    }
-    this.selectedFile = file; // Almacena el archivo seleccionado
-    console.log('Archivo seleccionado para subir:', file);
-  }
-}
-
-uploadImage(): void {
-  if (!this.selectedFile) {
-    alert('Por favor, seleccione una imagen antes de subirla.');
-    return;
-  }
-
-  const publicId = 'uroe8jwhkdzunwpkikte'; // Aquí definimos el public_id
-
-  // Utilizamos el método del servicio que maneja la subida con sobreescritura
-  this.cloudinaryService.uploadImageWithOverwrite(this.selectedFile, publicId).subscribe(
-    response => {
-      console.log('Imagen sobrescrita con éxito en Cloudinary:', response);
-      if (response && response.secure_url) {
-        this.imageSrc = response.secure_url; // Actualizamos la fuente de la imagen para la vista previa
-        alert('Imagen sobrescrita exitosamente. Ahora puedes verla en una nueva pestaña.');
+  // Método que combina la selección de imagen, carga y visualización en una pestaña nueva
+  onFileSelectedAndUpload(event: any): void {
+    const file: File = event.target.files[0];
+    if (file) {
+      if (file.size > 10 * 1024 * 1024) { // Limitar a 10 MB
+        alert('El tamaño de la imagen excede el límite permitido de 10MB.');
+        return;
       }
-    },
-    error => {
-      console.error('Error sobrescribiendo la imagen en Cloudinary:', error);
+
+      this.selectedFile = file;
+
+      const publicId = 'uroe8jwhkdzunwpkikte'; // Public ID predefinido
+
+      // Subir imagen a Cloudinary
+      this.cloudinaryService.uploadImageWithOverwrite(this.selectedFile, publicId).subscribe(
+        response => {
+          console.log('Imagen subida exitosamente:', response);
+          if (response && response.secure_url) {
+            this.imageSrc = response.secure_url;
+
+            // Abrir la imagen en una nueva pestaña inmediatamente después de subirla
+            this.openImageInNewTab();
+          }
+        },
+        error => {
+          console.error('Error al subir la imagen:', error);
+        }
+      );
     }
-  );
-}
-
-
-
-
-openImageInNewTab(): void {
-  if (this.imageSrc) {
-    window.open(this.imageSrc, '_blank', 'Imagen Subida');
-  } else {
-    alert('No hay una imagen disponible para mostrar. Por favor, sube una imagen primero.');
   }
-}
+
+  openImageInNewTab(): void {
+    if (this.imageSrc) {
+      window.open(this.imageSrc, '_blank', 'Imagen Subida');
+    } else {
+      alert('No hay una imagen disponible para mostrar. Por favor, sube una imagen primero.');
+    }
+  }
+
 
 addTableDataToCanvas(context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
   const columnSpacing = 280;
@@ -305,7 +297,7 @@ addTableDataToCanvas(context: CanvasRenderingContext2D, canvas: HTMLCanvasElemen
     context.font = 'bold 45px "Kanit Medium"';
     context.fillText(bolivaresText, baseXOffset + 2 * columnSpacing, yOffset + index * lineHeight);
     context.fillStyle = '#ffc600';
-    context.font = 'bold 45px "Kanit ExtraBold"'; 
+    context.font = 'bold 45px "Kanit ExtraBold"';
     context.fillText(tasaText, baseXOffset + columnSpacing, yOffset + index * lineHeight);
     context.fillStyle = '#fff';
     context.fillText(pesosText, baseXOffset, yOffset + index * lineHeight);

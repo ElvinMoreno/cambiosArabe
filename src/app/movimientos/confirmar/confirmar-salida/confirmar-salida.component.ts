@@ -170,14 +170,17 @@ export class ConfirmarSalidaComponent implements OnInit {
     );
   }
 
-  copyToClipboard(value: string, id: number, field: string): void {
+  copyToClipboard(value: string | number, id: number, field: string): void {
     if (this.isCopied(id, field)) {
       alert("Este texto ya ha sido copiado anteriormente");
       return;
     }
 
-    navigator.clipboard.writeText(value).then(() => {
-      console.log('Texto copiado al portapapeles:', value);
+    // Verificar si el valor es numérico y formatearlo a dos decimales si es necesario
+    const formattedValue = typeof value === 'number' ? value.toFixed(2) : value;
+
+    navigator.clipboard.writeText(formattedValue).then(() => {
+      console.log('Texto copiado al portapapeles:', formattedValue);
       if (!this.copiedIcons[id]) {
         this.copiedIcons[id] = {};
       }
