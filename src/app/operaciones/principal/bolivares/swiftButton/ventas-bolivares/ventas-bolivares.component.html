@@ -68,19 +68,19 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
-  <mat-paginator #desktopPaginator [length]="dataSource.data.length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" aria-label="Select page"></mat-paginator>
+  <mat-paginator [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons></mat-paginator>
 </div>
 
 <!-- Cards para vista móvil -->
 <div class="cards-container" *ngIf="isMobile">
-  <mat-card *ngFor="let cuenta of mobileDataSource.data" class="card">
+  <mat-card *ngFor="let venta of paginatedCards" class="card"> <!-- Use paginatedCards -->
     <mat-card-content>
-      <p><strong>Nombre destinatario:</strong> {{cuenta.nombreCuentaDestinatario}}</p>
-      <p><strong>Cédula:</strong> {{cuenta.cedula}}</p>
-      <p><strong>Cuenta destinatario:</strong> {{cuenta.numeroCuenta}}</p>
-      <p><strong>Banco destino ID:</strong> {{cuenta.banco}}</p>
-      <p><strong>Bolívares:</strong> {{cuenta.bolivares}}</p>
+      <p><strong>Cuenta usada:</strong> {{venta.cuentaBancariaPesos.nombreCuenta}}</p>
+      <p><strong>Metodo de pago:</strong> {{venta.metodoPago.tipopago}}</p>
+      <p><strong>Bolívares:</strong> {{venta.bolivaresVendidos}}</p>
+      <p><strong>Pesos recibidos:</strong> {{venta.precio | currency}}</p>
     </mat-card-content>
   </mat-card>
+  <mat-paginator [length]="dataCard.data.length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" (page)="onPageChange($event)">
+  </mat-paginator>
 </div>
-<!-- <mat-paginator #mobilePaginator *ngIf="isMobile" [length]="mobileDataSource.data.length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" (page)="onPageChange($event)" aria-label="Select page"></mat-paginator> -->
