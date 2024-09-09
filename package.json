@@ -21,6 +21,7 @@
     "@angular/platform-browser": "^18.0.0",
     "@angular/platform-browser-dynamic": "^18.0.0",
     "@angular/router": "^18.0.0",
+    "@angular/service-worker": "^18.0.0",
     "@cloudinary/ng": "^2.0.2",
     "@cloudinary/url-gen": "^1.20.0",
     "@ffmpeg/core": "^0.12.6",
