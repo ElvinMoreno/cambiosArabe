@@ -58,6 +58,7 @@ export class BancolombiaComponent implements OnInit, OnDestroy {
   tasaLabel = 'Tasa';
   subscriptions: Subscription = new Subscription();
   formattedPrice: string = ''; // Variable para almacenar el valor formateado
+  tasaActual: number | null = null;
 
 
   constructor(
@@ -104,14 +105,17 @@ export class BancolombiaComponent implements OnInit, OnDestroy {
     return this.form.get('cuentasDestinatario') as FormArray;
   }
 
-
-
   ngOnInit(): void {
     this.loadInitialData();
     this.loadTasas();
     this.form.patchValue({ fecha: this.currentDate });
     this.setupFormListeners();
-    this.addCuentaDestinatario(); // Add an initial cuenta destinatario
+
+    // Solo añadir una cuenta destinatario si el FormArray está vacío
+    if (this.cuentasDestinatarioArray.length === 0) {
+      this.addCuentaDestinatario();
+    }
+
     this.formattedPrice = this.formatCurrency(this.form.get('precioVentaBs')?.value || 0);
 
     // Escuchar los cambios en el FormArray y sincronizar con el FormGroup principal
@@ -248,19 +252,20 @@ export class BancolombiaComponent implements OnInit, OnDestroy {
     );
   }
 
-    updateConversionAutomatica(value: number): void {
-    const tasaActual = this.form.get('tasaVenta')?.value;
-    if (tasaActual !== null && value) {
+  updateConversionAutomatica(value: number): void {
+    this.tasaActual = this.form.get('tasaVenta')?.value;  // Guarda la tasa actual
+    if (this.tasaActual !== null && value) {
       let resultado: number;
       if (this.currentLabel === 'Cantidad bolívares') {
-        resultado = value * tasaActual;
+        resultado = value * this.tasaActual;
       } else {
-        resultado = value / tasaActual;
+        resultado = value / this.tasaActual;
       }
       this.form.patchValue({ conversionAutomatica: resultado.toFixed(2) }, { emitEvent: false });
     } else {
       this.form.patchValue({ conversionAutomatica: '' }, { emitEvent: false });
     }
+    console.log(this.tasaActual);
   }
 
   updateTasa(value: number): void {
@@ -341,47 +346,47 @@ onConfirmar(): void {
 }
 
 
-buildVentaData(): Crearventa {
-  const formValues = this.form.value;
+  buildVentaData(): Crearventa {
+    const formValues = this.form.value;
 
-  // Calcular el valor de bolivares como precioVentaBs / tasaVenta
-  const bolivares = formValues.precioVentaBs / formValues.tasaVenta;
+    // Calcular el valor de bolivares como precioVentaBs / tasaVenta
+    const bolivares = formValues.precioVentaBs / this.tasaActual!;
 
-  // Construir el objeto VentaBs
-  const ventaBs: VentaBs = {
-    cuentaBancariaBs: formValues.cuentaBs,
-    cuentaBancariaPesos: formValues.cuentaPesos,
-    descripcionId: 1,
-    clienteId: formValues.cliente,
-    fechaVenta: formValues.fechaVenta,
-    referencia: formValues.referencia,
-    precioVentaBs: formValues.precioVentaBs,
-    metodoPagoId: formValues.tipoPago,
-    comision: formValues.comision,
-    tasaVenta: +formValues.tasaVenta,
-    nombreClienteFinal: formValues.clienteFinal,
-    banco: formValues.banco,
-    entrada: !!formValues.entrada,
-    salida: !!formValues.salida
-  };
+    // Construir el objeto VentaBs
+    const ventaBs: VentaBs = {
+      cuentaBancariaBs: formValues.cuentaBs,
+      cuentaBancariaPesos: formValues.cuentaPesos,
+      descripcionId: 1,
+      clienteId: formValues.cliente,
+      fechaVenta: formValues.fechaVenta,
+      referencia: formValues.referencia,
+      precioVentaBs: formValues.precioVentaBs,
+      metodoPagoId: formValues.tipoPago,
+      comision: formValues.comision,
+      tasaVenta: this.tasaActual!,
+      nombreClienteFinal: formValues.clienteFinal,
+      banco: formValues.banco,
+      entrada: !!formValues.entrada,
+      salida: !!formValues.salida
+    };
 
-  // Construir el array de cuentas destinatario
-  const cuentasDestinatario: CuentaDestinatario[] = formValues.cuentasDestinatario.map((cd: any) => ({
-    nombreCuentaDestinatario: cd.nombreCuenta,
-    cedula: cd.cedula ? +cd.cedula : null,  // Convertir a número si es posible
-    numeroCuenta: cd.numeroCuenta,
-    bolivares: bolivares  // Asigna el valor calculado
-  }));
+    // Construir el array de cuentas destinatario
+    const cuentasDestinatario: CuentaDestinatario[] = formValues.cuentasDestinatario.map((cd: any) => ({
+      nombreCuentaDestinatario: cd.nombreCuenta,
+      cedula: cd.cedula ? +cd.cedula : null,  // Convertir a número si es posible
+      numeroCuenta: cd.numeroCuenta,
+      bolivares: bolivares  // Asigna el valor calculado
+    }));
 
-  const ventaData: Crearventa = {
-    ventaBs: ventaBs,
-    cuentasDestinatario: cuentasDestinatario
-  };
+    const ventaData: Crearventa = {
+      ventaBs: ventaBs,
+      cuentasDestinatario: cuentasDestinatario
+    };
 
-  console.log(ventaData); // Asegúrate de revisar esto para ver los datos capturados
+    console.log(ventaData); // Asegúrate de revisar esto para ver los datos capturados
 
-  return ventaData;
-}
+    return ventaData;
+  }
 
 
 
