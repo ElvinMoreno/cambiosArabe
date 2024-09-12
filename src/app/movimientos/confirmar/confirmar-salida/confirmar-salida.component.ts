@@ -26,7 +26,6 @@ export class ConfirmarSalidaComponent implements OnInit {
   isMobile = false;
   updatedVentas: Set<number> = new Set();  // Mantener el seguimiento de ventas actualizadas
   copiedIcons: { [key: number]: { [key: string]: boolean } } = {};
-  nombrecliente: VentaBs | undefined;
 
   constructor(
     public dialog: MatDialog,
@@ -139,8 +138,7 @@ export class ConfirmarSalidaComponent implements OnInit {
   }
 
   confirmarVentaSalida(venta: CuentaDestinatario): void {
-
-    const nombreCuenta = this.nombrecliente?.nombreClienteFinal;
+    const nombreCuenta = venta.nombreClienteFinal || 'N/A';
 
     // Envolver la venta en un array antes de enviar la petición
     const ventasAConfirmar: CuentaDestinatario[] = [venta]; // Convertir a lista
@@ -159,6 +157,16 @@ export class ConfirmarSalidaComponent implements OnInit {
 
         this.loadVentas(); // Recargar las ventas tras la confirmación
       },
+      // error => {
+      //   console.error('Error al confirmar la venta', error);
+
+      //   Swal.fire({
+      //     title: 'Error',
+      //     text: 'Ocurrió un error al confirmar la venta.',
+      //     icon: 'error',
+      //     confirmButtonText: 'Aceptar'
+      //   });
+      // }
     );
   }
 
