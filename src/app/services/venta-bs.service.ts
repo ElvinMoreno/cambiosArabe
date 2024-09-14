@@ -110,4 +110,10 @@ export class VentaBsService {
     console.error('An error occurred:', error);
     return throwError(() => new Error('Ocurrió un error en la solicitud. Por favor, inténtalo de nuevo.'));
   }
+  updateBancoBs(ventaBsId: number, cuentaBolivaresId: number): Observable<void> {
+    const headers = this.getHeaders();
+    return this.http.post<void>(`${this.apiUrl}/update-bancoBs/${ventaBsId}/${cuentaBolivaresId}`, {}, { headers })
+      .pipe(catchError(this.handleError));
+  }
+  
 }

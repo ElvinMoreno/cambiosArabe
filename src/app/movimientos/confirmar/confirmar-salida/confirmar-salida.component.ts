@@ -84,45 +84,32 @@ export class ConfirmarSalidaComponent implements OnInit {
       });
       return;
     }
-
+  
     const dialogRef = this.dialog.open(ModalBancosComponent, {
       data: { ventaId: element.ventaBsId }
     });
-
+  
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.ventaBsService.getVentaBsById(result.ventaId).subscribe(
-          (venta: VentaBs) => {
-            const updatedVenta: VentaBs = {
-              ...venta,
-              cuentaBancariaBs: result.cuentaId
-            };
-
-            // Actualizamos la venta con la nueva información del banco
-            this.ventaBsService.updateVentaBs(result.ventaId, updatedVenta).subscribe(
-              response => {
-                console.log('Venta actualizada con la cuenta bancaria seleccionada', response);
-                // Marcar venta como actualizada
-                this.updatedVentas.add(result.ventaId);
-
-                // Recargar la lista de ventas para reflejar los cambios
-                this.loadVentas();
-
-                // Confirmar la venta inmediatamente después de actualizar el banco
-                this.confirmarVentaSalida(element);
-              },
-              error => {
-                console.error('Error al actualizar la venta con la cuenta bancaria seleccionada', error);
-              }
-            );
+        // Llama al servicio con los IDs como parte de la URL
+        this.ventaBsService.updateBancoBs(result.ventaId, result.cuentaId).subscribe(
+          response => {
+            console.log('Venta actualizada con la cuenta bancaria seleccionada', response);
+  
+            // Recargar la lista de ventas para reflejar los cambios
+            this.loadVentas();
+  
+            // Confirmar la venta inmediatamente después de actualizar el banco
           },
           error => {
-            console.error('Error al obtener la venta por ID', error);
+            console.error('Error al actualizar la venta con la cuenta bancaria seleccionada', error);
           }
         );
       }
     });
   }
+  
+  
 
 
   updateVentaBanco(ventaId: number, updatedVenta: VentaBs): void {
