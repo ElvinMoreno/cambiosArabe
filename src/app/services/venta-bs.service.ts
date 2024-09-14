@@ -68,6 +68,18 @@ export class VentaBsService {
         })
       );
   }
+  updateBancoBs(ventaBSId: number, cuentaBolivaresId: number): Observable<void> {
+    const headers = this.getHeaders();
+    const body = {
+      VentaBSId: ventaBSId,
+      CuentaBolivaresId: cuentaBolivaresId
+    };
+
+    return this.http.post<void>(`${this.apiUrl}/update-bancoBs`, body, { headers })
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
 
   updateVentaBs(id: number, dto: VentaBs): Observable<VentaBs> {
     const headers = this.getHeaders();

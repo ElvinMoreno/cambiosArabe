@@ -85,44 +85,44 @@ export class ConfirmarSalidaComponent implements OnInit {
       return;
     }
 
+    // Abrir el modal para seleccionar un banco, pasando el `ventaId`
     const dialogRef = this.dialog.open(ModalBancosComponent, {
-      data: { ventaId: element.ventaBsId }
+      data: { ventaId: element.ventaBsId }  // Pasamos el ventaBsId al modal
     });
 
+    // Cuando el modal se cierra
     dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.ventaBsService.getVentaBsById(result.ventaId).subscribe(
-          (venta: VentaBs) => {
-            const updatedVenta: VentaBs = {
-              ...venta,
-              cuentaBancariaBs: result.cuentaId
-            };
+      // Verificar si se devolvió un `cuentaId` desde el modal
+      if (result && result.cuentaId) {
+        console.log(`Modal cerrado. Banco seleccionado (cuentaId): ${result.cuentaId} para venta (ventaBsId): ${element.ventaBsId}`);
 
-            // Actualizamos la venta con la nueva información del banco
-            this.ventaBsService.updateVentaBs(result.ventaId, updatedVenta).subscribe(
-              response => {
-                console.log('Venta actualizada con la cuenta bancaria seleccionada', response);
-                // Marcar venta como actualizada
-                this.updatedVentas.add(result.ventaId);
+        // Llamamos al servicio para actualizar el banco de la venta
+        this.ventaBsService.updateBancoBs(element.ventaBsId!, result.cuentaId).subscribe(
+          () => {
+            console.log('Banco Bs actualizado con éxito para la venta', element.ventaBsId);
 
-                // Recargar la lista de ventas para reflejar los cambios
-                this.loadVentas();
+            // Recargar la lista de ventas para reflejar los cambios
+            this.loadVentas();
 
-                // Confirmar la venta inmediatamente después de actualizar el banco
-                this.confirmarVentaSalida(element);
-              },
-              error => {
-                console.error('Error al actualizar la venta con la cuenta bancaria seleccionada', error);
-              }
-            );
+            // Confirmar la venta inmediatamente después de actualizar el banco
+            // this.confirmarVentaSalida(element);
           },
           error => {
-            console.error('Error al obtener la venta por ID', error);
+            console.error('Error al actualizar el banco para la venta', error);
+            Swal.fire({
+              title: 'Error',
+              text: 'Ocurrió un error al actualizar el banco de la venta. Inténtalo de nuevo.',
+              icon: 'error',
+              confirmButtonText: 'Aceptar'
+            });
           }
         );
+      } else {
+        console.log('El modal se cerró sin seleccionar un banco.');
       }
     });
   }
+
 
 
   updateVentaBanco(ventaId: number, updatedVenta: VentaBs): void {

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Output, OnInit, Inject, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { CommonModule, formatDate } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -20,6 +20,7 @@ import { CuentaDestinatario } from '../../../interfaces/cuenta-destinatario';
 import { Crearventa } from '../../../interfaces/crearventa';
 import { Subscription } from 'rxjs';
 import { VentaBs } from '../../../interfaces/venta-bs';
+import { ModalContentComponent } from './modal-content/modal-content.component';
 
 @Component({
   selector: 'app-bancolombia',
@@ -72,6 +73,7 @@ export class BancolombiaComponent implements OnInit, OnDestroy {
     private tasaService: TasaService,
     private ventaBsService: VentaBsService,
     public dialogRef: MatDialogRef<BancolombiaComponent>,
+    public dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.form = this.fb.group({
@@ -151,21 +153,28 @@ applyBolivaresLogic(bolivaresValue: number): void {
 
   // Actualiza el bolivaresLabel restando solo los valores ingresados en bolívares
   updateBolivaresLabel(): void {
-    if (this.tasaActual) {
-      let totalIngresadoEnBolivares = 0;
+    // Usar setTimeout para permitir que Angular termine de actualizar el formulario antes del cálculo
+    setTimeout(() => {
+      const tasaVenta = this.form.get('tasaVenta')?.value;  // Obtener la tasa más reciente del formulario
+      if (tasaVenta) {
+        let totalIngresadoEnBolivares = 0;
 
-      this.cuentasDestinatarioArray.controls.forEach((control) => {
-        if (control.get('currency')?.value === 'bolivares') {
-          const bolivares = control.get('bolivares')?.value;
-          totalIngresadoEnBolivares += bolivares ? parseFloat(bolivares) : 0;
-        }
-      });
+        this.cuentasDestinatarioArray.controls.forEach((control) => {
+          if (control.get('currency')?.value === 'bolivares') {
+            const bolivares = control.get('bolivares')?.value;
+            totalIngresadoEnBolivares += bolivares ? parseFloat(bolivares) : 0;
+          }
+        });
 
-      // Evitar cualquier cálculo relacionado con pesosLabel
-      const totalCalculadoEnBolivares = this.pesosLabel ? (this.pesosLabel / this.tasaActual) : 0;
-      this.bolivaresLabel = totalCalculadoEnBolivares - totalIngresadoEnBolivares;
-    }
+        // Evitar cualquier cálculo relacionado con pesosLabel
+        const totalCalculadoEnBolivares = this.pesosLabel ? (this.pesosLabel / tasaVenta) : 0;
+        console.log("Esta es la tasa calculando: " + tasaVenta);
+        this.bolivaresLabel = totalCalculadoEnBolivares - totalIngresadoEnBolivares;
+      }
+    }, 0);  // Esperar a que se complete la actualización del formulario
   }
+
+
 // Método para actualizar pesosLabel restando los valores ingresados en los campos de "pesos"
 updatePesosLabel(): void {
   if (this.tasaActual) {
@@ -249,6 +258,24 @@ updatePesosLabelFromVentaBs(): void {
       }
     });
   }
+
+
+  updateConversionAutomatica(value: number): void {
+    this.tasaActual = this.form.get('tasaVenta')?.value;  // Guarda la tasa actual
+    if (this.tasaActual !== null && value) {
+      let resultado: number;
+      if (this.currentLabel === 'Cantidad bolívares') {
+        resultado = value * this.tasaActual;
+      } else {
+        resultado = value / this.tasaActual;
+      }
+      this.form.patchValue({ conversionAutomatica: resultado.toFixed(2) }, { emitEvent: false });
+    } else {
+      this.form.patchValue({ conversionAutomatica: '' }, { emitEvent: false });
+    }
+    console.log(this.tasaActual);
+  }
+
 
   // Método que maneja el evento input para formatear el valor
   onInputChange(event: Event): void {
@@ -357,6 +384,7 @@ updatePesosLabelFromVentaBs(): void {
     this.subscriptions.add(
       this.form.get('precioVentaBs')?.valueChanges.subscribe(value => {
         this.updatePesosLabelFromVentaBs(); // Cada vez que cambia precioVentaBs, actualizamos pesosLabel
+        this.updateConversionAutomatica(value); // Calcular conversión en tiempo rea
       })
     );
       // Escuchar cambios en los campos de pesos dentro del array de cuentas destinatario
@@ -394,22 +422,6 @@ updatePesosLabelFromVentaBs(): void {
         this.form.get('clienteFinal')?.updateValueAndValidity();
       })
     );
-  }
-
-  updateConversionAutomatica(value: number): void {
-    this.tasaActual = this.form.get('tasaVenta')?.value;  // Guarda la tasa actual
-    if (this.tasaActual !== null && value) {
-      let resultado: number;
-      if (this.currentLabel === 'Cantidad bolívares') {
-        resultado = value * this.tasaActual;
-      } else {
-        resultado = value / this.tasaActual;
-      }
-      this.form.patchValue({ conversionAutomatica: resultado.toFixed(2) }, { emitEvent: false });
-    } else {
-      this.form.patchValue({ conversionAutomatica: '' }, { emitEvent: false });
-    }
-    console.log(this.tasaActual);
   }
 
   updateTasa(value: number): void {
@@ -541,9 +553,32 @@ buildVentaData(): Crearventa {
   return ventaData;
 }
 
+  //Modal para agregar campos
+  openModal(): void {
+    const dialogRef = this.dialog.open(ModalContentComponent, {
+      width: '400px',
+      data: {} // Puedes pasar datos si lo necesitas
+    });
+
+    // Cuando el modal se cierre, los datos analizados son asignados a los campos del formulario
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && !result.error) {
+        this.cuentasDestinatarioArray.at(0).patchValue({
+          nombreCuenta: result.nombreCuenta,
+          numeroCuenta: result.numeroCuenta,
+          cedula: result.cedula
+        });
+      } else {
+        console.error('Error en la respuesta o cierre del modal sin datos.');
+      }
+    });
+  }
+
 
   onCancelar(): void {
     this.cancelar.emit();
     this.dialogRef.close();
   }
 }
+
+
