@@ -68,18 +68,6 @@ export class VentaBsService {
         })
       );
   }
-  updateBancoBs(ventaBSId: number, cuentaBolivaresId: number): Observable<void> {
-    const headers = this.getHeaders();
-    const body = {
-      VentaBSId: ventaBSId,
-      CuentaBolivaresId: cuentaBolivaresId
-    };
-
-    return this.http.post<void>(`${this.apiUrl}/update-bancoBs`, body, { headers })
-      .pipe(
-        catchError(this.handleError)
-      );
-  }
 
   updateVentaBs(id: number, dto: VentaBs): Observable<VentaBs> {
     const headers = this.getHeaders();
@@ -122,4 +110,10 @@ export class VentaBsService {
     console.error('An error occurred:', error);
     return throwError(() => new Error('Ocurrió un error en la solicitud. Por favor, inténtalo de nuevo.'));
   }
+  updateBancoBs(ventaBsId: number, cuentaBolivaresId: number): Observable<void> {
+    const headers = this.getHeaders();
+    return this.http.post<void>(`${this.apiUrl}/update-bancoBs/${ventaBsId}/${cuentaBolivaresId}`, {}, { headers })
+      .pipe(catchError(this.handleError));
+  }
+
 }

@@ -71,15 +71,6 @@ export class FormularioProveedorComponent {
         creditosProveedor: [],
         compra: []
       };
-
-      this.proveedorService.createProveedor(newProveedor).subscribe(
-        (response) => {
-          this.dialogRef.close(true);
-        },
-        (error) => {
-          console.error('Error al crear el proveedor:', error);
-        }
-      );
     }
   }
 

@@ -1,45 +1,55 @@
-<div class="proveedores-container">
+<div *ngIf="!mostrandoCreditos; else creditosTemplate">
+  <!-- Vista de Proveedores -->
   <h2>Proveedores y Deudas</h2>
-  <div *ngIf="errorMessage" class="error-message">
-    {{ errorMessage }}
+
+  <div *ngIf="errorMessage()" class="error-message">
+    {{ errorMessage() }}
   </div>
 
-  <!-- Contenedor de filtro por fecha -->
-  <div class="filter-container">
-    <label for="filterDate">Fecha:</label>
-    <input type="date" id="filterDate" [(ngModel)]="filterDate">
-    <button mat-button (click)="filtrarPorDia()">Filtrar</button>
+  <div class="proveedores-grid">
+    <mat-card *ngFor="let proveedor of proveedores()" class="proveedor-card" (click)="mostrarCreditosDeProveedor(proveedor)">
+      <mat-card-header>
+        <mat-card-title>{{ proveedor.nombre }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p><strong>Total Deuda:</strong> {{ proveedor.deuda | currency }}</p>
+        <p><strong>Abonos:</strong> {{ proveedor.abono | currency }}</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button>Ver Detalles</button>
+      </mat-card-actions>
+    </mat-card>
   </div>
-
-  <!-- Vista de detalles de deudas -->
-  <div *ngIf="selectedProveedor; else noDataTemplate" class="modal">
-    <div class="modal-content">
-      <h2>Detalles de Deudas para {{ selectedProveedor.nombre }}</h2>
-
-      <!-- Contenedor scrolleable de movimientos -->
-      <div class="scrollable-content">
-        <div *ngFor="let credito of creditosFiltrados" class="card">
-          <div class="card-content">
-            <div class="card-item fecha">
-              <span class="card-value">{{ credito.fechaRegistro | date:'shortDate' }}</span>
-            </div>
-            <div class="card-item monto">
-              <span class="card-value">{{ credito.monto | currency }}</span>
-            </div>
-            <div class="card-item saldo">
-              <span class="card-value">{{ credito.montoRestante | currency }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <p><strong>Total Deuda:</strong> {{ getTotalDeuda(selectedProveedor) | currency }}</p>
-      <button mat-button (click)="closeModal()">Cerrar</button>
-    </div>
-  </div>
-
-  <!-- Plantilla en caso de no haber datos -->
-  <ng-template #noDataTemplate>
-    <p>No hay detalles de deuda disponibles.</p>
-  </ng-template>
 </div>
+
+<!-- Vista de Créditos -->
+<ng-template #creditosTemplate>
+  <button mat-button (click)="regresarAListaDeProveedores()" class="back-button">
+    <mat-icon>arrow_back</mat-icon> {{ nombreProveedor }}
+  </button>
+
+  <h2>Créditos de {{ nombreProveedor }}</h2>
+
+  <div *ngIf="creditos().length > 0; else noCreditosTemplate">
+    <table>
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Monto</th>
+          <th>Monto Restante</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let credito of creditos()">
+          <td>{{ credito.fechaRegistro | date:'shortDate' }}</td>
+          <td [style.color]="credito.monto < 0 ? 'red' : 'green'">{{ credito.monto | currency }}</td>
+          <td>{{ credito.montoRestante | currency }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <ng-template #noCreditosTemplate>
+    <p>No hay créditos disponibles.</p>
+  </ng-template>
+</ng-template>

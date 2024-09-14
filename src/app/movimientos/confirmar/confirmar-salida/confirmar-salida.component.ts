@@ -85,43 +85,30 @@ export class ConfirmarSalidaComponent implements OnInit {
       return;
     }
 
-    // Abrir el modal para seleccionar un banco, pasando el `ventaId`
     const dialogRef = this.dialog.open(ModalBancosComponent, {
-      data: { ventaId: element.ventaBsId }  // Pasamos el ventaBsId al modal
+      data: { ventaId: element.ventaBsId }
     });
 
-    // Cuando el modal se cierra
     dialogRef.afterClosed().subscribe(result => {
-      // Verificar si se devolvió un `cuentaId` desde el modal
-      if (result && result.cuentaId) {
-        console.log(`Modal cerrado. Banco seleccionado (cuentaId): ${result.cuentaId} para venta (ventaBsId): ${element.ventaBsId}`);
-
-        // Llamamos al servicio para actualizar el banco de la venta
-        this.ventaBsService.updateBancoBs(element.ventaBsId!, result.cuentaId).subscribe(
-          () => {
-            console.log('Banco Bs actualizado con éxito para la venta', element.ventaBsId);
+      if (result) {
+        // Llama al servicio con los IDs como parte de la URL
+        this.ventaBsService.updateBancoBs(result.ventaId, result.cuentaId).subscribe(
+          response => {
+            console.log('Venta actualizada con la cuenta bancaria seleccionada', response);
 
             // Recargar la lista de ventas para reflejar los cambios
             this.loadVentas();
 
             // Confirmar la venta inmediatamente después de actualizar el banco
-            // this.confirmarVentaSalida(element);
           },
           error => {
-            console.error('Error al actualizar el banco para la venta', error);
-            Swal.fire({
-              title: 'Error',
-              text: 'Ocurrió un error al actualizar el banco de la venta. Inténtalo de nuevo.',
-              icon: 'error',
-              confirmButtonText: 'Aceptar'
-            });
+            console.error('Error al actualizar la venta con la cuenta bancaria seleccionada', error);
           }
         );
-      } else {
-        console.log('El modal se cerró sin seleccionar un banco.');
       }
     });
   }
+
 
 
 
