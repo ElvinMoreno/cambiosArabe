@@ -8,7 +8,7 @@ import { appsetting } from '../settings/appsetting';
   providedIn: 'root'
 })
 export class GastosService {
-  private apiUrl = `${appsetting.apiUrl}/gastos`;
+  private apiUrl = `${appsetting.apiUrl}gastos`;
 
   constructor(private http: HttpClient) { }
 
