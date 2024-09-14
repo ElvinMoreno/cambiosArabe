@@ -138,7 +138,7 @@ export class ConfirmarSalidaComponent implements OnInit {
   }
 
   confirmarVentaSalida(venta: CuentaDestinatario): void {
-    const nombreCuenta = venta.nombreCuentaDestinatario || 'N/A';
+    const nombreCuenta = venta.nombreClienteFinal || 'N/A';
 
     // Envolver la venta en un array antes de enviar la petición
     const ventasAConfirmar: CuentaDestinatario[] = [venta]; // Convertir a lista

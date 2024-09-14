@@ -40,6 +40,7 @@
           </select>
         </div>
 
+
         <!-- Campo Cuenta Entrante (solo si metodoPago === 1 y tipoSeleccion es 'descripcion') -->
         <div *ngIf="showCuentaEntrante && tipoSeleccion === 'descripcion'" class="form-group"
           [ngClass]="{'has-error': form.get('cuentaEntrante')?.invalid && form.get('cuentaEntrante')?.touched}">
