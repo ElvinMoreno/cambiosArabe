@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, catchError, throwError } from 'rxjs';
 import { Proveedor } from '../interfaces/proveedor';
+import { CreditoProveedor } from '../interfaces/creditoProveedor';
 import { appsetting } from '../settings/appsetting';
 
 @Injectable({
@@ -9,6 +10,7 @@ import { appsetting } from '../settings/appsetting';
 })
 export class ProveedorService {
   private apiUrl = `${appsetting.apiUrl}proveedores`;
+  private apiCreditosUrl = `${appsetting.apiUrl}creditos-proveedor`;
 
   constructor(private http: HttpClient) { }
 
@@ -26,17 +28,20 @@ export class ProveedorService {
   getAllProveedores(): Observable<Proveedor[]> {
     const headers = this.getHeaders();
     return this.http.get<Proveedor[]>(this.apiUrl, { headers })
-      .pipe(
-        catchError(this.handleError)
-      );
+      .pipe(catchError(this.handleError));
   }
 
-  createProveedor(proveedor: Proveedor): Observable<Proveedor> {
+  getCreditosByProveedorId(proveedorId: number): Observable<CreditoProveedor[]> {
     const headers = this.getHeaders();
-    return this.http.post<Proveedor>(this.apiUrl, proveedor, { headers })
-      .pipe(
-        catchError(this.handleError)
-      );
+    return this.http.get<CreditoProveedor[]>(`${this.apiCreditosUrl}/${proveedorId}`, { headers })
+      .pipe(catchError(this.handleError));
+  }
+
+  // Agregar este método para obtener un proveedor por ID
+  getProveedorById(proveedorId: number): Observable<Proveedor> {
+    const headers = this.getHeaders();
+    return this.http.get<Proveedor>(`${this.apiUrl}/${proveedorId}`, { headers })
+      .pipe(catchError(this.handleError));
   }
 
   private handleError(error: any) {
@@ -44,3 +49,4 @@ export class ProveedorService {
     return throwError(() => new Error('Ocurrió un error en la solicitud. Por favor, inténtalo de nuevo.'));
   }
 }
+

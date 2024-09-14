@@ -1,29 +1,28 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { ProveedorService } from '../../../services/proveedor.service';
 import { Proveedor } from '../../../interfaces/proveedor';
-import { CreditoProveedor } from '../../../interfaces/creditoProveedor'; // Asegúrate de importar esto
+import { CreditoProveedor } from '../../../interfaces/creditoProveedor';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { FormsModule } from '@angular/forms';
 import { catchError, of } from 'rxjs';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-proveedor-credito',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatButtonModule, MatDialogModule, FormsModule],
+  imports: [CommonModule, MatCardModule, MatButtonModule, MatIcon],
   templateUrl: './proveedor-credito.component.html',
   styleUrls: ['./proveedor-credito.component.css']
 })
 export class ProveedorCreditoComponent implements OnInit {
-  proveedores: Proveedor[] = [];
-  errorMessage: string | null = null;
-  selectedProveedor: Proveedor | null = null;
-  creditosFiltrados: CreditoProveedor[] = [];
-  filterDate: string | null = null;
+  proveedores = signal<Proveedor[]>([]);
+  creditos = signal<CreditoProveedor[]>([]);
+  nombreProveedor: string = '';  // Nombre del proveedor seleccionado
+  mostrandoCreditos: boolean = false;  // Para alternar entre vistas
+  errorMessage = signal<string | null>(null);
 
-  constructor(private proveedorService: ProveedorService, public dialog: MatDialog) {}
+  constructor(private proveedorService: ProveedorService) {}
 
   ngOnInit(): void {
     this.loadProveedores();
@@ -34,43 +33,32 @@ export class ProveedorCreditoComponent implements OnInit {
       .pipe(
         catchError(error => {
           console.error('Error al obtener los proveedores:', error);
-          this.errorMessage = 'Ocurrió un error al obtener los datos. Por favor, inténtalo de nuevo.';
+          this.errorMessage.set('Ocurrió un error al obtener los datos.');
           return of([]);
         })
       )
       .subscribe(data => {
-        this.proveedores = data;
+        this.proveedores.set(data);  // Usando signal para actualizar el estado
       });
   }
 
-  getTotalDeuda(proveedor: Proveedor): number {
-    return proveedor.creditosProveedor.reduce((total, credito) => total + (credito.montoRestante || 0), 0);
-  }
-
-  openCreditoDetalle(proveedor: Proveedor): void {
-    this.selectedProveedor = proveedor;
-    this.creditosFiltrados = [...proveedor.creditosProveedor]; // Mostrar todos los créditos inicialmente
-  }
-
-  closeModal(): void {
-    this.selectedProveedor = null;
-  }
-
-  filtrarPorDia(): void {
-    if (this.filterDate && this.selectedProveedor) {
-      const selectedDate = new Date(this.filterDate);
-      this.creditosFiltrados = this.selectedProveedor.creditosProveedor.filter(credito => {
-        const creditoDate = new Date(credito.fechaRegistro);
-        return (
-          creditoDate.getDate() === selectedDate.getDate() &&
-          creditoDate.getMonth() === selectedDate.getMonth() &&
-          creditoDate.getFullYear() === selectedDate.getFullYear()
-        );
+  mostrarCreditosDeProveedor(proveedor: Proveedor): void {
+    this.nombreProveedor = proveedor.nombre || '';  // Guarda el nombre del proveedor seleccionado
+    this.proveedorService.getCreditosByProveedorId(proveedor.id)
+      .pipe(
+        catchError(error => {
+          console.error('Error al obtener los créditos:', error);
+          this.errorMessage.set('Ocurrió un error al obtener los créditos.');
+          return of([]);
+        })
+      )
+      .subscribe(creditos => {
+        this.creditos.set(creditos);  // Actualiza los créditos del proveedor
+        this.mostrandoCreditos = true;  // Cambia a la vista de créditos
       });
-    } else if (this.selectedProveedor) {
-      this.creditosFiltrados = [...this.selectedProveedor.creditosProveedor]; // Si no hay fecha seleccionada, muestra todos los créditos
-    }
   }
 
-  
+  regresarAListaDeProveedores(): void {
+    this.mostrandoCreditos = false;  // Cambia de vuelta a la vista de proveedores
+  }
 }

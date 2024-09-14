@@ -1,109 +1,194 @@
+/* Contenedor de Proveedores */
 .proveedores-container {
-    padding: 20px;
-    font-family: 'Arial', sans-serif;
-    color: #333;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .proveedores-container h2 {
-    text-align: center;
-    font-size: 2em;
-    margin-bottom: 4rem;
-    color: #5E94FF;
-  }
-  
-  .error-message {
-    color: #e74c3c;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 10px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.proveedores-container h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  text-align: center;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+/* Grid de Proveedores */
+.proveedores-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+/* Estilo de las cards de Proveedores */
+.proveedor-card {
+  background-color: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.proveedor-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+}
+
+.proveedor-card mat-card-title {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.proveedor-card mat-card-content p {
+  margin: 10px 0;
+  color: #555;
+  font-size: 1rem;
+}
+
+.proveedor-card mat-card-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Botón para regresar a la lista de proveedores */
+.back-button {
+  display: flex;
+  align-items: center;
+  background-color: #5E94FF;
+  color: white; /* El color del texto será blanco */
+  padding: 10px 16px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-weight: bold;
+}
+
+/* Estilo específico para el ícono dentro del botón */
+.back-button mat-icon {
+  color: white; /* El color del ícono será blanco */
+  margin-right: 8px; /* Margen para separar el ícono del texto */
+}
+
+/* Estilo para el hover del botón */
+.back-button:hover {
+  background-color: #4072cc; /* Fondo más oscuro en hover */
+}
+
+
+/* Estilo del botón de regreso */
+.back-button {
+  display: flex;
+  align-items: center;
+  background-color: #5E94FF;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.back-button:hover {
+  background-color: #4072cc;
+}
+
+/* Estilo para la tabla de créditos */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+thead {
+  background-color: #5E94FF;
+  color: white;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+thead th {
+  padding: 12px;
+  text-align: center;
+}
+
+tbody td {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+tbody td[style*="color: red"] {
+  color: red !important;
+}
+
+tbody td[style*="color: green"] {
+  color: green !important;
+}
+
+/* Estilo para la barra de desplazamiento */
+.scrollable-content {
+  max-height: 300px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #5E94FF #f1f1f1;
+}
+
+.scrollable-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollable-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 8px;
+}
+
+.scrollable-content::-webkit-scrollbar-thumb {
+  background: #5E94FF;
+  border-radius: 8px;
+}
+
+.scrollable-content::-webkit-scrollbar-thumb:hover {
+  background: #4a7ccc;
+}
+
+/* Estilo de mensaje "No hay créditos" */
+.no-creditos {
+  text-align: center;
+  color: #ff5252;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+/* Responsive design para pantallas medianas */
+@media (max-width: 1024px) {
   .proveedores-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-    justify-items: center;
+    grid-template-columns: repeat(2, 1fr);
   }
-  
-  .proveedor-card {
-    width: 100%;
-    max-width: 320px;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    background-color: #fff;
-    text-align: left;
-    padding-bottom: 15px;
+}
+
+/* Responsive design para pantallas pequeñas */
+@media (max-width: 768px) {
+  .proveedores-grid {
+    grid-template-columns: 1fr;
   }
-  
-  .proveedor-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+
+  .filter-container {
+    flex-direction: column;
+    align-items: flex-start;
   }
-  
-  .card-title {
-    background-color: #5E94FF;
-    color: #fff;
-    padding: 15px;
-    font-size: 1.4em;
-    font-weight: bold;
-    text-align: center;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-  }
-  
-  .card-content {
-    padding: 0 15px;
-  }
-  
-  .card-content p {
-    margin: 10px 0;
-    font-size: 1.1em;
-    line-height: 1.5em;
-    color: #34495e;
-  }
-  
-  .card-content p strong {
-    color: #5E94FF;
-    font-weight: bold;
-    display: inline-block;
-    min-width: 150px;
-  }
-  
-  /* Modal Styles */
-  .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .modal-content {
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    width: 400px;
-    max-width: 90%;
-  }
-  
-  .modal-content h2 {
-    margin-top: 0;
-  }
-  
-  .modal-content ul {
-    list-style-type: none;
-    padding-left: 0;
-  }
-  
-  .modal-content li {
-    margin-bottom: 10px;
-  }
-  
+}

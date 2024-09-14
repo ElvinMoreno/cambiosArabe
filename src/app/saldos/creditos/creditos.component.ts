@@ -5,11 +5,13 @@ import { ClienteService } from '../../services/clientes.service';
 import { ProveedorService } from '../../services/proveedor.service'; // Importa el servicio de Proveedor
 import { catchError, of } from 'rxjs';
 import { ProveedorCreditoComponent } from './proveedor-credito/proveedor-credito.component';
+import { RouterModule } from '@angular/router';  // Importa RouterModule
+
 
 @Component({
   selector: 'app-creditos',
   standalone: true,
-  imports: [ClientesCreditosComponent, MatTabsModule, ProveedorCreditoComponent],
+  imports: [ClientesCreditosComponent, MatTabsModule, ProveedorCreditoComponent, RouterModule],  // Agrega RouterModule
   templateUrl: './creditos.component.html',
   styleUrls: ['./creditos.component.css']
 })
