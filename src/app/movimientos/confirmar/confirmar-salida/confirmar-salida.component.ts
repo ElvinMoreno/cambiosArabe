@@ -84,21 +84,21 @@ export class ConfirmarSalidaComponent implements OnInit {
       });
       return;
     }
-  
+
     const dialogRef = this.dialog.open(ModalBancosComponent, {
       data: { ventaId: element.ventaBsId }
     });
-  
+
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         // Llama al servicio con los IDs como parte de la URL
         this.ventaBsService.updateBancoBs(result.ventaId, result.cuentaId).subscribe(
           response => {
             console.log('Venta actualizada con la cuenta bancaria seleccionada', response);
-  
+
             // Recargar la lista de ventas para reflejar los cambios
             this.loadVentas();
-  
+
             // Confirmar la venta inmediatamente después de actualizar el banco
           },
           error => {
@@ -108,8 +108,8 @@ export class ConfirmarSalidaComponent implements OnInit {
       }
     });
   }
-  
-  
+
+
 
 
   updateVentaBanco(ventaId: number, updatedVenta: VentaBs): void {

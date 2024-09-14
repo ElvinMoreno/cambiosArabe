@@ -23,8 +23,15 @@
             </div>
             <div class="form-group" [ngClass]="{'has-error': cuenta.get('cedula')?.invalid && cuenta.get('cedula')?.touched}">
               <label for="cedula{{i}}">Cédula <span class="required">*</span></label>
-              <input id="cedula{{i}}" type="tel" inputmode="numeric" pattern="[0-9]*" formControlName="cedula" placeholder="Número de cédula">
+              <div class="input-button-group">
+                <input id="cedula{{i}}" type="tel" inputmode="numeric" pattern="[0-9]*" formControlName="cedula" placeholder="Número de cédula">
+                <!-- Botón con el icono de ojo -->
+                <button mat-icon-button type="button" (click)="openModal()">
+                  <mat-icon>visibility</mat-icon>
+                </button>
+              </div>
             </div>
+
             <div class="form-group" *ngIf="bolivaresVisible" [ngClass]="{'has-error': cuenta.get('bolivares')?.invalid && cuenta.get('bolivares')?.touched}">
               <label for="bolivares{{i}}">{{ cuenta.get('currency')?.value === 'bolivares' ? 'Bolívares' : 'Pesos' }} <span class="required">*</span></label>
               <div class="input-button-group">

@@ -115,5 +115,5 @@ export class VentaBsService {
     return this.http.post<void>(`${this.apiUrl}/update-bancoBs/${ventaBsId}/${cuentaBolivaresId}`, {}, { headers })
       .pipe(catchError(this.handleError));
   }
-  
+
 }
