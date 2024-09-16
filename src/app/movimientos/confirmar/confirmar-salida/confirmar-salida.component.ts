@@ -135,27 +135,49 @@ export class ConfirmarSalidaComponent implements OnInit {
       response => {
         console.log('Venta confirmada', response);
 
-        Swal.fire({
-          title: 'Venta Confirmada',
-          text: `Mandar capture a: ${nombreCuenta}.`,
-          icon: 'success',
-          confirmButtonText: 'Aceptar'
-        });
+        // Copiar automáticamente el nombre de la cuenta al portapapeles
+        if (nombreCuenta !== 'N/A') {
+          navigator.clipboard.writeText(nombreCuenta).then(() => {
+            Swal.fire({
+              title: 'Venta Confirmada',
+              text: `Mandar capture a: ${nombreCuenta}. (Nombre copiado)`,
+              icon: 'success',
+              confirmButtonText: 'Aceptar'
+            });
+          }).catch(err => {
+            console.error('Error al copiar el nombre de la cuenta al portapapeles', err);
+
+            Swal.fire({
+              title: 'Venta Confirmada',
+              text: `Mandar capture a: ${nombreCuenta}. (No se pudo copiar el nombre al portapapeles)`,
+              icon: 'success',
+              confirmButtonText: 'Aceptar'
+            });
+          });
+        } else {
+          Swal.fire({
+            title: 'Venta Confirmada',
+            text: `Mandar capture a: ${nombreCuenta}.`,
+            icon: 'success',
+            confirmButtonText: 'Aceptar'
+          });
+        }
 
         this.loadVentas(); // Recargar las ventas tras la confirmación
       },
-      // error => {
-      //   console.error('Error al confirmar la venta', error);
+      error => {
+        console.error('Error al confirmar la venta', error);
 
-      //   Swal.fire({
-      //     title: 'Error',
-      //     text: 'Ocurrió un error al confirmar la venta.',
-      //     icon: 'error',
-      //     confirmButtonText: 'Aceptar'
-      //   });
-      // }
+        Swal.fire({
+          title: 'Error',
+          text: 'Ocurrió un error al confirmar la venta.',
+          icon: 'error',
+          confirmButtonText: 'Aceptar'
+        });
+      }
     );
   }
+
 
   copyToClipboard(value: string | number, id: number, field: string): void {
     if (this.isCopied(id, field)) {
