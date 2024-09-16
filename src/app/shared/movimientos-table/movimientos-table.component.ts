@@ -8,7 +8,8 @@ import { DetalleMovimientoCompGenComponent } from '../detalle-movimiento-comp-ge
 @Component({
   selector: 'app-movimientos-table',
   standalone: true,
-  imports: [CommonModule, MatDialogModule, FormsModule], // Asegúrate de incluir FormsModule aquí
+  imports: [CommonModule, MatDialogModule, FormsModule,
+  ], // Asegúrate de incluir FormsModule aquí
   templateUrl: './movimientos-table.component.html',
   styleUrls: ['./movimientos-table.component.css'],
 })
