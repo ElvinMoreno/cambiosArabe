@@ -1,0 +1,42 @@
+<h2>Seguimiento de Caja</h2>
+
+<!-- Filtro de Mes -->
+<label for="mesSeleccionado">Seleccionar Mes:</label>
+<input type="month" id="mesSeleccionado" (change)="onMesSeleccionado($event)" />
+
+<!-- Tabla de seguimiento -->
+<table mat-table [dataSource]="seguimientoCaja" class="mat-elevation-z8">
+  <!-- Fecha Column -->
+  <ng-container matColumnDef="fecha">
+    <th mat-header-cell *matHeaderCellDef> Fecha </th>
+    <td mat-cell *matCellDef="let element"> {{ element.fecha }} </td>
+  </ng-container>
+
+  <!-- Créditos Total Column -->
+  <ng-container matColumnDef="creditosTotal">
+    <th mat-header-cell *matHeaderCellDef> Créditos Total </th>
+    <td mat-cell *matCellDef="let element"> ${{ element.creditosTotal | number:'1.2-2' }} </td>
+  </ng-container>
+
+  <!-- Colombianas Column -->
+  <ng-container matColumnDef="colombianas">
+    <th mat-header-cell *matHeaderCellDef> Colombianas </th>
+    <td mat-cell *matCellDef="let element"> ${{ element.colombianas | number:'1.2-2' }} </td>
+  </ng-container>
+
+  <!-- Venezolanas Column -->
+  <ng-container matColumnDef="venezolanas">
+    <th mat-header-cell *matHeaderCellDef> Venezolanas </th>
+    <td mat-cell *matCellDef="let element"> ${{ element.venezolanas | number:'1.2-2' }} </td>
+  </ng-container>
+
+  <!-- Utilidad Column -->
+  <ng-container matColumnDef="utilidad">
+    <th mat-header-cell *matHeaderCellDef> Utilidad </th>
+    <td mat-cell *matCellDef="let element"> ${{ element.utilidad | number:'1.2-2' }} </td>
+  </ng-container>
+
+  <!-- Header and Row Definitions -->
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>

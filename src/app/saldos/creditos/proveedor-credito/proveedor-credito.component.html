@@ -41,9 +41,9 @@
       </thead>
       <tbody>
         <tr *ngFor="let credito of creditos()">
-          <td>{{ credito.fechaRegistro | date:'shortDate' }}</td>
+          <td>{{ credito.fecha | date:'shortDate' }}</td>
           <td [style.color]="credito.monto < 0 ? 'red' : 'green'">{{ credito.monto | currency }}</td>
-          <td>{{ credito.montoRestante | currency }}</td>
+          <td>{{ credito.saldoActual| currency }}</td>
         </tr>
       </tbody>
     </table>

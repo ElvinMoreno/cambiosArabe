@@ -4,6 +4,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { CommonModule } from '@angular/common';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { BalanceComponent } from './balance/balance.component';
+import { SeguimientoCajaComponent } from './seguimiento-caja/seguimiento-caja.component';
 
 @Component({
   selector: 'app-index',
@@ -13,7 +14,8 @@ import { BalanceComponent } from './balance/balance.component';
     MatIcon,
     MatTabsModule,
     DashboardComponent,
-    BalanceComponent
+    BalanceComponent,
+    SeguimientoCajaComponent
   ],
   templateUrl: './index.component.html',
   styleUrls: ['./index.component.css']

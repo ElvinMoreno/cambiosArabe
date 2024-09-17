@@ -1,0 +1,22 @@
+table {
+    width: 100%;
+    margin: 20px 0;
+}
+
+th.mat-header-cell, td.mat-cell {
+    text-align: center;
+    font-weight: bold;
+}
+
+.mat-header-cell {
+    background-color: #8BC94D;
+    color: white;
+}
+
+.mat-row {
+    background-color: white;
+}
+
+.mat-row:nth-child(odd) {
+    background-color: #f2f2f2;
+}
