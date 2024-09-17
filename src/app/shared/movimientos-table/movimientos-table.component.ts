@@ -67,13 +67,21 @@ export class MovimientosTableComponent implements OnChanges {
           { label: 'Tipo de Movimiento', key: 'tipoMovimiento' },
           { label: 'Monto', key: 'monto', format: 'currency' },
           { label: 'Descripción', key: 'descripcion' },
-          { label: 'Entrada', key: 'entrada' },
+          ...(movimiento.descripcion === 'Venta BS' ? [
+            { label: 'Cliente', key: 'nombreClienteFinal' },
+            { label: 'Tasa', key: 'tasaVenta' },
+            { label: 'Bolivares Vendidos', key: 'bolivaresVendidos', format: 'currency' }
+          ] : [])
         ],
         showCloseButton: true,
         closeButtonLabel: 'Cerrar',
       },
     });
   }
+  
+  
+  
+  
 
   exportarExcel(): void {
     const data = this.movimientosFiltrados.map((mov) => ({
