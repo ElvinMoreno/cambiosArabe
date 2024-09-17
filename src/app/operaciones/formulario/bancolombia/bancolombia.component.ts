@@ -553,26 +553,32 @@ buildVentaData(): Crearventa {
   return ventaData;
 }
 
-  //Modal para agregar campos
-  openModal(): void {
-    const dialogRef = this.dialog.open(ModalContentComponent, {
-      width: '400px',
-      data: {} // Puedes pasar datos si lo necesitas
-    });
 
-    // Cuando el modal se cierre, los datos analizados son asignados a los campos del formulario
-    dialogRef.afterClosed().subscribe(result => {
-      if (result && !result.error) {
-        this.cuentasDestinatarioArray.at(0).patchValue({
-          nombreCuenta: result.nombreCuenta,
-          numeroCuenta: result.numeroCuenta,
-          cedula: result.cedula
-        });
-      } else {
-        console.error('Error en la respuesta o cierre del modal sin datos.');
-      }
-    });
-  }
+openModal(): void {
+  const dialogRef = this.dialog.open(ModalContentComponent, {
+    width: '400px',
+    data: {} // Puedes pasar datos si lo necesitas
+  });
+
+  // Cuando el modal se cierre, los datos analizados son asignados a los campos del formulario
+  dialogRef.afterClosed().subscribe(result => {
+    if (result && !result.error) {
+      // Remover cualquier signo de puntuación antes de asignar los valores
+      const cleanedNombreCuenta = result.nombreCuenta ? result.nombreCuenta.replace(/[^\w\s]/gi, '') : '';
+      const cleanedNumeroCuenta = result.numeroCuenta ? result.numeroCuenta.replace(/[^\w\s]/gi, '') : '';
+      const cleanedCedula = result.cedula ? result.cedula.replace(/[^\w\s]/gi, '') : '';
+
+      this.cuentasDestinatarioArray.at(0).patchValue({
+        nombreCuenta: cleanedNombreCuenta,
+        numeroCuenta: cleanedNumeroCuenta,
+        cedula: cleanedCedula
+      });
+    } else {
+      console.error('Error en la respuesta o cierre del modal sin datos.');
+    }
+  });
+}
+
 
 
   onCancelar(): void {

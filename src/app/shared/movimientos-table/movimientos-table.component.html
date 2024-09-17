@@ -2,6 +2,11 @@
   <label for="filterDate">Fecha:</label>
   <input type="date" id="filterDate" [(ngModel)]="filterDate">
   <button mat-button (click)="filtrarPorDia()">Filtrar</button>
+
+  <!-- Botón de exportación -->
+  <button mat-icon-button color="primary" (click)="exportarExcel()">
+    <mat-icon>file_download</mat-icon>
+  </button>
 </div>
 
 <div class="center-container">
@@ -28,7 +33,7 @@
               {{ movimiento.monto | currency:'USD' }}
             </span>
           </div>
-          <div class="card-item movimeinto">
+          <div class="card-item movimiento">
             <span class="card-value">
               {{ movimiento.tipoMovimiento }}
             </span>

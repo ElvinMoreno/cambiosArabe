@@ -3,7 +3,7 @@
     justify-content: center;
     padding: 20px 0;
   }
-  
+
   .table-container {
     margin-top: 15px;
     padding: 10px;
@@ -12,7 +12,15 @@
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
-  
+
+    /* Centrado para la columna de tipoMovimiento */
+  .card-item.movimiento {
+    display: flex;
+    justify-content: center;  /* Centrar horizontalmente */
+    align-items: center;  /* Centrar verticalmente */
+    width: 100%; /* Se asegura de ocupar el 100% del ancho disponible */
+  }
+
   .table-header {
     display: flex;
     justify-content: space-between;
@@ -26,7 +34,7 @@
     top: 0;
     z-index: 10;
   }
-  
+
   .header-item {
     width: 30%;
     text-align: center;
@@ -34,7 +42,7 @@
     justify-content: center;
     align-items: center;
   }
-  
+
   .scrollable-content {
     max-height: 50rem;
     overflow-y: auto;
@@ -42,25 +50,25 @@
     scrollbar-width: thin;
     scrollbar-color: #5E94FF #f1f1f1;
   }
-  
+
   .scrollable-content::-webkit-scrollbar {
     width: 8px;
   }
-  
+
   .scrollable-content::-webkit-scrollbar-track {
     background: #f1f1f1;
     border-radius: 8px;
   }
-  
+
   .scrollable-content::-webkit-scrollbar-thumb {
     background: #5E94FF;
     border-radius: 8px;
   }
-  
+
   .scrollable-content::-webkit-scrollbar-thumb:hover {
     background: #4a7ccc;
   }
-  
+
   .card {
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -70,12 +78,12 @@
     background-color: #fff;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
-  
+
   .card:hover {
     transform: translateY(-3px);
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.15);
   }
-  
+
   .card-content {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -85,14 +93,14 @@
     align-items: center;
     justify-items: center;
   }
-  
+
   .card-item.fecha {
     grid-column: 1 / 2;
     grid-row: 1 / 3;
     display: flex;
     align-items: center;
   }
-  
+
   .card-item.monto {
     grid-column: 2 / 3;
     grid-row: 1 / 2;
@@ -100,14 +108,14 @@
     align-items: center;
     color: #5E94FF;
   }
-  
+
   .card-item.saldo-actual {
     grid-column: 3 / 4;
     grid-row: 1 / 3;
     display: flex;
     align-items: center;
   }
-  
+
   .card-value {
     font-size: 1rem;
     color: #333;
@@ -127,19 +135,19 @@
     gap: 10px; /* Espacio entre los elementos */
     margin-bottom: 10px; /* Margen inferior para separarlo de la tabla */
     margin: 2rem 4.5rem;
-  
+
   }
-  
+
   .filter-container label {
     font-weight: regular;
   }
-  
+
   .filter-container input {
     padding: 5px;
     border-radius: 4px;
     border: 1px solid #ccc;
   }
-  
+
   .filter-container button {
     background-color: #5E94FF;
     color: white;
@@ -149,30 +157,30 @@
     cursor: pointer;
     transition: background-color 0.3s;
   }
-  
+
   .filter-container button:hover {
     background-color: #4a7ccc;
   }
-  
-  
+
+
   @media (max-width: 768px) {
     .table-header {
       display: flex;
     }
-  
+
     .card-content {
       flex-direction: row;
       flex-wrap: wrap;
       justify-content: space-between;
     }
-  
+
     .card-item {
       width: 30%;
       flex-direction: column;
       align-items: flex-start;
       margin-bottom: 8px;
     }
-  
+
     .card-value {
       font-size: 1rem;
     }
@@ -183,4 +191,3 @@
       margin: 1rem;
     }
   }
-  
