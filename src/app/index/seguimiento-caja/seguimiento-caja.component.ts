@@ -8,7 +8,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { ClienteService } from '../../services/clientes.service';
 import { ProveedorService } from '../../services/proveedor.service';
 import { CuentaBancariaService } from '../../services/cuenta-bancaria.service';
+import { MovimientoService } from '../../services/movimiento.service'; // Añadido para movimientos
 import { catchError, of } from 'rxjs';
+import { MovimientoDiaDTO } from '../../interfaces/MovimientoDiaDTO'; // Asegúrate de tener esta interfaz para movimientos
 
 @Component({
   selector: 'app-seguimiento-caja',
@@ -27,8 +29,7 @@ import { catchError, of } from 'rxjs';
 export class SeguimientoCajaComponent implements OnInit {
 
   // Variables para almacenar los totales por día
-  seguimientoCaja: { fecha: string, creditosTotal: number, colombianas: number, venezolanas: number, utilidad: number }[] = [];
-  totalCreditos: number = 0;
+  seguimientoCaja: { fecha: string, colombianas: number, venezolanas: number, utilidad: number }[] = [];
   totalColombianas: number = 0;
   totalVenezolanas: number = 0;
 
@@ -36,12 +37,13 @@ export class SeguimientoCajaComponent implements OnInit {
   mesSeleccionado: string = '';
 
   // Definir las columnas de la tabla
-  displayedColumns: string[] = ['fecha', 'creditosTotal', 'colombianas', 'venezolanas', 'utilidad'];
+  displayedColumns: string[] = ['fecha', 'colombianas', 'venezolanas', 'utilidad'];
 
   constructor(
     private clienteService: ClienteService,
     private proveedorService: ProveedorService,
-    private cuentaBancariaService: CuentaBancariaService
+    private cuentaBancariaService: CuentaBancariaService,
+    private movimientoService: MovimientoService // Añadido para usar el servicio de movimientos
   ) {}
 
   ngOnInit(): void {
@@ -57,60 +59,70 @@ export class SeguimientoCajaComponent implements OnInit {
   cargarDatos() {
     // Limpiar el seguimiento anterior antes de cargar nuevos datos
     this.seguimientoCaja = [];
-
+  
     if (!this.mesSeleccionado) {
+      console.log("No hay mes seleccionado.");
       return;
     }
-
-    // Obtener la suma de créditos (deudas)
-    this.clienteService.getAllClientes()
-      .pipe(catchError(error => of([])))
-      .subscribe(clientes => {
-        this.totalCreditos = clientes
-          .filter(cliente => cliente.permitirCredito)
-          .reduce((total, cliente) => total + cliente.creditos.reduce((sum, credito) => sum + credito.precio, 0), 0);
-        this.actualizarTabla();
+  
+    // Obtener movimientos colombianas y sumarlos por día
+    this.movimientoService.getMovimientosColombianas()
+      .pipe(catchError(error => {
+        console.error('Error al obtener movimientos colombianos:', error);
+        return of([]);
+      }))
+      .subscribe(movimientos => {
+        console.log("Movimientos colombianos recibidos:", movimientos);
+        const montosPorDia = this.sumarMontosPorDia(movimientos);
+        console.log("Montos por día:", montosPorDia);
+        this.actualizarTabla(montosPorDia);
       });
-
-    // Obtener la suma de cuentas colombianas
-    this.cuentaBancariaService.getCuentasColombianas()
-      .pipe(catchError(error => of([])))
-      .subscribe(cuentas => {
-        this.totalColombianas = cuentas.reduce((total, cuenta) => total + (cuenta.monto || 0), 0);
-        this.actualizarTabla();
-      });
-
+  
     // Obtener la suma de cuentas venezolanas (en pesos)
     this.cuentaBancariaService.getCuentasVenezolanas()
-      .pipe(catchError(error => of([])))
+      .pipe(catchError(error => {
+        console.error('Error al obtener cuentas venezolanas:', error);
+        return of([]);
+      }))
       .subscribe(cuentas => {
         this.totalVenezolanas = cuentas.reduce((total, cuenta) => total + (cuenta.monto || 0), 0);
+        console.log("Total venezolanas:", this.totalVenezolanas);
         this.actualizarTabla();
       });
   }
+  
 
-  actualizarTabla() {
-    const fechaActual = new Date().toLocaleDateString(); 
-    const utilidad = this.totalCreditos + this.totalColombianas + this.totalVenezolanas;
+  // Función que agrupa los movimientos por fecha y suma los montos
+  sumarMontosPorDia(movimientos: MovimientoDiaDTO[]): { [fecha: string]: number } {
+    const montosPorDia: { [fecha: string]: number } = {};
 
-    // Filtrar por mes antes de mostrar los datos
-    if (this.mesSeleccionado) {
-      const mes = this.mesSeleccionado.split('-')[1]; // Extraer el mes de la fecha seleccionada
+    movimientos.forEach(movimiento => {
+      const fecha = new Date(movimiento.fecha).toLocaleDateString(); // Agrupar por fecha
+      if (!montosPorDia[fecha]) {
+        montosPorDia[fecha] = 0;
+      }
+      montosPorDia[fecha] += movimiento.monto; // Sumar el monto del día
+    });
 
-      // Crear un registro para el seguimiento
-      this.seguimientoCaja.push({
-        fecha: fechaActual,
-        creditosTotal: this.totalCreditos,
-        colombianas: this.totalColombianas,
-        venezolanas: this.totalVenezolanas,
-        utilidad: utilidad
-      });
-
-      // Actualizar la tabla con el filtro del mes seleccionado
-      this.seguimientoCaja = this.seguimientoCaja.filter(item => {
-        const itemMes = new Date(item.fecha).getMonth() + 1; // Obtener el mes del item
-        return itemMes === parseInt(mes, 10);
-      });
-    }
+    return montosPorDia;
   }
+
+  // Actualizar la tabla con los montos sumados por día
+  actualizarTabla(montosPorDia: { [fecha: string]: number } = {}) {
+    Object.entries(montosPorDia).forEach(([fecha, colombianas]) => {
+      const utilidad = colombianas + this.totalVenezolanas;
+      const mesFecha = new Date(fecha).getMonth() + 1; // obtener mes de la fecha
+      const mesSeleccionado = parseInt(this.mesSeleccionado.split('-')[1]);
+  
+      if (mesFecha === mesSeleccionado) {
+        this.seguimientoCaja.push({
+          fecha,
+          colombianas,
+          venezolanas: this.totalVenezolanas,
+          utilidad
+        });
+      }
+    });
+  }
+  
 }

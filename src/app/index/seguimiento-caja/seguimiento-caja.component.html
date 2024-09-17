@@ -12,12 +12,6 @@
     <td mat-cell *matCellDef="let element"> {{ element.fecha }} </td>
   </ng-container>
 
-  <!-- Créditos Total Column -->
-  <ng-container matColumnDef="creditosTotal">
-    <th mat-header-cell *matHeaderCellDef> Créditos Total </th>
-    <td mat-cell *matCellDef="let element"> ${{ element.creditosTotal | number:'1.2-2' }} </td>
-  </ng-container>
-
   <!-- Colombianas Column -->
   <ng-container matColumnDef="colombianas">
     <th mat-header-cell *matHeaderCellDef> Colombianas </th>
