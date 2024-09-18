@@ -11,6 +11,7 @@ import { CuentaBancariaService } from '../../services/cuenta-bancaria.service';
 import { MovimientoService } from '../../services/movimiento.service'; // Añadido para movimientos
 import { catchError, of } from 'rxjs';
 import { MovimientoDiaDTO } from '../../interfaces/MovimientoDiaDTO'; // Asegúrate de tener esta interfaz para movimientos
+import { ChangeDetectorRef } from '@angular/core'; // Importar para manejar la detección de cambios
 
 @Component({
   selector: 'app-seguimiento-caja',
@@ -43,7 +44,8 @@ export class SeguimientoCajaComponent implements OnInit {
     private clienteService: ClienteService,
     private proveedorService: ProveedorService,
     private cuentaBancariaService: CuentaBancariaService,
-    private movimientoService: MovimientoService // Añadido para usar el servicio de movimientos
+    private movimientoService: MovimientoService, // Añadido para usar el servicio de movimientos
+    private cdr: ChangeDetectorRef // Añadido para detectar cambios manualmente
   ) {}
 
   ngOnInit(): void {
@@ -64,6 +66,10 @@ export class SeguimientoCajaComponent implements OnInit {
       console.log("No hay mes seleccionado.");
       return;
     }
+
+    const [anio, mes] = this.mesSeleccionado.split('-').map(Number); // Obtener año y mes
+    const diasDelMes = this.generarDiasDelMes(anio, mes); // Generar todos los días del mes seleccionado
+    console.log("Días del mes seleccionado:", diasDelMes);
   
     // Obtener movimientos colombianas y sumarlos por día
     this.movimientoService.getMovimientosColombianas()
@@ -74,30 +80,43 @@ export class SeguimientoCajaComponent implements OnInit {
       .subscribe(movimientos => {
         console.log("Movimientos colombianos recibidos:", movimientos);
         const montosPorDia = this.sumarMontosPorDia(movimientos);
-        console.log("Montos por día:", montosPorDia);
-        this.actualizarTabla(montosPorDia);
-      });
-  
-    // Obtener la suma de cuentas venezolanas (en pesos)
-    this.cuentaBancariaService.getCuentasVenezolanas()
-      .pipe(catchError(error => {
-        console.error('Error al obtener cuentas venezolanas:', error);
-        return of([]);
-      }))
-      .subscribe(cuentas => {
-        this.totalVenezolanas = cuentas.reduce((total, cuenta) => total + (cuenta.monto || 0), 0);
-        console.log("Total venezolanas:", this.totalVenezolanas);
-        this.actualizarTabla();
+        console.log("Montos por día calculados:", montosPorDia);
+
+        // Obtener la suma de cuentas venezolanas (en pesos)
+        this.cuentaBancariaService.getCuentasVenezolanas()
+          .pipe(catchError(error => {
+            console.error('Error al obtener cuentas venezolanas:', error);
+            return of([]);
+          }))
+          .subscribe(cuentas => {
+            this.totalVenezolanas = cuentas.reduce((total, cuenta) => total + (cuenta.monto || 0), 0);
+            console.log("Total venezolanas:", this.totalVenezolanas);
+
+            // Actualizar la tabla
+            this.actualizarTabla(diasDelMes, montosPorDia);
+          });
       });
   }
-  
+
+  // Función que genera todos los días del mes seleccionado
+  generarDiasDelMes(anio: number, mes: number): string[] {
+    const diasEnMes = new Date(anio, mes, 0).getDate(); // Obtener el número de días en el mes
+    const diasDelMes: string[] = [];
+
+    for (let dia = 1; dia <= diasEnMes; dia++) {
+      const fecha = new Date(anio, mes - 1, dia).toLocaleDateString('en-CA'); // Formato yyyy-mm-dd
+      diasDelMes.push(fecha);
+    }
+
+    return diasDelMes;
+  }
 
   // Función que agrupa los movimientos por fecha y suma los montos
   sumarMontosPorDia(movimientos: MovimientoDiaDTO[]): { [fecha: string]: number } {
     const montosPorDia: { [fecha: string]: number } = {};
 
     movimientos.forEach(movimiento => {
-      const fecha = new Date(movimiento.fecha).toLocaleDateString(); // Agrupar por fecha
+      const fecha = new Date(movimiento.fecha).toLocaleDateString('en-CA'); // Asegúrate de usar el mismo formato
       if (!montosPorDia[fecha]) {
         montosPorDia[fecha] = 0;
       }
@@ -108,21 +127,24 @@ export class SeguimientoCajaComponent implements OnInit {
   }
 
   // Actualizar la tabla con los montos sumados por día
-  actualizarTabla(montosPorDia: { [fecha: string]: number } = {}) {
-    Object.entries(montosPorDia).forEach(([fecha, colombianas]) => {
+  actualizarTabla(diasDelMes: string[], montosPorDia: { [fecha: string]: number }) {
+    diasDelMes.forEach(fecha => {
+      const colombianas = montosPorDia[fecha] || 0; // Si no hay montos, poner 0
       const utilidad = colombianas + this.totalVenezolanas;
-      const mesFecha = new Date(fecha).getMonth() + 1; // obtener mes de la fecha
-      const mesSeleccionado = parseInt(this.mesSeleccionado.split('-')[1]);
-  
-      if (mesFecha === mesSeleccionado) {
-        this.seguimientoCaja.push({
-          fecha,
-          colombianas,
-          venezolanas: this.totalVenezolanas,
-          utilidad
-        });
-      }
+
+      this.seguimientoCaja.push({
+        fecha,
+        colombianas,
+        venezolanas: this.totalVenezolanas,
+        utilidad
+      });
     });
+
+    // Forzar la detección de cambios manualmente
+    this.cdr.detectChanges(); 
+
+    // Otra forma de asegurarse de que Angular detecta los cambios es creando un nuevo array
+    this.seguimientoCaja = [...this.seguimientoCaja]; // Forzar la actualización creando una nueva referencia
   }
   
 }
