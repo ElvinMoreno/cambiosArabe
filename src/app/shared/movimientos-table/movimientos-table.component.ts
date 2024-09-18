@@ -23,9 +23,8 @@ export class MovimientosTableComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['movimientos'] && changes['movimientos'].currentValue) {
-      this.movimientos.sort(
-        (a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
-      );
+      // Ordenar por id de mayor a menor
+      this.movimientos.sort((a, b) => b.id - a.id);
       this.movimientosFiltrados = [...this.movimientos];
     }
   }
@@ -78,10 +77,6 @@ export class MovimientosTableComponent implements OnChanges {
       },
     });
   }
-  
-  
-  
-  
 
   exportarExcel(): void {
     const data = this.movimientosFiltrados.map((mov) => ({
@@ -118,5 +113,4 @@ export class MovimientosTableComponent implements OnChanges {
     // Liberar la URL del objeto después de la descarga
     window.URL.revokeObjectURL(url);
   }
-
 }

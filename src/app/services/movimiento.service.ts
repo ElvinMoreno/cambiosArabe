@@ -35,6 +35,12 @@ export class MovimientoService {
         catchError(this.handleError)
       );
   }
+
+  getMovimientosVenezolanas(): Observable<MovimientoDiaDTO[]> {
+    const headers = this.getHeaders();
+    return this.http.get<MovimientoDiaDTO[]>(`${this.apiUrl}/venezolanos`, { headers })
+      .pipe(catchError(this.handleError));
+  }
   
 
   /**

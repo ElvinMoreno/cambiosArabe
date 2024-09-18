@@ -29,122 +29,104 @@ import { ChangeDetectorRef } from '@angular/core'; // Importar para manejar la d
 })
 export class SeguimientoCajaComponent implements OnInit {
 
-  // Variables para almacenar los totales por día
   seguimientoCaja: { fecha: string, colombianas: number, venezolanas: number, utilidad: number }[] = [];
-  totalColombianas: number = 0;
-  totalVenezolanas: number = 0;
+  
+  mesSeleccionado: string = ''; // Mes seleccionado
 
-  // Variable para almacenar el mes seleccionado
-  mesSeleccionado: string = '';
-
-  // Definir las columnas de la tabla
   displayedColumns: string[] = ['fecha', 'colombianas', 'venezolanas', 'utilidad'];
 
   constructor(
-    private clienteService: ClienteService,
-    private proveedorService: ProveedorService,
-    private cuentaBancariaService: CuentaBancariaService,
-    private movimientoService: MovimientoService, // Añadido para usar el servicio de movimientos
-    private cdr: ChangeDetectorRef // Añadido para detectar cambios manualmente
+    private movimientoService: MovimientoService, 
+    private cdr: ChangeDetectorRef
   ) {}
 
-  ngOnInit(): void {
-    this.cargarDatos();
-  }
+  ngOnInit(): void {}
 
-  // Método que se ejecuta cuando el mes cambia
   onMesSeleccionado(event: any) {
     this.mesSeleccionado = event.target.value;
     this.cargarDatos();  // Vuelve a cargar los datos cuando cambia el mes
   }
 
   cargarDatos() {
-    // Limpiar el seguimiento anterior antes de cargar nuevos datos
     this.seguimientoCaja = [];
-  
+
     if (!this.mesSeleccionado) {
       console.log("No hay mes seleccionado.");
       return;
     }
 
-    const [anio, mes] = this.mesSeleccionado.split('-').map(Number); // Obtener año y mes
-    const diasDelMes = this.generarDiasDelMes(anio, mes); // Generar todos los días del mes seleccionado
-    console.log("Días del mes seleccionado:", diasDelMes);
-  
-    // Obtener movimientos colombianas y sumarlos por día
-    this.movimientoService.getMovimientosColombianas()
+    const [anio, mes] = this.mesSeleccionado.split('-').map(Number);
+    const diasDelMes = this.generarDiasDelMes(anio, mes);
+
+    // Obtener movimientos venezolanos y colombianos y actualizar la tabla
+    this.movimientoService.getMovimientosVenezolanas()
       .pipe(catchError(error => {
-        console.error('Error al obtener movimientos colombianos:', error);
+        console.error('Error al obtener movimientos venezolanos:', error);
         return of([]);
       }))
-      .subscribe(movimientos => {
-        console.log("Movimientos colombianos recibidos:", movimientos);
-        const montosPorDia = this.sumarMontosPorDia(movimientos);
-        console.log("Montos por día calculados:", montosPorDia);
+      .subscribe(movimientosVenezolanos => {
+        const montosVenezolanosPorDia = this.sumarSaldosPorDia(movimientosVenezolanos);
+        console.log("Montos venezolanos por día:", montosVenezolanosPorDia);
 
-        // Obtener la suma de cuentas venezolanas (en pesos)
-        this.cuentaBancariaService.getCuentasVenezolanas()
+        this.movimientoService.getMovimientosColombianas()
           .pipe(catchError(error => {
-            console.error('Error al obtener cuentas venezolanas:', error);
+            console.error('Error al obtener movimientos colombianos:', error);
             return of([]);
           }))
-          .subscribe(cuentas => {
-            this.totalVenezolanas = cuentas.reduce((total, cuenta) => total + (cuenta.monto || 0), 0);
-            console.log("Total venezolanas:", this.totalVenezolanas);
+          .subscribe(movimientosColombianos => {
+            const montosColombianosPorDia = this.sumarSaldosPorDia(movimientosColombianos);
+            console.log("Montos colombianos por día:", montosColombianosPorDia);
 
-            // Actualizar la tabla
-            this.actualizarTabla(diasDelMes, montosPorDia);
+            // Actualizar la tabla con los movimientos
+            this.actualizarTabla(diasDelMes, montosColombianosPorDia, montosVenezolanosPorDia);
           });
       });
   }
 
   // Función que genera todos los días del mes seleccionado
   generarDiasDelMes(anio: number, mes: number): string[] {
-    const diasEnMes = new Date(anio, mes, 0).getDate(); // Obtener el número de días en el mes
+    const diasEnMes = new Date(anio, mes, 0).getDate();
     const diasDelMes: string[] = [];
-
     for (let dia = 1; dia <= diasEnMes; dia++) {
-      const fecha = new Date(anio, mes - 1, dia).toLocaleDateString('en-CA'); // Formato yyyy-mm-dd
+      const fecha = new Date(anio, mes - 1, dia).toLocaleDateString('en-CA'); 
       diasDelMes.push(fecha);
     }
-
     return diasDelMes;
   }
 
-  // Función que agrupa los movimientos por fecha y suma los montos
-  sumarMontosPorDia(movimientos: MovimientoDiaDTO[]): { [fecha: string]: number } {
-    const montosPorDia: { [fecha: string]: number } = {};
+  // Función que agrupa los movimientos por fecha y obtiene el saldo del último movimiento de cada cuenta
+  sumarSaldosPorDia(movimientos: MovimientoDiaDTO[]): { [fecha: string]: number } {
+    const saldosPorDia: { [fecha: string]: number } = {};
 
     movimientos.forEach(movimiento => {
-      const fecha = new Date(movimiento.fecha).toLocaleDateString('en-CA'); // Asegúrate de usar el mismo formato
-      if (!montosPorDia[fecha]) {
-        montosPorDia[fecha] = 0;
+      const fecha = new Date(movimiento.fecha).toLocaleDateString('en-CA'); 
+      if (!saldosPorDia[fecha]) {
+        saldosPorDia[fecha] = 0;
       }
-      montosPorDia[fecha] += movimiento.monto; // Sumar el monto del día
+      // Obtener el saldo actual del último movimiento de ese día
+      saldosPorDia[fecha] += movimiento.saldoActual;
     });
 
-    return montosPorDia;
+    return saldosPorDia;
   }
 
-  // Actualizar la tabla con los montos sumados por día
-  actualizarTabla(diasDelMes: string[], montosPorDia: { [fecha: string]: number }) {
+  // Actualizar la tabla con los saldos del último movimiento por día
+  actualizarTabla(diasDelMes: string[], montosColombianosPorDia: { [fecha: string]: number }, montosVenezolanosPorDia: { [fecha: string]: number }) {
     diasDelMes.forEach(fecha => {
-      const colombianas = montosPorDia[fecha] || 0; // Si no hay montos, poner 0
-      const utilidad = colombianas + this.totalVenezolanas;
+      const colombianas = montosColombianosPorDia[fecha] || 0; 
+      const venezolanas = montosVenezolanosPorDia[fecha] || 0;
+      const utilidad = colombianas + venezolanas;
 
       this.seguimientoCaja.push({
         fecha,
         colombianas,
-        venezolanas: this.totalVenezolanas,
+        venezolanas,
         utilidad
       });
     });
 
-    // Forzar la detección de cambios manualmente
     this.cdr.detectChanges(); 
-
-    // Otra forma de asegurarse de que Angular detecta los cambios es creando un nuevo array
-    this.seguimientoCaja = [...this.seguimientoCaja]; // Forzar la actualización creando una nueva referencia
+    this.seguimientoCaja = [...this.seguimientoCaja]; 
   }
-  
 }
+

@@ -1,4 +1,5 @@
 export interface MovimientoDiaDTO {
+  id: number;
   fecha: string; // Puede ser string o Date, según lo necesites
   tipoMovimiento: string;
   monto: number;
