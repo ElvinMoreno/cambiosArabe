@@ -1,5 +1,5 @@
 <div class="tab-container">
-    <mat-tab-group [(selectedIndex)]="selectedTabIndex" class="custom-tab-group">
+    <mat-tab-group [(selectedIndex)]="selectedTabIndex" class="custom-tab-group" animationDuration="0ms">
       <mat-tab label="Dashboard">
         <ng-template mat-tab-label>
           <div>
@@ -15,6 +15,14 @@
           </div>
         </ng-template>
         <app-balance></app-balance>
+      </mat-tab>
+      <mat-tab label="Seguimiento Caja">
+        <ng-template mat-tab-label>
+          <div>
+            <span style="display: block; font-size: 0.75rem; color: #8BC94D;">Seguimiento Caja</span>
+          </div>
+        </ng-template>
+        <app-seguimiento-caja></app-seguimiento-caja>
       </mat-tab>
     </mat-tab-group>
   </div>

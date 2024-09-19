@@ -12,8 +12,7 @@
         <mat-card-title>{{ proveedor.nombre }}</mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <p><strong>Total Deuda:</strong> {{ proveedor.deuda | currency }}</p>
-        <p><strong>Abonos:</strong> {{ proveedor.abono | currency }}</p>
+        <p><strong>Total Deuda:</strong> {{ proveedor.total | currency }}</p>
       </mat-card-content>
       <mat-card-actions>
         <button mat-button>Ver Detalles</button>
@@ -41,9 +40,10 @@
       </thead>
       <tbody>
         <tr *ngFor="let credito of creditos()">
-          <td>{{ credito.fechaRegistro | date:'shortDate' }}</td>
-          <td [style.color]="credito.monto < 0 ? 'red' : 'green'">{{ credito.monto | currency }}</td>
-          <td>{{ credito.montoRestante | currency }}</td>
+          <td>{{ credito.fecha | date:'shortDate' }}</td>
+          <!-- Color verde si abono es true, rojo si es false -->
+          <td [style.color]="credito.abono ? 'green' : 'red'">{{ credito.monto | currency }}</td>
+          <td>{{ credito.saldoActual | currency }}</td>
         </tr>
       </tbody>
     </table>

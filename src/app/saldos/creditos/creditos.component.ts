@@ -55,7 +55,7 @@ export class CreditosComponent implements OnInit {
       )
       .subscribe(proveedores => {
         this.totalDeudasProveedores = proveedores.reduce((total, proveedor) => {
-          return total + proveedor.creditosProveedor.reduce((sum, credito) => sum + (credito.montoRestante || 0), 0);
+          return total + proveedor.creditosProveedor.reduce((sum, credito) => sum + (credito.saldoActual || 0), 0);
         }, 0);
 
         this.calcularBalanceDeudas();

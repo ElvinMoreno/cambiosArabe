@@ -1,0 +1,29 @@
+<h2 class="title">Seguimiento de Caja</h2>
+
+<!-- Filtro de Mes -->
+<div class="filter-container">
+  <label for="mesSeleccionado" class="filter-label">Seleccionar Mes:</label>
+  <input type="month" id="mesSeleccionado" [(ngModel)]="mesSeleccionado" (change)="onMesSeleccionado($event)" class="filter-input"/>
+</div>
+
+<!-- Contenedor de la tabla con scroll -->
+<div class="table-container">
+  <table class="custom-table">
+    <thead>
+      <tr>
+        <th>Fecha</th>
+        <th>Pesos</th>
+        <th>Bolivares</th>
+        <th>Utilidad</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let element of seguimientoCaja">
+        <td>{{ element.fecha }}</td>
+        <td>${{ element.colombianas | number:'1.2-2' }}</td>
+        <td>${{ element.venezolanas | number:'1.2-2' }}</td>
+        <td>${{ element.utilidad | number:'1.2-2' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
