@@ -7,33 +7,25 @@
     <h2 class="desc">Gastos</h2>
   </div>
   <div class="left-align">
-    <button mat-flat-button class="btn btn-descripcion">Nuevo Gasto</button>
+    <button mat-flat-button class="btn btn-descripcion" (click)="nuevoGasto() ">Nuevo Gasto</button>
   </div>
 </div>
 
 <div class="grid-container">
-  <mat-card class="example-card" appearance="outlined">
+  <mat-card *ngFor="let gasto of dataSource" class="example-card" appearance="outlined">
     <mat-card-content>
       <div class="card-grid">
         <span class="material-symbols-outlined home-icon">apartment</span>
         <div class="card-content">
-          <div class="card-title">Gasto</div>
-          <div class="card-subtitle">XXXX</div>
+          <div class="card-title">{{ gasto.nombre }}</div>
+          <div class="card-subtitle">Saldo: {{ gasto.saldo | currency }}</div>
+          <div class="card-subtitle">Última actualización: {{ gasto.ultimaActualizacion | date:'short' }}</div>
         </div>
       </div>
     </mat-card-content>
   </mat-card>
-
-  <mat-card class="example-card" appearance="outlined">
-    <mat-card-content>
-      <div class="card-grid">
-        <span class="material-symbols-outlined home-icon">apartment</span>
-        <div class="card-content">
-          <div class="card-title">Gasto</div>
-          <div class="card-subtitle">XXXX</div>
-        </div>
-      </div>
-    </mat-card-content>
-  </mat-card>
-  <!-- More mat-cards can be added here -->
 </div>
+
+<ng-template #noDataTemplate>
+  <p>No hay gastos disponibles.</p>
+</ng-template>

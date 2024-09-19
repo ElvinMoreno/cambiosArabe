@@ -61,9 +61,16 @@ export class DescripcionComponent implements OnInit {
     );
   }
 
+
   nuevaDescripcion() {
     const dialogRef = this.dialog.open(DescripcionFormComponent, {
-      width: '300px'
+      width: '300px',
+      data: {
+        titulo: 'Nueva Descripción',
+        campoLabel: 'Descripción',
+        campoPlaceholder: 'Ingrese descripción',
+        formData: { texto: '' }
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {
