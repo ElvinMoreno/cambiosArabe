@@ -5,12 +5,11 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
-import { ClienteService } from '../../services/clientes.service';
-import { ProveedorService } from '../../services/proveedor.service';
+import { FormsModule } from '@angular/forms'; // <-- Importar FormsModule para usar ngModel
 import { CuentaBancariaService } from '../../services/cuenta-bancaria.service';
 import { MovimientoService } from '../../services/movimiento.service'; // Añadido para movimientos
 import { catchError, of } from 'rxjs';
-import { MovimientoDiaDTO } from '../../interfaces/MovimientoDiaDTO'; // Asegúrate de tener esta interfaz para movimientos
+import { MovimientoDiaDTO } from '../../interfaces/MovimientoDiaDTO'; 
 import { ChangeDetectorRef } from '@angular/core'; // Importar para manejar la detección de cambios
 
 @Component({
@@ -22,7 +21,8 @@ import { ChangeDetectorRef } from '@angular/core'; // Importar para manejar la d
     MatCardModule,
     MatIconModule,
     MatDividerModule,
-    MatButtonModule
+    MatButtonModule,
+    FormsModule // <-- Añadir FormsModule al array de imports
   ],
   templateUrl: './seguimiento-caja.component.html',
   styleUrls: ['./seguimiento-caja.component.css']
@@ -30,7 +30,6 @@ import { ChangeDetectorRef } from '@angular/core'; // Importar para manejar la d
 export class SeguimientoCajaComponent implements OnInit {
 
   seguimientoCaja: { fecha: string, colombianas: number, venezolanas: number, utilidad: number }[] = [];
-  
   mesSeleccionado: string = ''; // Mes seleccionado
 
   displayedColumns: string[] = ['fecha', 'colombianas', 'venezolanas', 'utilidad'];
@@ -40,7 +39,15 @@ export class SeguimientoCajaComponent implements OnInit {
     private cdr: ChangeDetectorRef
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    // Obtener el mes y año actual en formato 'YYYY-MM'
+    const fechaActual = new Date();
+    const mesActual = fechaActual.toLocaleDateString('en-CA', { year: 'numeric', month: '2-digit' });
+    this.mesSeleccionado = mesActual;
+
+    // Llamar al método para cargar los datos del mes actual
+    this.cargarDatos();
+  }
 
   onMesSeleccionado(event: any) {
     this.mesSeleccionado = event.target.value;
@@ -129,4 +136,3 @@ export class SeguimientoCajaComponent implements OnInit {
     this.seguimientoCaja = [...this.seguimientoCaja]; 
   }
 }
-

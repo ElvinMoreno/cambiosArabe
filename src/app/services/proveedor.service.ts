@@ -4,6 +4,7 @@ import { Observable, catchError, throwError } from 'rxjs';
 import { Proveedor } from '../interfaces/proveedor';
 import { CreditoProveedor } from '../interfaces/creditoProveedor';
 import { appsetting } from '../settings/appsetting';
+import { Deuda } from '../interfaces/deuda';
 
 @Injectable({
   providedIn: 'root'
@@ -31,9 +32,9 @@ export class ProveedorService {
       .pipe(catchError(this.handleError));
   }
 
-  getCreditosByProveedorId(proveedorId: number): Observable<CreditoProveedor[]> {
+  getCreditosByProveedorId(proveedorId: number): Observable<Deuda[]> {
     const headers = this.getHeaders();
-    return this.http.get<CreditoProveedor[]>(`${this.apiCreditosUrl}/${proveedorId}`, { headers })
+    return this.http.get<Deuda[]>(`${this.apiCreditosUrl}/${proveedorId}`, { headers })
       .pipe(catchError(this.handleError));
   }
 

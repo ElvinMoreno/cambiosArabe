@@ -1,12 +1,12 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { ProveedorService } from '../../../services/proveedor.service';
 import { Proveedor } from '../../../interfaces/proveedor';
-import { CreditoProveedor } from '../../../interfaces/creditoProveedor';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { catchError, of } from 'rxjs';
 import { MatIcon } from '@angular/material/icon';
+import { Deuda } from '../../../interfaces/deuda';
 
 @Component({
   selector: 'app-proveedor-credito',
@@ -17,7 +17,7 @@ import { MatIcon } from '@angular/material/icon';
 })
 export class ProveedorCreditoComponent implements OnInit {
   proveedores = signal<Proveedor[]>([]);
-  creditos = signal<CreditoProveedor[]>([]);
+  creditos = signal<Deuda[]>([]); // Sigues usando la interfaz Deuda
   nombreProveedor: string = '';  // Nombre del proveedor seleccionado
   mostrandoCreditos: boolean = false;  // Para alternar entre vistas
   errorMessage = signal<string | null>(null);
@@ -52,8 +52,19 @@ export class ProveedorCreditoComponent implements OnInit {
           return of([]);
         })
       )
-      .subscribe(creditos => {
-        this.creditos.set(creditos);  // Actualiza los créditos del proveedor
+      .subscribe((creditosBackend) => {
+        // Mapear los datos del backend (ProveedorMovimientosDTO[]) al formato Deuda[]
+        const creditosAdaptados: Deuda[] = creditosBackend.map(credito => ({
+          fecha: credito.fecha,
+          monto: credito.monto,
+          saldoActual: credito.saldoActual,
+          abono: credito.abono  // Mantener abono como booleano
+        }));
+
+        // Ordenar los créditos por fecha de más reciente a menos reciente
+        const creditosOrdenados = creditosAdaptados.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
+
+        this.creditos.set(creditosOrdenados);  // Actualiza los créditos adaptados
         this.mostrandoCreditos = true;  // Cambia a la vista de créditos
       });
   }

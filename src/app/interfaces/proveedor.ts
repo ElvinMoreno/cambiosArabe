@@ -5,8 +5,7 @@ import { CreditoProveedor } from './creditoProveedor'; // Asegúrate de importar
 export interface Proveedor {
   id: number;
   nombre: string | null;
-  deuda: number;
-  abono: number;
+  total: number;
   creditosProveedor: CreditoProveedor[]; // Lista de créditos asociados al proveedor
   compra: CompraBsDTO[];
 }
