@@ -2,10 +2,9 @@
   <div class="modal-content">
     <div class="header-container">
       <h2>Agregar Venta</h2>
-      <!-- Contenedor para las etiquetas -->
       <div class="labels-container">
-        <label id="Pesos">{{ pesosLabel | currency:'USD':'symbol':'1.2-2' }}</label> <!-- Label para los pesos -->
-        <label id="Bolivares">{{ bolivaresLabel | currency:'VES':'symbol':'1.2-2' }}</label> <!-- Label para los bolívares -->
+        <label id="Pesos">{{ pesosLabel | currency:'USD':'symbol':'1.2-2' }}</label>
+        <label id="Bolivares">{{ bolivaresLabel | currency:'VES':'symbol':'1.2-2' }}</label>
       </div>
     </div>
     <div class="separator"></div>
@@ -13,29 +12,50 @@
       <div class="form-grid">
         <div formArrayName="cuentasDestinatario">
           <div *ngFor="let cuenta of cuentasDestinatarioArray.controls; let i = index" [formGroupName]="i">
+            <!-- Nombre de la cuenta -->
             <div class="form-group" [ngClass]="{'has-error': cuenta.get('nombreCuenta')?.invalid && cuenta.get('nombreCuenta')?.touched}">
               <label for="nombreCuenta{{i}}">Nombre cuenta <span class="required">*</span></label>
               <input id="nombreCuenta{{i}}" type="text" formControlName="nombreCuenta" placeholder="Ingrese nombre de la cuenta">
             </div>
+
+            <!-- Número de cuenta -->
             <div class="form-group" [ngClass]="{'has-error': cuenta.get('numeroCuenta')?.invalid && cuenta.get('numeroCuenta')?.touched}">
-              <label for="numeroCuenta{{i}}">Número de Cuenta <span class="required">*</span></label>
-              <input id="numeroCuenta{{i}}" type="tel" inputmode="numeric" formControlName="numeroCuenta" placeholder="Ingrese número de cuenta">
+              <label for="numeroCuenta{{i}}">{{ cuentaLabel[i] }} <span class="required">*</span></label>
+              <div class="input-button-group">
+                <input id="numeroCuenta{{i}}" type="tel" inputmode="numeric" formControlName="numeroCuenta" placeholder="Ingrese número de cuenta">
+                <button mat-icon-button type="button" (click)="togglePhoneAndBanco(i)">
+                  <mat-icon>phone</mat-icon>
+                </button>
+              </div>
             </div>
+
+            <!-- Nuevo campo Banco (visible al hacer clic en el ícono de teléfono) -->
+            <div class="form-group" *ngIf="showSelectBancos[i]">
+              <label for="banco{{i}}">Banco <span class="required">*</span></label>
+              <mat-form-field>
+                <mat-select id="banco{{i}}" placeholder="Seleccione Banco" formControlName="banco">
+                  <mat-option *ngFor="let cuenta of cuentasVenezolanas" [value]="cuenta.numero">
+                    {{ cuenta.nombreBanco }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <!-- Cédula -->
             <div class="form-group" [ngClass]="{'has-error': cuenta.get('cedula')?.invalid && cuenta.get('cedula')?.touched}">
               <label for="cedula{{i}}">Cédula <span class="required">*</span></label>
               <div class="input-button-group">
                 <input id="cedula{{i}}" type="tel" inputmode="numeric" pattern="[0-9]*" formControlName="cedula" placeholder="Número de cédula">
-                <!-- Botón con el icono de ojo -->
                 <button mat-icon-button type="button" (click)="openModal()">
                   <mat-icon>visibility</mat-icon>
                 </button>
               </div>
             </div>
 
+            <!-- Otros campos como bolívares o pesos -->
             <div class="form-group" *ngIf="bolivaresVisible" [ngClass]="{'has-error': cuenta.get('bolivares')?.invalid && cuenta.get('bolivares')?.touched}">
               <label for="bolivares{{i}}">{{ cuenta.get('currency')?.value === 'bolivares' ? 'Bolívares' : 'Pesos' }} <span class="required">*</span></label>
               <div class="input-button-group">
-                <!-- El input debe manejar correctamente el control bolívares o pesos -->
                 <input id="bolivares{{i}}" type="number" formControlName="{{ cuenta.get('currency')?.value === 'bolivares' ? 'bolivares' : 'pesos' }}"
                        placeholder="Ingrese cantidad de bolívares o pesos" (input)="onBolivaresOrPesosInput($event, i)">
                 <button mat-icon-button type="button" (click)="toggleCurrency(i)">
@@ -43,11 +63,13 @@
                 </button>
               </div>
             </div>
+
             <button mat-icon-button color="warn" type="button" (click)="removeCuentaDestinatario(i)" *ngIf="cuentasDestinatarioArray.length > 1">
               <mat-icon>remove_circle</mat-icon>
             </button>
           </div>
         </div>
+
         <div class="form-group hidden">
           <label for="fecha">Fecha <span class="required">*</span></label>
           <input id="fecha" type="text" formControlName="fecha" [value]="currentDate" readonly>
