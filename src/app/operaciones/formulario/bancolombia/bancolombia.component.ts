@@ -150,7 +150,7 @@ export class BancolombiaComponent implements OnInit, OnDestroy {
           });
 
           // Evitar cualquier cálculo relacionado con pesosLabel
-          const totalCalculadoEnBolivares = this.pesosLabel ? (this.pesosLabel / tasaVenta) : 0;
+          const totalCalculadoEnBolivares = this.pesosLabel!;
           console.log("Esta es la tasa calculando: " + tasaVenta);
           this.bolivaresLabel = totalCalculadoEnBolivares - totalIngresadoEnBolivares;
           console.log("en base a venta " + this.bolivaresLabel)
@@ -164,20 +164,10 @@ export class BancolombiaComponent implements OnInit, OnDestroy {
           let totalBolivaresIngresados = 0;
           let totalPesosRestados = 0;
 
-          // Resetear pesosLabel y bolivaresLabel al valor inicial antes de recalcular
+          // Obtener el valor inicial de precioVentaBs
           const precioVentaBs = parseFloat(this.form.get('precioVentaBs')?.value || '0');
-          const bolivaresIniciales = precioVentaBs / this.tasaActual; // Calcular bolivares iniciales basados en la tasa
-          this.pesosLabel = precioVentaBs; // Resetear pesosLabel al precio de venta inicial
-
-          if (this.currentLabel === 'Cantidad bolívares') {
-            // Resetear bolivaresLabel y pesosLabel basados en bolívares
-            this.bolivaresLabel = precioVentaBs;  // Mantener bolívares
-            this.pesosLabel = precioVentaBs * this.tasaActual;  // Calcular pesos
-          } else {
-            // Resetear pesosLabel y calcular bolívares
-            this.pesosLabel = precioVentaBs;
-            this.bolivaresLabel = precioVentaBs / this.tasaActual;
-          }
+          const bolivaresIniciales = precioVentaBs / this.tasaActual; // Calcular bolívares iniciales basados en la tasa
+          this.pesosLabel = precioVentaBs; // Inicializamos pesosLabel con el precio de venta
 
           // Iterar sobre todos los controles dentro del FormArray de cuentas destinatario
           this.cuentasDestinatarioArray.controls.forEach((control) => {
@@ -189,23 +179,36 @@ export class BancolombiaComponent implements OnInit, OnDestroy {
             }
           });
 
-          // Convertir el total de bolívares ingresados a pesos
-          totalPesosRestados = totalBolivaresIngresados * this.tasaActual;
+          if (this.currentLabel === 'Cantidad bolívares') {
+            // Lógica cuando el currentLabel es "Cantidad bolívares"
+            // Restar los bolívares ingresados del valor inicial en bolívares y calcular la cantidad correspondiente en pesos
+            this.bolivaresLabel = bolivaresIniciales - totalBolivaresIngresados;
 
-          // Restar los pesos convertidos del valor inicial en pesos
-          this.pesosLabel -= totalPesosRestados;
+            this.pesosLabel = precioVentaBs - (totalBolivaresIngresados * this.tasaActual);
+            console.log("de cantidad bolivares boli:" + this.bolivaresLabel);
+            console.log("de cantidad bolivares peso:" + this.pesosLabel);
+            // Asegurarse de que no sean negativos
+            if (this.bolivaresLabel < 0) this.bolivaresLabel = 0;
+            if (this.pesosLabel < 0) this.pesosLabel = 0;
+          } else if (this.currentLabel === 'Cantidad pesos') {
+            // Lógica actual cuando el currentLabel es "Cantidad pesos"
+            totalPesosRestados = totalBolivaresIngresados * this.tasaActual;
 
-          // Asegurar que pesosLabel no sea negativo
-          if (this.pesosLabel < 0) {
-            this.pesosLabel = 0;
-          }
+            // Restar los pesos convertidos del valor inicial en pesos
+            this.pesosLabel -= totalPesosRestados;
 
-          // Restar los bolívares ingresados del valor inicial en bolívares
-          this.bolivaresLabel = bolivaresIniciales - totalBolivaresIngresados;
+            // Asegurar que pesosLabel no sea negativo
+            if (this.pesosLabel < 0) {
+              this.pesosLabel = 0;
+            }
 
-          // Asegurar que bolivaresLabel no sea negativo
-          if (this.bolivaresLabel < 0) {
-            this.bolivaresLabel = 0;
+            // Restar los bolívares ingresados del valor inicial en bolívares
+            this.bolivaresLabel = bolivaresIniciales - totalBolivaresIngresados;
+
+            // Asegurar que bolivaresLabel no sea negativo
+            if (this.bolivaresLabel < 0) {
+              this.bolivaresLabel = 0;
+            }
           }
 
           // Mostrar advertencia si los valores están cerca de 0
@@ -225,6 +228,7 @@ export class BancolombiaComponent implements OnInit, OnDestroy {
         }
       }, 0);
     }
+
 
     // Función para mostrar la advertencia al usuario
     showWarning(): void {
