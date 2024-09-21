@@ -50,17 +50,18 @@ export class CreditosComponent implements OnInit {
       .pipe(
         catchError(error => {
           console.error('Error al obtener las deudas de los proveedores:', error);
-          return of([]);
+          return of([]);  // Retorna un array vacío en caso de error
         })
       )
       .subscribe(proveedores => {
-        this.totalDeudasProveedores = proveedores.reduce((total, proveedor) => {
-          return total + proveedor.creditosProveedor.reduce((sum, credito) => sum + (credito.saldoActual || 0), 0);
-        }, 0);
-
+        // En lugar de usar creditosProveedor, sumamos directamente el total de cada proveedor
+        this.totalDeudasProveedores = proveedores.reduce((total, proveedor) => total + (proveedor.total || 0), 0);
+  
+        // Luego, calculamos el balance de deudas
         this.calcularBalanceDeudas();
       });
   }
+  
 
   calcularBalanceDeudas() {
     if (this.totalCreditos !== null && this.totalDeudasProveedores !== null) {
