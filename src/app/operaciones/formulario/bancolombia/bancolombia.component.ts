@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, OnInit, Inject, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit, Inject, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { CommonModule, formatDate } from '@angular/common';
@@ -74,6 +74,7 @@ export class BancolombiaComponent implements OnInit, OnDestroy {
     private ventaBsService: VentaBsService,
     public dialogRef: MatDialogRef<BancolombiaComponent>,
     public dialog: MatDialog,
+    private cdr: ChangeDetectorRef,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.form = this.fb.group({
@@ -115,64 +116,124 @@ export class BancolombiaComponent implements OnInit, OnDestroy {
       control.get('currency')?.setValue(currentCurrency === 'bolivares' ? 'pesos' : 'bolivares');
     }
   }
+
+
+
 // Lógica para manejar el input de bolívares o pesos
-// Lógica para manejar el input de bolívares o pesos
-onBolivaresOrPesosInput(event: Event, index: number): void {
-  const inputElement = event.target as HTMLInputElement;
-  const numericValue = parseFloat(inputElement.value || '0');
-  const control = this.cuentasDestinatarioArray.controls[index];
+  onBolivaresOrPesosInput(event: Event, index: number): void {
+    const inputElement = event.target as HTMLInputElement;
+    const numericValue = parseFloat(inputElement.value || '0');
+    const control = this.cuentasDestinatarioArray.controls[index];
 
-  if (control.get('currency')?.value === 'bolivares') {
-    control.get('bolivares')?.setValue(numericValue);
-    this.applyBolivaresLogic(numericValue);  // Aplicar la nueva lógica para bolívares
-  } else if (control.get('currency')?.value === 'pesos') {
-    control.get('pesos')?.setValue(numericValue);
-    this.updatePesosLabel();  // Lógica para pesos
-  }
-}
-// Método que aplica la nueva lógica para bolívares
-applyBolivaresLogic(bolivaresValue: number): void {
-  if (this.tasaActual && this.pesosLabel !== null) {
-    // Multiplicamos el valor ingresado en bolívares por la tasa de venta
-    const bolivaresConvertedToPesos = bolivaresValue * this.tasaActual;
-
-    // Asegurarnos de que estamos trabajando con un valor inicial correcto en pesosLabel
-    if (!this.pesosLabel) {
-      this.pesosLabel = this.pesosLabel;  // Guardamos el valor inicial de pesosLabel
-    }
-
-    // Restamos el valor convertido de la suma total acumulada
-    this.pesosLabel = this.pesosLabel - bolivaresConvertedToPesos;
-
-    // Aseguramos que el pesosLabel no sea negativo
-    if (this.pesosLabel < 0) {
-      this.pesosLabel = 0;
+    if (control.get('currency')?.value === 'bolivares') {
+      control.get('bolivares')?.setValue(numericValue);
+      this.applyBolivaresLogic();  // Aplicar la nueva lógica para bolívares
+    } else if (control.get('currency')?.value === 'pesos') {
+      control.get('pesos')?.setValue(numericValue);
+      this.updatePesosLabel();  // Lógica para pesos
     }
   }
-}
 
-  // Actualiza el bolivaresLabel restando solo los valores ingresados en bolívares
-  updateBolivaresLabel(): void {
-    // Usar setTimeout para permitir que Angular termine de actualizar el formulario antes del cálculo
-    setTimeout(() => {
-      const tasaVenta = this.form.get('tasaVenta')?.value;  // Obtener la tasa más reciente del formulario
-      if (tasaVenta) {
-        let totalIngresadoEnBolivares = 0;
+      // Actualiza el bolivaresLabel restando solo los valores ingresados en bolívares
+    updateBolivaresLabel(): void {
+      // Usar setTimeout para permitir que Angular termine de actualizar el formulario antes del cálculo
+      setTimeout(() => {
+        const tasaVenta = this.form.get('tasaVenta')?.value;  // Obtener la tasa más reciente del formulario
+        if (tasaVenta) {
+          let totalIngresadoEnBolivares = 0;
 
-        this.cuentasDestinatarioArray.controls.forEach((control) => {
-          if (control.get('currency')?.value === 'bolivares') {
+          this.cuentasDestinatarioArray.controls.forEach((control) => {
+            if (control.get('currency')?.value === 'bolivares') {
+              const bolivares = control.get('bolivares')?.value;
+              totalIngresadoEnBolivares += bolivares ? parseFloat(bolivares) : 0;
+            }
+          });
+
+          // Evitar cualquier cálculo relacionado con pesosLabel
+          const totalCalculadoEnBolivares = this.pesosLabel!;
+          console.log("Esta es la tasa calculando: " + tasaVenta);
+          this.bolivaresLabel = totalCalculadoEnBolivares - totalIngresadoEnBolivares;
+          console.log("en base a venta " + this.bolivaresLabel)
+        }
+      }, 0);  // Esperar a que se complete la actualización del formulario
+    }
+
+    applyBolivaresLogic(): void {
+      setTimeout(() => {
+        if (this.tasaActual && this.pesosLabel !== null && this.bolivaresLabel !== null) {
+          let totalBolivaresIngresados = 0;
+          let totalPesosRestados = 0;
+
+          // Obtener el valor inicial de precioVentaBs
+          const precioVentaBs = parseFloat(this.form.get('precioVentaBs')?.value || '0');
+          const bolivaresIniciales = precioVentaBs / this.tasaActual; // Calcular bolívares iniciales basados en la tasa
+          this.pesosLabel = precioVentaBs; // Inicializamos pesosLabel con el precio de venta
+
+          // Iterar sobre todos los controles dentro del FormArray de cuentas destinatario
+          this.cuentasDestinatarioArray.controls.forEach((control) => {
             const bolivares = control.get('bolivares')?.value;
-            totalIngresadoEnBolivares += bolivares ? parseFloat(bolivares) : 0;
-          }
-        });
 
-        // Evitar cualquier cálculo relacionado con pesosLabel
-        const totalCalculadoEnBolivares = this.pesosLabel ? (this.pesosLabel / tasaVenta) : 0;
-        console.log("Esta es la tasa calculando: " + tasaVenta);
-        this.bolivaresLabel = totalCalculadoEnBolivares - totalIngresadoEnBolivares;
-      }
-    }, 0);  // Esperar a que se complete la actualización del formulario
-  }
+            // Sumar bolívares ingresados si son válidos
+            if (bolivares && !isNaN(bolivares)) {
+              totalBolivaresIngresados += parseFloat(bolivares);
+            }
+          });
+
+          if (this.currentLabel === 'Cantidad bolívares') {
+            // Lógica cuando el currentLabel es "Cantidad bolívares"
+            // Restar los bolívares ingresados del valor inicial en bolívares y calcular la cantidad correspondiente en pesos
+            this.bolivaresLabel = bolivaresIniciales - totalBolivaresIngresados;
+
+            this.pesosLabel = precioVentaBs - (totalBolivaresIngresados * this.tasaActual);
+            console.log("de cantidad bolivares boli:" + this.bolivaresLabel);
+            console.log("de cantidad bolivares peso:" + this.pesosLabel);
+            // Asegurarse de que no sean negativos
+            if (this.bolivaresLabel < 0) this.bolivaresLabel = 0;
+            if (this.pesosLabel < 0) this.pesosLabel = 0;
+          } else if (this.currentLabel === 'Cantidad pesos') {
+            // Lógica actual cuando el currentLabel es "Cantidad pesos"
+            totalPesosRestados = totalBolivaresIngresados * this.tasaActual;
+
+            // Restar los pesos convertidos del valor inicial en pesos
+            this.pesosLabel -= totalPesosRestados;
+
+            // Asegurar que pesosLabel no sea negativo
+            if (this.pesosLabel < 0) {
+              this.pesosLabel = 0;
+            }
+
+            // Restar los bolívares ingresados del valor inicial en bolívares
+            this.bolivaresLabel = bolivaresIniciales - totalBolivaresIngresados;
+
+            // Asegurar que bolivaresLabel no sea negativo
+            if (this.bolivaresLabel < 0) {
+              this.bolivaresLabel = 0;
+            }
+          }
+
+          // Mostrar advertencia si los valores están cerca de 0
+          const threshold = 1; // Puedes ajustar el umbral según sea necesario
+          if (this.pesosLabel <= threshold || this.bolivaresLabel <= threshold) {
+            this.showWarning(); // Mostrar el mensaje de advertencia
+          }
+
+          // Forzar la actualización de la vista
+          this.cdr.detectChanges();
+
+          // Mostrar los valores en la consola para depuración
+          console.log(`Bolivares ingresados: ${totalBolivaresIngresados}`);
+          console.log(`Pesos convertidos: ${totalPesosRestados}`);
+          console.log(`bolivaresLabel actual: ${this.bolivaresLabel}`);
+          console.log(`pesosLabel actual: ${this.pesosLabel}`);
+        }
+      }, 0);
+    }
+
+
+    // Función para mostrar la advertencia al usuario
+    showWarning(): void {
+      alert('Advertencia: Los valores de pesos o bolívares están cerca de 0.');
+    }
 
 
 // Método para actualizar pesosLabel restando los valores ingresados en los campos de "pesos"
@@ -276,27 +337,52 @@ updatePesosLabelFromVentaBs(): void {
     console.log(this.tasaActual);
   }
 
+// Método para actualizar los labels de bolívares y pesos según el currentLabel
+updateLabels(): void {
+  const precioVentaBs = parseFloat(this.form.get('precioVentaBs')?.value || '0');
 
-  // Método que maneja el evento input para formatear el valor
-  onInputChange(event: Event): void {
-    const inputElement = event.target as HTMLInputElement;
-    let rawValue = inputElement.value.replace(/\./g, ''); // Eliminar puntos que formatean el valor
-    rawValue = rawValue.replace(/[^0-9]/g, ''); // Eliminar caracteres no numéricos
-
-    const numericValue = parseFloat(rawValue || '0'); // Convertir el valor a número
-
-    this.pesosLabel = numericValue;
-
-    // Actualizar el label de bolívares en tiempo real si hay una tasa actual
-    this.updateBolivaresLabel();
-
-
-    // Formatear el valor a miles
-    this.formattedPrice = this.formatCurrency(numericValue);
-
-    // Actualizar el control del formulario con el valor numérico puro
-    this.form.get('precioVentaBs')?.setValue(numericValue);
+  // Verificamos que exista tasaActual y el precio sea válido
+  if (!this.tasaActual || isNaN(precioVentaBs)) {
+    this.bolivaresLabel = null;
+    this.pesosLabel = null;
+    return;
   }
+
+  // Realizamos los cálculos dependiendo de currentLabel
+  if (this.currentLabel === 'Cantidad bolívares') {
+    this.bolivaresLabel = precioVentaBs; // Mantener bolívares
+    this.pesosLabel = precioVentaBs * this.tasaActual; // Convertir a pesos
+  } else {
+    this.pesosLabel = precioVentaBs; // Mantener pesos
+    this.bolivaresLabel = precioVentaBs / this.tasaActual; // Convertir a bolívares
+  }
+
+  // Forzar la detección de cambios para actualizar la UI
+  this.cdr.detectChanges();
+}
+
+// Lógica para manejar el evento input
+onInputChange(event: Event): void {
+  const inputElement = event.target as HTMLInputElement;
+
+  // Eliminar cualquier punto del valor ingresado para obtener el valor numérico real
+  let rawValue = inputElement.value.replace(/\./g, '');
+
+  // Convertir el valor a número (por si el usuario ingresa caracteres no numéricos)
+  let numericValue = parseFloat(rawValue || '0');
+
+  // Actualizar el control del formulario con el valor numérico puro
+  this.form.get('precioVentaBs')?.setValue(numericValue);
+
+  // Formatear el valor con puntos de miles para mostrarlo en el input
+  this.formattedPrice = this.formatCurrency(numericValue);
+
+  // Forzar la actualización del valor en el campo input para que refleje el formato
+  inputElement.value = this.formattedPrice;
+
+  // Actualizar los labels en tiempo real
+  this.updateLabels();
+}
 
 // Método para escuchar los cambios en cada campo de bolívares
   setupBolivaresListener(): void {
@@ -456,14 +542,20 @@ updatePesosLabelFromVentaBs(): void {
     }
   }
 
-  toggleCantidad(): void {
-    this.currentLabel = this.currentLabel === 'Cantidad bolívares' ? 'Cantidad pesos' : 'Cantidad bolívares';
-    this.form.patchValue({
-      cantidad: '',
-      conversionAutomatica: '',
-      tasa: null
-    });
-  }
+// Método para alternar entre bolívares y pesos
+toggleCantidad(): void {
+  this.currentLabel = this.currentLabel === 'Cantidad bolívares' ? 'Cantidad pesos' : 'Cantidad bolívares';
+
+  // Limpiar los valores de los campos relevantes
+  this.form.patchValue({
+    precioVentaBs: '',
+    conversionAutomatica: '',
+    tasaVenta: null
+  });
+
+  // Forzar la actualización de los labels tras cambiar la moneda
+  this.updateLabels();
+}
   makeTasaEditable(): void {
     this.isTasaEditable = true;
     this.isTasaVisible = true; // Mostrar el campo de "tasa"

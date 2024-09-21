@@ -147,6 +147,4 @@ export class CuentaBancariaComponent implements OnInit {
       return '';  // Retorna cadena vacía si el valor es nulo
     }
   }
-  
-  
 }

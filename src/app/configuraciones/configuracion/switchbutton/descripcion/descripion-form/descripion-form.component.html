@@ -1,12 +1,12 @@
 <div class="modal-overlay">
   <div class="modal-content">
-    <h2>Agregar Descripción</h2>
+    <h2>{{ titulo }}</h2> <!-- Título dinámico -->
     <div class="separator"></div>
     <form [formGroup]="form" (ngSubmit)="onConfirmar()">
       <div class="form-grid">
         <div class="form-group" [ngClass]="{'has-error': form.get('texto')?.invalid && form.get('texto')?.touched}">
-          <label for="texto">Descripción <span class="required">*</span></label>
-          <textarea id="texto" formControlName="texto" placeholder="Ingrese descripción"></textarea>
+          <label for="texto">{{ campoLabel }} <span class="required">*</span></label> <!-- Etiqueta dinámica -->
+          <textarea id="texto" formControlName="texto" [placeholder]="campoPlaceholder"></textarea> <!-- Placeholder dinámico -->
         </div>
       </div>
       <div class="button-group">
