@@ -1,3 +1,5 @@
+import { Bancos } from "./bancos";
+
 export interface CuentaDestinatario {
   id?: number
   ventaBsId?: number ; // Suponiendo que la relación 'VentaBs' tiene un 'id' de tipo 'number'
@@ -5,7 +7,7 @@ export interface CuentaDestinatario {
   cedula: number ;
   numeroCuenta: string;
   bancoId: number ; // Suponiendo que la relación 'Bancos' tiene un 'id' de tipo 'number'
-  banco?: number ; // Suponiendo que la relación 'Bancos' tiene un 'id' de tipo 'number'
+  banco?: Bancos ; // Suponiendo que la relación 'Bancos' tiene un 'id' de tipo 'number'
   bolivares: number;
   nombreClienteFinal?: string;
 }

@@ -28,13 +28,11 @@
                 </button>
               </div>
             </div>
-
-            <!-- Nuevo campo Banco (visible al hacer clic en el ícono de teléfono) -->
             <div class="form-group" *ngIf="showSelectBancos[i]">
               <label for="banco{{i}}">Banco <span class="required">*</span></label>
               <mat-form-field>
                 <mat-select id="banco{{i}}" placeholder="Seleccione Banco" formControlName="banco">
-                  <mat-option *ngFor="let cuenta of cuentasVenezolanas" [value]="cuenta.numero">
+                  <mat-option *ngFor="let cuenta of cuentasVenezolanas" [value]="cuenta">
                     {{ cuenta.nombreBanco }}
                   </mat-option>
                 </mat-select>

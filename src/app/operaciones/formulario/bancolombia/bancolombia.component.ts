@@ -624,57 +624,57 @@ onConfirmar(): void {
 
 
 // Lógica para definir si bolívares debe ser tomado del input o calculado automáticamente
-buildVentaData(): Crearventa {
-  const formValues = this.form.value;
+  buildVentaData(): Crearventa {
+    const formValues = this.form.value;
 
-  // Construir el objeto VentaBs
-  const ventaBs: VentaBs = {
-    cuentaBancariaBs: formValues.cuentaBs,
-    cuentaBancariaPesos: formValues.cuentaPesos,
-    descripcionId: 1,
-    clienteId: formValues.cliente,
-    fechaVenta: formValues.fechaVenta,
-    referencia: formValues.referencia,
-    precioVentaBs: formValues.precioVentaBs,
-    metodoPagoId: formValues.tipoPago,
-    comision: formValues.comision,
-    tasaVenta: this.tasaActual!,
-    nombreClienteFinal: formValues.clienteFinal,
-    banco: formValues.banco, // Banco de la venta principal (si es necesario)
-    entrada: !!formValues.entrada,
-    salida: !!formValues.salida
-  };
-
-  // Ajustar la lógica para cada cuenta destinatario
-  const cuentasDestinatario: CuentaDestinatario[] = formValues.cuentasDestinatario.map((cd: any) => {
-    let bolivares;
-
-    // Verificar si el valor de bolívares es manual o debe calcularse
-    if (this.isBolivaresManual && cd.bolivares) {
-      bolivares = cd.bolivares;  // Usar el valor ingresado manualmente para cada cuenta
-    } else {
-      // Calcular el valor de bolívares automáticamente usando la tasa de venta
-      bolivares = formValues.precioVentaBs / this.tasaActual!;
-    }
-
-    return {
-      nombreCuentaDestinatario: cd.nombreCuenta,
-      cedula: cd.cedula ? +cd.cedula : null,  // Convertir a número si es posible
-      numeroCuenta: cd.numeroCuenta,
-      bolivares: bolivares,  // Usar el valor de bolívares calculado o manual
-      bancoId: cd.banco // Asegúrate de que el bancoId esté incluido
+    // Construir el objeto VentaBs
+    const ventaBs: VentaBs = {
+      cuentaBancariaBs: formValues.cuentaBs,
+      cuentaBancariaPesos: formValues.cuentaPesos,
+      descripcionId: 1,
+      clienteId: formValues.cliente,
+      fechaVenta: formValues.fechaVenta,
+      referencia: formValues.referencia,
+      precioVentaBs: formValues.precioVentaBs,
+      metodoPagoId: formValues.tipoPago,
+      comision: formValues.comision,
+      tasaVenta: this.tasaActual!,
+      nombreClienteFinal: formValues.clienteFinal,
+      banco: formValues.banco, // Banco de la venta principal (si es necesario)
+      entrada: !!formValues.entrada,
+      salida: !!formValues.salida
     };
-  });
 
-  const ventaData: Crearventa = {
-    ventaBs: ventaBs,
-    cuentasDestinatario: cuentasDestinatario
-  };
+    // Ajustar la lógica para cada cuenta destinatario
+    const cuentasDestinatario: CuentaDestinatario[] = formValues.cuentasDestinatario.map((cd: any) => {
+      let bolivares;
 
-  console.log(ventaData); // Asegúrate de revisar esto para ver los datos capturados
+      // Verificar si el valor de bolívares es manual o debe calcularse
+      if (this.isBolivaresManual && cd.bolivares) {
+        bolivares = cd.bolivares;  // Usar el valor ingresado manualmente para cada cuenta
+      } else {
+        // Calcular el valor de bolívares automáticamente usando la tasa de venta
+        bolivares = formValues.precioVentaBs / this.tasaActual!;
+      }
+      console.log("Banco seleccionado:", cd.banco); // Para verificar el banco seleccionado
+      return {
+        nombreCuentaDestinatario: cd.nombreCuenta,
+        cedula: cd.cedula ? +cd.cedula : null,  // Convertir a número si es posible
+        numeroCuenta: cd.numeroCuenta,
+        bolivares: bolivares,  // Usar el valor de bolívares calculado o manual
+        banco: cd.banco // Enviar el objeto completo del banco seleccionado
+      };
+    });
 
-  return ventaData;
-}
+    const ventaData: Crearventa = {
+      ventaBs: ventaBs,
+      cuentasDestinatario: cuentasDestinatario
+    };
+
+    console.log(ventaData); // Asegúrate de revisar esto para ver los datos capturados
+
+    return ventaData;
+  }
 
 
 openModal(): void {
