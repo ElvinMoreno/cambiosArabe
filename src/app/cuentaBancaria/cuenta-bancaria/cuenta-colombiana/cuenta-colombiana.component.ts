@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ListarCuentasColombianasComponent } from './listar-cuentas-colombianas/listar-cuentas-colombianas.component';
-import { ListarMovimientosColombianasComponent } from './listar-movimientos-colombianas/listar-movimientos-colombianas.component';
+
 import { CajaComponent } from './caja/caja.component';
 import { CajaService } from '../../../services/caja.service';
 import { CuentaBancariaService } from '../../../services/cuenta-bancaria.service';
@@ -24,7 +24,6 @@ import { ActivatedRoute, Params } from '@angular/router'; // Importar Params
     MatDividerModule,
     FlexLayoutModule,
     ListarCuentasColombianasComponent,
-    ListarMovimientosColombianasComponent,
     CajaComponent,
   ],
   templateUrl: './cuenta-colombiana.component.html',
