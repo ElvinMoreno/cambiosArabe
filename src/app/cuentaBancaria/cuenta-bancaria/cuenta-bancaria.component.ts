@@ -67,40 +67,53 @@ export class CuentaBancariaComponent implements OnInit {
       .pipe(
         catchError(error => {
           console.error('Error al obtener los créditos:', error);
-          return of([]);
+          return of([]);  // Manejo del error
         })
       )
       .subscribe(clientes => {
+        // Calcula el total de créditos sumando los créditos permitidos
         this.totalCreditos = clientes
           .filter(cliente => cliente.permitirCredito)
           .reduce((total, cliente) => total + cliente.creditos.reduce((sum, credito) => sum + credito.precio, 0), 0);
-
+  
+        console.log('Total Créditos Calculado:', this.totalCreditos);
         this.calcularBalanceDeudas();
       });
   }
+  
 
   cargarTotalDeudasProveedores() {
     this.proveedorService.getAllProveedores()
       .pipe(
         catchError(error => {
           console.error('Error al obtener las deudas de los proveedores:', error);
-          return of([]);
+          return of([]);  // Manejo del error
         })
       )
       .subscribe(proveedores => {
+        // Suma las deudas de los proveedores directamente del campo total
         this.totalDeudasProveedores = proveedores.reduce((total, proveedor) => {
-          return total + proveedor.creditosProveedor.reduce((sum, credito) => sum + (credito.saldoActual || 0), 0);
+          return total + (proveedor.total || 0);  // Usamos el campo `total` del proveedor
         }, 0);
-
+  
+        console.log('Total Deudas Proveedores Calculado:', this.totalDeudasProveedores);
         this.calcularBalanceDeudas();
       });
   }
+  
+  
 
   calcularBalanceDeudas() {
+    console.log('Total Créditos:', this.totalCreditos);
+    console.log('Total Deudas Proveedores:', this.totalDeudasProveedores);
+  
     if (this.totalCreditos !== null && this.totalDeudasProveedores !== null) {
       this.balanceDeudas = this.totalCreditos - this.totalDeudasProveedores;
+      console.log('Balance Deudas:', this.balanceDeudas);
     }
   }
+  
+  
 
   get totalPesosLabel(): string {
     return this.totalPesos !== null ? `$${Math.trunc(this.totalPesos / 1000)}` : '$';
@@ -129,9 +142,11 @@ export class CuentaBancariaComponent implements OnInit {
 
   get balanceDeudasStyle(): string {
     if (this.balanceDeudas !== null) {
-      return this.balanceDeudas >= 0 ? 'green' : 'red';
+      return this.balanceDeudas >= 0 ? 'green' : 'red';  // Verde si es positivo, rojo si es negativo
     } else {
-      return '';
+      return '';  // Retorna cadena vacía si el valor es nulo
     }
   }
+  
+  
 }
