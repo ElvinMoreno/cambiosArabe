@@ -140,36 +140,39 @@ export class ConfirmarSalidaComponent implements OnInit {
   confirmarVentaSalida(venta: CuentaDestinatario): void {
     const nombreCuenta = venta.nombreClienteFinal || 'N/A';
 
+    if (nombreCuenta !== 'N/A') {
+      navigator.clipboard.writeText(nombreCuenta).then(() => {
+        // El nombre se copió exitosamente
+        this.confirmarVentaSalidaProceso(venta, nombreCuenta, true);
+      }).catch(err => {
+        // No se pudo copiar el nombre al portapapeles
+        console.error('Error al copiar el nombre de la cuenta al portapapeles', err);
+        this.confirmarVentaSalidaProceso(venta, nombreCuenta, false);
+      });
+    } else {
+      this.confirmarVentaSalidaProceso(venta, nombreCuenta, false);
+    }
+  }
+
+  confirmarVentaSalidaProceso(venta: CuentaDestinatario, nombreCuenta: string, copiadoExitoso: boolean): void {
     const ventasAConfirmar: CuentaDestinatario[] = [venta];
 
     this.ventaBsService.confirmarVentaSalida(ventasAConfirmar).subscribe(
       response => {
         console.log('Venta confirmada', response);
-        if (nombreCuenta !== 'N/A') {
-          navigator.clipboard.writeText(nombreCuenta).then(() => {
-            Swal.fire({
-              title: 'Venta Confirmada',
-              text: `Mandar capture a: ${nombreCuenta}. (Nombre copiado)`,
-              icon: 'success',
-              confirmButtonText: 'Aceptar'
-            });
-          }).catch(err => {
-            console.error('Error al copiar el nombre de la cuenta al portapapeles', err);
-            Swal.fire({
-              title: 'Venta Confirmada',
-              text: `Mandar capture a: ${nombreCuenta}. (No se pudo copiar el nombre al portapapeles)`,
-              icon: 'success',
-              confirmButtonText: 'Aceptar'
-            });
-          });
-        } else {
-          Swal.fire({
-            title: 'Venta Confirmada',
-            text: `Mandar capture a: ${nombreCuenta}.`,
-            icon: 'success',
-            confirmButtonText: 'Aceptar'
-          });
+        let mensajeTexto = `Mandar capture a: ${nombreCuenta}.`;
+        if (copiadoExitoso && nombreCuenta !== 'N/A') {
+          mensajeTexto += ' (Nombre copiado)';
+        } else if (!copiadoExitoso && nombreCuenta !== 'N/A') {
+          mensajeTexto += ' (No se pudo copiar el nombre al portapapeles)';
         }
+
+        Swal.fire({
+          title: 'Venta Confirmada',
+          text: mensajeTexto,
+          icon: 'success',
+          confirmButtonText: 'Aceptar'
+        });
         this.loadVentas();
       },
       error => {
@@ -183,6 +186,7 @@ export class ConfirmarSalidaComponent implements OnInit {
       }
     );
   }
+
 
   copyToClipboard(value: string | number, id: number, field: string): void {
     if (this.isCopied(id, field)) {
