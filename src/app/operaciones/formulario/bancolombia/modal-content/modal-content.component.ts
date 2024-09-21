@@ -36,6 +36,14 @@ export class ModalContentComponent {
     private gemeniService: GemeniService  // Inyectar el servicio Gemeni
   ) {}
 
+  // Función para manejar el evento de pegar
+  onPaste(event: ClipboardEvent): void {
+    // Esperar a que el texto sea pegado antes de procesarlo
+    setTimeout(() => {
+      this.processData();
+    }, 0);
+  }
+
   processData(): void {
     const prompt = `
       Simula ser un chatbot y recibe un string. Retorna los siguientes 4 datos de forma textual:
@@ -72,7 +80,6 @@ export class ModalContentComponent {
       (error: any) => {
         console.error('Error al obtener la respuesta:', error);
         this.dialogRef.close({ nombreCuenta: '', numeroCuenta: '', cedula: '', error: 'Error al procesar los datos.' });
-        console.log()
       }
     );
   }
@@ -81,4 +88,3 @@ export class ModalContentComponent {
     this.dialogRef.close({ nombreCuenta: '', numeroCuenta: '', cedula: '' });
   }
 }
-

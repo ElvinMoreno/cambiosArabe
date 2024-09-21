@@ -1,8 +1,12 @@
 <h2 mat-dialog-title>Pegar Información</h2>
 <mat-dialog-content>
-  <mat-form-field class="example-full-width">
+  <mat-form-field >
     <mat-label>Pegue toda la información aquí:</mat-label>
-    <textarea matInput [(ngModel)]="pastedData"></textarea>
+    <textarea
+      matInput
+      [(ngModel)]="pastedData"
+      (paste)="onPaste($event)">
+    </textarea>
   </mat-form-field>
 
   <div *ngIf="resultJson">
@@ -11,6 +15,6 @@
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button mat-button (click)="processData()">Procesar</button>
-  <button mat-button (click)="onNoClick()">Cancelar</button>
+  <!-- <button mat-button (click)="processData()">Procesar</button>
+  <button mat-button (click)="onNoClick()">Cancelar</button> -->
 </mat-dialog-actions>
