@@ -662,7 +662,7 @@ onConfirmar(): void {
         cedula: cd.cedula ? +cd.cedula : null,  // Convertir a número si es posible
         numeroCuenta: cd.numeroCuenta,
         bolivares: bolivares,  // Usar el valor de bolívares calculado o manual
-        banco: cd.banco // Enviar el objeto completo del banco seleccionado
+        banco: cd.banco ? +cd.banco : null // Enviar el objeto completo del banco seleccionado
       };
     });
 
