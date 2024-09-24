@@ -5,12 +5,13 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
-import { FormsModule } from '@angular/forms'; // <-- Importar FormsModule para usar ngModel
-import { CuentaBancariaService } from '../../services/cuenta-bancaria.service';
-import { MovimientoService } from '../../services/movimiento.service'; // Añadido para movimientos
+import { FormsModule } from '@angular/forms';
+import { MovimientoService } from '../../services/movimiento.service';
+import { ProveedorService } from '../../services/proveedor.service';
 import { catchError, of } from 'rxjs';
-import { MovimientoDiaDTO } from '../../interfaces/MovimientoDiaDTO'; 
-import { ChangeDetectorRef } from '@angular/core'; // Importar para manejar la detección de cambios
+import { MovimientoDiaDTO } from '../../interfaces/MovimientoDiaDTO';
+import { Deuda } from '../../interfaces/deuda';  // Importar la interfaz Deuda
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-seguimiento-caja',
@@ -22,36 +23,34 @@ import { ChangeDetectorRef } from '@angular/core'; // Importar para manejar la d
     MatIconModule,
     MatDividerModule,
     MatButtonModule,
-    FormsModule // <-- Añadir FormsModule al array de imports
+    FormsModule
   ],
   templateUrl: './seguimiento-caja.component.html',
   styleUrls: ['./seguimiento-caja.component.css']
 })
 export class SeguimientoCajaComponent implements OnInit {
 
-  seguimientoCaja: { fecha: string, colombianas: number, venezolanas: number, utilidad: number }[] = [];
+  seguimientoCaja: { fecha: string, colombianas: number, venezolanas: number, clientes: number, utilidad: number }[] = [];
   mesSeleccionado: string = ''; // Mes seleccionado
-
-  displayedColumns: string[] = ['fecha', 'colombianas', 'venezolanas', 'utilidad'];
+  displayedColumns: string[] = ['fecha', 'colombianas', 'venezolanas', 'clientes', 'utilidad'];
 
   constructor(
     private movimientoService: MovimientoService, 
+    private proveedorService: ProveedorService,  
     private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    // Obtener el mes y año actual en formato 'YYYY-MM'
     const fechaActual = new Date();
     const mesActual = fechaActual.toLocaleDateString('en-CA', { year: 'numeric', month: '2-digit' });
     this.mesSeleccionado = mesActual;
 
-    // Llamar al método para cargar los datos del mes actual
     this.cargarDatos();
   }
 
   onMesSeleccionado(event: any) {
     this.mesSeleccionado = event.target.value;
-    this.cargarDatos();  // Vuelve a cargar los datos cuando cambia el mes
+    this.cargarDatos();
   }
 
   cargarDatos() {
@@ -65,15 +64,13 @@ export class SeguimientoCajaComponent implements OnInit {
     const [anio, mes] = this.mesSeleccionado.split('-').map(Number);
     const diasDelMes = this.generarDiasDelMes(anio, mes);
 
-    // Obtener movimientos venezolanos y colombianos y actualizar la tabla
     this.movimientoService.getMovimientosVenezolanas()
       .pipe(catchError(error => {
         console.error('Error al obtener movimientos venezolanos:', error);
         return of([]);
       }))
       .subscribe(movimientosVenezolanos => {
-        const montosVenezolanosPorDia = this.sumarSaldosPorDia(movimientosVenezolanos);
-        console.log("Montos venezolanos por día:", montosVenezolanosPorDia);
+        const ultimoSaldoVenezolanoPorDia = this.obtenerUltimoSaldoPorDia(movimientosVenezolanos);
 
         this.movimientoService.getMovimientosColombianas()
           .pipe(catchError(error => {
@@ -81,16 +78,24 @@ export class SeguimientoCajaComponent implements OnInit {
             return of([]);
           }))
           .subscribe(movimientosColombianos => {
-            const montosColombianosPorDia = this.sumarSaldosPorDia(movimientosColombianos);
-            console.log("Montos colombianos por día:", montosColombianosPorDia);
+            const ultimoSaldoColombianoPorDia = this.obtenerUltimoSaldoPorDia(movimientosColombianos);
 
-            // Actualizar la tabla con los movimientos
-            this.actualizarTabla(diasDelMes, montosColombianosPorDia, montosVenezolanosPorDia);
+            // Obtener las deudas de los clientes a través de la interfaz Deuda
+            this.proveedorService.getCreditosByProveedorId(1) 
+              .pipe(catchError(error => {
+                console.error('Error al obtener las deudas de clientes:', error);
+                return of([]);
+              }))
+              .subscribe(deudasClientes => {
+                const ultimoSaldoClientesPorDia = this.obtenerUltimoSaldoClientesPorDia(deudasClientes);
+
+                this.actualizarTabla(diasDelMes, ultimoSaldoColombianoPorDia, ultimoSaldoVenezolanoPorDia, ultimoSaldoClientesPorDia);
+              });
           });
       });
   }
 
-  // Función que genera todos los días del mes seleccionado
+  // Generar los días del mes seleccionado
   generarDiasDelMes(anio: number, mes: number): string[] {
     const diasEnMes = new Date(anio, mes, 0).getDate();
     const diasDelMes: string[] = [];
@@ -101,33 +106,67 @@ export class SeguimientoCajaComponent implements OnInit {
     return diasDelMes;
   }
 
-  // Función que agrupa los movimientos por fecha y obtiene el saldo del último movimiento de cada cuenta
-  sumarSaldosPorDia(movimientos: MovimientoDiaDTO[]): { [fecha: string]: number } {
-    const saldosPorDia: { [fecha: string]: number } = {};
+  // Obtener el último saldo de cada día para los movimientos
+  // Obtener el último saldo de cada día para los movimientos, ordenando por fecha y hora
+obtenerUltimoSaldoPorDia(movimientos: MovimientoDiaDTO[]): { [fecha: string]: number } {
+  const saldosPorDia: { [fecha: string]: MovimientoDiaDTO[] } = {};
 
-    movimientos.forEach(movimiento => {
+  movimientos.forEach(movimiento => {
       const fecha = new Date(movimiento.fecha).toLocaleDateString('en-CA'); 
       if (!saldosPorDia[fecha]) {
-        saldosPorDia[fecha] = 0;
+          saldosPorDia[fecha] = [];
       }
-      // Obtener el saldo actual del último movimiento de ese día
-      saldosPorDia[fecha] += movimiento.saldoActual;
-    });
+      saldosPorDia[fecha].push(movimiento); // Agrupar los movimientos por fecha
+  });
 
-    return saldosPorDia;
-  }
+  // Tomar solo el último saldo del día
+  const ultimoSaldoPorDia: { [fecha: string]: number } = {};
+  Object.keys(saldosPorDia).forEach(fecha => {
+      const movimientosDelDia = saldosPorDia[fecha];
+      movimientosDelDia.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime()); // Ordenar por fecha/hora
+      ultimoSaldoPorDia[fecha] = movimientosDelDia[0].saldoActual; // Tomar el último saldo del día
+  });
 
-  // Actualizar la tabla con los saldos del último movimiento por día
-  actualizarTabla(diasDelMes: string[], montosColombianosPorDia: { [fecha: string]: number }, montosVenezolanosPorDia: { [fecha: string]: number }) {
+  return ultimoSaldoPorDia;
+}
+
+
+ // Obtener el último saldo de cada día para los clientes (Deuda), ordenando por fecha y hora
+obtenerUltimoSaldoClientesPorDia(deudas: Deuda[]): { [fecha: string]: number } {
+  const saldosPorDia: { [fecha: string]: Deuda[] } = {};
+
+  deudas.forEach(deuda => {
+      const fecha = new Date(deuda.fecha).toLocaleDateString('en-CA');
+      if (!saldosPorDia[fecha]) {
+          saldosPorDia[fecha] = [];
+      }
+      saldosPorDia[fecha].push(deuda); // Agrupar las deudas por fecha
+  });
+
+  // Tomar solo el último saldo del día
+  const ultimoSaldoPorDia: { [fecha: string]: number } = {};
+  Object.keys(saldosPorDia).forEach(fecha => {
+      const deudasDelDia = saldosPorDia[fecha];
+      deudasDelDia.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime()); // Ordenar por fecha/hora
+      ultimoSaldoPorDia[fecha] = deudasDelDia[0].saldoActual; // Tomar el último saldo del día
+  });
+
+  return ultimoSaldoPorDia;
+}
+
+  // Actualizar la tabla con los datos
+  actualizarTabla(diasDelMes: string[], ultimoSaldoColombianoPorDia: { [fecha: string]: number }, ultimoSaldoVenezolanoPorDia: { [fecha: string]: number }, ultimoSaldoClientesPorDia: { [fecha: string]: number }) {
     diasDelMes.forEach(fecha => {
-      const colombianas = montosColombianosPorDia[fecha] || 0; 
-      const venezolanas = montosVenezolanosPorDia[fecha] || 0;
+      const colombianas = ultimoSaldoColombianoPorDia[fecha] || 0; 
+      const venezolanas = ultimoSaldoVenezolanoPorDia[fecha] || 0;
+      const clientes = ultimoSaldoClientesPorDia[fecha] || 0;
       const utilidad = colombianas + venezolanas;
 
       this.seguimientoCaja.push({
         fecha,
         colombianas,
         venezolanas,
+        clientes,
         utilidad
       });
     });

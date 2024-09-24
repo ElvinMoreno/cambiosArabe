@@ -21,6 +21,7 @@ import { Crearventa } from '../../../interfaces/crearventa';
 import { Subscription } from 'rxjs';
 import { VentaBs } from '../../../interfaces/venta-bs';
 import { ModalContentComponent } from './modal-content/modal-content.component';
+import { BancosService } from '../../../services/banco.service';
 
 @Component({
   selector: 'app-bancolombia',
@@ -64,6 +65,10 @@ export class BancolombiaComponent implements OnInit, OnDestroy {
   bolivaresLabel: number | null = null;
   pesosLabel: number | null = null;
   isBolivaresManual = false;  // Nueva bandera para controlar si el valor de bolívares es manual
+  cuentaLabel: string[] = []; // Label dinámico para cada cuenta
+  showSelectBancos: boolean[] = []; // Nueva propiedad para controlar si se muestra el select de bancos para cada cuenta
+
+
 
   constructor(
     private fb: FormBuilder,
@@ -75,6 +80,7 @@ export class BancolombiaComponent implements OnInit, OnDestroy {
     public dialogRef: MatDialogRef<BancolombiaComponent>,
     public dialog: MatDialog,
     private cdr: ChangeDetectorRef,
+    private BancosService: BancosService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.form = this.fb.group({
@@ -92,7 +98,21 @@ export class BancolombiaComponent implements OnInit, OnDestroy {
 
     const today = new Date();
     this.currentDate = formatDate(today, 'yyyy-MM-ddTHH:mm:ss.SSSZ', 'en-US');
+
+    // Inicializar los labels dinámicos con "Número de Cuenta"
+    this.cuentaLabel.push('Número de Cuenta');
+        this.showSelectBancos.push(false); // Inicializar la visibilidad del select de bancos para la primera cuenta
+
   }
+
+  // Alternar entre "Número de Cuenta" y "Número de Teléfono"
+  togglePhoneLabel(index: number): void {
+    this.cuentaLabel[index] = this.cuentaLabel[index] === 'Número de Cuenta' ? 'Número de Teléfono' : 'Número de Cuenta';
+
+    // Si el label es "Número de Teléfono", mostramos el select
+    this.showSelectBancos[index] = this.cuentaLabel[index] === 'Número de Teléfono';
+  }
+
    // Alternar entre bolívares y pesos al hacer clic en el botón
    toggleCurrency(index: number): void {
     const control = this.cuentasDestinatarioArray.controls[index];
@@ -167,6 +187,7 @@ export class BancolombiaComponent implements OnInit, OnDestroy {
           // Obtener el valor inicial de precioVentaBs
           const precioVentaBs = parseFloat(this.form.get('precioVentaBs')?.value || '0');
           const bolivaresIniciales = precioVentaBs / this.tasaActual; // Calcular bolívares iniciales basados en la tasa
+          console.log("bolivarinicial:" + bolivaresIniciales);
           this.pesosLabel = precioVentaBs; // Inicializamos pesosLabel con el precio de venta
 
           // Iterar sobre todos los controles dentro del FormArray de cuentas destinatario
@@ -267,15 +288,21 @@ updatePesosLabelFromVentaBs(): void {
   // Método para crear un nuevo FormGroup dentro de FormArray
   createCuentaDestinatario(): FormGroup {
     return this.fb.group({
-      nombreCuenta: ['', Validators.required],
+      nombreCuenta: [''],
       numeroCuenta: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
       cedula: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
       bolivares: [''], // Campo para bolívares
       pesos: [''], // Nuevo campo para pesos
+      banco: [''], // Agregamos el campo banco con validación requerida
       currency: ['bolivares'] // Inicializa la moneda en bolívares
     });
   }
 
+    // Alternar entre "Número de Cuenta" y "Número de Teléfono", y mostrar el select de banco
+    togglePhoneAndBanco(index: number): void {
+      this.cuentaLabel[index] = this.cuentaLabel[index] === 'Número de Cuenta' ? 'Número de Teléfono' : 'Número de Cuenta';
+      this.showSelectBancos[index] = !this.showSelectBancos[index]; // Mostrar u ocultar el select de banco
+    }
 
   // Modificar el método para que al agregar una nueva cuenta destinatario, el campo "Bolívares" sea visible
   addCuentaDestinatario(): void {
@@ -285,6 +312,8 @@ updatePesosLabelFromVentaBs(): void {
     this.isBolivaresManual = true; // Marcar que el valor de bolívares será ingresado manualmente
     // Escuchar cambios en el input de bolívares para la nueva cuenta y restar del bolivaresLabel
     this.setupBolivaresListener();
+    this.cuentaLabel.push('Número de Cuenta'); // Agregar un nuevo label
+    this.showSelectBancos.push(false); // Inicializar la visibilidad del select
   }
 
   get cuentasDestinatarioArray(): FormArray {
@@ -406,6 +435,8 @@ onInputChange(event: Event): void {
   }
   removeCuentaDestinatario(index: number): void {
     this.cuentasDestinatarioArray.removeAt(index);
+    this.cuentaLabel.splice(index, 1); // Eliminar el label correspondiente
+    this.showSelectBancos.splice(index, 1); // Eliminar la visibilidad del select
   }
 
   loadInitialData(): void {
@@ -432,7 +463,7 @@ onInputChange(event: Event): void {
     );
 
     this.subscriptions.add(
-      this.cuentaBancariaService.getCuentasVenezolanas().subscribe(
+      this.BancosService.getBancosVenezolanos().subscribe(
         (data: any[]) => {
           this.cuentasVenezolanas = data;
         },
@@ -592,58 +623,58 @@ onConfirmar(): void {
 }
 
 
-   // Lógica para definir si bolívares debe ser tomado del input o calculado automáticamente
 // Lógica para definir si bolívares debe ser tomado del input o calculado automáticamente
-buildVentaData(): Crearventa {
-  const formValues = this.form.value;
+  buildVentaData(): Crearventa {
+    const formValues = this.form.value;
 
-  // Construir el objeto VentaBs
-  const ventaBs: VentaBs = {
-    cuentaBancariaBs: formValues.cuentaBs,
-    cuentaBancariaPesos: formValues.cuentaPesos,
-    descripcionId: 1,
-    clienteId: formValues.cliente,
-    fechaVenta: formValues.fechaVenta,
-    referencia: formValues.referencia,
-    precioVentaBs: formValues.precioVentaBs,
-    metodoPagoId: formValues.tipoPago,
-    comision: formValues.comision,
-    tasaVenta: this.tasaActual!,
-    nombreClienteFinal: formValues.clienteFinal,
-    banco: formValues.banco,
-    entrada: !!formValues.entrada,
-    salida: !!formValues.salida
-  };
-
-  // Ajustar la lógica para cada cuenta destinatario
-  const cuentasDestinatario: CuentaDestinatario[] = formValues.cuentasDestinatario.map((cd: any) => {
-    let bolivares;
-
-    // Verificar si el valor de bolívares es manual o debe calcularse
-    if (this.isBolivaresManual && cd.bolivares) {
-      bolivares = cd.bolivares;  // Usar el valor ingresado manualmente para cada cuenta
-    } else {
-      // Calcular el valor de bolívares automáticamente usando la tasa de venta
-      bolivares = formValues.precioVentaBs / this.tasaActual!;
-    }
-
-    return {
-      nombreCuentaDestinatario: cd.nombreCuenta,
-      cedula: cd.cedula ? +cd.cedula : null,  // Convertir a número si es posible
-      numeroCuenta: cd.numeroCuenta,
-      bolivares: bolivares  // Usar el valor de bolívares calculado o manual
+    // Construir el objeto VentaBs
+    const ventaBs: VentaBs = {
+      cuentaBancariaBs: formValues.cuentaBs,
+      cuentaBancariaPesos: formValues.cuentaPesos,
+      descripcionId: 1,
+      clienteId: formValues.cliente,
+      fechaVenta: formValues.fechaVenta,
+      referencia: formValues.referencia,
+      precioVentaBs: formValues.precioVentaBs,
+      metodoPagoId: formValues.tipoPago,
+      comision: formValues.comision,
+      tasaVenta: this.tasaActual!,
+      nombreClienteFinal: formValues.clienteFinal,
+      banco: formValues.banco, // Banco de la venta principal (si es necesario)
+      entrada: !!formValues.entrada,
+      salida: !!formValues.salida
     };
-  });
 
-  const ventaData: Crearventa = {
-    ventaBs: ventaBs,
-    cuentasDestinatario: cuentasDestinatario
-  };
+    // Ajustar la lógica para cada cuenta destinatario
+    const cuentasDestinatario: CuentaDestinatario[] = formValues.cuentasDestinatario.map((cd: any) => {
+      let bolivares;
 
-  console.log(ventaData); // Asegúrate de revisar esto para ver los datos capturados
+      // Verificar si el valor de bolívares es manual o debe calcularse
+      if (this.isBolivaresManual && cd.bolivares) {
+        bolivares = cd.bolivares;  // Usar el valor ingresado manualmente para cada cuenta
+      } else {
+        // Calcular el valor de bolívares automáticamente usando la tasa de venta
+        bolivares = formValues.precioVentaBs / this.tasaActual!;
+      }
+      console.log("Banco seleccionado:", cd.banco); // Para verificar el banco seleccionado
+      return {
+        nombreCuentaDestinatario: cd.nombreCuenta,
+        cedula: cd.cedula ? +cd.cedula : null,  // Convertir a número si es posible
+        numeroCuenta: cd.numeroCuenta,
+        bolivares: bolivares,  // Usar el valor de bolívares calculado o manual
+        banco: cd.banco ? cd.banco : null // Enviar el objeto completo del banco seleccionado
+      };
+    });
 
-  return ventaData;
-}
+    const ventaData: Crearventa = {
+      ventaBs: ventaBs,
+      cuentasDestinatario: cuentasDestinatario
+    };
+
+    console.log(ventaData); // Asegúrate de revisar esto para ver los datos capturados
+
+    return ventaData;
+  }
 
 
 openModal(): void {

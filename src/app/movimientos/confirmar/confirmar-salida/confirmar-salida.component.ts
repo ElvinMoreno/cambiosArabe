@@ -38,6 +38,27 @@ export class ConfirmarSalidaComponent implements OnInit {
     this.checkScreenSize();
   }
 
+  // Método para copiar múltiples campos al portapapeles, incluyendo redondeo de bolívares
+  copyDetailsToClipboard(element: any): void {
+    // Extraer los valores requeridos
+    const nombre = element.nombreCuentaDestinatario || '';
+    const cedula = element.cedula || '';
+    const cuenta = element.numeroCuenta || '';
+    const bolivares = element.bolivares ? element.bolivares.toFixed(2) : ''; // Redondear a dos decimales
+
+    // Concatenar en una sola cadena separada por comas
+    const textToCopy = `${nombre}, ${cedula}, ${cuenta}, ${bolivares}`;
+
+    // Copiar al portapapeles
+    navigator.clipboard.writeText(textToCopy).then(() => {
+      console.log('Texto copiado:', textToCopy);
+      alert('Información copiada al portapapeles');
+    }).catch(err => {
+      console.error('Error al copiar el texto:', err);
+      alert('Error al copiar el texto');
+    });
+  }
+
   checkScreenSize() {
     this.breakpointObserver.observe([Breakpoints.Handset])
       .subscribe(result => {
@@ -91,15 +112,10 @@ export class ConfirmarSalidaComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // Llama al servicio con los IDs como parte de la URL
         this.ventaBsService.updateBancoBs(result.ventaId, result.cuentaId).subscribe(
           response => {
             console.log('Venta actualizada con la cuenta bancaria seleccionada', response);
-
-            // Recargar la lista de ventas para reflejar los cambios
             this.loadVentas();
-
-            // Confirmar la venta inmediatamente después de actualizar el banco
           },
           error => {
             console.error('Error al actualizar la venta con la cuenta bancaria seleccionada', error);
@@ -109,14 +125,11 @@ export class ConfirmarSalidaComponent implements OnInit {
     });
   }
 
-
-
-
   updateVentaBanco(ventaId: number, updatedVenta: VentaBs): void {
     this.ventaBsService.updateVentaBs(ventaId, updatedVenta).subscribe(
       response => {
         console.log('Venta actualizada con la cuenta bancaria seleccionada', response);
-        this.loadVentas(); // Recargar la lista tras la actualización
+        this.loadVentas();
       },
       error => {
         console.error('Error al actualizar la venta con la cuenta bancaria seleccionada', error);
@@ -127,47 +140,43 @@ export class ConfirmarSalidaComponent implements OnInit {
   confirmarVentaSalida(venta: CuentaDestinatario): void {
     const nombreCuenta = venta.nombreClienteFinal || 'N/A';
 
-    // Envolver la venta en un array antes de enviar la petición
-    const ventasAConfirmar: CuentaDestinatario[] = [venta]; // Convertir a lista
+    if (nombreCuenta !== 'N/A') {
+      navigator.clipboard.writeText(nombreCuenta).then(() => {
+        // El nombre se copió exitosamente
+        this.confirmarVentaSalidaProceso(venta, nombreCuenta, true);
+      }).catch(err => {
+        // No se pudo copiar el nombre al portapapeles
+        console.error('Error al copiar el nombre de la cuenta al portapapeles', err);
+        this.confirmarVentaSalidaProceso(venta, nombreCuenta, false);
+      });
+    } else {
+      this.confirmarVentaSalidaProceso(venta, nombreCuenta, false);
+    }
+  }
 
-    // Confirmación de la venta
+  confirmarVentaSalidaProceso(venta: CuentaDestinatario, nombreCuenta: string, copiadoExitoso: boolean): void {
+    const ventasAConfirmar: CuentaDestinatario[] = [venta];
+
     this.ventaBsService.confirmarVentaSalida(ventasAConfirmar).subscribe(
       response => {
         console.log('Venta confirmada', response);
-
-        // Copiar automáticamente el nombre de la cuenta al portapapeles
-        if (nombreCuenta !== 'N/A') {
-          navigator.clipboard.writeText(nombreCuenta).then(() => {
-            Swal.fire({
-              title: 'Venta Confirmada',
-              text: `Mandar capture a: ${nombreCuenta}. (Nombre copiado)`,
-              icon: 'success',
-              confirmButtonText: 'Aceptar'
-            });
-          }).catch(err => {
-            console.error('Error al copiar el nombre de la cuenta al portapapeles', err);
-
-            Swal.fire({
-              title: 'Venta Confirmada',
-              text: `Mandar capture a: ${nombreCuenta}. (No se pudo copiar el nombre al portapapeles)`,
-              icon: 'success',
-              confirmButtonText: 'Aceptar'
-            });
-          });
-        } else {
-          Swal.fire({
-            title: 'Venta Confirmada',
-            text: `Mandar capture a: ${nombreCuenta}.`,
-            icon: 'success',
-            confirmButtonText: 'Aceptar'
-          });
+        let mensajeTexto = `Mandar capture a: ${nombreCuenta}.`;
+        if (copiadoExitoso && nombreCuenta !== 'N/A') {
+          mensajeTexto += ' (Nombre copiado)';
+        } else if (!copiadoExitoso && nombreCuenta !== 'N/A') {
+          mensajeTexto += ' (No se pudo copiar el nombre al portapapeles)';
         }
 
-        this.loadVentas(); // Recargar las ventas tras la confirmación
+        Swal.fire({
+          title: 'Venta Confirmada',
+          text: mensajeTexto,
+          icon: 'success',
+          confirmButtonText: 'Aceptar'
+        });
+        this.loadVentas();
       },
       error => {
         console.error('Error al confirmar la venta', error);
-
         Swal.fire({
           title: 'Error',
           text: 'Ocurrió un error al confirmar la venta.',
@@ -185,7 +194,6 @@ export class ConfirmarSalidaComponent implements OnInit {
       return;
     }
 
-    // Verificar si el valor es numérico y formatearlo a dos decimales si es necesario
     const formattedValue = typeof value === 'number' ? value.toFixed(2) : value;
 
     navigator.clipboard.writeText(formattedValue).then(() => {
@@ -204,6 +212,6 @@ export class ConfirmarSalidaComponent implements OnInit {
   }
 
   shouldRemoveBorder(element: CuentaDestinatario): boolean {
-    return !!element.ventaBsId; // Comprobar si tiene un `ventaBsId` válido
+    return !!element.ventaBsId;
   }
 }
