@@ -13,6 +13,7 @@ import { forkJoin, map } from 'rxjs';
 import { VentaBsService } from '../../../services/venta-bs.service';
 import { MatBadgeModule } from '@angular/material/badge';
 import { ConfirmarAccionComponent } from '../../../confirmar-accion/confirmar-accion.component';  // Importa el componente de confirmación
+import { MatDividerModule } from '@angular/material/divider';
 
 @Component({
   selector: 'app-confirmar-entrada',
@@ -23,7 +24,8 @@ import { ConfirmarAccionComponent } from '../../../confirmar-accion/confirmar-ac
     MatDialogModule,
     MatIconModule,
     MatCardModule,
-    MatBadgeModule
+    MatBadgeModule,
+    MatDividerModule
   ],
   templateUrl: './confirmar-entrada.component.html',
   styleUrls: ['./confirmar-entrada.component.css']

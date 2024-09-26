@@ -67,4 +67,5 @@ export class CompraService {
     console.error('An error occurred:', error);
     return throwError(() => new Error('Ocurrió un error en la solicitud. Por favor, inténtalo de nuevo.'));
   }
+
 }
