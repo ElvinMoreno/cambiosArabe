@@ -47,7 +47,7 @@ export class ConfirmarSalidaComponent implements OnInit {
     const bolivares = element.bolivares ? element.bolivares.toFixed(2) : ''; // Redondear a dos decimales
 
     // Concatenar en una sola cadena separada por comas
-    const textToCopy = `${nombre}\n${cedula}\n${cuenta}\n${bolivares}`;
+    const textToCopy = `${nombre},${cedula},${cuenta},${bolivares}`;
 
     // Copiar al portapapeles
     navigator.clipboard.writeText(textToCopy).then(() => {
