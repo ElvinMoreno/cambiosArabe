@@ -38,26 +38,26 @@ export class ConfirmarSalidaComponent implements OnInit {
     this.checkScreenSize();
   }
 
-  copyAllDetailsToClipboard(element: any): void {
-    const fields = [
-      { value: element.banco, label: 'banco' },
-      { value: element.nombreCuentaDestinatario, label: 'nombre' },
-      { value: element.cedula, label: 'cedula' },
-      { value: element.numeroCuenta, label: 'cuenta' },
-      { value: element.bolivares ? element.bolivares.toFixed(2) : '', label: 'bolivares' }
-    ];
+  // Método para copiar múltiples campos al portapapeles, incluyendo redondeo de bolívares
+  copyDetailsToClipboard(element: any): void {
+    // Extraer los valores requeridos
+    const nombre = element.nombreCuentaDestinatario || '';
+    const cedula = element.cedula || '';
+    const cuenta = element.numeroCuenta || '';
+    const bolivares = element.bolivares ? element.bolivares.toFixed(2) : ''; // Redondear a dos decimales
 
-    fields.forEach((field, index) => {
-      setTimeout(() => {
-        navigator.clipboard.writeText(field.value).then(() => {
-          console.log(`${field.label} copiado:`, field.value);
-        }).catch(err => {
-          console.error(`Error al copiar ${field.label}:`, err);
-        });
-      }, index * 500); // Tiempo entre cada copia (0.5 segundos)
+    // Concatenar en una sola cadena separada por comas
+    const textToCopy = `${nombre}\n${cedula}\n${cuenta}\n${bolivares}`;
+
+    // Copiar al portapapeles
+    navigator.clipboard.writeText(textToCopy).then(() => {
+      console.log('Texto copiado:', textToCopy);
+      alert('Información copiada al portapapeles');
+    }).catch(err => {
+      console.error('Error al copiar el texto:', err);
+      alert('Error al copiar el texto');
     });
   }
-
 
   checkScreenSize() {
     this.breakpointObserver.observe([Breakpoints.Handset])
