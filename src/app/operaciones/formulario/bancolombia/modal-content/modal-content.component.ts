@@ -54,7 +54,7 @@ export class ModalContentComponent {
       nombreCuenta
       numeroCuenta,
       cedula
-      nota: tu respuesta debe tener unicamente los valores en ese orden
+      nota: tu respuesta debe tener unicamente los valores en ese orden, también quita los espacios
       El texto es el siguiente: ${this.pastedData}
     `;
 

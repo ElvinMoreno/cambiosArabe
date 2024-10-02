@@ -1,20 +1,16 @@
 <h2 mat-dialog-title>Pegar Información</h2>
 <mat-dialog-content>
-  <mat-form-field >
+  <mat-form-field class="full-width">
     <mat-label>Pegue toda la información aquí:</mat-label>
     <textarea
       matInput
       [(ngModel)]="pastedData"
       (paste)="onPaste($event)">
     </textarea>
+
   </mat-form-field>
 
   <div *ngIf="resultJson">
     <pre>{{ resultJson }}</pre>
   </div>
 </mat-dialog-content>
-
-<mat-dialog-actions>
-  <!-- <button mat-button (click)="processData()">Procesar</button>
-  <button mat-button (click)="onNoClick()">Cancelar</button> -->
-</mat-dialog-actions>
