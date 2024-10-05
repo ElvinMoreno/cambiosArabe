@@ -86,6 +86,7 @@ export class CuentaVenezolanaComponent implements OnInit {
       (data: MovimientoDiaDTO[]) => {
         this.movimientos = data.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
         this.mostrandoMovimientos = true;
+        console.log(data);
       },
       error => {
         console.error('Error al obtener los movimientos:', error);

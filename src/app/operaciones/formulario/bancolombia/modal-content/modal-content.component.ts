@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
 import { MatButton, MatButtonModule } from '@angular/material/button';
 import {
   MAT_DIALOG_DATA,
@@ -30,10 +30,13 @@ export class ModalContentComponent {
   pastedData: string = '';  // El texto pegado por el usuario
   resultJson: string = '';  // El resultado formateado en JSON
 
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+
   constructor(
     public dialogRef: MatDialogRef<ModalContentComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private gemeniService: GemeniService  // Inyectar el servicio Gemeni
+
   ) {}
 
   // Función para manejar el evento de pegar
@@ -87,4 +90,18 @@ export class ModalContentComponent {
   onNoClick(): void {
     this.dialogRef.close({ nombreCuenta: '', numeroCuenta: '', cedula: '' });
   }
+
+  onSelectFile(): void {
+    this.fileInput.nativeElement.click(); // Simular un clic en el input de tipo archivo
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      console.log('Archivo seleccionado:', file);
+      // Aquí puedes agregar la lógica para procesar la imagen
+    }
+  }
+
 }

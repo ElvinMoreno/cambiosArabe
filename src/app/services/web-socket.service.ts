@@ -53,7 +53,7 @@ export class WebSocketService {
 
     this.stompClient.subscribe('/topic/notifications', message => {
       const receivedMessage = message.body;
-      console.log('Message received: ', receivedMessage);
+    //  console.log('Message received: ', receivedMessage);
 
 
       setTimeout(() => {
@@ -64,7 +64,7 @@ export class WebSocketService {
 
 
   sendMessage(message: any) {
-    console.log('Sending message: ', message);
+   // console.log('Sending message: ', message);
     this.stompClient.publish({
       destination: '/app/sendMessage',  // Ensure this matches the backend controller mapping
       body: JSON.stringify(message),

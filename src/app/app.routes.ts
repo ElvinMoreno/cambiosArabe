@@ -11,7 +11,6 @@ import { ConfiguracionComponent } from './configuraciones/configuracion/configur
 import { UsuariosComponent } from './usuarios/usuarios.component';
 import { TasaComponent } from './tasa/tasa.component';
 import { MovimientosComponent } from './movimientos/movimientos.component';
-import { MovimientosVenezolanosComponent } from './shared/movimientos-general-componente/movimientos-venezolanos.component';
 import { DashboardComponent } from './index/dashboard/dashboard.component';
 import { IndexComponent } from './index/index.component';
 
@@ -46,9 +45,8 @@ export const routes: Routes = [
       { path: 'cuentaBancaria', component: CuentaBancariaComponent },
       { path: 'proveedores', component: UsuariosComponent },
       { path: 'movimientos', component: MovimientosComponent },
-      
+
       // Nueva ruta para movimientos venezolanos
-      { path: 'movimientos-venezolanos/:cuentaId', component: MovimientosVenezolanosComponent }
     ]
   }
 ];

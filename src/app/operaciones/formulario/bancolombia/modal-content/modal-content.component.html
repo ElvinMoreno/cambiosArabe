@@ -7,10 +7,16 @@
       [(ngModel)]="pastedData"
       (paste)="onPaste($event)">
     </textarea>
-
   </mat-form-field>
 
   <div *ngIf="resultJson">
     <pre>{{ resultJson }}</pre>
   </div>
+
+
 </mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-stroked-button (click)="onSelectFile()">Seleccionar Imagen</button>
+  <input #fileInput type="file" accept="image/*" (change)="onFileSelected($event)" style="display: none;">
+</mat-dialog-actions>

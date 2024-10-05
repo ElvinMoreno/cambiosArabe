@@ -23,8 +23,7 @@ export class MovimientosTableComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['movimientos'] && changes['movimientos'].currentValue) {
-      // Ordenar por id de mayor a menor
-      this.movimientos.sort((a, b) => b.id - a.id);
+
       this.movimientosFiltrados = [...this.movimientos];
     }
   }
@@ -56,10 +55,12 @@ export class MovimientosTableComponent implements OnChanges {
   }
 
   openDialog(movimiento: MovimientoDiaDTO): void {
+    console.log(movimiento)
     this.dialog.open(DetalleMovimientoCompGenComponent, {
       width: '400px',
       data: {
         title: 'Detalles del Movimiento',
+        id: movimiento.id,  // Pasar el id de forma explícita
         data: movimiento,
         fields: [
           { label: 'Fecha', key: 'fecha', format: 'date' },
@@ -76,7 +77,9 @@ export class MovimientosTableComponent implements OnChanges {
         closeButtonLabel: 'Cerrar',
       },
     });
+
   }
+
 
   exportarExcel(): void {
     const data = this.movimientosFiltrados.map((mov) => ({

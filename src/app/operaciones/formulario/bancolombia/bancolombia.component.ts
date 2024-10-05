@@ -22,6 +22,8 @@ import { Subscription } from 'rxjs';
 import { VentaBs } from '../../../interfaces/venta-bs';
 import { ModalContentComponent } from './modal-content/modal-content.component';
 import { BancosService } from '../../../services/banco.service';
+import {MatExpansionModule} from '@angular/material/expansion';
+
 
 @Component({
   selector: 'app-bancolombia',
@@ -35,7 +37,7 @@ import { BancosService } from '../../../services/banco.service';
     MatDatepickerModule,
     MatNativeDateModule,
     ReactiveFormsModule,
-    MatIconModule,
+    MatIconModule, MatExpansionModule
   ],
   templateUrl: './bancolombia.component.html',
   styleUrls: ['./bancolombia.component.css'],
@@ -67,7 +69,7 @@ export class BancolombiaComponent implements OnInit, OnDestroy {
   isBolivaresManual = false;  // Nueva bandera para controlar si el valor de bolívares es manual
   cuentaLabel: string[] = []; // Label dinámico para cada cuenta
   showSelectBancos: boolean[] = []; // Nueva propiedad para controlar si se muestra el select de bancos para cada cuenta
-
+  mostrarCuentaPesos: boolean = true;
 
 
   constructor(
@@ -136,9 +138,6 @@ export class BancolombiaComponent implements OnInit, OnDestroy {
       control.get('currency')?.setValue(currentCurrency === 'bolivares' ? 'pesos' : 'bolivares');
     }
   }
-
-
-
 // Lógica para manejar el input de bolívares o pesos
   onBolivaresOrPesosInput(event: Event, index: number): void {
     const inputElement = event.target as HTMLInputElement;
@@ -153,7 +152,6 @@ export class BancolombiaComponent implements OnInit, OnDestroy {
       this.updatePesosLabel();  // Lógica para pesos
     }
   }
-
       // Actualiza el bolivaresLabel restando solo los valores ingresados en bolívares
     updateBolivaresLabel(): void {
       // Usar setTimeout para permitir que Angular termine de actualizar el formulario antes del cálculo
@@ -304,17 +302,17 @@ updatePesosLabelFromVentaBs(): void {
       this.showSelectBancos[index] = !this.showSelectBancos[index]; // Mostrar u ocultar el select de banco
     }
 
-  // Modificar el método para que al agregar una nueva cuenta destinatario, el campo "Bolívares" sea visible
-  addCuentaDestinatario(): void {
-    const newCuenta = this.createCuentaDestinatario();
-    this.cuentasDestinatarioArray.push(newCuenta);
-    this.bolivaresVisible = true; // Hacer visible el campo "Bolívares"
-    this.isBolivaresManual = true; // Marcar que el valor de bolívares será ingresado manualmente
-    // Escuchar cambios en el input de bolívares para la nueva cuenta y restar del bolivaresLabel
-    this.setupBolivaresListener();
-    this.cuentaLabel.push('Número de Cuenta'); // Agregar un nuevo label
-    this.showSelectBancos.push(false); // Inicializar la visibilidad del select
-  }
+    addCuentaDestinatario(): void {
+      const newCuenta = this.createCuentaDestinatario();
+      this.cuentasDestinatarioArray.push(newCuenta);
+      this.bolivaresVisible = true; // Hacer visible el campo "Bolívares"
+      this.isBolivaresManual = true; // Marcar que el valor de bolívares será ingresado manualmente
+      // Escuchar cambios en el input de bolívares para la nueva cuenta y restar del bolivaresLabel
+      this.setupBolivaresListener();
+      this.cuentaLabel.push('Número de Cuenta'); // Agregar un nuevo label
+      this.showSelectBancos.push(false); // Inicializar la visibilidad del select
+    }
+
 
   get cuentasDestinatarioArray(): FormArray {
     return this.form.get('cuentasDestinatario') as FormArray;
@@ -327,6 +325,7 @@ updatePesosLabelFromVentaBs(): void {
     this.form.patchValue({ fecha: this.currentDate });
     this.setupFormListeners();
 
+    this.onTipoPagoChange();
     // Solo añadir una cuenta destinatario si el FormArray está vacío
     if (this.cuentasDestinatarioArray.length === 0) {
       this.addCuentaDestinatario();
@@ -348,6 +347,16 @@ updatePesosLabelFromVentaBs(): void {
       }
     });
   }
+
+ // Método para escuchar cambios en el campo tipoPago
+  onTipoPagoChange(): void {
+    this.subscriptions.add(
+      this.form.get('tipoPago')?.valueChanges.subscribe((tipoPagoId: number) => {
+        this.mostrarCuentaPesos = tipoPagoId === 3; // Ocultar el campo si el id es igual a 3
+      })
+    );
+  }
+
 
 
   updateConversionAutomatica(value: number): void {
@@ -595,32 +604,32 @@ toggleCantidad(): void {
   }
 
 
-onConfirmar(): void {
-  if (this.form.valid && !this.isSubmitting) {
-    this.isSubmitting = true;
+  onConfirmar(): void {
+    if (this.form.valid && !this.isSubmitting) {
+      this.isSubmitting = true;
 
-    // Asegurarse de que tasaVenta no sea nulo antes de construir los datos
-    if (!this.form.get('tasaVenta')?.value) {
-      console.error('Error: tasaVenta es null o undefined.');
-      this.isSubmitting = false;
-      return;
-    }
-
-    const ventaData = this.buildVentaData();
-
-    this.ventaBsService.saveVentaBs(ventaData).subscribe(
-      () => {
-        this.confirmar.emit(ventaData);
-        this.dialogRef.close();
+      // Asegurarse de que tasaVenta no sea nulo antes de construir los datos
+      if (!this.form.get('tasaVenta')?.value) {
+        console.error('Error: tasaVenta es null o undefined.');
         this.isSubmitting = false;
-      },
-      (error) => {
-        console.error('Error al guardar la venta', error);
-        this.isSubmitting = false;
+        return;
       }
-    );
+
+      const ventaData = this.buildVentaData();
+
+      this.ventaBsService.saveVentaBs(ventaData).subscribe(
+        () => {
+          this.confirmar.emit(ventaData);
+          this.dialogRef.close();
+          this.isSubmitting = false;
+        },
+        (error) => {
+          console.error('Error al guardar la venta', error);
+          this.isSubmitting = false;
+        }
+      );
+    }
   }
-}
 
 
 // Lógica para definir si bolívares debe ser tomado del input o calculado automáticamente

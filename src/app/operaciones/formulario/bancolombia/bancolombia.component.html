@@ -12,59 +12,69 @@
       <div class="form-grid">
         <div formArrayName="cuentasDestinatario">
           <div *ngFor="let cuenta of cuentasDestinatarioArray.controls; let i = index" [formGroupName]="i">
-            <!-- Nombre de la cuenta -->
-            <div class="form-group" [ngClass]="{'has-error': cuenta.get('nombreCuenta')?.invalid && cuenta.get('nombreCuenta')?.touched}">
-              <label for="nombreCuenta{{i}}">Nombre cuenta <span class="required">*</span></label>
-              <input id="nombreCuenta{{i}}" type="text" formControlName="nombreCuenta" placeholder="Ingrese nombre de la cuenta">
-            </div>
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Cuenta Destinatario {{ i + 1 }}
+                </mat-panel-title>
+              </mat-expansion-panel-header>
 
-            <!-- Número de cuenta -->
-            <div class="form-group" [ngClass]="{'has-error': cuenta.get('numeroCuenta')?.invalid && cuenta.get('numeroCuenta')?.touched}">
-              <label for="numeroCuenta{{i}}">{{ cuentaLabel[i] }} <span class="required">*</span></label>
-              <div class="input-button-group">
-                <input id="numeroCuenta{{i}}" type="tel" inputmode="numeric" formControlName="numeroCuenta" placeholder="Ingrese número de cuenta">
-                <button mat-icon-button type="button" (click)="togglePhoneAndBanco(i)">
-                  <mat-icon> contact_phone</mat-icon>
-                </button>
+              <!-- Nombre de la cuenta -->
+              <div class="form-group" [ngClass]="{'has-error': cuenta.get('nombreCuenta')?.invalid && cuenta.get('nombreCuenta')?.touched}">
+                <label for="nombreCuenta{{i}}">Nombre cuenta <span class="required">*</span></label>
+                <input id="nombreCuenta{{i}}" type="text" formControlName="nombreCuenta" placeholder="Ingrese nombre de la cuenta">
               </div>
-            </div>
-            <div class="form-group" *ngIf="showSelectBancos[i]">
-              <label for="banco{{i}}">Banco <span class="required">*</span></label>
-              <mat-form-field>
-                <mat-select id="banco{{i}}" placeholder="Seleccione Banco" formControlName="banco">
-                  <mat-option *ngFor="let cuenta of cuentasVenezolanas" [value]="cuenta">
-                    {{ cuenta.nombreBanco }}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-            </div>
 
-            <!-- Cédula -->
-            <div class="form-group" [ngClass]="{'has-error': cuenta.get('cedula')?.invalid && cuenta.get('cedula')?.touched}">
-              <label for="cedula{{i}}">Cédula <span class="required">*</span></label>
-              <div class="input-button-group">
-                <input id="cedula{{i}}" type="tel" inputmode="numeric" pattern="[0-9]*" formControlName="cedula" placeholder="Número de cédula">
-                <button mat-icon-button type="button" (click)="openModal()">
-                  <mat-icon>visibility</mat-icon>
-                </button>
+              <!-- Número de cuenta -->
+              <div class="form-group" [ngClass]="{'has-error': cuenta.get('numeroCuenta')?.invalid && cuenta.get('numeroCuenta')?.touched}">
+                <label for="numeroCuenta{{i}}">{{ cuentaLabel[i] }} <span class="required">*</span></label>
+                <div class="input-button-group">
+                  <input id="numeroCuenta{{i}}" type="tel" inputmode="numeric" formControlName="numeroCuenta" placeholder="Ingrese número de cuenta">
+                  <button mat-icon-button type="button" (click)="togglePhoneAndBanco(i)">
+                    <mat-icon>contact_phone</mat-icon>
+                  </button>
+                </div>
               </div>
-            </div>
 
-            <!-- Otros campos como bolívares o pesos -->
-            <div class="form-group" *ngIf="bolivaresVisible" [ngClass]="{'has-error': cuenta.get('bolivares')?.invalid && cuenta.get('bolivares')?.touched}">
-              <label for="bolivares{{i}}">{{ cuenta.get('currency')?.value === 'bolivares' ? 'Bolívares' : 'Pesos' }} <span class="required">*</span></label>
-              <div class="input-button-group">
-                <input id="bolivares{{i}}" type="number" formControlName="{{ cuenta.get('currency')?.value === 'bolivares' ? 'bolivares' : 'pesos' }}"
-                       placeholder="Ingrese cantidad de bolívares o pesos" (input)="onBolivaresOrPesosInput($event, i)">
-                <button mat-icon-button type="button" (click)="toggleCurrency(i)">
-                  <mat-icon>swap_horiz</mat-icon>
-                </button>
+              <!-- Banco -->
+              <div class="form-group" *ngIf="showSelectBancos[i]">
+                <label for="banco{{i}}">Banco <span class="required">*</span></label>
+                <mat-form-field>
+                  <mat-select id="banco{{i}}" placeholder="Seleccione Banco" formControlName="banco">
+                    <mat-option *ngFor="let cuenta of cuentasVenezolanas" [value]="cuenta">
+                      {{ cuenta.nombreBanco }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
               </div>
-            </div>
 
-            <button mat-icon-button color="warn" type="button" (click)="removeCuentaDestinatario(i)" *ngIf="cuentasDestinatarioArray.length > 1">
-              <mat-icon>remove_circle</mat-icon>
-            </button>
+              <!-- Cédula -->
+              <div class="form-group" [ngClass]="{'has-error': cuenta.get('cedula')?.invalid && cuenta.get('cedula')?.touched}">
+                <label for="cedula{{i}}">Cédula <span class="required">*</span></label>
+                <div class="input-button-group">
+                  <input id="cedula{{i}}" type="tel" inputmode="numeric" pattern="[0-9]*" formControlName="cedula" placeholder="Número de cédula">
+                  <button mat-icon-button type="button" (click)="openModal()">
+                    <mat-icon>visibility</mat-icon>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Otros campos como bolívares o pesos -->
+              <div class="form-group" *ngIf="bolivaresVisible" [ngClass]="{'has-error': cuenta.get('bolivares')?.invalid && cuenta.get('bolivares')?.touched}">
+                <label for="bolivares{{i}}">{{ cuenta.get('currency')?.value === 'bolivares' ? 'Bolívares' : 'Pesos' }} <span class="required">*</span></label>
+                <div class="input-button-group">
+                  <input id="bolivares{{i}}" type="number" formControlName="{{ cuenta.get('currency')?.value === 'bolivares' ? 'bolivares' : 'pesos' }}"
+                         placeholder="Ingrese cantidad de bolívares o pesos" (input)="onBolivaresOrPesosInput($event, i)">
+                  <button mat-icon-button type="button" (click)="toggleCurrency(i)">
+                    <mat-icon>swap_horiz</mat-icon>
+                  </button>
+                </div>
+              </div>
+
+              <button mat-icon-button color="warn" type="button" (click)="removeCuentaDestinatario(i)" *ngIf="cuentasDestinatarioArray.length > 1">
+                <mat-icon>remove_circle</mat-icon>
+              </button>
+            </mat-expansion-panel>
           </div>
         </div>
 
@@ -83,14 +93,15 @@
           <label for="clienteFinal">Cliente Contacto <span class="required">*</span></label>
           <input id="clienteFinal" type="text" formControlName="clienteFinal" placeholder="Ingrese el cliente final">
         </div>
-
-        <div class="form-group" [ngClass]="{'has-error': form.get('tipoPago')?.invalid && form.get('tipoPago')?.touched}">
+         <!-- Campo Tipo de Pago -->
+         <div class="form-group" [ngClass]="{'has-error': form.get('tipoPago')?.invalid && form.get('tipoPago')?.touched}">
           <label for="tipoPago">Tipo de pago <span class="required">*</span></label>
           <select id="tipoPago" formControlName="tipoPago">
             <option *ngFor="let metodo of metodosPago" [value]="metodo.id">{{ metodo.tipopago }}</option>
           </select>
         </div>
-        <div class="form-group" [ngClass]="{'has-error': form.get('cuentaPesos')?.invalid && form.get('cuentaPesos')?.touched}">
+        <!-- Campo Cuenta Pesos - Mostrar/Ocultar dinámicamente -->
+        <div class="form-group" *ngIf="mostrarCuentaPesos" [ngClass]="{'has-error': form.get('cuentaPesos')?.invalid && form.get('cuentaPesos')?.touched}">
           <label for="cuentaPesos">Cuenta pesos <span class="required">*</span></label>
           <select id="cuentaPesos" formControlName="cuentaPesos">
             <option *ngFor="let cuenta of cuentasColombianas" [value]="cuenta.id">{{ cuenta.nombreBanco }} - {{ cuenta.nombreCuenta }}</option>
