@@ -352,7 +352,7 @@ updatePesosLabelFromVentaBs(): void {
   onTipoPagoChange(): void {
     this.subscriptions.add(
       this.form.get('tipoPago')?.valueChanges.subscribe((tipoPagoId: number) => {
-        this.mostrarCuentaPesos = tipoPagoId === 3; // Ocultar el campo si el id es igual a 3
+        this.mostrarCuentaPesos = tipoPagoId != 3; // Ocultar el campo si el id es igual a 3
       })
     );
   }
