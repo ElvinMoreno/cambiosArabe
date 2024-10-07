@@ -57,7 +57,8 @@ export class ModalContentComponent {
       nombreCuenta
       numeroCuenta,
       cedula
-      nota: tu respuesta debe tener unicamente los valores en ese orden, también quita los espacios
+      nota: tu respuesta debe tener unicamente los valores en ese orden, también quita los espacios, para el caso de cedula quita cuelquier valor que no sea númerico
+      nota 2: si en el texto recibido hay alguna cadena que inicia en 04 esta debe enviarse por numeroCuenta
       El texto es el siguiente: ${this.pastedData}
     `;
 

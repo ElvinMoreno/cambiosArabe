@@ -53,7 +53,7 @@
                 <label for="cedula{{i}}">Cédula <span class="required">*</span></label>
                 <div class="input-button-group">
                   <input id="cedula{{i}}" type="tel" inputmode="numeric" pattern="[0-9]*" formControlName="cedula" placeholder="Número de cédula">
-                  <button mat-icon-button type="button" (click)="openModal()">
+                  <button mat-icon-button type="button" (click)="openModal(i)">
                     <mat-icon>visibility</mat-icon>
                   </button>
                 </div>

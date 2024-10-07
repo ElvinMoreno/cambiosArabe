@@ -87,7 +87,7 @@ export class BancolombiaComponent implements OnInit, OnDestroy {
   ) {
     this.form = this.fb.group({
       fecha: ['', Validators.required],
-      tipoPago: ['', Validators.required],
+      tipoPago: [''],
       conversionAutomatica: [{ value: '', disabled: true }],
       cliente: ['', Validators.required],
       cuentaPesos: ['', Validators.required],
@@ -274,14 +274,14 @@ updatePesosLabel(): void {
   }
 }
 
-// Método para actualizar pesosLabel basado en el precioVentaBs inicial
-updatePesosLabelFromVentaBs(): void {
-  if (this.form.get('precioVentaBs')?.value) {
-    // Tomamos el valor ingresado en precioVentaBs
-    const precioVentaBs = parseFloat(this.form.get('precioVentaBs')?.value || '0');
-    this.pesosLabel = precioVentaBs; // Asignamos el valor a pesosLabel
+  // Método para actualizar pesosLabel basado en el precioVentaBs inicial
+  updatePesosLabelFromVentaBs(): void {
+    if (this.form.get('precioVentaBs')?.value) {
+      // Tomamos el valor ingresado en precioVentaBs
+      const precioVentaBs = parseFloat(this.form.get('precioVentaBs')?.value || '0');
+      this.pesosLabel = precioVentaBs; // Asignamos el valor a pesosLabel
+    }
   }
-}
 
   // Método para crear un nuevo FormGroup dentro de FormArray
   createCuentaDestinatario(): FormGroup {
@@ -356,8 +356,6 @@ updatePesosLabelFromVentaBs(): void {
       })
     );
   }
-
-
 
   updateConversionAutomatica(value: number): void {
     this.tasaActual = this.form.get('tasaVenta')?.value;  // Guarda la tasa actual
@@ -686,13 +684,13 @@ toggleCantidad(): void {
   }
 
 
-openModal(): void {
+openModal(index: number): void {
   const dialogRef = this.dialog.open(ModalContentComponent, {
     width: '400px',
     data: {} // Puedes pasar datos si lo necesitas
   });
 
-  // Cuando el modal se cierre, los datos analizados son asignados a los campos del formulario
+  // Cuando el modal se cierre, los datos analizados son asignados al campo correcto del formulario
   dialogRef.afterClosed().subscribe(result => {
     if (result && !result.error) {
       // Remover cualquier signo de puntuación antes de asignar los valores
@@ -700,7 +698,8 @@ openModal(): void {
       const cleanedNumeroCuenta = result.numeroCuenta ? result.numeroCuenta.replace(/[^\w\s]/gi, '') : '';
       const cleanedCedula = result.cedula ? result.cedula.replace(/[^\w\s]/gi, '') : '';
 
-      this.cuentasDestinatarioArray.at(0).patchValue({
+      // Usar el índice proporcionado para actualizar el valor correcto del FormArray
+      this.cuentasDestinatarioArray.at(index).patchValue({
         nombreCuenta: cleanedNombreCuenta,
         numeroCuenta: cleanedNumeroCuenta,
         cedula: cleanedCedula
@@ -710,6 +709,7 @@ openModal(): void {
     }
   });
 }
+
 
 
 
