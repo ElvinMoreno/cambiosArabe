@@ -49,17 +49,17 @@ export class ModalContentComponent {
 
   processData(): void {
     const prompt = `
-      Simula ser un chatbot y recibe un string. Retorna los siguientes 4 datos de forma textual:
-      1. El número del banco, que siempre empieza con 0 y tiene muchos dígitos.
-      2. El documento del cliente.
+      Eres un encargado de identificar de un texto los siguiente campos
+      1. El número del banco (que siempre empieza con 01 y tiene un largo de 20 digitos, muchas veces hay signos de puntación pero al quitarlos el tamao es de 20, de no ser así devolver "incompleto")
+      2. El documento del cliente (caracterizado por ser un número de cédula.)
       3. El nombre del cliente.
       tu respuesta debe estar en el siguiente orden
-      nombreCuenta
+      nombreCuenta,
       numeroCuenta,
       cedula
-      nota: tu respuesta debe tener unicamente los valores en ese orden, también quita los espacios, para el caso de cedula quita cuelquier valor que no sea númerico
-      nota 2: si en el texto recibido hay alguna cadena que inicia en 04 esta debe enviarse por numeroCuenta
-      El texto es el siguiente: ${this.pastedData}
+      Nota: los valores numericos como numeroCuenta y cedula no pueden tener espacios ni signos de puntación
+      nota: si en el texto recibido hay alguna cadena que inicia en 04 esta debe enviarse por numeroCuenta
+       El texto es el siguiente: ${this.pastedData}
     `;
 
     this.gemeniService.generateAnswer(prompt).subscribe(
