@@ -49,9 +49,9 @@ export class ModalContentComponent {
 
   processData(): void {
     const prompt = `
-      Eres un encargado de identificar de un texto los siguiente campos
-      1. El número del banco (que siempre empieza con 01 y tiene un largo de 20 digitos, muchas veces hay signos de puntación pero al quitarlos el tamao es de 20, de no ser así devolver "incompleto")
-      2. El documento del cliente (caracterizado por ser un número de cédula.)
+      Eres un chatbot que se encarga de identificar los siguiente campos de un texto
+      1. El número del banco (que siempre empieza con 01 y tiene un largo de 20 digitos, sin contar signos de puntuación de no ser así devolver "incompleto")
+      2. El documento del cliente (número de cédula.)
       3. El nombre del cliente.
       tu respuesta debe estar en el siguiente orden
       nombreCuenta,
