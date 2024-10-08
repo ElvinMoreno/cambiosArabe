@@ -12,7 +12,7 @@
       <div class="form-grid">
         <div formArrayName="cuentasDestinatario">
           <div *ngFor="let cuenta of cuentasDestinatarioArray.controls; let i = index" [formGroupName]="i">
-            <mat-expansion-panel>
+            <mat-expansion-panel [expanded]="step() === 0" (opened)="setStep(0)">
               <mat-expansion-panel-header>
                 <mat-panel-title>
                   Cuenta Destinatario {{ i + 1 }}
@@ -63,8 +63,12 @@
               <div class="form-group" *ngIf="bolivaresVisible" [ngClass]="{'has-error': cuenta.get('bolivares')?.invalid && cuenta.get('bolivares')?.touched}">
                 <label for="bolivares{{i}}">{{ cuenta.get('currency')?.value === 'bolivares' ? 'Bolívares' : 'Pesos' }} <span class="required">*</span></label>
                 <div class="input-button-group">
-                  <input id="bolivares{{i}}" type="number" formControlName="{{ cuenta.get('currency')?.value === 'bolivares' ? 'bolivares' : 'pesos' }}"
-                         placeholder="Ingrese cantidad de bolívares o pesos" (input)="onBolivaresOrPesosInput($event, i)">
+                  <input id="bolivares{{i}}"
+                  type="text"
+                  inputmode="decimal"
+                  [formControlName]="cuenta.get('currency')?.value === 'bolivares' ? 'bolivares' : 'pesos'"
+                  placeholder="Ingrese cantidad de bolívares o pesos"
+                  (input)="onBolivaresOrPesosInput($event, i)">
                   <button mat-icon-button type="button" (click)="toggleCurrency(i)">
                     <mat-icon>swap_horiz</mat-icon>
                   </button>
