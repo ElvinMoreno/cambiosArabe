@@ -622,18 +622,29 @@ toggleCantidad(): void {
       salida: !!formValues.salida
     };
 
-    // Ajustar la lógica para cada cuenta destinatario
     const cuentasDestinatario: CuentaDestinatario[] = formValues.cuentasDestinatario.map((cd: any) => {
       let bolivares;
 
       // Verificar si el valor de bolívares es manual o debe calcularse
-      if (this.isBolivaresManual && cd.bolivares) {
-        bolivares = cd.bolivares;  // Usar el valor ingresado manualmente para cada cuenta
+      if (this.isBolivaresManual) {
+        // Si la moneda es 'bolivares', usar el valor directamente ingresado
+        if (cd.currency === 'bolivares' && cd.bolivares) {
+          bolivares = cd.bolivares;
+        }
+        // Si la moneda es 'pesos', calcular el equivalente en bolívares usando la tasa actual
+        else if (cd.currency === 'pesos' && cd.bolivares) {
+          bolivares = cd.bolivares / this.tasaActual!;
+        } else {
+          // Manejo de caso donde no hay bolívares ingresados manualmente
+          bolivares = 0;
+        }
       } else {
         // Calcular el valor de bolívares automáticamente usando la tasa de venta
         bolivares = formValues.precioVentaBs / this.tasaActual!;
       }
+
       console.log("Banco seleccionado:", cd.banco); // Para verificar el banco seleccionado
+
       return {
         nombreCuentaDestinatario: cd.nombreCuenta,
         cedula: cd.cedula ? +cd.cedula : null,  // Convertir a número si es posible
@@ -642,6 +653,7 @@ toggleCantidad(): void {
         banco: cd.banco ? cd.banco : null // Enviar el objeto completo del banco seleccionado
       };
     });
+
 
     const ventaData: Crearventa = {
       ventaBs: ventaBs,
