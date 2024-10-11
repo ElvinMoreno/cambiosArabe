@@ -17,7 +17,6 @@ import { BancolombiaComponent } from '../../../../formulario/bancolombia/bancolo
 import { VentaBs } from '../../../../../interfaces/venta-bs';
 import { VentaBsService } from '../../../../../services/venta-bs.service';
 import { Crearventa } from '../../../../../interfaces/crearventa';
-import { TraerVenta } from '../../../../../interfaces/traer-venta';
 
 @Component({
   selector: 'ventas-bolivares',
@@ -29,11 +28,10 @@ import { TraerVenta } from '../../../../../interfaces/traer-venta';
     MatDialogModule,
     MatIconModule,
     MatCardModule,
-    MatPaginatorModule,
     MatDatepickerModule,
     MatFormFieldModule,
     MatInputModule,
-    FormsModule
+    FormsModule, MatPaginatorModule
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './ventas-bolivares.component.html',
@@ -41,9 +39,9 @@ import { TraerVenta } from '../../../../../interfaces/traer-venta';
 })
 export class VentasBolivaresComponent implements OnInit {
   displayedColumns: string[] = ['cuentaCop', 'metodoPago', 'cliente', 'tasa', 'fecha', 'bolivares', 'pesos'];
-  dataSource = new MatTableDataSource<VentaBs>(); // Usamos el mismo dataSource para ambas vistas
-  dataCard = new MatTableDataSource<TraerVenta>()
-  paginatedCards: TraerVenta[] = []; // Store the data for the current page
+  dataSource = new MatTableDataSource<VentaBs>(); // Datos para la tabla
+  dataCard = new MatTableDataSource<VentaBs>(); // Datos para las tarjetas
+  paginatedCards: VentaBs[] = []; // Datos paginados para las tarjetas
   isMobile = false;
   pageSize = 5;
   pageSizeOptions = [5, 10, 25];
@@ -51,7 +49,6 @@ export class VentasBolivaresComponent implements OnInit {
   currentPage = 0;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-
 
   constructor(
     public dialog: MatDialog,
@@ -72,29 +69,19 @@ export class VentasBolivaresComponent implements OnInit {
       });
   }
 
-    loadVentas(): void {
-      this.ventaBsService.getAllVentasBs().subscribe(
-        (data: VentaBs[]) => {
-          this.dataSource.data = data;
-          this.applyDateFilter();  // Aplicar el filtro de fecha si existe
-        },
-        (error) => {
-          console.error('Error al cargar las ventas:', error);
-        }
-      );
-
-      this.ventaBsService.getAllVentasBs2().subscribe(
-        (data: TraerVenta[]) => {
-          this.dataCard.data = data;
-          this.updatePaginatedCards(); // Update the paginated data when data is loaded
-        },
-        (error) => {
-          console.error('Error al cargar las ventas:', error);
-        }
-      );
-    }
-
-
+  loadVentas(): void {
+    this.ventaBsService.getAllVentasBs().subscribe(
+      (data: VentaBs[]) => {
+        this.dataSource.data = data;
+        this.dataCard.data = data;
+        this.applyDateFilter(); // Aplicar el filtro de fecha si existe
+        this.updatePaginatedCards(); // Actualizar la paginación de las tarjetas
+      },
+      (error) => {
+        console.error('Error al cargar las ventas:', error);
+      }
+    );
+  }
 
   applyDateFilter(): void {
     if (this.selectedDate) {
@@ -120,17 +107,15 @@ export class VentasBolivaresComponent implements OnInit {
   }
 
   onPageChange(event: PageEvent) {
-    this.dataSource.paginator = this.paginator;
     this.pageSize = event.pageSize;
     this.currentPage = event.pageIndex;
     this.updatePaginatedCards();
   }
 
-  // Update paginatedCards to show only the items for the current page
   updatePaginatedCards(): void {
     const start = this.currentPage * this.pageSize;
     const end = start + this.pageSize;
-    this.paginatedCards = this.dataCard.data.slice(start, end); // Slice the data for the current page
+    this.paginatedCards = this.dataCard.data.slice(start, end);
   }
 
   openDialog(): void {
@@ -139,21 +124,19 @@ export class VentasBolivaresComponent implements OnInit {
       data: {}
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      // Recargar las ventas después de cerrar el modal, independientemente del resultado
-      this.loadVentas();
+    dialogRef.afterClosed().subscribe(() => {
+      this.loadVentas(); // Recargar las ventas después de cerrar el modal
     });
   }
 
   onConfirmar(event: Crearventa): void {
     this.ventaBsService.saveVentaBs(event).subscribe(
       () => {
-        this.loadVentas();  // Recargar ventas después de guardar la venta
+        this.loadVentas(); // Recargar ventas después de guardar la venta
       },
       (error) => {
         console.error('Error al guardar la venta:', error);
       }
     );
   }
-
 }

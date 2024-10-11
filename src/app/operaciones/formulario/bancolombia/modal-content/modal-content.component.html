@@ -9,8 +9,9 @@
     </textarea>
   </mat-form-field>
 
-  <div *ngIf="resultJson">
-    <pre>{{ resultJson }}</pre>
+
+  <div *ngIf="isLoading">
+    <p>Procesando la imagen, por favor espere...</p>
   </div>
 
 
@@ -19,4 +20,5 @@
 <mat-dialog-actions>
   <button mat-stroked-button (click)="onSelectFile()">Seleccionar Imagen</button>
   <input #fileInput type="file" accept="image/*" (change)="onFileSelected($event)" style="display: none;">
+  <button mat-stroked-button (click)="processData()">Enviar</button>
 </mat-dialog-actions>

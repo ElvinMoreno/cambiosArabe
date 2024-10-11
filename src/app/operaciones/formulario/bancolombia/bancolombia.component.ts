@@ -23,6 +23,8 @@ import { VentaBs } from '../../../interfaces/venta-bs';
 import { ModalContentComponent } from './modal-content/modal-content.component';
 import { BancosService } from '../../../services/banco.service';
 import {MatExpansionModule} from '@angular/material/expansion';
+import { VentaBsCuentaBancaria } from '../../../interfaces/VentaBsCuentaBancaria';
+import { MetodoPago } from '../../../interfaces/metodo-pago';
 
 
 @Component({
@@ -600,7 +602,6 @@ toggleCantidad(): void {
   }
 
 
-// Lógica para definir si bolívares debe ser tomado del input o calculado automáticamente
   buildVentaData(): Crearventa {
     const formValues = this.form.value;
 
@@ -608,12 +609,11 @@ toggleCantidad(): void {
     const ventaBs: VentaBs = {
       cuentaBancariaBs: formValues.cuentaBs,
       cuentaBancariaPesos: formValues.cuentaPesos,
-      descripcionId: 1,
+      descripcionId: formValues.descripcionId || 1,
       clienteId: formValues.cliente,
       fechaVenta: formValues.fechaVenta,
       referencia: formValues.referencia,
       precioVentaBs: formValues.precioVentaBs,
-      metodoPagoId: formValues.tipoPago,
       comision: formValues.comision,
       tasaVenta: this.tasaActual!,
       nombreClienteFinal: formValues.clienteFinal,
@@ -622,7 +622,8 @@ toggleCantidad(): void {
       salida: !!formValues.salida
     };
 
-    const cuentasDestinatario: CuentaDestinatario[] = formValues.cuentasDestinatario.map((cd: any) => {
+    // Construir el objeto CuentasDestinatario
+    const cuentasDestinatario: CuentaDestinatario[] = (formValues.cuentasDestinatario || []).map((cd: any) => {
       let bolivares;
 
       // Verificar si el valor de bolívares es manual o debe calcularse
@@ -635,35 +636,57 @@ toggleCantidad(): void {
         else if (cd.currency === 'pesos' && cd.bolivares) {
           bolivares = cd.bolivares / this.tasaActual!;
         } else {
-          // Manejo de caso donde no hay bolívares ingresados manualmente
           bolivares = 0;
         }
       } else {
-        // Calcular el valor de bolívares automáticamente usando la tasa de venta
         bolivares = formValues.precioVentaBs / this.tasaActual!;
       }
 
-      console.log("Banco seleccionado:", cd.banco); // Para verificar el banco seleccionado
-
       return {
         nombreCuentaDestinatario: cd.nombreCuenta,
-        cedula: cd.cedula ? +cd.cedula : null,  // Convertir a número si es posible
+        cedula: cd.cedula ? +cd.cedula : null,
         numeroCuenta: cd.numeroCuenta,
-        bolivares: bolivares,  // Usar el valor de bolívares calculado o manual
-        banco: cd.banco ? cd.banco : null // Enviar el objeto completo del banco seleccionado
+        bolivares: bolivares,
+        banco: cd.banco ? { id: cd.banco.id } : null
       };
     });
 
+    // Construir el objeto CuentasBancariasPesos (si aplica)
+    const ventaBsCuentaBancaria: VentaBsCuentaBancaria[] = [];
 
+    // Verificar si hay una cuenta de pesos seleccionada y su monto correspondiente
+    if (formValues.cuentaPesos) {
+      const montoPesos = formValues.precioVentaBs; // Calcula el monto correspondiente en pesos
+      ventaBsCuentaBancaria.push({
+        cuentaBancaria: {
+          id: formValues.cuentaPesos, // ID de la cuenta seleccionada desde el select
+          nombreBanco: null,
+          nombreCuenta: null,
+          monto: null,
+          numCuenta: null,
+          limiteCB: null,
+          limiteMonto: null,
+        },
+        monto: montoPesos,
+        confirmado: false, // Puedes ajustar este valor según sea necesario
+        metodoPagoId: formValues.tipoPago
+      });
+    }
+
+    // Construir el objeto final de la venta
     const ventaData: Crearventa = {
       ventaBs: ventaBs,
-      cuentasDestinatario: cuentasDestinatario
+      cuentasDestinatario: cuentasDestinatario,
+      ventaCuentaBacariaDTO: ventaBsCuentaBancaria
     };
 
     console.log(ventaData); // Asegúrate de revisar esto para ver los datos capturados
 
     return ventaData;
   }
+
+
+
 
 
 openModal(index: number): void {
@@ -691,10 +714,6 @@ openModal(index: number): void {
     }
   });
 }
-
-
-
-
   onCancelar(): void {
     this.cancelar.emit();
     this.dialogRef.close();

@@ -7,64 +7,47 @@
   <div class="filtro">
     <mat-form-field>
       <mat-label>Fecha</mat-label>
-      <input matInput [matDatepicker]="picker" [(ngModel)]="selectedDate" (ngModelChange)="applyDateFilter()" placeholder="Selecciona una fecha" disabled> <!-- Aquí se añade readonly -->
+      <input matInput [matDatepicker]="picker" [(ngModel)]="selectedDate" (ngModelChange)="applyDateFilter()" placeholder="Selecciona una fecha">
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker disabled="false"></mat-datepicker>
+      <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
-    <!-- Botón para limpiar la fecha -->
     <button mat-icon-button matTooltip="Limpiar fecha" (click)="clearDate()">
       <mat-icon>close</mat-icon>
     </button>
   </div>
 </div>
 
-<!-- Resto de la estructura de la tabla sigue igual -->
-
 <!-- Tabla para vista de computadora -->
 <div class="table-container" *ngIf="!isMobile">
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 custom-table">
-    <!-- Cuenta Cop Column -->
     <ng-container matColumnDef="cuentaCop">
-      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Cuenta Cop </th>
-      <td mat-cell *matCellDef="let element" data-title="Cuenta Cop"> {{element.cuentaBancariaPesos?.nombreCuenta}} </td>
+      <th mat-header-cell *matHeaderCellDef> Cuenta Cop </th>
+      <td mat-cell *matCellDef="let element"> {{element.cuentasBancariasPesos?.[0]?.cuentaBancaria?.nombreCuenta}} </td>
     </ng-container>
-
-    <!-- Metodo Pago Column -->
     <ng-container matColumnDef="metodoPago">
-      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Metodo Pago </th>
-      <td mat-cell *matCellDef="let element" data-title="Metodo Pago"> {{element.metodoPago.tipopago}} </td>
+      <th mat-header-cell *matHeaderCellDef> Método de Pago </th>
+      <td mat-cell *matCellDef="let element"> {{element.cuentasBancariasPesos?.[0]?.metodoPago?.tipopago}} </td>
     </ng-container>
-
-    <!-- Cliente Column -->
     <ng-container matColumnDef="cliente">
-      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Cliente </th>
-      <td mat-cell *matCellDef="let element" data-title="Cliente"> {{element.cliente.nombre}} </td>
+      <th mat-header-cell *matHeaderCellDef> Cliente </th>
+      <td mat-cell *matCellDef="let element"> {{element.cliente?.nombre}} </td>
     </ng-container>
-
-    <!-- Tasa Column -->
     <ng-container matColumnDef="tasa">
-      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Tasa </th>
-      <td mat-cell *matCellDef="let element" data-title="Tasa"> {{element.tasaVenta}} </td>
+      <th mat-header-cell *matHeaderCellDef> Tasa </th>
+      <td mat-cell *matCellDef="let element"> {{element.tasaVenta}} </td>
     </ng-container>
-
-    <!-- Fecha Column -->
     <ng-container matColumnDef="fecha">
-      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Fecha </th>
-      <td mat-cell *matCellDef="let element" data-title="Fecha"> {{element.fechaVenta | date:'dd/MM/yyyy'}} </td>
+      <th mat-header-cell *matHeaderCellDef> Fecha </th>
+      <td mat-cell *matCellDef="let element"> {{element.fechaVenta | date:'dd/MM/yyyy'}} </td>
     </ng-container>
-
-    <!-- Bolivares Column -->
     <ng-container matColumnDef="bolivares">
-      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Bolivares </th>
-      <td mat-cell *matCellDef="let element" data-title="Bolivares"> {{element.bolivaresVendidos | number: '1.2-2' }} </td>
+      <th mat-header-cell *matHeaderCellDef> Bolívares </th>
+      <td mat-cell *matCellDef="let element"> {{element.bolivaresVendidos | number: '1.2-2'}} </td>
     </ng-container>
-
-    <!-- Pesos Column -->
     <ng-container matColumnDef="pesos">
-      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Pesos </th>
-      <td mat-cell *matCellDef="let element" data-title="Pesos"> {{element.precio}} </td>
+      <th mat-header-cell *matHeaderCellDef> Pesos </th>
+      <td mat-cell *matCellDef="let element"> {{element.precio}} </td>
     </ng-container>
-
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
@@ -73,14 +56,17 @@
 
 <!-- Cards para vista móvil -->
 <div class="cards-container" *ngIf="isMobile">
-  <mat-card *ngFor="let venta of paginatedCards" class="card"> <!-- Use paginatedCards -->
+  <mat-card *ngFor="let venta of paginatedCards" class="card">
     <mat-card-content>
-      <p><strong>Cuenta usada:</strong> {{venta.cuentaBancariaPesos.nombreCuenta}}</p>
-      <p><strong>Metodo de pago:</strong> {{venta.metodoPago.tipopago}}</p>
-      <p><strong>Bolívares:</strong> {{venta.bolivaresVendidos | number: '1.2-2' }}</p>
-      <p><strong>Pesos recibidos:</strong> {{venta.precio | currency}}</p>
+      <p><strong>Cuenta Receptora:</strong> {{venta.cuentasBancariasPesos?.[0]?.cuentaBancaria?.nombreCuenta}}</p>
+      <p><strong>Método de Pago:</strong>
+        <!-- {{ venta.cuentasBancariasPesos?.[0]?.metodoPago && venta.cuentasBancariasPesos[0].metodoPago.tipopago ? venta.cuentasBancariasPesos[0].metodoPago.tipopago : 'ID: ' + venta.cuentasBancariasPesos?.[0]?.metodoPago }} -->
+      </p>
+      <p><strong>Bolívares Vendidos:</strong> {{venta.bolivaresVendidos | number: '1.2-2'}}</p>
+      <p><strong>Pesos Recibidos:</strong> {{venta.precio}}</p>
     </mat-card-content>
   </mat-card>
   <mat-paginator [length]="dataCard.data.length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" (page)="onPageChange($event)">
   </mat-paginator>
 </div>
+

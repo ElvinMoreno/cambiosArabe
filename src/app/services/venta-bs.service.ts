@@ -34,13 +34,6 @@ export class VentaBsService {
     return this.http.get<VentaBs[]>(this.apiUrl, { headers })
       .pipe(catchError(this.handleError));
   }
-
-  getAllVentasBs2(): Observable<TraerVenta[]> {
-    const headers = this.getHeaders();
-    return this.http.get<TraerVenta[]>(this.apiUrl, { headers })
-      .pipe(catchError(this.handleError));
-  }
-
   getVentaBsById(id: number): Observable<VentaBs> {
     const headers = this.getHeaders();
     return this.http.get<VentaBs>(`${this.apiUrl}/${id}`, { headers })
