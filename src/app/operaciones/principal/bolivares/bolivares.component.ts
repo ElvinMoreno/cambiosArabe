@@ -17,13 +17,13 @@ import { ComprasBolivaresComponent } from './swiftButton/compras-bolivares/compr
   styleUrls: ['./bolivares.component.css']
 })
 export class BolivaresComponent implements OnInit {
-  vistaActual: 'compras' | 'ventas' = 'compras';
+  vistaActual: 'ventas' | 'compras' = 'ventas';
 
   ngOnInit() {
     // La vista 'compras' ya está establecida por defecto
   }
 
-  cambiarVista(vista: 'compras' | 'ventas') {
+  cambiarVista(vista: 'ventas' | 'compras') {
     this.vistaActual = vista;
   }
 }
