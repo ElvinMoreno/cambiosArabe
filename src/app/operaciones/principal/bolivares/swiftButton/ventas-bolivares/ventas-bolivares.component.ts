@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
@@ -17,6 +17,9 @@ import { BancolombiaComponent } from '../../../../formulario/bancolombia/bancolo
 import { VentaBs } from '../../../../../interfaces/venta-bs';
 import { VentaBsService } from '../../../../../services/venta-bs.service';
 import { Crearventa } from '../../../../../interfaces/crearventa';
+import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
+import { merge, of as observableOf } from 'rxjs';
+import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'ventas-bolivares',
@@ -31,24 +34,29 @@ import { Crearventa } from '../../../../../interfaces/crearventa';
     MatDatepickerModule,
     MatFormFieldModule,
     MatInputModule,
+    MatSortModule,
     FormsModule, MatPaginatorModule
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './ventas-bolivares.component.html',
   styleUrls: ['./ventas-bolivares.component.css']
 })
-export class VentasBolivaresComponent implements OnInit {
-  displayedColumns: string[] = ['cuentaCop', 'metodoPago', 'cliente', 'tasa', 'fecha', 'bolivares', 'pesos'];
+export class VentasBolivaresComponent implements OnInit, AfterViewInit {
+  displayedColumns: string[] = ['cuentaCop', 'metodoPago', 'tasa', 'fecha', 'bolivares', 'pesos'];
+  mobileDisplayedColumns: string[] = ['cuentaCop', 'tasa', 'fecha', 'pesos']; // Solo columnas para móvil
   dataSource = new MatTableDataSource<VentaBs>(); // Datos para la tabla
-  dataCard = new MatTableDataSource<VentaBs>(); // Datos para las tarjetas
-  paginatedCards: VentaBs[] = []; // Datos paginados para las tarjetas
   isMobile = false;
   pageSize = 5;
   pageSizeOptions = [5, 10, 25];
   selectedDate: Date | null = null;
   currentPage = 0;
 
+  resultsLength = 0;
+  isLoadingResults = true;
+  isRateLimitReached = false;
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
     public dialog: MatDialog,
@@ -65,6 +73,8 @@ export class VentasBolivaresComponent implements OnInit {
     this.breakpointObserver.observe([Breakpoints.Handset])
       .subscribe(result => {
         this.isMobile = result.matches;
+        // Asignar las columnas en función de si está en móvil o no
+        this.displayedColumns = this.isMobile ? this.mobileDisplayedColumns : ['cuentaCop', 'metodoPago', 'tasa', 'fecha', 'bolivares', 'pesos'];
         this.dataSource.paginator = this.paginator; // Asignar el paginador a la fuente de datos
       });
   }
@@ -73,15 +83,39 @@ export class VentasBolivaresComponent implements OnInit {
     this.ventaBsService.getAllVentasBs().subscribe(
       (data: VentaBs[]) => {
         this.dataSource.data = data;
-        this.dataCard.data = data;
         this.applyDateFilter(); // Aplicar el filtro de fecha si existe
-        this.updatePaginatedCards(); // Actualizar la paginación de las tarjetas
       },
       (error) => {
         console.error('Error al cargar las ventas:', error);
       }
     );
   }
+
+  ngAfterViewInit(): void {
+    if (this.sort) {
+      this.dataSource.sort = this.sort;
+      this.dataSource.paginator = this.paginator;
+    }
+  }
+  // Función para manejar la ordenación
+  sortData(sort: Sort) {
+    const data = this.dataSource.data.slice();
+    if (!sort.active || sort.direction === '') {
+      this.dataSource.data = data;
+      return;
+    }
+
+    this.dataSource.data = data.sort((a, b) => {
+      const isAsc = sort.direction === 'asc';
+      switch (sort.active) {
+        case 'fecha':
+          return compare(a.fechaVenta, b.fechaVenta, isAsc);
+        default:
+          return 0;
+      }
+    });
+  }
+
 
   applyDateFilter(): void {
     if (this.selectedDate) {
@@ -106,18 +140,6 @@ export class VentasBolivaresComponent implements OnInit {
     this.loadVentas(); // Recargar las ventas al limpiar la fecha
   }
 
-  onPageChange(event: PageEvent) {
-    this.pageSize = event.pageSize;
-    this.currentPage = event.pageIndex;
-    this.updatePaginatedCards();
-  }
-
-  updatePaginatedCards(): void {
-    const start = this.currentPage * this.pageSize;
-    const end = start + this.pageSize;
-    this.paginatedCards = this.dataCard.data.slice(start, end);
-  }
-
   openDialog(): void {
     const dialogRef = this.dialog.open(BancolombiaComponent, {
       width: '800px',
@@ -139,4 +161,8 @@ export class VentasBolivaresComponent implements OnInit {
       }
     );
   }
+}
+
+function compare(a: Date | string, b: Date | string, isAsc: boolean) {
+  return (new Date(a) < new Date(b) ? -1 : 1) * (isAsc ? 1 : -1);
 }

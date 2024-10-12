@@ -54,25 +54,32 @@ export class ConfirmarEntradaComponent implements OnInit {
   }
 
   loadCuentas(): void {
+    // Obtiene las cuentas bancarias colombianas
     this.cuentaBancariaService.getCuentasColombianas().subscribe(
       (cuentas: CuentaBancaria[]) => {
+        // Procesar las cuentas y sus ventas usando el servicio ventaBsService.getVentasEntradas
         const cuentasProcesadas = cuentas.map(cuenta => {
           return this.ventaBsService.getVentasEntradas(cuenta.id!).pipe(
             map((ventas: VentaPagos[] | null) => {
+              // Calcula el total de pesos recibidos y el total de ventas
               const totalPesosRecibidos = ventas ? ventas.reduce((sum, venta) => sum + venta.pesosRecibidos, 0) : 0;
               const totalVentas = ventas ? ventas.length : 0;
+
+              // Devuelve una cuenta con los datos procesados
               return {
-                ...cuenta,
-                monto: cuenta.monto! + totalPesosRecibidos,
-                totalVentas,
-                ventas // Incluimos las ventas en el objeto
+                ...cuenta, // Mantiene la información de la cuenta original
+                monto: cuenta.monto! + totalPesosRecibidos, // Actualiza el monto sumando los pesos recibidos
+                totalVentas, // Número total de ventas
+                ventas // Añade las ventas a la cuenta procesada
               };
             })
           );
         });
 
+        // Ejecuta todas las solicitudes y actualiza el estado
         forkJoin(cuentasProcesadas).subscribe(
           cuentasFinales => {
+            // Filtra las cuentas que tienen al menos una venta
             this.dataSource = cuentasFinales.filter(cuenta => cuenta.totalVentas >= 1);
           },
           (error) => {

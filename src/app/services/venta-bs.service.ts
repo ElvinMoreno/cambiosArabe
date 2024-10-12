@@ -92,6 +92,13 @@ export class VentaBsService {
       .pipe(catchError(this.handleError));
   }
 
+  getVentasEntradasCB(cuentaBancariaId: number): Observable<VentaPagos[]> {
+    const headers = this.getHeaders();
+    return this.http.get<VentaPagos[]>(`${this.apiUrl}/entradas/${cuentaBancariaId}`, { headers })
+      .pipe(catchError(this.handleError));
+}
+
+
   // Método para eliminar una venta por ID
   eliminarVentaPorId(ventaId: number): Observable<void> {
     const headers = this.getHeaders();

@@ -90,10 +90,10 @@ export class BancolombiaComponent implements OnInit, OnDestroy {
   ) {
     this.form = this.fb.group({
       fecha: ['', Validators.required],
-      tipoPago: [''],
+      tipoPago: ['',Validators.required],
       conversionAutomatica: [{ value: '', disabled: true }],
       cliente: ['', Validators.required],
-      cuentaPesos: ['', Validators.required],
+      cuentaPesos: [''],
       precioVentaBs: ['', Validators.required],
       tasaVenta: [{ value: '', disabled: true }],
       clienteFinal: [''],

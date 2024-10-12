@@ -12,17 +12,17 @@
         <th>Fecha</th>
         <th>Pesos</th>
         <th>Bolivares</th>
-        <th>Clientes</th> <!-- Nueva columna de clientes -->
+        <th>Proveedores</th> <!-- Se actualizó el nombre de la columna -->
         <th>Utilidad</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let element of seguimientoCaja">
-        <td>{{ element.fecha }}</td>
-        <td>${{ element.colombianas | number:'1.2-2' }}</td>
-        <td>${{ element.venezolanas | number:'1.2-2' }}</td>
-        <td>${{ element.clientes | number:'1.2-2' }}</td> <!-- Mostrar saldo actual de los clientes -->
-        <td>${{ element.utilidad | number:'1.2-2' }}</td>
+        <td>{{ element.fecha | date:'dd/MM/yyyy' }}</td>
+        <td>${{ element.netoColombiano }}</td>
+        <td>${{ element.netoVenezolano }}</td>
+        <td>${{ element.creditosProveedores  }}</td> <!-- Mostrar créditos a proveedores -->
+        <td>${{ element.utilidadDia  }}</td>
       </tr>
     </tbody>
   </table>
