@@ -66,6 +66,8 @@ export class ActualizarCompraComponent implements OnInit {
         referencia: formValue.referencia
       };
 
+      console.log(compraActualizada);
+
       this.compraService.updateCompra(this.data.compraId, compraActualizada).subscribe({
         next: (response) => {
           console.log('Compra actualizada con éxito', response);

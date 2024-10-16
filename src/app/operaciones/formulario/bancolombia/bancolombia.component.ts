@@ -689,31 +689,50 @@ toggleCantidad(): void {
 
 
 
-openModal(index: number): void {
-  const dialogRef = this.dialog.open(ModalContentComponent, {
-    width: '400px',
-    data: {} // Puedes pasar datos si lo necesitas
-  });
+  openModal(index: number): void {
+    const dialogRef = this.dialog.open(ModalContentComponent, {
+      width: '400px',
+      data: {} // Puedes pasar datos si lo necesitas
+    });
 
-  // Cuando el modal se cierre, los datos analizados son asignados al campo correcto del formulario
-  dialogRef.afterClosed().subscribe(result => {
-    if (result && !result.error) {
-      // Remover cualquier signo de puntuación antes de asignar los valores
-      const cleanedNombreCuenta = result.nombreCuenta ? result.nombreCuenta.replace(/[^\w\s]/gi, '') : '';
-      const cleanedNumeroCuenta = result.numeroCuenta ? result.numeroCuenta.replace(/[^\w\s]/gi, '') : '';
-      const cleanedCedula = result.cedula ? result.cedula.replace(/[^\w\s]/gi, '') : '';
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && !result.error) {
+        // Remover cualquier signo de puntuación antes de asignar los valores
+        const cleanedNombreCuenta = result.nombreCuenta ? result.nombreCuenta.replace(/[^\w\s]/gi, '') : '';
+        const cleanedNumeroCuenta = result.numeroCuenta ? result.numeroCuenta.replace(/[^\w\s]/gi, '') : '';
+        const cleanedCedula = result.cedula ? result.cedula.replace(/[^\w\s]/gi, '') : '';
 
-      // Usar el índice proporcionado para actualizar el valor correcto del FormArray
-      this.cuentasDestinatarioArray.at(index).patchValue({
-        nombreCuenta: cleanedNombreCuenta,
-        numeroCuenta: cleanedNumeroCuenta,
-        cedula: cleanedCedula
-      });
-    } else {
-      console.error('Error en la respuesta o cierre del modal sin datos.');
-    }
-  });
-}
+        // Verificar si numeroCuenta inicia con '01'
+        if (cleanedNumeroCuenta.startsWith('01')) {
+          if (cleanedNumeroCuenta.length !== 20) {
+            // Si el número de cuenta no tiene 20 caracteres, asignar "tamaño insuficiente" en nombreCuenta
+            this.cuentasDestinatarioArray.at(index).patchValue({
+              nombreCuenta: cleanedNombreCuenta,
+              numeroCuenta: 'tamaño insuficiente',
+              cedula: cleanedCedula
+            });
+          } else {
+            // Si la validación es correcta, asignar los valores limpiados al FormArray
+            this.cuentasDestinatarioArray.at(index).patchValue({
+              nombreCuenta: cleanedNombreCuenta,
+              numeroCuenta: cleanedNumeroCuenta,
+              cedula: cleanedCedula
+            });
+          }
+        } else {
+          // Si no inicia con '01', asignar los valores sin restricciones
+          this.cuentasDestinatarioArray.at(index).patchValue({
+            nombreCuenta: cleanedNombreCuenta,
+            numeroCuenta: cleanedNumeroCuenta,
+            cedula: cleanedCedula
+          });
+        }
+      } else {
+        console.error('Error en la respuesta o cierre del modal sin datos.');
+      }
+    });
+  }
+
   onCancelar(): void {
     this.cancelar.emit();
     this.dialogRef.close();

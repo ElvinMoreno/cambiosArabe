@@ -63,9 +63,26 @@ export class CompraService {
       );
   }
 
+  // Método para obtener las compras de entrada
+  getComprasEntradas(): Observable<CompraBsDTO[]> {
+    const headers = this.getHeaders();
+    return this.http.get<CompraBsDTO[]>(`${this.apiUrl}/compra-entradas`, { headers })
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  // Método para confirmar la entrada de una compra
+  confirmarVentaEntrada(compra: CompraBsDTO): Observable<string> {
+    const headers = this.getHeaders();
+    return this.http.post<string>(`${this.apiUrl}/entrada`, compra, { headers })
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
   private handleError(error: any) {
     console.error('An error occurred:', error);
     return throwError(() => new Error('Ocurrió un error en la solicitud. Por favor, inténtalo de nuevo.'));
   }
-
 }
