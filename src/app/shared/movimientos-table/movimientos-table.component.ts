@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import * as XLSX from 'xlsx'; // Importa XLSX para manejar archivos Excel
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -6,25 +6,32 @@ import { FormsModule } from '@angular/forms';
 import { MovimientoDiaDTO } from '../../interfaces/MovimientoDiaDTO';
 import { DetalleMovimientoCompGenComponent } from '../detalle-movimiento-comp-gen/detalle-movimiento-comp-gen.component';
 import { MatIconModule } from '@angular/material/icon';
+import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-movimientos-table',
   standalone: true,
-  imports: [CommonModule, MatDialogModule, FormsModule, MatIconModule],
+  imports: [CommonModule, MatDialogModule,
+    FormsModule, MatIconModule, MatPaginatorModule],
   templateUrl: './movimientos-table.component.html',
   styleUrls: ['./movimientos-table.component.css'],
 })
 export class MovimientosTableComponent implements OnChanges {
   @Input() movimientos: MovimientoDiaDTO[] = [];
   movimientosFiltrados: MovimientoDiaDTO[] = [];
+  paginatedMovimientos: MovimientoDiaDTO[] = []; // Movimientos que se mostrarán por página
   filterDate: string | null = null;
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator; // Referencia al paginator
+  pageSize = 5; // Tamaño de la página
+  pageIndex = 0; // Índice actual de la página
 
   constructor(public dialog: MatDialog) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['movimientos'] && changes['movimientos'].currentValue) {
-
       this.movimientosFiltrados = [...this.movimientos];
+      this.actualizarPaginacion(); // Actualizar paginación
     }
   }
 
@@ -42,6 +49,7 @@ export class MovimientosTableComponent implements OnChanges {
     } else {
       this.movimientosFiltrados = [...this.movimientos];
     }
+    this.actualizarPaginacion(); // Actualizar paginación después de filtrar
   }
 
   isToday(dateString: string): boolean {
@@ -55,12 +63,11 @@ export class MovimientosTableComponent implements OnChanges {
   }
 
   openDialog(movimiento: MovimientoDiaDTO): void {
-    console.log(movimiento)
     this.dialog.open(DetalleMovimientoCompGenComponent, {
       width: '400px',
       data: {
         title: 'Detalles del Movimiento',
-        id: movimiento.id,  // Pasar el id de forma explícita
+        id: movimiento.id,
         data: movimiento,
         fields: [
           { label: 'Fecha', key: 'fecha', format: 'date' },
@@ -77,9 +84,19 @@ export class MovimientosTableComponent implements OnChanges {
         closeButtonLabel: 'Cerrar',
       },
     });
-
   }
 
+  actualizarPaginacion(): void {
+    const startIndex = this.pageIndex * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.paginatedMovimientos = this.movimientosFiltrados.slice(startIndex, endIndex);
+  }
+
+  handlePageEvent(event: PageEvent): void {
+    this.pageSize = event.pageSize;
+    this.pageIndex = event.pageIndex;
+    this.actualizarPaginacion(); // Actualizar movimientos por página
+  }
 
   exportarExcel(): void {
     const data = this.movimientosFiltrados.map((mov) => ({
@@ -97,23 +114,18 @@ export class MovimientosTableComponent implements OnChanges {
       SheetNames: ['data'],
     };
 
-    // Generar el archivo Excel
     const excelBuffer: any = XLSX.write(workbook, {
       bookType: 'xlsx',
       type: 'array',
     });
 
-    // Crear el archivo Blob
     const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-
-    // Crear un enlace de descarga
     const url = window.URL.createObjectURL(blob);
     const anchor = document.createElement('a');
     anchor.href = url;
     anchor.download = 'movimientos.xlsx';
     anchor.click();
 
-    // Liberar la URL del objeto después de la descarga
     window.URL.revokeObjectURL(url);
   }
 }

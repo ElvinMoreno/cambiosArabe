@@ -3,40 +3,34 @@
   <input type="date" id="filterDate" [(ngModel)]="filterDate">
   <button mat-button (click)="filtrarPorDia()">Filtrar</button>
 
-  <!-- Botón de exportación -->
   <button mat-icon-button color="primary" (click)="exportarExcel()">
     <mat-icon>file_download</mat-icon>
   </button>
 </div>
 
 <div class="center-container">
-  <div *ngIf="movimientosFiltrados.length > 0; else noDataTemplate" class="table-container">
+  <div *ngIf="paginatedMovimientos.length > 0; else noDataTemplate" class="table-container">
     <div class="table-header">
       <div class="header-item">Fecha</div>
       <div class="header-item">Monto</div>
       <div class="header-item">Saldo</div>
     </div>
 
-    <!-- Contenedor scrolleable -->
     <div class="scrollable-content">
-      <!-- Tarjetas -->
-      <div *ngFor="let movimiento of movimientosFiltrados" class="card" (click)="openDialog(movimiento)">
+      <div *ngFor="let movimiento of paginatedMovimientos" class="card" (click)="openDialog(movimiento)">
         <div class="card-content">
           <div class="card-item fecha">
             <span class="card-value">
               {{ isToday(movimiento.fecha) ? (movimiento.fecha | date:'shortTime') : (movimiento.fecha | date:'shortDate') }}
             </span>
           </div>
-
           <div class="card-item monto">
             <span class="card-value" [style.color]="movimiento.entrada ? 'green' : 'red'">
               {{ movimiento.monto | currency:'USD' }}
             </span>
           </div>
           <div class="card-item movimiento">
-            <span class="card-value">
-              {{ movimiento.tipoMovimiento }}
-            </span>
+            <span class="card-value">{{ movimiento.tipoMovimiento }}</span>
           </div>
           <div class="card-item saldo-actual">
             <span class="card-value">{{ movimiento.saldoActual | currency:'USD' }}</span>
@@ -44,6 +38,13 @@
         </div>
       </div>
     </div>
+
+    <!-- Agregar el paginador -->
+    <mat-paginator [length]="movimientosFiltrados.length"
+                   [pageSize]="pageSize"
+                   [pageSizeOptions]="[5, 10, 25, 100]"
+                   (page)="handlePageEvent($event)">
+    </mat-paginator>
   </div>
 </div>
 
