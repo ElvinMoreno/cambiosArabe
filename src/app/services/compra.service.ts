@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, catchError, throwError } from 'rxjs';
 import { CompraBsDTO } from '../interfaces/compra-bs-dto';
 import { appsetting } from '../settings/appsetting';
+import { ActualizarCompraDTO } from '../interfaces/actualizar-compras-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -39,6 +40,14 @@ export class CompraService {
       );
   }
 
+  getCompraByIdAct(id: number): Observable<ActualizarCompraDTO> {
+    const headers = this.getHeaders();
+    return this.http.get<ActualizarCompraDTO>(`${this.apiUrl}/${id}`, { headers })
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
   newCompraBs(dto: CompraBsDTO): Observable<void> {
     const headers = this.getHeaders();
     return this.http.post<void>(`${this.apiUrl}`, dto, { headers })
@@ -47,7 +56,7 @@ export class CompraService {
       );
   }
 
-  updateCompra(id: number, dto: CompraBsDTO): Observable<CompraBsDTO> {
+  updateCompra(id: number, dto: ActualizarCompraDTO): Observable<CompraBsDTO> {
     const headers = this.getHeaders();
     return this.http.put<CompraBsDTO>(`${this.apiUrl}/${id}`, dto, { headers })
       .pipe(
