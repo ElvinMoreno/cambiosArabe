@@ -15,27 +15,27 @@ import { CommonModule } from '@angular/common';
       <!-- Sección de "Ventas por Confirmar" -->
       <div *ngIf="ventaExists" class="notification-item">
         <p>Ventas por Confirmar</p>
-        <div class="button-group">
+        <!-- <div class="button-group">
           <button mat-icon-button color="primary" (click)="confirmVenta()">
             <mat-icon>check</mat-icon>
           </button>
           <button mat-icon-button color="warn" (click)="deleteVenta()">
             <mat-icon>delete</mat-icon>
           </button>
-        </div>
+        </div> -->
       </div>
 
       <!-- Sección de "Ventas por Realizar" -->
       <div *ngIf="salidaExists" class="notification-item">
         <p>Ventas por Realizar</p>
-        <div class="button-group">
+        <!-- <div class="button-group">
           <button mat-icon-button color="primary" (click)="realizarVenta()">
             <mat-icon>check</mat-icon>
           </button>
           <button mat-icon-button color="warn" (click)="deleteVentaReal()">
             <mat-icon>delete</mat-icon>
           </button>
-        </div>
+        </div> -->
       </div>
 
       <!-- Si no hay notificaciones, mostrar un mensaje -->
