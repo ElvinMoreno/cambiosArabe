@@ -9,6 +9,7 @@ import { navbarData } from './nav-data';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { AccesoService } from '../../services/acceso.service'; // Importa el servicio de acceso
+import { CloudinaryService } from '../../services/cloudinary.service';
 
 interface SideNavToggle {
   screenWidth: number;
@@ -39,8 +40,12 @@ export class SidebarPolaniaComponent implements OnInit {
   navData = navbarData;
   isMobile = false;
   showOverlay = false;
+  logoUrl: string = ''; // Variable para almacenar la URL del logo
+  sik: number = 0;
 
-  constructor(private accesoService: AccesoService, private router: Router) {} // Inyecta el servicio y Router
+  constructor(private accesoService: AccesoService, private router: Router,
+    private cloudinaryService: CloudinaryService
+  ) {} // Inyecta el servicio y Router
 
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
@@ -56,6 +61,15 @@ export class SidebarPolaniaComponent implements OnInit {
   ngOnInit(): void {
     this.screenWidth = window.innerWidth;
     this.isMobile = this.screenWidth <= 768;
+    this.cloudinaryService.getOptimizedUrl('tzw5bje9rf0olwacooia')
+      .subscribe(
+        (url: string) => {
+          this.logoUrl = url; // Asignamos la URL obtenida a la variable logoUrl
+        },
+        (error) => {
+          console.error('Error al obtener la URL del logo desde Cloudinary:', error);
+        }
+      );
   }
 
   toggleCollapse(): void {

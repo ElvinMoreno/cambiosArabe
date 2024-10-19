@@ -24,7 +24,6 @@ import { ModalContentComponent } from './modal-content/modal-content.component';
 import { BancosService } from '../../../services/banco.service';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { VentaBsCuentaBancaria } from '../../../interfaces/VentaBsCuentaBancaria';
-import { MetodoPago } from '../../../interfaces/metodo-pago';
 
 
 @Component({
@@ -47,6 +46,7 @@ import { MetodoPago } from '../../../interfaces/metodo-pago';
 export class BancolombiaComponent implements OnInit, OnDestroy {
   @Output() cancelar = new EventEmitter<void>();
   @Output() confirmar = new EventEmitter<any>();
+
 
   form: FormGroup;
   currentLabel = 'Cantidad pesos';
@@ -226,20 +226,27 @@ export class BancolombiaComponent implements OnInit, OnDestroy {
     const inputElement = event.target as HTMLInputElement;
     let inputValue = inputElement.value;
 
-    inputValue = inputValue.replace(',', '.');
-
-    const numericValue = parseFloat(inputValue);
-
-    if (isNaN(numericValue)) {
-      return;
+    // Allow only one decimal point and digits
+    inputValue = inputValue.replace(/[^\d.]/g, '');
+    const parts = inputValue.split('.');
+    if (parts.length > 2) {
+      parts[1] = parts.slice(1).join('');
+      inputValue = parts.slice(0, 2).join('.');
     }
 
     const control = this.cuentasDestinatarioArray.controls[index];
+    const currencyControl = control.get('currency');
+    const bolivaresControl = control.get('bolivares');
+    const pesosControl = control.get('pesos');
 
-    if (control.get('currency')?.value === 'bolivares') {
-      control.get('bolivares')?.setValue(numericValue, { emitEvent: false });
-    } else if (control.get('currency')?.value === 'pesos') {
-      control.get('pesos')?.setValue(numericValue, { emitEvent: false });
+    if (currencyControl && bolivaresControl && pesosControl) {
+      const numericValue = inputValue === '' ? null : parseFloat(inputValue);
+
+      if (currencyControl.value === 'bolivares') {
+        bolivaresControl.setValue(numericValue);
+      } else if (currencyControl.value === 'pesos') {
+        pesosControl.setValue(numericValue);
+      }
     }
 
     this.updateLabelsBasedOnInputs();
@@ -608,7 +615,8 @@ toggleCantidad(): void {
     // Construir el objeto VentaBs
     const ventaBs: VentaBs = {
       cuentaBancariaBs: formValues.cuentaBs,
-      cuentaBancariaPesos: formValues.cuentaPesos,
+      // Validación: Si cuentaPesos es null, asignar cuenta bancaria con ID 1
+      cuentaBancariaPesos: formValues.cuentaPesos ? formValues.cuentaPesos : { id: 1 },
       descripcionId: formValues.descripcionId || 1,
       clienteId: formValues.cliente,
       fechaVenta: formValues.fechaVenta,
@@ -628,12 +636,9 @@ toggleCantidad(): void {
 
       // Verificar si el valor de bolívares es manual o debe calcularse
       if (this.isBolivaresManual) {
-        // Si la moneda es 'bolivares', usar el valor directamente ingresado
         if (cd.currency === 'bolivares' && cd.bolivares) {
           bolivares = cd.bolivares;
-        }
-        // Si la moneda es 'pesos', calcular el equivalente en bolívares usando la tasa actual
-        else if (cd.currency === 'pesos' && cd.bolivares) {
+        } else if (cd.currency === 'pesos' && cd.bolivares) {
           bolivares = cd.bolivares / this.tasaActual!;
         } else {
           bolivares = 0;
@@ -654,12 +659,29 @@ toggleCantidad(): void {
     // Construir el objeto CuentasBancariasPesos (si aplica)
     const ventaBsCuentaBancaria: VentaBsCuentaBancaria[] = [];
 
-    // Verificar si hay una cuenta de pesos seleccionada y su monto correspondiente
+    // Si no hay una cuenta de pesos seleccionada, asignar id = 1
     if (formValues.cuentaPesos) {
       const montoPesos = formValues.precioVentaBs; // Calcula el monto correspondiente en pesos
       ventaBsCuentaBancaria.push({
         cuentaBancaria: {
-          id: formValues.cuentaPesos, // ID de la cuenta seleccionada desde el select
+          id: formValues.cuentaPesos, // ID de la cuenta seleccionada
+          nombreBanco: null,
+          nombreCuenta: null,
+          monto: null,
+          numCuenta: null,
+          limiteCB: null,
+          limiteMonto: null,
+        },
+        monto: montoPesos,
+        confirmado: false, // Puedes ajustar este valor según sea necesario
+        metodoPagoId: formValues.tipoPago
+      });
+    } else {
+      // Si no hay cuenta de pesos, asignar id 1 y nulos para los demás campos
+      const montoPesos = formValues.precioVentaBs; // Calcula el monto correspondiente en pesos
+      ventaBsCuentaBancaria.push({
+        cuentaBancaria: {
+          id: 1,
           nombreBanco: null,
           nombreCuenta: null,
           monto: null,
@@ -684,10 +706,6 @@ toggleCantidad(): void {
 
     return ventaData;
   }
-
-
-
-
 
   openModal(index: number): void {
     const dialogRef = this.dialog.open(ModalContentComponent, {

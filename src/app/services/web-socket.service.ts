@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
 import { appsetting } from '../settings/appsetting';
+import { Subject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,8 @@ export class WebSocketService {
   private apiUrl = `${appsetting.apiUrl}`;
 
   private stompClient: Client;
+   // Subject para emitir notificaciones a los componentes
+   private notificationSubject = new Subject<string>();
 
   constructor() {
     this.stompClient = new Client({
@@ -50,15 +53,16 @@ export class WebSocketService {
 
   subscribeToTopic() {
     console.log('Subscribing to topic /topic/notifications');
-
     this.stompClient.subscribe('/topic/notifications', message => {
       const receivedMessage = message.body;
-    //  console.log('Message received: ', receivedMessage);
 
+      // Emitir el mensaje a los suscriptores (componentes)
+      this.notificationSubject.next(receivedMessage);
 
-      setTimeout(() => {
-        window.location.reload();  // Reload the page after 5 seconds
-      }, 3000);  // 5000 milliseconds = 5 seconds
+      // Recarga la página después de 3 segundos
+      // setTimeout(() => {
+      //   window.location.reload();
+      // }, 3000);
     });
   }
 
@@ -69,5 +73,10 @@ export class WebSocketService {
       destination: '/app/sendMessage',  // Ensure this matches the backend controller mapping
       body: JSON.stringify(message),
     });
+  }
+
+   // Método público para que los componentes puedan suscribirse a las notificaciones
+   onNotification(): Observable<string> {
+    return this.notificationSubject.asObservable();
   }
 }

@@ -4,9 +4,11 @@
   </button>
   <div class="sidenav" [ngClass]="{'sidenav-collapsed': collapsad, 'sidenav-hidden': isMobile && !collapsad}">
     <div class="logo-container">
-      <button class="logo" (click)="toggleCollapse()"><img src="../../../assets/sourceImag/logoCambiosArabes.png" alt=""></button>
-      <div class="logo-text" *ngIf="collapsad">CAMBIOS ARABES</div>
-      
+      <button class="logo" (click)="toggleCollapse()">
+        <img [src]="logoUrl" alt="Logo">
+      </button>
+    <div class="logo-text" *ngIf="collapsad">CAMBIOS ARABES</div>
+
     </div>
     <ul class="sidenav-nav">
       <li class="sidenav-nav-item" *ngFor="let data of navData">
