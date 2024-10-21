@@ -8,15 +8,23 @@
   </p>
 
   <!-- Selector de fecha -->
-  <mat-form-field appearance="fill" class="date-picker-container">
-    <mat-label>Una nueva fecha</mat-label>
+  <mat-form-field appearance="fill" class="date-picker-container"  style="display: none;">
+    <mat-label>Selecciona una nueva fecha</mat-label>
     <input matInput [matDatepicker]="picker" [(ngModel)]="nuevaFecha" [max]="today" required>
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
+
+   <!-- Mostrar este campo solo después de seleccionar una fecha -->
+<mat-form-field appearance="fill" class="date-picker-container" *ngIf="nuevaFecha">
+  <mat-label>Fecha seleccionada</mat-label>
+  <input matInput [value]="nuevaFecha | date:'dd-MM-yyyy'" disabled>
+</mat-form-field>
+
 </div>
 
-<div mat-dialog-actions class="dialog-actions" *ngIf="showCloseButton">
-  <button mat-button (click)="closeDialog()" class="close-button close-button-margin">{{ closeButtonLabel }}</button>
-  <button mat-button (click)="actualizarFecha()" class="close-button">Actualizar Fecha</button>
+<div mat-dialog-actions *ngIf="showCloseButton">
+  <button mat-button (click)="closeDialog()">{{ closeButtonLabel }}</button>
+  <button mat-button (click)="picker.open()">Actualizar Fecha</button>
+  <button mat-button (click)="actualizarFecha()">Aceptar</button>
 </div>

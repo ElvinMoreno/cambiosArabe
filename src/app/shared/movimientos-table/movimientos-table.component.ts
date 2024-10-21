@@ -18,6 +18,7 @@ import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/p
 })
 export class MovimientosTableComponent implements OnChanges {
   @Input() movimientos: MovimientoDiaDTO[] = [];
+  @Input() fromCaja: boolean = false;  // Nuevo input para recibir el valor que indica si fue llamado por CajaComponent
   movimientosFiltrados: MovimientoDiaDTO[] = [];
   paginatedMovimientos: MovimientoDiaDTO[] = []; // Movimientos que se mostrarán por página
   filterDate: string | null = null;
@@ -69,6 +70,7 @@ export class MovimientosTableComponent implements OnChanges {
         title: 'Detalles del Movimiento',
         id: movimiento.id,
         data: movimiento,
+        callerComponent: this.fromCaja ? 'caja' : 'otro',  // Pasar el valor según quien lo haya llamado
         fields: [
           { label: 'Fecha', key: 'fecha', format: 'date' },
           { label: 'Tipo de Movimiento', key: 'tipoMovimiento' },
