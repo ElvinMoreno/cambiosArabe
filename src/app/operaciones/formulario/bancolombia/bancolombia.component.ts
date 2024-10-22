@@ -122,14 +122,6 @@ export class BancolombiaComponent implements OnInit, OnDestroy {
     this.step.update(i => i - 1);
   }
 
-  // Alternar entre "Número de Cuenta" y "Número de Teléfono"
-  togglePhoneLabel(index: number): void {
-    this.cuentaLabel[index] = this.cuentaLabel[index] === 'Número de Cuenta' ? 'Número de Teléfono' : 'Número de Cuenta';
-
-    // Si el label es "Número de Teléfono", mostramos el select
-    this.showSelectBancos[index] = this.cuentaLabel[index] === 'Número de Teléfono';
-  }
-
    // Alternar entre bolívares y pesos al hacer clic en el botón
    toggleCurrency(index: number): void {
     const control = this.cuentasDestinatarioArray.controls[index];
@@ -718,7 +710,7 @@ toggleCantidad(): void {
         // Remover cualquier signo de puntuación antes de asignar los valores
         const cleanedNombreCuenta = result.nombreCuenta ? result.nombreCuenta.replace(/[^\w\s]/gi, '') : '';
         const cleanedNumeroCuenta = result.numeroCuenta ? result.numeroCuenta.replace(/[^\w\s]/gi, '') : '';
-        const cleanedCedula = result.cedula ? result.cedula.replace(/[^\w\s]/gi, '') : '';
+        const cleanedCedula = result.cedula ? result.cedula.replace(/[^\d]/g, '') : ''; // Solo números permitidos
 
         // Verificar si numeroCuenta inicia con '01'
         if (cleanedNumeroCuenta.startsWith('01')) {
