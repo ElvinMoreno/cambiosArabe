@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { CajaService } from '../../services/caja.service';
 import { MatButtonModule } from '@angular/material/button';
+import { ModificarFechaVenezolanaService } from '../../services/modificar-fecha-movimiento.service';
 
 interface DialogConfig {
   id: number
@@ -44,13 +45,16 @@ export class DetalleMovimientoCompGenComponent {
   showCloseButton: boolean;
   closeButtonLabel: string;
   nuevaFecha: Date | null = null;
-  today: Date;  // Propiedad para limitar la fecha máxima
+  today: Date;  // Propiedad para limitar la fecha máxima7
+  mostrarDatePicker: boolean = false; // Controla cuándo mostrar el campo de selección de fecha
+
 
   constructor(
     public dialogRef: MatDialogRef<DetalleMovimientoCompGenComponent>,
     @Inject(MAT_DIALOG_DATA) public config: DialogConfig,
     private movimientoService: MovimientoService,
-    private cajaService: CajaService
+    private cajaService: CajaService,
+    private modificarFechaVenezolanaService: ModificarFechaVenezolanaService // Servicio de cuentas venezolanas
   ) {
     this.title = config.title || 'Detalles';
     this.fields = config.fields;
@@ -96,7 +100,20 @@ export class DetalleMovimientoCompGenComponent {
         );
         console.log(movimientoId);
         console.log(nuevaFechaStr);
-      } else {
+      }else if (this.config.callerComponent === 'venezolana') {
+        // Si fue llamado desde cuenta venezolana, usa el ModificarFechaVenezolanaService
+        this.modificarFechaVenezolanaService.modificarFechaMovimientoVenezolano(movimientoId, nuevaFechaStr).subscribe(
+          response => {
+            console.log('Fecha actualizada correctamente para movimiento venezolano:', response);
+            alert('Fecha actualizada correctamente.');
+            this.dialogRef.close(); // Cierra el modal
+          },
+          error => {
+            console.error('Error al actualizar la fecha del movimiento venezolano:', error);
+            alert('Error al actualizar la fecha.');
+          }
+        );
+      }  else {
         // Si no es 'caja', usar el MovimientoService
         this.movimientoService.modificarFechaMovimiento(requestBody).subscribe(
           response => {
@@ -114,7 +131,5 @@ export class DetalleMovimientoCompGenComponent {
       alert('Por favor, selecciona una nueva fecha antes de actualizar.');
     }
   }
-
-
 
 }

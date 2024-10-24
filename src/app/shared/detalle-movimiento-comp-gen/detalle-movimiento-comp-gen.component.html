@@ -7,24 +7,21 @@
     <span *ngIf="field.format === 'currency'">{{ config.data[field.key] | currency:'USD' }}</span>
   </p>
 
-  <!-- Selector de fecha -->
-  <mat-form-field appearance="fill" class="date-picker-container"  style="display: none;">
-    <mat-label>Selecciona una nueva fecha</mat-label>
+
+  <!-- Input asociado al MatDatepicker, visible solo cuando se haga clic en "Actualizar Fecha" -->
+  <mat-form-field appearance="fill" *ngIf="mostrarDatePicker">
+    <mat-label>Selecciona fecha</mat-label>
     <input matInput [matDatepicker]="picker" [(ngModel)]="nuevaFecha" [max]="today" required>
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
-
-   <!-- Mostrar este campo solo después de seleccionar una fecha -->
-<mat-form-field appearance="fill" class="date-picker-container" *ngIf="nuevaFecha">
-  <mat-label>Fecha seleccionada</mat-label>
-  <input matInput [value]="nuevaFecha | date:'dd-MM-yyyy'" disabled>
-</mat-form-field>
-
 </div>
 
 <div mat-dialog-actions *ngIf="showCloseButton">
   <button mat-button (click)="closeDialog()">{{ closeButtonLabel }}</button>
-  <button mat-button (click)="picker.open()">Actualizar Fecha</button>
+
+  <!-- Botón para mostrar el MatDatepicker -->
+  <button mat-button (click)="mostrarDatePicker = true">Actualizar Fecha</button>
+
   <button mat-button (click)="actualizarFecha()">Aceptar</button>
 </div>

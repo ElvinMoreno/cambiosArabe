@@ -1,3 +1,13 @@
-.date-picker-container{
-  max-width: 100%;
+.hidden-input {
+  opacity: 0; /* Hacer el input invisible */
+  height: 0; /* Quitar la altura */
+  margin: 0; /* Evitar que ocupe espacio adicional */
+  pointer-events: none; /* Evitar interacción del usuario con el input */
 }
+
+.date-picker-container {
+  width: 100%;
+
+}
+
+

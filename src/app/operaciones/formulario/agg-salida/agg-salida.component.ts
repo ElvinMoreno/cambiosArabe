@@ -76,7 +76,7 @@ export class AggSalidaComponent implements OnInit {
       metodoPago: ['', Validators.required],
       destino: [''],
       cuentaEntrante: [''],
-      descripcionGasto: ['', Validators.required],
+      descripcionGasto: [''],
       proveedor: ['']
     });
   }
@@ -182,7 +182,7 @@ export class AggSalidaComponent implements OnInit {
     this.isMetodoPagoUndefined = !metodoPagoId; // Sin método de pago
 
     if (this.showCuentaEntrante) {
-      this.form.get('cuentaEntrante')?.setValidators(Validators.required);
+      this.form.get('cuentaEntrante');
     } else {
       this.form.get('cuentaEntrante')?.clearValidators();
     }
@@ -197,7 +197,7 @@ export class AggSalidaComponent implements OnInit {
 
   updateProveedorField(): void {
     if (this.isMetodoPago5 && this.tipoSeleccion === 'descripcion') {
-      this.form.get('proveedor')?.setValidators(Validators.required);
+      this.form.get('proveedor');
       this.form.get('proveedor')?.updateValueAndValidity();
     } else {
       this.form.get('proveedor')?.clearValidators();
@@ -207,33 +207,62 @@ export class AggSalidaComponent implements OnInit {
   }
 
   onConfirmar() {
+    console.log('Formulario valid:', this.form.valid);
+    console.log('Valores del formulario:', this.form.value);
     if (this.form.valid) {
       const formValue = this.form.value;
+      const metodoPago = parseInt(formValue.metodoPago, 10);
 
-      const retiro: Retiro = {
-        cuentaBancariaSalidaId: parseInt(formValue.destino, 10),
-        cuentaBancariaEntradaId: this.showCuentaEntrante ? parseInt(formValue.cuentaEntrante, 10) : null,
-        metodoPagoId: parseInt(formValue.metodoPago, 10),
-        descripcionId: this.tipoSeleccion === 'descripcion' ? parseInt(formValue.descripcionGasto, 10) : null,
-        gastoId: this.tipoSeleccion === 'gasto' ? parseInt(formValue.descripcionGasto, 10) : null,
-        proveedorId: this.isMetodoPago5 && this.tipoSeleccion === 'descripcion' ? parseInt(formValue.proveedor, 10) : null,
-        monto: formValue.monto,
-      };
+      // Verificar si el método de pago es 1 o 4 y el campo 'Gasto' está visible
+      if ((metodoPago === 1 || metodoPago === 4) && this.tipoSeleccion === 'gasto') {
+        const gastoId = parseInt(formValue.descripcionGasto, 10);
+        console.log(gastoId);
+        const cantidad = formValue.monto;
 
-      console.log(retiro);
-
-      this.retiroService.saveRetiro(retiro).subscribe(
-        response => {
-          this.confirmar.emit(retiro);
-          this.dialogRef.close();
-        },
-        error => {
-          console.error('Error al realizar el retiro', error);
-          this.errorMessage = 'Ocurrió un error al realizar el retiro. Por favor, inténtalo de nuevo.';
-        }
-      );
+        // Consumir el método aumentarSaldo antes de continuar con la confirmación
+        this.gastosService.aumentarSaldo(gastoId, cantidad).subscribe(
+          response => {
+            // Después de aumentar el saldo, procede con el resto de la confirmación
+            this.proceedWithConfirmation(formValue);
+          },
+          error => {
+            console.error('Error al aumentar el saldo', error);
+            this.errorMessage = 'Ocurrió un error al aumentar el saldo. Por favor, inténtalo de nuevo.';
+          }
+        );
+      } else {
+        // Si no se cumple la condición, proceder directamente con la confirmación
+        this.proceedWithConfirmation(formValue);
+      }
     }
   }
+
+  // Método auxiliar para proceder con la confirmación después de aumentar el saldo
+  proceedWithConfirmation(formValue: any) {
+    const retiro: Retiro = {
+      cuentaBancariaSalidaId: parseInt(formValue.destino, 10),
+      cuentaBancariaEntradaId: this.showCuentaEntrante ? parseInt(formValue.cuentaEntrante, 10) : null,
+      metodoPagoId: parseInt(formValue.metodoPago, 10),
+      descripcionId: this.tipoSeleccion === 'descripcion' ? parseInt(formValue.descripcionGasto, 10) : null,
+      gastoId: this.tipoSeleccion === 'gasto' ? parseInt(formValue.descripcionGasto, 10) : null,
+      proveedorId: this.isMetodoPago5 && this.tipoSeleccion === 'descripcion' ? parseInt(formValue.proveedor, 10) : null,
+      monto: formValue.monto,
+    };
+
+    console.log(retiro);
+
+    this.retiroService.saveRetiro(retiro).subscribe(
+      response => {
+        this.confirmar.emit(retiro);
+        this.dialogRef.close();
+      },
+      error => {
+        console.error('Error al realizar el retiro', error);
+        this.errorMessage = 'Ocurrió un error al realizar el retiro. Por favor, inténtalo de nuevo.';
+      }
+    );
+  }
+
 
   onCancelar() {
     this.cancelar.emit();

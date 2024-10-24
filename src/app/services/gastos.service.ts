@@ -68,6 +68,17 @@ export class GastosService {
       );
   }
 
+  // Método para aumentar el saldo de un gasto
+aumentarSaldo(id: number, cantidad: number): Observable<Gastos> {
+  const headers = this.getHeaders();
+  return this.http.post<Gastos>(`${this.apiUrl}/${id}/aumentarSaldo`, null, {
+    headers,
+    params: { cantidad: cantidad.toString() }
+  }).pipe(
+    catchError(this.handleError)
+  );
+}
+
   // Manejo de errores
   private handleError(error: any) {
     console.error('An error occurred:', error);
