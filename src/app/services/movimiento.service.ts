@@ -41,7 +41,7 @@ export class MovimientoService {
     return this.http.get<MovimientoDiaDTO[]>(`${this.apiUrl}/venezolanos`, { headers })
       .pipe(catchError(this.handleError));
   }
-  
+
 
   /**
    * Método para obtener los movimientos de una cuenta venezolana y colombiana específica.
@@ -55,7 +55,7 @@ export class MovimientoService {
         catchError(this.handleError)
       );
   }
-  
+
   /**
    * Manejo de errores para solicitudes HTTP.
    * @param error - Error recibido.
@@ -65,4 +65,21 @@ export class MovimientoService {
     console.error('An error occurred:', error);
     return throwError(() => new Error('Ocurrió un error en la solicitud. Por favor, inténtalo de nuevo.'));
   }
+  modificarFechaMovimiento(requestBody: { movimientoId: string; nuevaFecha: string }): Observable<string> {
+    const headers = this.getHeaders();
+    return this.http.put(`${this.apiUrl}/modificarFecha/${requestBody.movimientoId}`, requestBody, {
+      headers,
+      responseType: 'text' // Indica que la respuesta será texto
+    })
+    .pipe(
+      catchError(this.handleError)
+    );
+  }
+
+
+  /**
+   * Manejo de errores para solicitudes HTTP.
+   * @param error - Error recibido.
+   * @returns Observable<Error> - Error procesado.
+   */
 }

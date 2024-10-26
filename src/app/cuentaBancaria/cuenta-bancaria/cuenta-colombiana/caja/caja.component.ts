@@ -68,16 +68,17 @@ export class CajaComponent implements OnInit {
       width: '400px',
       data: {
         title: 'Detalles del Movimiento',
+        id: movimiento.id,  // Pasar el id de forma explícita
         data: movimiento,
         fields: [
           { label: 'Fecha', key: 'fecha', format: 'date' },
           { label: 'Tipo de Movimiento', key: 'tipoMovimiento' },
-          { label: 'Monto', key: 'monto', format: 'currency' },
+          { label: 's', key: 'monto', format: 'currency' },
           { label: 'Descripción', key: 'descripcion' },
           { label: 'Entrada', key: 'entrada' }
         ],
         showCloseButton: true,
-        closeButtonLabel: 'Cerrar'
+        closeButtonLabel: 'abrir'
       }
     });
   }

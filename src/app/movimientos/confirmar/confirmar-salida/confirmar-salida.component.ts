@@ -36,6 +36,24 @@ export class ConfirmarSalidaComponent implements OnInit {
   ngOnInit(): void {
     this.loadVentas();
     this.checkScreenSize();
+    // Inicializar los elementos copiados desde localStorage
+    this.initializeCopiedIcons();
+
+  }
+
+  initializeCopiedIcons(): void {
+    this.dataSource.forEach(element => {
+      if (localStorage.getItem(`copy_${element.id}`) === '1') {
+        // Si en localStorage existe `copy_${id}` con valor '1', significa que se han copiado todos los campos
+        this.copiedIcons[element.id!] = {
+          nombre: true,
+          cedula: true,
+          cuenta: true,
+          banco: true,
+          bolivares: true
+        };
+      }
+    });
   }
 
   // Método para copiar múltiples campos al portapapeles, incluyendo redondeo de bolívares
@@ -47,7 +65,7 @@ export class ConfirmarSalidaComponent implements OnInit {
     const bolivares = element.bolivares ? element.bolivares.toFixed(2) : ''; // Redondear a dos decimales
 
     // Concatenar en una sola cadena separada por comas
-    const textToCopy = `${nombre}, ${cedula}, ${cuenta}, ${bolivares}`;
+    const textToCopy = `${nombre},${cedula},${cuenta},${bolivares}`;
 
     // Copiar al portapapeles
     navigator.clipboard.writeText(textToCopy).then(() => {
@@ -173,7 +191,10 @@ export class ConfirmarSalidaComponent implements OnInit {
           icon: 'success',
           confirmButtonText: 'Aceptar'
         });
+
+        localStorage.removeItem(`copy_${venta.id}`);
         this.loadVentas();
+
       },
       error => {
         console.error('Error al confirmar la venta', error);
@@ -189,23 +210,43 @@ export class ConfirmarSalidaComponent implements OnInit {
 
 
   copyToClipboard(value: string | number, id: number, field: string): void {
+    // Verificar si el ítem ya ha sido copiado completamente (valor de `copy` en `localStorage` es `1`)
+    if (localStorage.getItem(`copy_${id}`) === '1') {
+      alert('Ya has copiado toda la información de este elemento anteriormente');
+    }
+
     if (this.isCopied(id, field)) {
       alert("Este texto ya ha sido copiado anteriormente");
-      return;
+      // No se detiene la ejecución para permitir copiado adicional
     }
 
     const formattedValue = typeof value === 'number' ? value.toFixed(2) : value;
 
     navigator.clipboard.writeText(formattedValue).then(() => {
       console.log('Texto copiado al portapapeles:', formattedValue);
+
+      // Actualizar el estado para el elemento y campo copiado
       if (!this.copiedIcons[id]) {
         this.copiedIcons[id] = {};
       }
       this.copiedIcons[id][field] = true;
+      console.log(`Campo ${field} del elemento con id ${id} marcado como copiado.`);
+
+      // Verificar si todos los campos de este elemento han sido copiados
+      const allFields = ['nombre', 'cedula', 'cuenta', 'bolivares']; // Ajusta los nombres según tus columnas
+      const allCopied = allFields.every(fieldName => this.copiedIcons[id][fieldName]);
+
+      if (allCopied) {
+        // Guardar en localStorage la clave `copy` para este id
+        localStorage.setItem(`copy_${id}`, '1');
+        console.log(`Todos los campos del elemento con id ${id} han sido copiados. Guardado en localStorage.`);
+      }
     }).catch(err => {
       console.error('Error al copiar el texto al portapapeles:', err);
     });
   }
+
+
 
   isCopied(id: number, field: string): boolean {
     return this.copiedIcons[id]?.[field] || false;

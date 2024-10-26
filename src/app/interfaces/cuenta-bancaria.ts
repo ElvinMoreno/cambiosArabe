@@ -1,4 +1,5 @@
 import { Bancos } from "./bancos";
+import { MetodoPago } from "./metodo-pago";
 
 export interface CuentaBancaria {
   id: number;
@@ -11,4 +12,5 @@ export interface CuentaBancaria {
   limiteMonto: number | null;
   responsable?: string;
   banco?: { id: number }; // Agregar banco para la creación
+  metodoPago?: MetodoPago;
 }

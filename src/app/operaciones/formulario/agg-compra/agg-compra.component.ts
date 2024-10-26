@@ -174,7 +174,8 @@ export class AggCompraComponent implements OnInit {
         tasaCompra: parseFloat(formValue.tasaCompra),
         montoBs: parseFloat(formValue.montoBs),
         fechaCompra: formValue.fechaCompra ? new Date(formValue.fechaCompra).toISOString() : new Date().toISOString(),
-        referencia: formValue.referencia
+        referencia: formValue.referencia,
+        entrada: true
       };
 
       console.log('Datos a enviar:', compra);

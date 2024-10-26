@@ -2,26 +2,26 @@
   <div class="compras">
     <button mat-raised-button
             class="btn"
-            [ngClass]="{'btn-dark': vistaActual === 'compras',
-            'btn-light': vistaActual !== 'compras'}"
-            (click)="cambiarVista('compras')"
+            [ngClass]="{'btn-dark': vistaActual === 'ventas',
+            'btn-light': vistaActual !== 'ventas'}"
+            (click)="cambiarVista('ventas')"
 
             >
-      Compras
+      Ventas
     </button>
   </div>
   <div class="ventas">
     <button mat-raised-button
             class="btn"
-            [ngClass]="{'btn-dark': vistaActual === 'ventas',
-            'btn-light': vistaActual !== 'ventas'}"
-            (click)="cambiarVista('ventas')">
-      Ventas
+            [ngClass]="{'btn-dark': vistaActual === 'compras',
+            'btn-light': vistaActual !== 'compras'}"
+            (click)="cambiarVista('compras')">
+      Compras
     </button>
   </div>
 </div>
 
 <ng-container [ngSwitch]="vistaActual">
-  <compras-bolivares *ngSwitchCase="'compras'"></compras-bolivares>
   <ventas-bolivares *ngSwitchCase="'ventas'"></ventas-bolivares>
+  <compras-bolivares *ngSwitchCase="'compras'"></compras-bolivares>
 </ng-container>

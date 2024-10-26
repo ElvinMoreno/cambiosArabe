@@ -34,13 +34,6 @@ export class VentaBsService {
     return this.http.get<VentaBs[]>(this.apiUrl, { headers })
       .pipe(catchError(this.handleError));
   }
-
-  getAllVentasBs2(): Observable<TraerVenta[]> {
-    const headers = this.getHeaders();
-    return this.http.get<TraerVenta[]>(this.apiUrl, { headers })
-      .pipe(catchError(this.handleError));
-  }
-
   getVentaBsById(id: number): Observable<VentaBs> {
     const headers = this.getHeaders();
     return this.http.get<VentaBs>(`${this.apiUrl}/${id}`, { headers })
@@ -98,6 +91,13 @@ export class VentaBsService {
     return this.http.post(`${this.apiUrl}/salida`, ventas, { headers, responseType: 'text' })  // Enviar array de ventas
       .pipe(catchError(this.handleError));
   }
+
+  getVentasEntradasCB(cuentaBancariaId: number): Observable<VentaPagos[]> {
+    const headers = this.getHeaders();
+    return this.http.get<VentaPagos[]>(`${this.apiUrl}/entradas/${cuentaBancariaId}`, { headers })
+      .pipe(catchError(this.handleError));
+}
+
 
   // Método para eliminar una venta por ID
   eliminarVentaPorId(ventaId: number): Observable<void> {

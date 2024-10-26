@@ -1,7 +1,20 @@
+import { Cliente } from "./clientes";
+import { CuentaBancaria } from "./cuenta-bancaria";
 import { CuentaDestinatario } from "./cuenta-destinatario";
+import { VentaBsCuentaBancaria } from "./VentaBsCuentaBancaria";
 
 export interface VentaBs {
   id?: number;
+
+
+  cuentaBancariaBolivares?: CuentaBancaria;
+
+  cuentasBancariasPesos?: VentaBsCuentaBancaria[];
+
+
+  cliente?: Cliente;
+
+  tasaVenta: number;
   cuentaBancariaBs: number;
   cuentaBancariaPesos: number;
   descripcionId: number;
@@ -10,10 +23,9 @@ export interface VentaBs {
   referencia: string;
   bolivaresVendidos?: number;
   precioVentaBs: number;
-  metodoPagoId: number;
   comision: number;
-  tasaVenta: number;
 
+  precio?: number;
 
 
   nombreClienteFinal: string;
@@ -24,4 +36,5 @@ export interface VentaBs {
   salida: boolean;
 
   cuentasDestinatario?: CuentaDestinatario[]; // Agregar esta línea
+
 }

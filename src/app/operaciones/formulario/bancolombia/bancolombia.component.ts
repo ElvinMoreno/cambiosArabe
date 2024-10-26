@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, OnInit, Inject, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit, Inject, OnDestroy, ChangeDetectorRef, signal } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { CommonModule, formatDate } from '@angular/common';
@@ -22,6 +22,10 @@ import { Subscription } from 'rxjs';
 import { VentaBs } from '../../../interfaces/venta-bs';
 import { ModalContentComponent } from './modal-content/modal-content.component';
 import { BancosService } from '../../../services/banco.service';
+import {MatExpansionModule} from '@angular/material/expansion';
+import { VentaBsCuentaBancaria } from '../../../interfaces/VentaBsCuentaBancaria';
+import { MetodoPago } from '../../../interfaces/metodo-pago';
+
 
 @Component({
   selector: 'app-bancolombia',
@@ -35,7 +39,7 @@ import { BancosService } from '../../../services/banco.service';
     MatDatepickerModule,
     MatNativeDateModule,
     ReactiveFormsModule,
-    MatIconModule,
+    MatIconModule, MatExpansionModule
   ],
   templateUrl: './bancolombia.component.html',
   styleUrls: ['./bancolombia.component.css'],
@@ -67,7 +71,8 @@ export class BancolombiaComponent implements OnInit, OnDestroy {
   isBolivaresManual = false;  // Nueva bandera para controlar si el valor de bolívares es manual
   cuentaLabel: string[] = []; // Label dinámico para cada cuenta
   showSelectBancos: boolean[] = []; // Nueva propiedad para controlar si se muestra el select de bancos para cada cuenta
-
+  mostrarCuentaPesos: boolean = true;
+  step = signal(0);
 
 
   constructor(
@@ -85,10 +90,10 @@ export class BancolombiaComponent implements OnInit, OnDestroy {
   ) {
     this.form = this.fb.group({
       fecha: ['', Validators.required],
-      tipoPago: ['', Validators.required],
+      tipoPago: ['',Validators.required],
       conversionAutomatica: [{ value: '', disabled: true }],
       cliente: ['', Validators.required],
-      cuentaPesos: ['', Validators.required],
+      cuentaPesos: [''],
       precioVentaBs: ['', Validators.required],
       tasaVenta: [{ value: '', disabled: true }],
       clienteFinal: [''],
@@ -103,6 +108,18 @@ export class BancolombiaComponent implements OnInit, OnDestroy {
     this.cuentaLabel.push('Número de Cuenta');
         this.showSelectBancos.push(false); // Inicializar la visibilidad del select de bancos para la primera cuenta
 
+  }
+
+  setStep(index: number) {
+    this.step.set(index);
+  }
+
+  nextStep() {
+    this.step.update(i => i + 1);
+  }
+
+  prevStep() {
+    this.step.update(i => i - 1);
   }
 
   // Alternar entre "Número de Cuenta" y "Número de Teléfono"
@@ -137,155 +154,103 @@ export class BancolombiaComponent implements OnInit, OnDestroy {
     }
   }
 
+  updateLabelsBasedOnInputs(): void {
+    // Verificar que tasaActual y precioVentaBs son válidos
+    if (!this.tasaActual) {
+      this.bolivaresLabel = 0;
+      this.pesosLabel = 0;
+      return;
+    }
+
+    const precioVentaBs = parseFloat(this.form.get('precioVentaBs')?.value || '0');
+
+    let totalBolivaresIngresados = 0;
+    let totalPesosIngresados = 0;
+
+    // Calcular el total de bolívares y pesos ingresados
+    this.cuentasDestinatarioArray.controls.forEach((control) => {
+      const bolivares = parseFloat(control.get('bolivares')?.value || '0');
+      const pesos = parseFloat(control.get('pesos')?.value || '0');
+
+      if (control.get('currency')?.value === 'bolivares') {
+        totalBolivaresIngresados += !isNaN(bolivares) ? bolivares : 0;
+        // Convertir los bolívares a pesos usando la tasa actual
+        totalPesosIngresados += !isNaN(bolivares) ? bolivares * this.tasaActual! : 0;
+      } else if (control.get('currency')?.value === 'pesos') {
+        totalPesosIngresados += !isNaN(pesos) ? pesos : 0;
+        totalBolivaresIngresados += !isNaN(bolivares) ? bolivares / this.tasaActual! : 0;
+      }
+    });
+
+    // Realizar cálculos según la etiqueta actual
+    if (this.currentLabel === 'Cantidad bolívares') {
+      // Calcular los bolívares restantes
+      this.bolivaresLabel = precioVentaBs - totalBolivaresIngresados;
+
+      // Verificar que los bolívares restantes no sean negativos
+      if (this.bolivaresLabel < 0) {
+        this.bolivaresLabel = 0;
+      }
+
+      // Calcular los pesos correspondientes usando la tasa actual
+      this.pesosLabel = this.bolivaresLabel * this.tasaActual;
+
+      // Ajuste para asegurarse de que el valor de pesos es correcto
+      if (this.bolivaresLabel === 0 && totalBolivaresIngresados > 0) {
+        this.pesosLabel = totalBolivaresIngresados * this.tasaActual;
+      }
+    } else if (this.currentLabel === 'Cantidad pesos') {
+      // Calcular los pesos restantes
+      this.pesosLabel = precioVentaBs - totalPesosIngresados;
+
+      // Verificar que los pesos restantes no sean negativos
+      if (this.pesosLabel < 0) {
+        this.pesosLabel = 0;
+      }
+
+      // Calcular los bolívares correspondientes usando la tasa actual
+      this.bolivaresLabel = precioVentaBs / this.tasaActual - totalBolivaresIngresados;
+
+      // Verificar que los bolívares restantes no sean negativos
+      if (this.bolivaresLabel < 0) {
+        this.bolivaresLabel = 0;
+      }
+    }
+
+    // Forzar la detección de cambios para actualizar la UI
+    this.cdr.detectChanges();
+  }
 
 
-// Lógica para manejar el input de bolívares o pesos
   onBolivaresOrPesosInput(event: Event, index: number): void {
     const inputElement = event.target as HTMLInputElement;
-    const numericValue = parseFloat(inputElement.value || '0');
+    let inputValue = inputElement.value;
+
+    inputValue = inputValue.replace(',', '.');
+
+    const numericValue = parseFloat(inputValue);
+
+    if (isNaN(numericValue)) {
+      return;
+    }
+
     const control = this.cuentasDestinatarioArray.controls[index];
 
     if (control.get('currency')?.value === 'bolivares') {
-      control.get('bolivares')?.setValue(numericValue);
-      this.applyBolivaresLogic();  // Aplicar la nueva lógica para bolívares
+      control.get('bolivares')?.setValue(numericValue, { emitEvent: false });
     } else if (control.get('currency')?.value === 'pesos') {
-      control.get('pesos')?.setValue(numericValue);
-      this.updatePesosLabel();  // Lógica para pesos
+      control.get('pesos')?.setValue(numericValue, { emitEvent: false });
     }
+
+    this.updateLabelsBasedOnInputs();
   }
-
-      // Actualiza el bolivaresLabel restando solo los valores ingresados en bolívares
-    updateBolivaresLabel(): void {
-      // Usar setTimeout para permitir que Angular termine de actualizar el formulario antes del cálculo
-      setTimeout(() => {
-        const tasaVenta = this.form.get('tasaVenta')?.value;  // Obtener la tasa más reciente del formulario
-        if (tasaVenta) {
-          let totalIngresadoEnBolivares = 0;
-
-          this.cuentasDestinatarioArray.controls.forEach((control) => {
-            if (control.get('currency')?.value === 'bolivares') {
-              const bolivares = control.get('bolivares')?.value;
-              totalIngresadoEnBolivares += bolivares ? parseFloat(bolivares) : 0;
-            }
-          });
-
-          // Evitar cualquier cálculo relacionado con pesosLabel
-          const totalCalculadoEnBolivares = this.pesosLabel!;
-          console.log("Esta es la tasa calculando: " + tasaVenta);
-          this.bolivaresLabel = totalCalculadoEnBolivares - totalIngresadoEnBolivares;
-          console.log("en base a venta " + this.bolivaresLabel)
-        }
-      }, 0);  // Esperar a que se complete la actualización del formulario
-    }
-
-    applyBolivaresLogic(): void {
-      setTimeout(() => {
-        if (this.tasaActual && this.pesosLabel !== null && this.bolivaresLabel !== null) {
-          let totalBolivaresIngresados = 0;
-          let totalPesosRestados = 0;
-
-          // Obtener el valor inicial de precioVentaBs
-          const precioVentaBs = parseFloat(this.form.get('precioVentaBs')?.value || '0');
-          const bolivaresIniciales = precioVentaBs / this.tasaActual; // Calcular bolívares iniciales basados en la tasa
-          console.log("bolivarinicial:" + bolivaresIniciales);
-          this.pesosLabel = precioVentaBs; // Inicializamos pesosLabel con el precio de venta
-
-          // Iterar sobre todos los controles dentro del FormArray de cuentas destinatario
-          this.cuentasDestinatarioArray.controls.forEach((control) => {
-            const bolivares = control.get('bolivares')?.value;
-
-            // Sumar bolívares ingresados si son válidos
-            if (bolivares && !isNaN(bolivares)) {
-              totalBolivaresIngresados += parseFloat(bolivares);
-            }
-          });
-
-          if (this.currentLabel === 'Cantidad bolívares') {
-            // Lógica cuando el currentLabel es "Cantidad bolívares"
-            // Restar los bolívares ingresados del valor inicial en bolívares y calcular la cantidad correspondiente en pesos
-            this.bolivaresLabel = bolivaresIniciales - totalBolivaresIngresados;
-
-            this.pesosLabel = precioVentaBs - (totalBolivaresIngresados * this.tasaActual);
-            console.log("de cantidad bolivares boli:" + this.bolivaresLabel);
-            console.log("de cantidad bolivares peso:" + this.pesosLabel);
-            // Asegurarse de que no sean negativos
-            if (this.bolivaresLabel < 0) this.bolivaresLabel = 0;
-            if (this.pesosLabel < 0) this.pesosLabel = 0;
-          } else if (this.currentLabel === 'Cantidad pesos') {
-            // Lógica actual cuando el currentLabel es "Cantidad pesos"
-            totalPesosRestados = totalBolivaresIngresados * this.tasaActual;
-
-            // Restar los pesos convertidos del valor inicial en pesos
-            this.pesosLabel -= totalPesosRestados;
-
-            // Asegurar que pesosLabel no sea negativo
-            if (this.pesosLabel < 0) {
-              this.pesosLabel = 0;
-            }
-
-            // Restar los bolívares ingresados del valor inicial en bolívares
-            this.bolivaresLabel = bolivaresIniciales - totalBolivaresIngresados;
-
-            // Asegurar que bolivaresLabel no sea negativo
-            if (this.bolivaresLabel < 0) {
-              this.bolivaresLabel = 0;
-            }
-          }
-
-          // Mostrar advertencia si los valores están cerca de 0
-          const threshold = 1; // Puedes ajustar el umbral según sea necesario
-          if (this.pesosLabel <= threshold || this.bolivaresLabel <= threshold) {
-            this.showWarning(); // Mostrar el mensaje de advertencia
-          }
-
-          // Forzar la actualización de la vista
-          this.cdr.detectChanges();
-
-          // Mostrar los valores en la consola para depuración
-          console.log(`Bolivares ingresados: ${totalBolivaresIngresados}`);
-          console.log(`Pesos convertidos: ${totalPesosRestados}`);
-          console.log(`bolivaresLabel actual: ${this.bolivaresLabel}`);
-          console.log(`pesosLabel actual: ${this.pesosLabel}`);
-        }
-      }, 0);
-    }
-
 
     // Función para mostrar la advertencia al usuario
     showWarning(): void {
       alert('Advertencia: Los valores de pesos o bolívares están cerca de 0.');
     }
 
-
-// Método para actualizar pesosLabel restando los valores ingresados en los campos de "pesos"
-updatePesosLabel(): void {
-  if (this.tasaActual) {
-    let totalIngresadoEnPesos = 0;
-
-    // Sumamos todos los valores ingresados en los campos de pesos
-    this.cuentasDestinatarioArray.controls.forEach((control) => {
-      if (control.get('currency')?.value === 'pesos') {
-        const pesos = control.get('pesos')?.value;
-        totalIngresadoEnPesos += pesos ? parseFloat(pesos) : 0;
-      }
-    });
-
-    // Restamos el valor ingresado en los campos de pesos del valor inicial en precioVentaBs
-    const precioVentaBs = parseFloat(this.form.get('precioVentaBs')?.value || '0');
-    this.pesosLabel = precioVentaBs - totalIngresadoEnPesos;
-  }
-}
-
-// Método para actualizar pesosLabel basado en el precioVentaBs inicial
-updatePesosLabelFromVentaBs(): void {
-  if (this.form.get('precioVentaBs')?.value) {
-    // Tomamos el valor ingresado en precioVentaBs
-    const precioVentaBs = parseFloat(this.form.get('precioVentaBs')?.value || '0');
-    this.pesosLabel = precioVentaBs; // Asignamos el valor a pesosLabel
-  }
-}
-
-  // Método para crear un nuevo FormGroup dentro de FormArray
+    // Método para crear un nuevo FormGroup dentro de FormArray
   createCuentaDestinatario(): FormGroup {
     return this.fb.group({
       nombreCuenta: [''],
@@ -304,17 +269,17 @@ updatePesosLabelFromVentaBs(): void {
       this.showSelectBancos[index] = !this.showSelectBancos[index]; // Mostrar u ocultar el select de banco
     }
 
-  // Modificar el método para que al agregar una nueva cuenta destinatario, el campo "Bolívares" sea visible
-  addCuentaDestinatario(): void {
-    const newCuenta = this.createCuentaDestinatario();
-    this.cuentasDestinatarioArray.push(newCuenta);
-    this.bolivaresVisible = true; // Hacer visible el campo "Bolívares"
-    this.isBolivaresManual = true; // Marcar que el valor de bolívares será ingresado manualmente
-    // Escuchar cambios en el input de bolívares para la nueva cuenta y restar del bolivaresLabel
-    this.setupBolivaresListener();
-    this.cuentaLabel.push('Número de Cuenta'); // Agregar un nuevo label
-    this.showSelectBancos.push(false); // Inicializar la visibilidad del select
-  }
+    addCuentaDestinatario(): void {
+      const newCuenta = this.createCuentaDestinatario();
+      this.cuentasDestinatarioArray.push(newCuenta);
+      this.bolivaresVisible = true; // Hacer visible el campo "Bolívares"
+      this.isBolivaresManual = true; // Marcar que el valor de bolívares será ingresado manualmente
+      // Escuchar cambios en el input de bolívares para la nueva cuenta y restar del bolivaresLabel
+      this.setupBolivaresListener();
+      this.cuentaLabel.push('Número de Cuenta'); // Agregar un nuevo label
+      this.showSelectBancos.push(false); // Inicializar la visibilidad del select
+    }
+
 
   get cuentasDestinatarioArray(): FormArray {
     return this.form.get('cuentasDestinatario') as FormArray;
@@ -326,6 +291,10 @@ updatePesosLabelFromVentaBs(): void {
     this.loadTasas();
     this.form.patchValue({ fecha: this.currentDate });
     this.setupFormListeners();
+
+    this.onTipoPagoChange();
+
+    this.initializeValueChangesSubscription();
 
     // Solo añadir una cuenta destinatario si el FormArray está vacío
     if (this.cuentasDestinatarioArray.length === 0) {
@@ -349,6 +318,28 @@ updatePesosLabelFromVentaBs(): void {
     });
   }
 
+  initializeValueChangesSubscription(): void {
+    this.form.get('precioVentaBs')?.valueChanges.subscribe(() => {
+      this.updateLabelsBasedOnInputs();
+    });
+
+    this.form.get('tasaVenta')?.valueChanges.subscribe(() => {
+      this.updateLabelsBasedOnInputs();
+    });
+
+    this.cuentasDestinatarioArray.valueChanges.subscribe(() => {
+      this.updateLabelsBasedOnInputs();
+    });
+  }
+
+ // Método para escuchar cambios en el campo tipoPago
+  onTipoPagoChange(): void {
+    this.subscriptions.add(
+      this.form.get('tipoPago')?.valueChanges.subscribe((tipoPagoId: number) => {
+        this.mostrarCuentaPesos = tipoPagoId != 3; // Ocultar el campo si el id es igual a 3
+      })
+    );
+  }
 
   updateConversionAutomatica(value: number): void {
     this.tasaActual = this.form.get('tasaVenta')?.value;  // Guarda la tasa actual
@@ -367,57 +358,57 @@ updatePesosLabelFromVentaBs(): void {
   }
 
 // Método para actualizar los labels de bolívares y pesos según el currentLabel
-updateLabels(): void {
-  const precioVentaBs = parseFloat(this.form.get('precioVentaBs')?.value || '0');
+  updateLabels(): void {
+    const precioVentaBs = parseFloat(this.form.get('precioVentaBs')?.value || '0');
 
-  // Verificamos que exista tasaActual y el precio sea válido
-  if (!this.tasaActual || isNaN(precioVentaBs)) {
-    this.bolivaresLabel = null;
-    this.pesosLabel = null;
-    return;
+    // Verificamos que exista tasaActual y el precio sea válido
+    if (!this.tasaActual || isNaN(precioVentaBs)) {
+      this.bolivaresLabel = null;
+      this.pesosLabel = null;
+      return;
+    }
+
+    // Realizamos los cálculos dependiendo de currentLabel
+    if (this.currentLabel === 'Cantidad bolívares') {
+      this.bolivaresLabel = precioVentaBs; // Mantener bolívares
+      this.pesosLabel = precioVentaBs * this.tasaActual; // Convertir a pesos
+    } else {
+      this.pesosLabel = precioVentaBs; // Mantener pesos
+      this.bolivaresLabel = precioVentaBs / this.tasaActual; // Convertir a bolívares
+    }
+
+    // Forzar la detección de cambios para actualizar la UI
+    this.cdr.detectChanges();
   }
 
-  // Realizamos los cálculos dependiendo de currentLabel
-  if (this.currentLabel === 'Cantidad bolívares') {
-    this.bolivaresLabel = precioVentaBs; // Mantener bolívares
-    this.pesosLabel = precioVentaBs * this.tasaActual; // Convertir a pesos
-  } else {
-    this.pesosLabel = precioVentaBs; // Mantener pesos
-    this.bolivaresLabel = precioVentaBs / this.tasaActual; // Convertir a bolívares
+  // Lógica para manejar el evento input
+  onInputChange(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+
+    // Eliminar cualquier punto del valor ingresado para obtener el valor numérico real
+    let rawValue = inputElement.value.replace(/\./g, '');
+
+    // Convertir el valor a número (por si el usuario ingresa caracteres no numéricos)
+    let numericValue = parseFloat(rawValue || '0');
+
+    // Actualizar el control del formulario con el valor numérico puro
+    this.form.get('precioVentaBs')?.setValue(numericValue);
+
+    // Formatear el valor con puntos de miles para mostrarlo en el input
+    this.formattedPrice = this.formatCurrency(numericValue);
+
+    // Forzar la actualización del valor en el campo input para que refleje el formato
+    inputElement.value = this.formattedPrice;
+
+    // Actualizar los labels en tiempo real
+    this.updateLabels();
   }
-
-  // Forzar la detección de cambios para actualizar la UI
-  this.cdr.detectChanges();
-}
-
-// Lógica para manejar el evento input
-onInputChange(event: Event): void {
-  const inputElement = event.target as HTMLInputElement;
-
-  // Eliminar cualquier punto del valor ingresado para obtener el valor numérico real
-  let rawValue = inputElement.value.replace(/\./g, '');
-
-  // Convertir el valor a número (por si el usuario ingresa caracteres no numéricos)
-  let numericValue = parseFloat(rawValue || '0');
-
-  // Actualizar el control del formulario con el valor numérico puro
-  this.form.get('precioVentaBs')?.setValue(numericValue);
-
-  // Formatear el valor con puntos de miles para mostrarlo en el input
-  this.formattedPrice = this.formatCurrency(numericValue);
-
-  // Forzar la actualización del valor en el campo input para que refleje el formato
-  inputElement.value = this.formattedPrice;
-
-  // Actualizar los labels en tiempo real
-  this.updateLabels();
-}
 
 // Método para escuchar los cambios en cada campo de bolívares
   setupBolivaresListener(): void {
     this.subscriptions.add(
       this.cuentasDestinatarioArray.valueChanges.subscribe(() => {
-        this.updateBolivaresLabel();
+
       })
     );
   }
@@ -498,18 +489,6 @@ onInputChange(event: Event): void {
 
 
   setupFormListeners(): void {
-    this.subscriptions.add(
-      this.form.get('precioVentaBs')?.valueChanges.subscribe(value => {
-        this.updatePesosLabelFromVentaBs(); // Cada vez que cambia precioVentaBs, actualizamos pesosLabel
-        this.updateConversionAutomatica(value); // Calcular conversión en tiempo rea
-      })
-    );
-      // Escuchar cambios en los campos de pesos dentro del array de cuentas destinatario
-  this.subscriptions.add(
-    this.cuentasDestinatarioArray.valueChanges.subscribe(() => {
-      this.updatePesosLabel(); // Actualizar pesosLabel cuando se modifiquen los campos de pesos
-    })
-  );
 
     this.subscriptions.add(
       this.form.get('precioVentaBs')?.valueChanges.subscribe(value => {
@@ -595,35 +574,34 @@ toggleCantidad(): void {
   }
 
 
-onConfirmar(): void {
-  if (this.form.valid && !this.isSubmitting) {
-    this.isSubmitting = true;
+  onConfirmar(): void {
+    if (this.form.valid && !this.isSubmitting) {
+      this.isSubmitting = true;
 
-    // Asegurarse de que tasaVenta no sea nulo antes de construir los datos
-    if (!this.form.get('tasaVenta')?.value) {
-      console.error('Error: tasaVenta es null o undefined.');
-      this.isSubmitting = false;
-      return;
-    }
-
-    const ventaData = this.buildVentaData();
-
-    this.ventaBsService.saveVentaBs(ventaData).subscribe(
-      () => {
-        this.confirmar.emit(ventaData);
-        this.dialogRef.close();
+      // Asegurarse de que tasaVenta no sea nulo antes de construir los datos
+      if (!this.form.get('tasaVenta')?.value) {
+        console.error('Error: tasaVenta es null o undefined.');
         this.isSubmitting = false;
-      },
-      (error) => {
-        console.error('Error al guardar la venta', error);
-        this.isSubmitting = false;
+        return;
       }
-    );
+
+      const ventaData = this.buildVentaData();
+
+      this.ventaBsService.saveVentaBs(ventaData).subscribe(
+        () => {
+          this.confirmar.emit(ventaData);
+          this.dialogRef.close();
+          this.isSubmitting = false;
+        },
+        (error) => {
+          console.error('Error al guardar la venta', error);
+          this.isSubmitting = false;
+        }
+      );
+    }
   }
-}
 
 
-// Lógica para definir si bolívares debe ser tomado del input o calculado automáticamente
   buildVentaData(): Crearventa {
     const formValues = this.form.value;
 
@@ -631,12 +609,11 @@ onConfirmar(): void {
     const ventaBs: VentaBs = {
       cuentaBancariaBs: formValues.cuentaBs,
       cuentaBancariaPesos: formValues.cuentaPesos,
-      descripcionId: 1,
+      descripcionId: formValues.descripcionId || 1,
       clienteId: formValues.cliente,
       fechaVenta: formValues.fechaVenta,
       referencia: formValues.referencia,
       precioVentaBs: formValues.precioVentaBs,
-      metodoPagoId: formValues.tipoPago,
       comision: formValues.comision,
       tasaVenta: this.tasaActual!,
       nombreClienteFinal: formValues.clienteFinal,
@@ -645,30 +622,62 @@ onConfirmar(): void {
       salida: !!formValues.salida
     };
 
-    // Ajustar la lógica para cada cuenta destinatario
-    const cuentasDestinatario: CuentaDestinatario[] = formValues.cuentasDestinatario.map((cd: any) => {
+    // Construir el objeto CuentasDestinatario
+    const cuentasDestinatario: CuentaDestinatario[] = (formValues.cuentasDestinatario || []).map((cd: any) => {
       let bolivares;
 
       // Verificar si el valor de bolívares es manual o debe calcularse
-      if (this.isBolivaresManual && cd.bolivares) {
-        bolivares = cd.bolivares;  // Usar el valor ingresado manualmente para cada cuenta
+      if (this.isBolivaresManual) {
+        // Si la moneda es 'bolivares', usar el valor directamente ingresado
+        if (cd.currency === 'bolivares' && cd.bolivares) {
+          bolivares = cd.bolivares;
+        }
+        // Si la moneda es 'pesos', calcular el equivalente en bolívares usando la tasa actual
+        else if (cd.currency === 'pesos' && cd.bolivares) {
+          bolivares = cd.bolivares / this.tasaActual!;
+        } else {
+          bolivares = 0;
+        }
       } else {
-        // Calcular el valor de bolívares automáticamente usando la tasa de venta
         bolivares = formValues.precioVentaBs / this.tasaActual!;
       }
-      console.log("Banco seleccionado:", cd.banco); // Para verificar el banco seleccionado
+
       return {
         nombreCuentaDestinatario: cd.nombreCuenta,
-        cedula: cd.cedula ? +cd.cedula : null,  // Convertir a número si es posible
+        cedula: cd.cedula ? +cd.cedula : null,
         numeroCuenta: cd.numeroCuenta,
-        bolivares: bolivares,  // Usar el valor de bolívares calculado o manual
-        banco: cd.banco ? cd.banco : null // Enviar el objeto completo del banco seleccionado
+        bolivares: bolivares,
+        banco: cd.banco ? { id: cd.banco.id } : null
       };
     });
 
+    // Construir el objeto CuentasBancariasPesos (si aplica)
+    const ventaBsCuentaBancaria: VentaBsCuentaBancaria[] = [];
+
+    // Verificar si hay una cuenta de pesos seleccionada y su monto correspondiente
+    if (formValues.cuentaPesos) {
+      const montoPesos = formValues.precioVentaBs; // Calcula el monto correspondiente en pesos
+      ventaBsCuentaBancaria.push({
+        cuentaBancaria: {
+          id: formValues.cuentaPesos, // ID de la cuenta seleccionada desde el select
+          nombreBanco: null,
+          nombreCuenta: null,
+          monto: null,
+          numCuenta: null,
+          limiteCB: null,
+          limiteMonto: null,
+        },
+        monto: montoPesos,
+        confirmado: false, // Puedes ajustar este valor según sea necesario
+        metodoPagoId: formValues.tipoPago
+      });
+    }
+
+    // Construir el objeto final de la venta
     const ventaData: Crearventa = {
       ventaBs: ventaBs,
-      cuentasDestinatario: cuentasDestinatario
+      cuentasDestinatario: cuentasDestinatario,
+      ventaCuentaBacariaDTO: ventaBsCuentaBancaria
     };
 
     console.log(ventaData); // Asegúrate de revisar esto para ver los datos capturados
@@ -677,32 +686,52 @@ onConfirmar(): void {
   }
 
 
-openModal(): void {
-  const dialogRef = this.dialog.open(ModalContentComponent, {
-    width: '400px',
-    data: {} // Puedes pasar datos si lo necesitas
-  });
-
-  // Cuando el modal se cierre, los datos analizados son asignados a los campos del formulario
-  dialogRef.afterClosed().subscribe(result => {
-    if (result && !result.error) {
-      // Remover cualquier signo de puntuación antes de asignar los valores
-      const cleanedNombreCuenta = result.nombreCuenta ? result.nombreCuenta.replace(/[^\w\s]/gi, '') : '';
-      const cleanedNumeroCuenta = result.numeroCuenta ? result.numeroCuenta.replace(/[^\w\s]/gi, '') : '';
-      const cleanedCedula = result.cedula ? result.cedula.replace(/[^\w\s]/gi, '') : '';
-
-      this.cuentasDestinatarioArray.at(0).patchValue({
-        nombreCuenta: cleanedNombreCuenta,
-        numeroCuenta: cleanedNumeroCuenta,
-        cedula: cleanedCedula
-      });
-    } else {
-      console.error('Error en la respuesta o cierre del modal sin datos.');
-    }
-  });
-}
 
 
+
+  openModal(index: number): void {
+    const dialogRef = this.dialog.open(ModalContentComponent, {
+      width: '400px',
+      data: {} // Puedes pasar datos si lo necesitas
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && !result.error) {
+        // Remover cualquier signo de puntuación antes de asignar los valores
+        const cleanedNombreCuenta = result.nombreCuenta ? result.nombreCuenta.replace(/[^\w\s]/gi, '') : '';
+        const cleanedNumeroCuenta = result.numeroCuenta ? result.numeroCuenta.replace(/[^\w\s]/gi, '') : '';
+        const cleanedCedula = result.cedula ? result.cedula.replace(/[^\w\s]/gi, '') : '';
+
+        // Verificar si numeroCuenta inicia con '01'
+        if (cleanedNumeroCuenta.startsWith('01')) {
+          if (cleanedNumeroCuenta.length !== 20) {
+            // Si el número de cuenta no tiene 20 caracteres, asignar "tamaño insuficiente" en nombreCuenta
+            this.cuentasDestinatarioArray.at(index).patchValue({
+              nombreCuenta: cleanedNombreCuenta,
+              numeroCuenta: 'tamaño insuficiente',
+              cedula: cleanedCedula
+            });
+          } else {
+            // Si la validación es correcta, asignar los valores limpiados al FormArray
+            this.cuentasDestinatarioArray.at(index).patchValue({
+              nombreCuenta: cleanedNombreCuenta,
+              numeroCuenta: cleanedNumeroCuenta,
+              cedula: cleanedCedula
+            });
+          }
+        } else {
+          // Si no inicia con '01', asignar los valores sin restricciones
+          this.cuentasDestinatarioArray.at(index).patchValue({
+            nombreCuenta: cleanedNombreCuenta,
+            numeroCuenta: cleanedNumeroCuenta,
+            cedula: cleanedCedula
+          });
+        }
+      } else {
+        console.error('Error en la respuesta o cierre del modal sin datos.');
+      }
+    });
+  }
 
   onCancelar(): void {
     this.cancelar.emit();

@@ -15,4 +15,6 @@ export interface CompraBsDTO {
   metodoPago?: string;
   cuentaBancariaBs?: string;
   cuentaBancariaPesos?: string;
+  entrada?: boolean;
+  salida?: boolean;
 }

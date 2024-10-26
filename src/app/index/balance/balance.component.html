@@ -1,45 +1,46 @@
 <div class="balance-container">
-    <!-- Tabs de navegación -->
-    <mat-tab-group [(selectedIndex)]="selectedTabIndex" class="custom-tab-group">
-      <mat-tab label="Días">
-        <div class="tab-content">
-          <div class="charts-container">
-            <!-- Gráfica de ventas -->
-            <div class="chart">
-              <p>Ventas</p>
-              <h3>$ {{ ventasDiarias }}</h3>
-              <canvas id="ventasDiasChart"></canvas>
-            </div>
-          </div>
-          <!-- Tabla de balance -->
-          <div class="table-container">
-            <table>
-              <thead>
-                <tr>
-                  <th>Fecha</th>
-                  <th>Ingreso</th>
-                  <th>Salida</th>
-                  <th>Neto</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let balance of balances">
-                  <td>{{ balance.fecha }}</td>
-                  <td [ngStyle]="{'color': 'green'}">{{ balance.ingreso }}</td>
-                  <td [ngStyle]="{'color': 'red'}">{{ balance.salida }}</td>
-                  <td [ngStyle]="{'color': 'green'}">{{ balance.neto }}</td>
-                </tr>
-              </tbody>
-            </table>
+  <!-- Tabs de navegación -->
+  <mat-tab-group [(selectedIndex)]="selectedTabIndex" class="custom-tab-group">
+    <mat-tab label="Días">
+      <div class="tab-content">
+        <div class="charts-container">
+          <!-- Gráfica de ventas -->
+          <div class="chart">
+            <p>Ventas</p>
+            <h3>$ {{ ventasDiarias }}</h3>
+            <canvas id="ventasDiasChart"></canvas>
           </div>
         </div>
-      </mat-tab>
-      <mat-tab label="Mes">
-        <!-- Contenido similar para el tab de Mes -->
-      </mat-tab>
-      <mat-tab label="Año">
-        <!-- Contenido similar para el tab de Año -->
-      </mat-tab>
-    </mat-tab-group>
-  </div>
-  
+        <!-- Tabla de balance -->
+        <div class="table-container">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Ingreso</th>
+                <th>Egreso</th>
+                <th>Saldo</th>
+                <th>Tasa Promedio</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let balance of balances">
+                <td>{{ balance.fecha | date: 'dd/MM/yyyy' }}</td>
+                <td [ngStyle]="{'color': 'green'}">{{ balance.ingresos | number:'1.2-2' }}</td>
+                <td [ngStyle]="{'color': 'red'}">{{ balance.egresos | number:'1.2-2' }}</td>
+                <td [ngStyle]="{'color': balance.saldo >= 0 ? 'green' : 'red'}">{{ balance.saldo | number:'1.2-2' }}</td>
+                <td>{{ balance.tasaPromedio | number:'1.2-2' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </mat-tab>
+    <mat-tab label="Mes">
+      <!-- Contenido similar para el tab de Mes -->
+    </mat-tab>
+    <mat-tab label="Año">
+      <!-- Contenido similar para el tab de Año -->
+    </mat-tab>
+  </mat-tab-group>
+</div>

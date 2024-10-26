@@ -1,19 +1,12 @@
-import { Component, Inject } from '@angular/core';
-import { MatButton, MatButtonModule } from '@angular/material/button';
-import {
-  MAT_DIALOG_DATA,
-  MatDialog,
-  MatDialogActions,
-  MatDialogClose,
-  MatDialogContent,
-  MatDialogRef,
-  MatDialogTitle,
-} from '@angular/material/dialog';
+import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle } from '@angular/material/dialog';
+import { GemeniService } from '../../../../services/gemini.service';
+import * as Tesseract from 'tesseract.js';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { CommonModule } from '@angular/common';
-import { GemeniService } from '../../../../services/gemini.service';
 
 @Component({
   selector: 'app-modal-content',
@@ -27,18 +20,53 @@ import { GemeniService } from '../../../../services/gemini.service';
   styleUrls: ['./modal-content.component.css']
 })
 export class ModalContentComponent {
-  pastedData: string = '';  // El texto pegado por el usuario
-  resultJson: string = '';  // El resultado formateado en JSON
+  pastedData: string = ''; // El texto pegado o extraído
+  isLoading: boolean = false; // Indicador de carga para OCR
+
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
   constructor(
     public dialogRef: MatDialogRef<ModalContentComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private gemeniService: GemeniService  // Inyectar el servicio Gemeni
+    private gemeniService: GemeniService // Inyectar el servicio Gemeni
   ) {}
+
+  // Función para manejar la selección de archivos
+  onSelectFile(): void {
+    this.fileInput.nativeElement.click(); // Simular un clic en el input de tipo archivo
+  }
+
+  // Manejar la selección del archivo
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      console.log('Archivo seleccionado:', file);
+      this.processImage(file);
+    }
+  }
+
+  // Procesar la imagen con Tesseract.js para realizar OCR
+  processImage(image: File): void {
+    this.isLoading = true; // Mostrar indicador de carga
+    const imageUrl = URL.createObjectURL(image);
+
+    Tesseract.recognize(imageUrl, 'eng', {
+      logger: (m) => console.log(m), // Ver progreso del procesamiento
+    })
+      .then(({ data: { text } }) => {
+        this.pastedData = text; // Pegar el texto extraído en el área de texto
+        console.log('Texto extraído:', text);
+        this.isLoading = false; // Ocultar indicador de carga
+      })
+      .catch((error) => {
+        console.error('Error durante el OCR:', error);
+        this.isLoading = false; // Ocultar indicador de carga
+      });
+  }
 
   // Función para manejar el evento de pegar
   onPaste(event: ClipboardEvent): void {
-    // Esperar a que el texto sea pegado antes de procesarlo
     setTimeout(() => {
       this.processData();
     }, 0);
@@ -46,16 +74,15 @@ export class ModalContentComponent {
 
   processData(): void {
     const prompt = `
-      Simula ser un chatbot y recibe un string. Retorna los siguientes 4 datos de forma textual:
-      1. El número del banco, que siempre empieza con 0 y tiene muchos dígitos.
-      2. El documento del cliente.
-      3. El nombre del cliente.
-      tu respuesta debe estar en el siguiente orden
-      nombreCuenta
+      Eres un chatbot que se recibe un texto, debes extraer, El número del banco (que siempre empieza con 01, si su longitud es menor a 20 retornar "incompleto"),
+       el documento del cliente, el nombre del cliente. tu respuesta debe estar en el siguiente orden
+      nombreCuenta,
       numeroCuenta,
       cedula
-      nota: tu respuesta debe tener unicamente los valores en ese orden
-      El texto es el siguiente: ${this.pastedData}
+      Nota: los valores numericos como numeroCuenta y cedula no pueden tener espacios ni signos de puntación
+      nota: si en el texto recibido hay alguna cadena que inicia en 04 esta debe enviarse por numeroCuenta
+      nota: solo retornar el valor
+       El texto es el siguiente: ${this.pastedData}
     `;
 
     this.gemeniService.generateAnswer(prompt).subscribe(
@@ -67,19 +94,22 @@ export class ModalContentComponent {
         let numeroCuenta: string = '';
         let cedula: string = '';
 
-        // Asumimos que las líneas vienen en el orden especificado
         if (lines.length >= 3) {
           nombreCuenta = lines[0];
           numeroCuenta = lines[1];
           cedula = lines[2];
         }
 
-        // Cerramos el diálogo y pasamos los datos
         this.dialogRef.close({ nombreCuenta, numeroCuenta, cedula });
       },
       (error: any) => {
         console.error('Error al obtener la respuesta:', error);
-        this.dialogRef.close({ nombreCuenta: '', numeroCuenta: '', cedula: '', error: 'Error al procesar los datos.' });
+        this.dialogRef.close({
+          nombreCuenta: '',
+          numeroCuenta: '',
+          cedula: '',
+          error: 'Error al procesar los datos.',
+        });
       }
     );
   }

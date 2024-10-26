@@ -60,9 +60,6 @@
       <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Cuenta Usada </th>
       <td mat-cell *matCellDef="let element" data-title="Cuenta Usada">
         <span>{{element.bancoId}}</span>
-        <button mat-icon-button class="copy-button" (click)="copyToClipboard(element.nombreCuentaBs, element.id, 'cuentaUsada')">
-          <mat-icon [ngClass]="{'copied': isCopied(element.id, 'cuentaUsada')}">content_copy</mat-icon>
-        </button>
       </td>
     </ng-container>
 
@@ -116,9 +113,9 @@
           <mat-icon [ngClass]="{'copied': isCopied(element.id!, 'bolivares')}">content_copy</mat-icon>
         </button>
       </div>
-      <div class="card-content-row">
+      <!-- <div class="card-content-row">
         <p><strong>Cuenta usada:</strong> {{element.bancoId}}</p>
-      </div>
+      </div> -->
     </mat-card-content>
     <mat-card-actions>
       <button mat-raised-button class="balance-button" (click)="openBancosDialog(element)">

@@ -1,13 +1,22 @@
 <h5 mat-dialog-title class="dialog-title">{{ title }}</h5>
 <div mat-dialog-content class="dialog-content">
   <p *ngFor="let field of fields">
-    <strong>{{ field.label }}:</strong> 
+    <strong>{{ field.label }}:</strong>
     <span *ngIf="!field.format">{{ config.data[field.key] }}</span>
     <span *ngIf="field.format === 'date'">{{ config.data[field.key] | date:'fullDate' }}</span>
     <span *ngIf="field.format === 'currency'">{{ config.data[field.key] | currency:'USD' }}</span>
-    <!-- Puedes agregar más formatos según sea necesario -->
   </p>
+
+  <!-- Selector de fecha -->
+  <mat-form-field appearance="fill" class="date-picker-container">
+    <mat-label>Una nueva fecha</mat-label>
+    <input matInput [matDatepicker]="picker" [(ngModel)]="nuevaFecha" [max]="today" required>
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
 </div>
+
 <div mat-dialog-actions class="dialog-actions" *ngIf="showCloseButton">
-  <button mat-button (click)="closeDialog()" class="close-button">{{ closeButtonLabel }}</button>
+  <button mat-button (click)="closeDialog()" class="close-button close-button-margin">{{ closeButtonLabel }}</button>
+  <button mat-button (click)="actualizarFecha()" class="close-button">Actualizar Fecha</button>
 </div>
