@@ -167,13 +167,19 @@ export class AggSalidaComponent implements OnInit {
   }
 
   toggleTipoSeleccion(): void {
+    // Cambiar el tipo de selección
     this.tipoSeleccion = this.tipoSeleccion === 'descripcion' ? 'gasto' : 'descripcion';
+
+    // Actualizar los items seleccionados según el tipo
     this.itemsSeleccionados = this.tipoSeleccion === 'descripcion' ? this.descripciones : this.gastos;
-    this.form.get('descripcionGasto')?.setValue(null);  // Reinicia la selección
+
+    // Reiniciar el valor del select
+    this.form.get('descripcionGasto')?.setValue(null);  // Reinicia la selección para evitar valores preseleccionados
 
     // Configurar visibilidad y validación del campo "Proveedor"
     this.updateProveedorField();
   }
+
 
   onMetodoPagoChange(): void {
     const metodoPagoId = this.form.get('metodoPago')?.value;
@@ -214,7 +220,7 @@ export class AggSalidaComponent implements OnInit {
       const metodoPago = parseInt(formValue.metodoPago, 10);
 
       // Verificar si el método de pago es 1 o 4 y el campo 'Gasto' está visible
-      if ((metodoPago === 1 || metodoPago === 4) && this.tipoSeleccion === 'gasto') {
+      if ((metodoPago === 1 || metodoPago === 5) && this.tipoSeleccion === 'gasto') {
         const gastoId = parseInt(formValue.descripcionGasto, 10);
         console.log(gastoId);
         const cantidad = formValue.monto;
