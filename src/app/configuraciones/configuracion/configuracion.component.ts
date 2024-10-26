@@ -7,6 +7,7 @@ import { DescripcionComponent } from './switchbutton/descripcion/descripcion.com
 import { GastosComponent } from './switchbutton/gastos/gastos.component';
 import { ProveedorComponent } from '../../usuarios/proveedor/proveedor.component';
 import { ClienteComponent } from '../../usuarios/cliente/cliente.component';
+import { HistoryComponent } from './switchbutton/history/history.component';
 
 @Component({
   selector: 'app-configuracion',
@@ -18,7 +19,8 @@ import { ClienteComponent } from '../../usuarios/cliente/cliente.component';
     DescripcionComponent,
     GastosComponent,
     ProveedorComponent,
-    ClienteComponent
+    ClienteComponent,
+    HistoryComponent
   ],
   templateUrl: './configuracion.component.html',
   styleUrls: ['./configuracion.component.css']
@@ -28,14 +30,14 @@ export class ConfiguracionComponent {
   constructor(private router: Router) {}
 
   selectedIndex: number = 0;
-  vistaActual: 'descripcion' | 'gastos' | 'proveedor' | 'cliente' = 'descripcion';
+  vistaActual: 'descripcion' | 'gastos' | 'proveedor' | 'cliente' | 'historial' = 'descripcion';
 
   ngOnInit() {
     // La vista 'descripcion' ya está establecida por defecto
   }
 
   cambiarVista(index: number) {
-    const vistas = ['descripcion', 'gastos', 'proveedor', 'cliente'];
-    this.vistaActual = vistas[index] as 'descripcion' | 'gastos' | 'proveedor' | 'cliente';
+    const vistas = ['descripcion', 'gastos', 'proveedor', 'cliente', 'historial'];
+    this.vistaActual = vistas[index] as 'descripcion' | 'gastos' | 'proveedor' | 'cliente' | 'historial';
   }
 }

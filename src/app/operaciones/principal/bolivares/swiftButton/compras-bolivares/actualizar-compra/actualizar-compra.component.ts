@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { ActualizarCompraDTO } from '../../../../../../interfaces/actualizar-compras-dto';
 
 @Component({
   selector: 'app-actualizar-compra',
@@ -27,7 +28,7 @@ import { MatSelectModule } from '@angular/material/select';
 })
 export class ActualizarCompraComponent implements OnInit {
   form: FormGroup;
-  compra: CompraBsDTO | null = null;  // Para almacenar la compra cargada
+  compra: ActualizarCompraDTO | null = null;  // Para almacenar la compra cargada
 
   constructor(
     private fb: FormBuilder,
@@ -45,10 +46,11 @@ export class ActualizarCompraComponent implements OnInit {
   }
 
   cargarCompra(): void {
-    this.compraService.getCompraById(this.data.compraId).subscribe({
-      next: (compra: CompraBsDTO) => {
+    this.compraService.getCompraByIdAct(this.data.compraId).subscribe({
+      next: (compra: ActualizarCompraDTO) => {
         this.compra = compra;
         this.form.patchValue({ referencia: compra.referencia });
+        console.log(compra);
       },
       error: (error) => {
         console.error('Error al cargar la compra', error);
@@ -60,10 +62,20 @@ export class ActualizarCompraComponent implements OnInit {
     if (this.form.valid && this.compra) {
       const formValue = this.form.value;
 
-      // Actualizar solo la referencia, manteniendo los demás campos
-      const compraActualizada: CompraBsDTO = {
-        ...this.compra!,
-        referencia: formValue.referencia
+      // Actualizar solo la referencia, manteniendo los demás campos intactos
+      const compraActualizada: ActualizarCompraDTO = {
+        id: this.compra.id,  // ID de la compra
+        proveedor: this.compra.proveedor,  // Mantener el proveedor intacto
+        metodoPago: this.compra.metodoPago,  // Mantener el método de pago intacto
+        tasaCompra: this.compra.tasaCompra,  // Mantener la tasa de compra intacta
+        cuentaBancariaBs: this.compra.cuentaBancariaBs,  // Mantener la cuenta bancaria intacta
+        cuentaBancariaPesos: this.compra.cuentaBancariaPesos,  // Mantener la cuenta bancaria de pesos si existe
+        fechaCompra: this.compra.fechaCompra,  // Mantener la fecha de compra intacta
+        referencia: formValue.referencia,  // Actualizar solo la referencia
+        montoBs: this.compra.montoBs,  // Mantener el monto en bolívares
+        precio: this.compra.precio,  // Mantener el precio
+        entrada: this.compra.entrada,  // Mantener el estado de entrada
+        salida: this.compra.salida  // Mantener el estado de salida
       };
 
       console.log(compraActualizada);
@@ -71,7 +83,7 @@ export class ActualizarCompraComponent implements OnInit {
       this.compraService.updateCompra(this.data.compraId, compraActualizada).subscribe({
         next: (response) => {
           console.log('Compra actualizada con éxito', response);
-          this.dialogRef.close(true);
+          this.dialogRef.close(true);  // Cierra el diálogo al terminar
         },
         error: (error) => {
           console.error('Error al actualizar la compra', error);
@@ -79,6 +91,7 @@ export class ActualizarCompraComponent implements OnInit {
       });
     }
   }
+
 
   onCancelar(): void {
     this.dialogRef.close(false);

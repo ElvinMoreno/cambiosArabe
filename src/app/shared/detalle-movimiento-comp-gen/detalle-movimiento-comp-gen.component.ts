@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { MovimientoService } from '../../services/movimiento.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -7,6 +7,9 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
+import { CajaService } from '../../services/caja.service';
+import { MatButtonModule } from '@angular/material/button';
+import { ModificarFechaVenezolanaService } from '../../services/modificar-fecha-movimiento.service';
 
 interface DialogConfig {
   id: number
@@ -15,12 +18,14 @@ interface DialogConfig {
   fields: { label: string; key: string; format?: string }[];
   showCloseButton?: boolean;
   closeButtonLabel?: string;
+  callerComponent?: string;
 }
 
 @Component({
   selector: 'app-detalle-movimiento-comp-gen',
   standalone: true,
-  providers: [provideNativeDateAdapter()],
+  providers: [provideNativeDateAdapter()
+  ],
   imports: [
     CommonModule,
     MatFormFieldModule,
@@ -28,6 +33,8 @@ interface DialogConfig {
     MatNativeDateModule,  // Proveedor para el adaptador de fecha
     MatInputModule,
     FormsModule,
+    MatButtonModule,
+    MatDialogModule
   ],
   templateUrl: './detalle-movimiento-comp-gen.component.html',
   styleUrls: ['./detalle-movimiento-comp-gen.component.css']
@@ -38,12 +45,16 @@ export class DetalleMovimientoCompGenComponent {
   showCloseButton: boolean;
   closeButtonLabel: string;
   nuevaFecha: Date | null = null;
-  today: Date;  // Propiedad para limitar la fecha máxima
+  today: Date;  // Propiedad para limitar la fecha máxima7
+  mostrarDatePicker: boolean = false; // Controla cuándo mostrar el campo de selección de fecha
+
 
   constructor(
     public dialogRef: MatDialogRef<DetalleMovimientoCompGenComponent>,
     @Inject(MAT_DIALOG_DATA) public config: DialogConfig,
-    private movimientoService: MovimientoService
+    private movimientoService: MovimientoService,
+    private cajaService: CajaService,
+    private modificarFechaVenezolanaService: ModificarFechaVenezolanaService // Servicio de cuentas venezolanas
   ) {
     this.title = config.title || 'Detalles';
     this.fields = config.fields;
@@ -56,40 +67,69 @@ export class DetalleMovimientoCompGenComponent {
     this.dialogRef.close();
   }
 
-// Método para actualizar la fecha
-actualizarFecha(): void {
-  if (this.nuevaFecha) {
-    const movimientoId = this.config.id;
-    console.log(movimientoId);
+// Método para actualizar la fecha  // Método para actualizar la fecha
+  actualizarFecha(): void {
+    if (this.nuevaFecha) {
+      const movimientoId = this.config.id;
 
-    // Convertir la fecha a formato 'yyyy-MM-dd'
-    const year = this.nuevaFecha.getFullYear();
-    const month = (this.nuevaFecha.getMonth() + 1).toString().padStart(2, '0');
-    const day = this.nuevaFecha.getDate().toString().padStart(2, '0');
-    const nuevaFechaStr = `${year}-${month}-${day}`;
+      // Convertir la fecha a formato 'yyyy-MM-dd'
+      const year = this.nuevaFecha.getFullYear();
+      const month = (this.nuevaFecha.getMonth() + 1).toString().padStart(2, '0');
+      const day = this.nuevaFecha.getDate().toString().padStart(2, '0');
+      const nuevaFechaStr = `${year}-${month}-${day}`;
 
-    // Crear el cuerpo del objeto para enviar en la solicitud
-    const requestBody = {
-      movimientoId: movimientoId.toString(), // Convertir a string
-      nuevaFecha: nuevaFechaStr
-    };
+      // Crear el cuerpo del objeto para enviar en la solicitud
+      const requestBody = {
+        movimientoId: movimientoId.toString(), // Convertir a string
+        nuevaFecha: nuevaFechaStr
+      };
 
-    // Llamar al servicio para modificar la fecha
-    this.movimientoService.modificarFechaMovimiento(requestBody).subscribe(
-      response => {
-        console.log('Fecha actualizada correctamente:', response);
-        alert('Fecha actualizada correctamente.');
-        this.dialogRef.close(); // Cierra el modal después de la actualización
-      },
-      error => {
-        console.error('Error al actualizar la fecha:', error);
-        alert('Error al actualizar la fecha. Inténtalo de nuevo.');
+      // Verificar si el modal fue abierto por el componente 'caja'
+      if (this.config.callerComponent === 'caja') {
+        // Usar el método del CajaService para modificar la fecha
+        this.cajaService.modificarFechaMovimiento(movimientoId, nuevaFechaStr).subscribe(
+          response => {
+            console.log(response);
+            alert('Fecha actualizada correctamente.');
+            this.dialogRef.close(); // Cierra el modal después de la actualización
+          },
+          error => {
+            console.error('Error al actualizar la fecha usando CajaService:', error);
+            alert('Error al actualizar la fecha. Inténtalo de nuevo.');
+          }
+        );
+        console.log(movimientoId);
+        console.log(nuevaFechaStr);
+      }else if (this.config.callerComponent === 'venezolana') {
+        // Si fue llamado desde cuenta venezolana, usa el ModificarFechaVenezolanaService
+        this.modificarFechaVenezolanaService.modificarFechaMovimientoVenezolano(movimientoId, nuevaFechaStr).subscribe(
+          response => {
+            console.log('Fecha actualizada correctamente para movimiento venezolano:', response);
+            alert('Fecha actualizada correctamente.');
+            this.dialogRef.close(); // Cierra el modal
+          },
+          error => {
+            console.error('Error al actualizar la fecha del movimiento venezolano:', error);
+            alert('Error al actualizar la fecha.');
+          }
+        );
+      }  else {
+        // Si no es 'caja', usar el MovimientoService
+        this.movimientoService.modificarFechaMovimiento(requestBody).subscribe(
+          response => {
+            console.log('Fecha actualizada correctamente usando MovimientoService:', response);
+            alert('Fecha actualizada correctamente.');
+            this.dialogRef.close(); // Cierra el modal después de la actualización
+          },
+          error => {
+            console.error('Error al actualizar la fecha usando MovimientoService:', error);
+            alert('Error al actualizar la fecha. Inténtalo de nuevo.');
+          }
+        );
       }
-    );
-  } else {
-    alert('Por favor, selecciona una nueva fecha antes de actualizar.');
+    } else {
+      alert('Por favor, selecciona una nueva fecha antes de actualizar.');
+    }
   }
-}
-
 
 }

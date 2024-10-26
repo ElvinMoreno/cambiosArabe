@@ -1,29 +1,18 @@
-<div class="boton-cuentas-bancarias">
-  <div class="container">
-    <div>
-      <div class="right-align espac-h2">
-        <label class="admin">ADMINISTRADOR</label>
-      </div>
-      <div></div>
-      <div class="right-align">
-        <h2 class="desc">Lista de Proveedores</h2>
-      </div>
-      <div></div>
-      <div></div>
-    </div>
+<div class="header-section">
+  <!-- Título a la izquierda -->
+  <h2 class="title">Lista de Proveedores</h2>
+  <!-- Botón agregar a la derecha -->
+  <div class="agregar-proveedor">
+    <button mat-flat-button class="btn-agregar" (click)="openNuevoProveedorDialog()">
+      <mat-icon>add</mat-icon>
+      Agregar
+    </button>
   </div>
-</div>
-
-<div class="agregar-proveedor">
-  <button mat-flat-button class="btn-agregar" (click)="openNuevoProveedorDialog()">
-    <mat-icon>add</mat-icon>
-  </button>
 </div>
 
 <!-- Vista de escritorio: Tabla -->
 <div class="table-container centered-table" *ngIf="!isMobile">
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 custom-table">
-
     <!-- Nombre Column -->
     <ng-container matColumnDef="nombre">
       <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Nombre </th>

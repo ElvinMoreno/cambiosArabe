@@ -51,6 +51,9 @@
   </button>
 
   <div class="center-container">
-    <app-movimientos-table [movimientos]="movimientos"></app-movimientos-table>
-  </div>
+    <app-movimientos-table
+    [movimientos]="movimientos"
+    [fromVenezolana]="true"> <!-- Indicamos que los movimientos son de cuentas venezolanas -->
+  </app-movimientos-table>
+    </div>
 </ng-template>

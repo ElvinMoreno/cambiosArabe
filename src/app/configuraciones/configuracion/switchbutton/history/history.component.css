@@ -1,0 +1,24 @@
+table {
+  width: 100%;
+}
+
+.mat-header-cell {
+  font-weight: bold;
+}
+
+.mat-elevation-z8 {
+  margin-top: 20px;
+}
+
+.title{
+  margin-top: 1rem;
+  font-size: 1.5rem; /* Tamaño de fuente original */
+  color: #5E94FF; /* Color original */
+  margin-bottom: 1rem;
+  font-weight: bold
+}
+
+.custom-header {
+  background-color: #4a90e2;
+  color: white;
+}

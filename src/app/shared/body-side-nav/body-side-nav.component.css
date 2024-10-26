@@ -8,19 +8,19 @@
     transition: all .5s ease;
     background: #fff;
     padding: 3rem;
-    
+
   }
-  
+
   .body-trimmed {
     width: calc(100% - 17rem);
     margin-left: 17rem;
   }
-  
+
   .body-md-screen {
     width: 100%;
     margin-left: 0;
   }
-  
+
   @media (max-width: 768px) {
     .body {
       width: 100%;
@@ -28,4 +28,11 @@
       padding: 1rem;
     }
   }
-  
+
+
+.notification-button {
+  position: absolute; /* Posicionamos el botón de forma absoluta */
+  top: 10px; /* Asegura que el botón esté alineado desde arriba */
+  right: 10px; /* Lo coloca en el extremo derecho */
+  z-index: 1000; /* Asegura que esté encima de otros elementos */
+}

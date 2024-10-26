@@ -41,6 +41,18 @@ export class CajaService {
       );
   }
 
+  modificarFechaMovimiento(movimientoId: number, nuevaFecha: string): Observable<any> {
+    const headers = this.getHeaders();
+    const requestBody = { nuevaFecha };  // Estructura del cuerpo de la solicitud
+
+    return this.http.put(`${this.apiUrl}/modificar/${movimientoId}`, requestBody, {
+      headers,
+      responseType: 'text' // Especificamos que la respuesta será de tipo texto
+    }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   private handleError(error: any) {
     console.error('An error occurred:', error);
     return throwError(() => new Error('Ocurrió un error en la solicitud. Por favor, inténtalo de nuevo.'));

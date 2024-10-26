@@ -1,70 +1,26 @@
-body {
-  font-size: 16px; /* Ajuste general de tamaño de fuente */
-}
-
-.boton-cuentas-bancarias .container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
+/* General styling for title and button */
+.header-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   margin-bottom: 1rem;
-  align-items: center; /* Centra verticalmente los elementos */
 }
 
-.button-align {
-  justify-self: start;
-}
-
-.right-align {
-  justify-self: end;
-}
-
-.left-align {
-  justify-self: center;
-}
-
-button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.admin {
-  font-size: 1.2rem;
-  color: #666;
-  font-weight: bold;
-}
-
-h2.desc {
-  font-size: 2rem;
-  color: #4a90e2;
-  margin: 0;
-  font-weight: bold;
-}
-
-.btn1 {
-  padding-left: 3rem;
-  padding-right: 3rem;
-}
-
-.espac-h2 {
-  margin-top: 1rem;
-}
-
-.btn-desc {
-  background-color: #1B1A26 !important;
-  color: white !important;
+/* Regresamos los estilos previos de tamaño y color al h2 */
+.title {
+  text-align: left;
+  font-size: 2rem; /* Tamaño de fuente original */
+  color: #5E94FF; /* Color original */
   margin-bottom: 1rem;
-  border: 1px solid #000000;
+  font-weight: bold
 }
+
 
 .agregar-proveedor {
   display: flex;
-  justify-content: flex-end; /* Mueve el botón al extremo derecho */
-  padding: 10px; /* Espacio alrededor del contenedor */
-  padding-right: 3rem;
+  justify-content: flex-end;
+  padding-right: 1rem; /* Ajusta el espacio del botón */
+  margin-top: 0.5rem; /* Margen superior para separarlo del título */
 }
 
 .btn-agregar {
@@ -72,34 +28,29 @@ h2.desc {
   color: white;
   display: flex;
   align-items: center;
-  justify-content: center;
-  /* padding: 10px; */
 }
 
 .btn-agregar mat-icon {
-  font-size: 1.7rem; /* Ajusta el tamaño del ícono */
+  font-size: 1.7rem;
   height: 24px;
   width: 24px;
   line-height: 24px;
-  margin-right: -0.3rem;
+  margin-right: 0.3rem; /* Ajusta la separación entre el icono y el texto */
 }
 
-/* Tabla estilos */
+/* Table styles */
 .table-container {
   display: flex;
   justify-content: center;
   padding: 1rem;
-  margin-top: 20px;
 }
 
 .centered-table {
   width: 100%;
-  overflow-x: auto; /* Permite el desplazamiento horizontal */
 }
 
 .custom-table {
   width: 100%;
-  max-width: 100%;
   border-collapse: collapse;
   border-radius: 8px;
   overflow: hidden;
@@ -117,91 +68,38 @@ h2.desc {
   font-weight: bold;
 }
 
-/* Estilos para las cards en vista móvil */
+/* Styles for the mobile cards */
 .card-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Adaptar columnas automáticamente */
-  gap: 20px; /* Espacio entre las tarjetas */
-  justify-content: center; /* Centrar las tarjetas en el contenedor */
-  padding: 10px; /* Añadido padding para mayor espacio alrededor */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  justify-content: center;
+  padding: 10px;
 }
 
 .example-card {
-  margin-bottom: 10px; /* Ajusta este valor según tus necesidades */
-  transition: transform 0.3s ease; /* Añade una transición para la transformación */
+  margin-bottom: 10px;
+  transition: transform 0.3s ease;
 }
 
 .example-card:hover {
-  transform: scale(1.05); /* Aumenta ligeramente el tamaño al hacer hover */
+  transform: scale(1.05);
 }
 
-.card-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  font-family: "IBM Plex Sans", sans-serif;
-  font-weight: 700;
-  font-style: normal;
-}
-
-.grid-item {
-  padding: 5px; /* Reducido el padding dentro de las grid-items */
-}
-
-.settings-icon {
-  vertical-align: middle;
-}
-
-/* Media query for responsive design */
+/* Responsive adjustments */
 @media (max-width: 768px) {
-  .boton-cuentas-bancarias .container {
-    grid-template-columns: 1fr;
-    gap: 15px;
-    justify-items: center; /* Centra los elementos horizontalmente */
+  .header-section {
+    align-items: center;
+    justify-content: center;
   }
 
-  .button-align, .right-align, .left-align {
-    justify-self: center; /* Centra los elementos dentro de sus celdas */
-  }
-
-  .btn1, .btn2 {
-    width: 100%;
-    max-width: 200px;
+  .title {
+    margin-left: 0;
     text-align: center;
   }
 
   .agregar-proveedor {
-    justify-content: center; /* Centra el botón en dispositivos móviles */
-    padding-right: 0; /* Reset padding */
-  }
-
-  .table-container {
-    display: none; /* Oculta la tabla en vista móvil */
-  }
-
-  .card-container {
-    display: grid; /* Muestra las cards en vista móvil */
-  }
-
-  .custom-table {
-    width: 100%;
-    display: block; /* Asegura que la tabla sea desplazable */
-    overflow-x: auto;
-    white-space: nowrap; /* Evita el ajuste automático de líneas */
-  }
-
-  .custom-table th, .custom-table td {
-    display: table-cell;
-    text-align: center;
-    padding: 8px;
-    border: 1px solid #ddd;
-  }
-
-  .custom-table th {
-    background-color: #4a90e2;
-    color: white;
-  }
-
-  .custom-table td {
-    padding-left: 8px;
+    justify-content: center;
+    padding-right: 0;
   }
 }

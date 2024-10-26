@@ -8,6 +8,8 @@
     </mat-tab>
     <mat-tab label="Clientes">
     </mat-tab>
+    <mat-tab label="Historial">
+    </mat-tab>
   </mat-tab-group>
 
   <ng-container [ngSwitch]="vistaActual">
@@ -15,5 +17,6 @@
     <gastos *ngSwitchCase="'gastos'"></gastos>
     <proveedor *ngSwitchCase="'proveedor'"></proveedor>
     <cliente *ngSwitchCase="'cliente'"></cliente>
+    <history *ngSwitchCase="'historial'"></history>
   </ng-container>
 </div>

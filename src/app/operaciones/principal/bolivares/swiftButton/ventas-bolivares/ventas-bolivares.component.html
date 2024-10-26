@@ -1,4 +1,11 @@
-<div class="grid-container">
+<div >
+
+  <div class="agregar-venta">
+    <button mat-flat-button class="btn-agregar" (click)="openDialog()">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+
   <div class="filtro">
     <mat-form-field>
       <mat-label>Fecha</mat-label>
@@ -11,11 +18,6 @@
     </button>
   </div>
 
-  <div class="agregar-venta">
-    <button mat-flat-button class="btn-agregar" (click)="openDialog()">
-      <mat-icon>add</mat-icon>
-    </button>
-  </div>
 
   <!-- Tabla para vista de computadora -->
   <div class="table-container">

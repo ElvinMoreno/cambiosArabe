@@ -6,7 +6,6 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { CajaService } from '../../../../services/caja.service';
 import { MovimientoDiaDTO } from '../../../../interfaces/MovimientoDiaDTO';
 import { catchError, of } from 'rxjs';
-import { DetalleMovimientoCompGenComponent } from '../../../../shared/detalle-movimiento-comp-gen/detalle-movimiento-comp-gen.component';
 import { MovimientosTableComponent } from '../../../../shared/movimientos-table/movimientos-table.component'; // Importar el componente
 
 @Component({
@@ -61,25 +60,5 @@ export class CajaComponent implements OnInit {
 
   checkScreenSize() {
     this.isMobile = window.innerWidth <= 768;
-  }
-
-  openDialog(movimiento: MovimientoDiaDTO): void {
-    this.dialog.open(DetalleMovimientoCompGenComponent, {
-      width: '400px',
-      data: {
-        title: 'Detalles del Movimiento',
-        id: movimiento.id,  // Pasar el id de forma explícita
-        data: movimiento,
-        fields: [
-          { label: 'Fecha', key: 'fecha', format: 'date' },
-          { label: 'Tipo de Movimiento', key: 'tipoMovimiento' },
-          { label: 's', key: 'monto', format: 'currency' },
-          { label: 'Descripción', key: 'descripcion' },
-          { label: 'Entrada', key: 'entrada' }
-        ],
-        showCloseButton: true,
-        closeButtonLabel: 'abrir'
-      }
-    });
   }
 }

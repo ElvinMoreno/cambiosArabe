@@ -67,7 +67,7 @@
                   type="text"
                   inputmode="decimal"
                   [formControlName]="cuenta.get('currency')?.value === 'bolivares' ? 'bolivares' : 'pesos'"
-                  placeholder="Ingrese cantidad de bolívares o pesos"
+                  placeholder="Ingrese cantidad"
                   (input)="onBolivaresOrPesosInput($event, i)">
                   <button mat-icon-button type="button" (click)="toggleCurrency(i)">
                     <mat-icon>swap_horiz</mat-icon>

@@ -9,7 +9,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { AccesoService } from './services/acceso.service';
 
 import {CloudinaryModule} from '@cloudinary/ng';
-import {fill} from "@cloudinary/url-gen/actions/resize";
 import { WebSocketService } from './services/web-socket.service';
 
 @Component({
@@ -39,11 +38,6 @@ export class AppComponent implements OnInit {
     this.webSocketService.connect();
   }
 
-  // Si necesitas enviar un mensaje
-  sendMessage() {
-    const message = { text: 'Hola desde Angular' };
-    this.webSocketService.sendMessage(message);
-  }
   isAuthenticated() {
     return this.accesoService.isAuthenticated();
   }

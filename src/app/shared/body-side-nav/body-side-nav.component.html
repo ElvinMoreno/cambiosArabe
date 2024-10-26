@@ -1,4 +1,9 @@
 <div class="body" [ngClass]="getBodyClass()">
+   <!-- Botón de notificaciones con matBadge -->
+   <button class="notification-button" mat-icon-button matBadge="{{notificationCount}}" matBadgeSize="large"
+   (click)="openNotificationDialog()">
+    <mat-icon>notifications_none</mat-icon>
+  </button>
     <router-outlet></router-outlet>
 </div>
 

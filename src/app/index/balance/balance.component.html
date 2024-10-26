@@ -1,6 +1,9 @@
 <div class="balance-container">
   <!-- Tabs de navegación -->
   <mat-tab-group [(selectedIndex)]="selectedTabIndex" class="custom-tab-group">
+    <mat-tab label="Movimientos">
+      <!-- Contenido similar para el tab de Año -->
+    </mat-tab>
     <mat-tab label="Días">
       <div class="tab-content">
         <div class="charts-container">
@@ -20,7 +23,7 @@
                 <th>Ingreso</th>
                 <th>Egreso</th>
                 <th>Saldo</th>
-                <th>Tasa Promedio</th>
+                <!-- <th>Tasa Promedio</th> -->
               </tr>
             </thead>
             <tbody>
@@ -29,7 +32,7 @@
                 <td [ngStyle]="{'color': 'green'}">{{ balance.ingresos | number:'1.2-2' }}</td>
                 <td [ngStyle]="{'color': 'red'}">{{ balance.egresos | number:'1.2-2' }}</td>
                 <td [ngStyle]="{'color': balance.saldo >= 0 ? 'green' : 'red'}">{{ balance.saldo | number:'1.2-2' }}</td>
-                <td>{{ balance.tasaPromedio | number:'1.2-2' }}</td>
+                <!-- <td>{{ balance.tasaPromedio | number:'1.2-2' }}</td> -->
               </tr>
             </tbody>
           </table>
@@ -39,8 +42,6 @@
     <mat-tab label="Mes">
       <!-- Contenido similar para el tab de Mes -->
     </mat-tab>
-    <mat-tab label="Año">
-      <!-- Contenido similar para el tab de Año -->
-    </mat-tab>
+
   </mat-tab-group>
 </div>
