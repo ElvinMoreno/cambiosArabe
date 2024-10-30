@@ -24,6 +24,7 @@ import { ModalContentComponent } from './modal-content/modal-content.component';
 import { BancosService } from '../../../services/banco.service';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { VentaBsCuentaBancaria } from '../../../interfaces/VentaBsCuentaBancaria';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 @Component({
@@ -38,7 +39,7 @@ import { VentaBsCuentaBancaria } from '../../../interfaces/VentaBsCuentaBancaria
     MatDatepickerModule,
     MatNativeDateModule,
     ReactiveFormsModule,
-    MatIconModule, MatExpansionModule
+    MatIconModule, MatExpansionModule, MatTooltipModule
   ],
   templateUrl: './bancolombia.component.html',
   styleUrls: ['./bancolombia.component.css'],
@@ -73,6 +74,7 @@ export class BancolombiaComponent implements OnInit, OnDestroy {
   showSelectBancos: boolean[] = []; // Nueva propiedad para controlar si se muestra el select de bancos para cada cuenta
   mostrarCuentaPesos: boolean = true;
   step = signal(0);
+  tooltipMessage: string = ''; // Variable para almacenar el mensaje del toolti
 
 
   constructor(
@@ -261,6 +263,17 @@ export class BancolombiaComponent implements OnInit, OnDestroy {
       currency: ['bolivares'] // Inicializa la moneda en bolívares
     });
   }
+
+    // Método para detectar el cambio en el input
+    onInputChangeB(event: any, i: number): void {
+      const inputValue = event.target.value;
+
+    if (inputValue.startsWith('04')) {
+      // Muestra una alerta del navegador
+      alert('Selecciona un banco');
+      }
+    }
+
 
     // Alternar entre "Número de Cuenta" y "Número de Teléfono", y mostrar el select de banco
     togglePhoneAndBanco(index: number): void {

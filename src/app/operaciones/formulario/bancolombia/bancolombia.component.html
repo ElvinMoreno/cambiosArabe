@@ -26,14 +26,22 @@
               </div>
 
               <!-- Número de cuenta -->
-              <div class="form-group" [ngClass]="{'has-error': cuenta.get('numeroCuenta')?.invalid && cuenta.get('numeroCuenta')?.touched}">
-                <label for="numeroCuenta{{i}}">{{ cuentaLabel[i] }} <span class="required">*</span></label>
-                <div class="input-button-group">
-                  <input id="numeroCuenta{{i}}" type="tel" inputmode="numeric" formControlName="numeroCuenta" placeholder="Ingrese número de cuenta">
-                  <button mat-icon-button type="button" (click)="togglePhoneAndBanco(i)">
-                    <mat-icon>contact_phone</mat-icon>
-                  </button>
-                </div>
+              <div class="form-group"
+              [ngClass]="{'has-error': cuenta.get('numeroCuenta')?.invalid && cuenta.get('numeroCuenta')?.touched}">
+              <label for="numeroCuenta{{i}}">{{ cuentaLabel[i] }} <span class="required">*</span></label>
+              <div class="input-button-group">
+              <!-- Input con el tooltip -->
+              <input id="numeroCuenta{{i}}"
+                    type="tel"
+                    inputmode="numeric"
+                    formControlName="numeroCuenta"
+                    placeholder="Ingrese número de cuenta"
+                    matTooltip="{{ tooltipMessage }}"
+                    (input)="onInputChangeB($event, i)">
+              <button mat-icon-button type="button" (click)="togglePhoneAndBanco(i)">
+              <mat-icon>contact_phone</mat-icon>
+              </button>
+              </div>
               </div>
 
               <!-- Banco -->
