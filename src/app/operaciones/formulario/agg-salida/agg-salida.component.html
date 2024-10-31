@@ -51,32 +51,32 @@
           </select>
         </div>
 
-<!-- Campo Descripción o Gasto -->
-<div class="form-group"
-  [ngClass]="{'has-error': form.get('descripcionGasto')?.invalid && form.get('descripcionGasto')?.touched}">
-  <label for="descripcionGasto">{{ tipoSeleccion === 'descripcion' ? 'Descripción' : 'Gasto' }} <span
-      class="required">*</span></label>
-  <div class="input-group">
-    <select id="descripcionGasto" formControlName="descripcionGasto">
-      <option value="" disabled selected>Seleccione una opción</option> <!-- Opción vacía sin selección predeterminada -->
-      <option *ngFor="let item of itemsSeleccionados" [value]="item.id">
-        {{ tipoSeleccion === 'descripcion' ? item.texto : item.nombre }}
-      </option>
-    </select>
-    <!-- Botón de alternancia, visible cuando metodoPago === 1 o 5 -->
-    <ng-container *ngIf="isMetodoPago5 || showCuentaEntrante">
-      <input type="checkbox" id="toggleButton" (change)="toggleTipoSeleccion()" />
-      <label for="toggleButton" class="switch">
-        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f6368">
-          <path
-            d="M280-120 80-320l200-200 57 56-104 104h607v80H233l104 104-57 56Zm400-320-57-56 104-104H120v-80h607L623-784l57-56 200 200-200 200Z" />
-        </svg>
-      </label>
-    </ng-container>
-  </div>
-</div>
+        <!-- Campo Descripción o Gasto, oculto si metodoPago === 4 -->
+        <div *ngIf="!isMetodoPago4" class="form-group"
+          [ngClass]="{'has-error': form.get('descripcionGasto')?.invalid && form.get('descripcionGasto')?.touched}">
+          <label for="descripcionGasto">{{ tipoSeleccion === 'descripcion' ? 'Descripción' : 'Gasto' }} <span
+              class="required">*</span></label>
+          <div class="input-group">
+            <select id="descripcionGasto" formControlName="descripcionGasto">
+              <option value="" disabled selected>Seleccione una opción</option> <!-- Opción vacía sin selección predeterminada -->
+              <option *ngFor="let item of itemsSeleccionados" [value]="item.id">
+                {{ tipoSeleccion === 'descripcion' ? item.texto : item.nombre }}
+              </option>
+            </select>
+            <!-- Botón de alternancia, visible cuando metodoPago === 1 o 5 -->
+            <ng-container *ngIf="isMetodoPago5 || showCuentaEntrante">
+              <input type="checkbox" id="toggleButton" (change)="toggleTipoSeleccion()" />
+              <label for="toggleButton" class="switch">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f6368">
+                  <path
+                    d="M280-120 80-320l200-200 57 56-104 104h607v80H233l104 104-57 56Zm400-320-57-56 104-104H120v-80h607L623-784l57-56 200 200-200 200Z" />
+                </svg>
+              </label>
+            </ng-container>
+          </div>
+        </div>
 
-</div>
+    </div>
 
       <!-- Botones de Confirmar y Cancelar -->
       <div class="button-group">
