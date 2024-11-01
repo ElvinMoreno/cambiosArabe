@@ -643,12 +643,19 @@ toggleCantidad(): void {
 
     // Construir el objeto CuentasDestinatario
     const cuentasDestinatario: CuentaDestinatario[] = (formValues.cuentasDestinatario || []).map((cd: any) => {
+      // Determinar el valor de precioVentaBs basado en currentLabel
+    let monto: number;
+    if (currentLabel === 'Cantidad pesos') {
+      monto = formValues.precioVentaBs / this.tasaActual!;
+    } else {
+      monto = formValues.precioVentaBs;
+    }
 
       return {
         nombreCuentaDestinatario: cd.nombreCuenta,
         cedula: cd.cedula ? +cd.cedula : null,
         numeroCuenta: cd.numeroCuenta,
-        bolivares: precioVentaBs,
+        bolivares: monto,
         banco: cd.banco ? { id: cd.banco.id } : null
       };
     });
