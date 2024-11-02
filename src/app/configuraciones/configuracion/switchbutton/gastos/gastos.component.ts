@@ -7,6 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Gastos } from '../../../../interfaces/gastos';
 import { GastosService } from '../../../../services/gastos.service';
 import { DescripcionFormComponent } from '../descripcion/descripion-form/descripion-form.component';
+import { MovimientoGastoComponent } from './modal-data-list.component';
 
 @Component({
   selector: 'gastos',
@@ -42,6 +43,22 @@ export class GastosComponent implements OnInit {
     );
   }
 
+  // Método para abrir el modal de detalles del gasto al hacer clic en una card
+  openGastoDetails(gastoId: number): void {
+    const dialogRef = this.dialog.open(MovimientoGastoComponent, {
+      width: '600px',
+      data: { id: gastoId }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.log('Modal cerrado');
+        // Aquí puedes agregar lógica adicional si necesitas realizar alguna acción después de cerrar el modal
+      }
+    });
+  }
+
+  // Método para abrir el formulario de nuevo gasto
   nuevoGasto() {
     const dialogRef = this.dialog.open(DescripcionFormComponent, {
       width: '300px',
@@ -49,25 +66,21 @@ export class GastosComponent implements OnInit {
         titulo: 'Nuevo Gasto',
         campoLabel: 'Nombre del Gasto',
         campoPlaceholder: 'Ingrese el nombre del gasto',
-        formData: { texto: '' }  // Aquí `texto` se usará como el nombre del gasto
+        formData: { texto: '' }
       }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // Crear un nuevo objeto de gasto basado en el resultado del formulario
         const nuevoGasto: Gastos = {
           nombre: result.texto,
-          saldo: 0,  // Valor por defecto
-          ultimaActualizacion: new Date()  // Fecha actual
+          saldo: 0,
+          ultimaActualizacion: new Date()
         };
 
-        // Llamar al servicio para crear el nuevo gasto
         this.gastosService.createGasto(nuevoGasto).subscribe(
           (gastoCreado: Gastos) => {
             console.log('Gasto creado:', gastoCreado);
-
-            // Actualizar la lista de gastos con el nuevo gasto
             this.ELEMENT_DATA.push(gastoCreado);
             this.dataSource = [...this.ELEMENT_DATA];
           },

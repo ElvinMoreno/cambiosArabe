@@ -9,7 +9,7 @@
 </div>
 
 <div class="grid-container">
-  <mat-card *ngFor="let gasto of dataSource" class="example-card" appearance="outlined">
+  <mat-card *ngFor="let gasto of dataSource" class="example-card" appearance="outlined" (click)="openGastoDetails(gasto.id!)">
     <mat-card-content>
       <div class="card-grid">
         <span class="material-symbols-outlined home-icon">apartment</span>
