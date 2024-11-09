@@ -24,6 +24,7 @@ import { ModalContentComponent } from './modal-content/modal-content.component';
 import { BancosService } from '../../../services/banco.service';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { VentaBsCuentaBancaria } from '../../../interfaces/VentaBsCuentaBancaria';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 @Component({
@@ -38,7 +39,7 @@ import { VentaBsCuentaBancaria } from '../../../interfaces/VentaBsCuentaBancaria
     MatDatepickerModule,
     MatNativeDateModule,
     ReactiveFormsModule,
-    MatIconModule, MatExpansionModule
+    MatIconModule, MatExpansionModule, MatTooltipModule
   ],
   templateUrl: './bancolombia.component.html',
   styleUrls: ['./bancolombia.component.css'],
@@ -73,6 +74,7 @@ export class BancolombiaComponent implements OnInit, OnDestroy {
   showSelectBancos: boolean[] = []; // Nueva propiedad para controlar si se muestra el select de bancos para cada cuenta
   mostrarCuentaPesos: boolean = true;
   step = signal(0);
+  tooltipMessage: string = ''; // Variable para almacenar el mensaje del toolti
 
 
   constructor(
@@ -262,6 +264,17 @@ export class BancolombiaComponent implements OnInit, OnDestroy {
     });
   }
 
+    // Método para detectar el cambio en el input
+    onInputChangeB(event: any, i: number): void {
+      const inputValue = event.target.value;
+
+    if (inputValue.startsWith('04')) {
+      // Muestra una alerta del navegador
+      alert('Selecciona un banco');
+      }
+    }
+
+
     // Alternar entre "Número de Cuenta" y "Número de Teléfono", y mostrar el select de banco
     togglePhoneAndBanco(index: number): void {
       this.cuentaLabel[index] = this.cuentaLabel[index] === 'Número de Cuenta' ? 'Número de Teléfono' : 'Número de Cuenta';
@@ -272,8 +285,6 @@ export class BancolombiaComponent implements OnInit, OnDestroy {
       const newCuenta = this.createCuentaDestinatario();
       this.cuentasDestinatarioArray.push(newCuenta);
       this.bolivaresVisible = true; // Hacer visible el campo "Bolívares"
-      this.isBolivaresManual = true; // Marcar que el valor de bolívares será ingresado manualmente
-      // Escuchar cambios en el input de bolívares para la nueva cuenta y restar del bolivaresLabel
       this.setupBolivaresListener();
       this.cuentaLabel.push('Número de Cuenta'); // Agregar un nuevo label
       this.showSelectBancos.push(false); // Inicializar la visibilidad del select
@@ -603,47 +614,48 @@ toggleCantidad(): void {
 
   buildVentaData(): Crearventa {
     const formValues = this.form.value;
+    const currentLabel = this.currentLabel; // Asume que tienes currentLabel disponible en el contexto
+
+    // Determinar el valor de precioVentaBs basado en currentLabel
+    let precioVentaBs: number;
+    if (currentLabel === 'Cantidad bolívares') {
+      precioVentaBs = formValues.precioVentaBs * this.tasaActual!;
+    } else {
+      precioVentaBs = formValues.precioVentaBs;
+    }
 
     // Construir el objeto VentaBs
     const ventaBs: VentaBs = {
       cuentaBancariaBs: formValues.cuentaBs,
-      // Validación: Si cuentaPesos es null, asignar cuenta bancaria con ID 1
       cuentaBancariaPesos: formValues.cuentaPesos ? formValues.cuentaPesos : { id: 1 },
       descripcionId: formValues.descripcionId || 1,
       clienteId: formValues.cliente,
       fechaVenta: formValues.fechaVenta,
       referencia: formValues.referencia,
-      precioVentaBs: formValues.precioVentaBs,
+      precioVentaBs: precioVentaBs, // Usar el valor validado de precioVentaBs
       comision: formValues.comision,
       tasaVenta: this.tasaActual!,
       nombreClienteFinal: formValues.clienteFinal,
-      banco: formValues.banco, // Banco de la venta principal (si es necesario)
+      banco: formValues.banco,
       entrada: !!formValues.entrada,
       salida: !!formValues.salida
     };
 
     // Construir el objeto CuentasDestinatario
     const cuentasDestinatario: CuentaDestinatario[] = (formValues.cuentasDestinatario || []).map((cd: any) => {
-      let bolivares;
-
-      // Verificar si el valor de bolívares es manual o debe calcularse
-      if (this.isBolivaresManual) {
-        if (cd.currency === 'bolivares' && cd.bolivares) {
-          bolivares = cd.bolivares;
-        } else if (cd.currency === 'pesos' && cd.bolivares) {
-          bolivares = cd.bolivares / this.tasaActual!;
-        } else {
-          bolivares = 0;
-        }
-      } else {
-        bolivares = formValues.precioVentaBs / this.tasaActual!;
-      }
+      // Determinar el valor de precioVentaBs basado en currentLabel
+    let monto: number;
+    if (currentLabel === 'Cantidad pesos') {
+      monto = formValues.precioVentaBs / this.tasaActual!;
+    } else {
+      monto = formValues.precioVentaBs;
+    }
 
       return {
         nombreCuentaDestinatario: cd.nombreCuenta,
         cedula: cd.cedula ? +cd.cedula : null,
         numeroCuenta: cd.numeroCuenta,
-        bolivares: bolivares,
+        bolivares: monto,
         banco: cd.banco ? { id: cd.banco.id } : null
       };
     });
@@ -651,53 +663,51 @@ toggleCantidad(): void {
     // Construir el objeto CuentasBancariasPesos (si aplica)
     const ventaBsCuentaBancaria: VentaBsCuentaBancaria[] = [];
 
-    // Si no hay una cuenta de pesos seleccionada, asignar id = 1
-    if (formValues.cuentaPesos) {
-      const montoPesos = formValues.precioVentaBs; // Calcula el monto correspondiente en pesos
-      ventaBsCuentaBancaria.push({
-        cuentaBancaria: {
-          id: formValues.cuentaPesos, // ID de la cuenta seleccionada
-          nombreBanco: null,
-          nombreCuenta: null,
-          monto: null,
-          numCuenta: null,
-          limiteCB: null,
-          limiteMonto: null,
-        },
-        monto: montoPesos,
-        confirmado: false, // Puedes ajustar este valor según sea necesario
-        metodoPagoId: formValues.tipoPago
-      });
-    } else {
-      // Si no hay cuenta de pesos, asignar id 1 y nulos para los demás campos
-      const montoPesos = formValues.precioVentaBs; // Calcula el monto correspondiente en pesos
-      ventaBsCuentaBancaria.push({
-        cuentaBancaria: {
-          id: 1,
-          nombreBanco: null,
-          nombreCuenta: null,
-          monto: null,
-          numCuenta: null,
-          limiteCB: null,
-          limiteMonto: null,
-        },
-        monto: montoPesos,
-        confirmado: false, // Puedes ajustar este valor según sea necesario
-        metodoPagoId: formValues.tipoPago
-      });
-    }
-
-    // Construir el objeto final de la venta
-    const ventaData: Crearventa = {
-      ventaBs: ventaBs,
-      cuentasDestinatario: cuentasDestinatario,
-      ventaCuentaBacariaDTO: ventaBsCuentaBancaria
-    };
-
-    console.log(ventaData); // Asegúrate de revisar esto para ver los datos capturados
-
-    return ventaData;
+  // Si hay una cuenta de pesos seleccionada
+  if (formValues.cuentaPesos) {
+    ventaBsCuentaBancaria.push({
+      cuentaBancaria: {
+        id: formValues.cuentaPesos, // ID de la cuenta seleccionada
+        nombreBanco: null,
+        nombreCuenta: null,
+        monto: null,
+        numCuenta: null,
+        limiteCB: null,
+        limiteMonto: null,
+      },
+      monto: precioVentaBs,
+      confirmado: false, // Puedes ajustar este valor según sea necesario
+      metodoPagoId: formValues.tipoPago
+    });
+  } else {
+    // Si no hay cuenta de pesos, asignar id 1 y nulos para los demás campos
+    ventaBsCuentaBancaria.push({
+      cuentaBancaria: {
+        id: 1,
+        nombreBanco: null,
+        nombreCuenta: null,
+        monto: null,
+        numCuenta: null,
+        limiteCB: null,
+        limiteMonto: null,
+      },
+      monto: precioVentaBs,
+      confirmado: false, // Puedes ajustar este valor según sea necesario
+      metodoPagoId: formValues.tipoPago
+    });
   }
+
+  // Construir el objeto final de la venta
+  const ventaData: Crearventa = {
+    ventaBs: ventaBs,
+    cuentasDestinatario: cuentasDestinatario,
+    ventaCuentaBacariaDTO: ventaBsCuentaBancaria
+  };
+
+  console.log(ventaData); // Asegúrate de revisar esto para ver los datos capturados
+
+  return ventaData;
+}
 
   openModal(index: number): void {
     const dialogRef = this.dialog.open(ModalContentComponent, {
@@ -737,8 +747,6 @@ toggleCantidad(): void {
             cedula: cleanedCedula
           });
         }
-      } else {
-        console.error('Error en la respuesta o cierre del modal sin datos.');
       }
     });
   }

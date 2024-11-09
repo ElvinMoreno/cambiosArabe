@@ -28,13 +28,13 @@ import { ActualizarCompraDTO } from '../../../../../../interfaces/actualizar-com
 })
 export class ActualizarCompraComponent implements OnInit {
   form: FormGroup;
-  compra: ActualizarCompraDTO | null = null;  // Para almacenar la compra cargada
+  compra: ActualizarCompraDTO | null = null;
 
   constructor(
     private fb: FormBuilder,
     private compraService: CompraService,
     public dialogRef: MatDialogRef<ActualizarCompraComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { compraId: number }  // Recibe el ID de la compra a actualizar
+    @Inject(MAT_DIALOG_DATA) public data: { compraId: number }
   ) {
     this.form = this.fb.group({
       referencia: ['', [Validators.required]]
@@ -62,28 +62,33 @@ export class ActualizarCompraComponent implements OnInit {
     if (this.form.valid && this.compra) {
       const formValue = this.form.value;
 
-      // Actualizar solo la referencia, manteniendo los demás campos intactos
-      const compraActualizada: ActualizarCompraDTO = {
-        id: this.compra.id,  // ID de la compra
-        proveedor: this.compra.proveedor,  // Mantener el proveedor intacto
-        metodoPago: this.compra.metodoPago,  // Mantener el método de pago intacto
-        tasaCompra: this.compra.tasaCompra,  // Mantener la tasa de compra intacta
-        cuentaBancariaBs: this.compra.cuentaBancariaBs,  // Mantener la cuenta bancaria intacta
-        cuentaBancariaPesos: this.compra.cuentaBancariaPesos,  // Mantener la cuenta bancaria de pesos si existe
-        fechaCompra: this.compra.fechaCompra,  // Mantener la fecha de compra intacta
-        referencia: formValue.referencia,  // Actualizar solo la referencia
-        montoBs: this.compra.montoBs,  // Mantener el monto en bolívares
-        precio: this.compra.precio,  // Mantener el precio
-        entrada: this.compra.entrada,  // Mantener el estado de entrada
-        salida: this.compra.salida  // Mantener el estado de salida
+      // Construir el objeto con solo los campos requeridos
+      const compraParaConfirmar: Partial<CompraBsDTO> = {
+        id: this.compra.id,
+        proveedor: this.compra.proveedor?.nombre!,
+        referencia: formValue.referencia,
+        montoBs: this.compra.montoBs,
+        precio: this.compra.precio,
+        tasaCompra: this.compra.tasaCompra
       };
 
-      console.log(compraActualizada);
+      console.log('Compra para confirmar entrada:', compraParaConfirmar);
 
-      this.compraService.updateCompra(this.data.compraId, compraActualizada).subscribe({
+      // Llama al método para actualizar la compra
+      this.compraService.updateCompra(this.data.compraId, { ...this.compra, referencia: formValue.referencia }).subscribe({
         next: (response) => {
           console.log('Compra actualizada con éxito', response);
-          this.dialogRef.close(true);  // Cierra el diálogo al terminar
+
+          // Llama a confirmarVentaEntrada con los datos específicos
+          this.compraService.confirmarVentaEntrada(compraParaConfirmar as CompraBsDTO).subscribe({
+            next: (confirmResponse) => {
+              console.log('Entrada confirmada con éxito', confirmResponse);
+              this.dialogRef.close(true);  // Cierra el diálogo después de confirmar la entrada
+            },
+            error: (confirmError) => {
+              console.error('Error al confirmar la entrada', confirmError);
+            }
+          });
         },
         error: (error) => {
           console.error('Error al actualizar la compra', error);
@@ -91,7 +96,6 @@ export class ActualizarCompraComponent implements OnInit {
       });
     }
   }
-
 
   onCancelar(): void {
     this.dialogRef.close(false);

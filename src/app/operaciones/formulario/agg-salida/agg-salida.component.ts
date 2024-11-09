@@ -51,6 +51,7 @@ export class AggSalidaComponent implements OnInit {
   descripciones: Descripcion[] = [];
   gastos: Gastos[] = [];
   proveedores: Proveedor[] = [];
+  metodoPago: number = 0;  // Almacena el valor seleccionado de metodoPago
 
   itemsSeleccionados: any[] = [];
   tipoSeleccion: 'descripcion' | 'gasto' = 'descripcion';
@@ -59,6 +60,7 @@ export class AggSalidaComponent implements OnInit {
   errorMessage: string | null = null;
   showCuentaEntrante = false;
   isMetodoPago5 = false;
+  isMetodoPago4 = false;
   isMetodoPagoUndefined = true;
 
   constructor(
@@ -167,9 +169,14 @@ export class AggSalidaComponent implements OnInit {
   }
 
   toggleTipoSeleccion(): void {
+    // Cambiar el tipo de selección
     this.tipoSeleccion = this.tipoSeleccion === 'descripcion' ? 'gasto' : 'descripcion';
+
+    // Actualizar los items seleccionados según el tipo
     this.itemsSeleccionados = this.tipoSeleccion === 'descripcion' ? this.descripciones : this.gastos;
-    this.form.get('descripcionGasto')?.setValue(null);  // Reinicia la selección
+
+    // Reiniciar el valor del select
+    this.form.get('descripcionGasto')?.setValue(null);  // Reinicia la selección para evitar valores preseleccionados
 
     // Configurar visibilidad y validación del campo "Proveedor"
     this.updateProveedorField();
@@ -177,9 +184,18 @@ export class AggSalidaComponent implements OnInit {
 
   onMetodoPagoChange(): void {
     const metodoPagoId = this.form.get('metodoPago')?.value;
-    this.showCuentaEntrante = metodoPagoId === '1';  // Mostrar campo "Cuenta entrante" si el método de pago es transferencia
-    this.isMetodoPago5 = metodoPagoId === '5';  // Si el método de pago es 5, manejar el campo "Proveedor"
-    this.isMetodoPagoUndefined = !metodoPagoId; // Sin método de pago
+
+    // Mostrar campo "Cuenta entrante" si el método de pago es transferencia (1)
+    this.showCuentaEntrante = metodoPagoId === '1';
+
+    // Si el método de pago es 5, manejar el campo "Proveedor"
+    this.isMetodoPago5 = metodoPagoId === '5';
+
+    // Si el método de pago es 4, ocultar el campo "Descripción"
+    this.isMetodoPago4 = metodoPagoId === '4';
+
+    // Sin método de pago
+    this.isMetodoPagoUndefined = !metodoPagoId;
 
     if (this.showCuentaEntrante) {
       this.form.get('cuentaEntrante');
@@ -194,6 +210,7 @@ export class AggSalidaComponent implements OnInit {
     // Actualiza el campo "Descripción" o "Gasto" según el tipo seleccionado
     this.itemsSeleccionados = this.tipoSeleccion === 'descripcion' ? this.descripciones : this.gastos;
   }
+
 
   updateProveedorField(): void {
     if (this.isMetodoPago5 && this.tipoSeleccion === 'descripcion') {
@@ -213,8 +230,8 @@ export class AggSalidaComponent implements OnInit {
       const formValue = this.form.value;
       const metodoPago = parseInt(formValue.metodoPago, 10);
 
-      // Verificar si el método de pago es 1 o 4 y el campo 'Gasto' está visible
-      if ((metodoPago === 1 || metodoPago === 4) && this.tipoSeleccion === 'gasto') {
+      // Verificar si el método de pago es 1 o 5 y el campo 'Gasto' está visible
+      if ((metodoPago === 1 || metodoPago === 5) && this.tipoSeleccion === 'gasto') {
         const gastoId = parseInt(formValue.descripcionGasto, 10);
         console.log(gastoId);
         const cantidad = formValue.monto;
@@ -239,11 +256,17 @@ export class AggSalidaComponent implements OnInit {
 
   // Método auxiliar para proceder con la confirmación después de aumentar el saldo
   proceedWithConfirmation(formValue: any) {
+    const metodoPagoId = parseInt(formValue.metodoPago, 10);
+
+    // Validar si el metodoPago es 4, y asignar descripcionId como 3
+    const descripcionId = metodoPagoId === 4 ? 3 :
+      (this.tipoSeleccion === 'descripcion' ? parseInt(formValue.descripcionGasto, 10) : null);
+
     const retiro: Retiro = {
       cuentaBancariaSalidaId: parseInt(formValue.destino, 10),
       cuentaBancariaEntradaId: this.showCuentaEntrante ? parseInt(formValue.cuentaEntrante, 10) : null,
-      metodoPagoId: parseInt(formValue.metodoPago, 10),
-      descripcionId: this.tipoSeleccion === 'descripcion' ? parseInt(formValue.descripcionGasto, 10) : null,
+      metodoPagoId: metodoPagoId,
+      descripcionId: descripcionId,  // Aquí está la lógica ajustada
       gastoId: this.tipoSeleccion === 'gasto' ? parseInt(formValue.descripcionGasto, 10) : null,
       proveedorId: this.isMetodoPago5 && this.tipoSeleccion === 'descripcion' ? parseInt(formValue.proveedor, 10) : null,
       monto: formValue.monto,
@@ -262,6 +285,7 @@ export class AggSalidaComponent implements OnInit {
       }
     );
   }
+
 
 
   onCancelar() {

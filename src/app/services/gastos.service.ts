@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, catchError, throwError } from 'rxjs';
-import { Gastos } from '../interfaces/gastos'; // Asegúrate de que esta interfaz esté definida
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { Gastos } from '../interfaces/gastos';
+import { PagoGastos } from '../interfaces/pago-gastos';
 import { appsetting } from '../settings/appsetting';
 
 @Injectable({
@@ -68,16 +70,35 @@ export class GastosService {
       );
   }
 
-  // Método para aumentar el saldo de un gasto
-aumentarSaldo(id: number, cantidad: number): Observable<Gastos> {
-  const headers = this.getHeaders();
-  return this.http.post<Gastos>(`${this.apiUrl}/${id}/aumentarSaldo`, null, {
-    headers,
-    params: { cantidad: cantidad.toString() }
-  }).pipe(
-    catchError(this.handleError)
-  );
-}
+  // Aumentar saldo de un gasto
+  aumentarSaldo(id: number, cantidad: number): Observable<Gastos> {
+    const headers = this.getHeaders();
+    return this.http.post<Gastos>(`${this.apiUrl}/${id}/aumentarSaldo`, null, {
+      headers,
+      params: { cantidad: cantidad.toString() }
+    }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // Obtener un movimiento de un gasto por ID
+  getMovimientoGastoById(id: number): Observable<PagoGastos[]> {
+    const headers = this.getHeaders();
+    return this.http.get<PagoGastos[]>(`${this.apiUrl}/movimiento/${id}`, { headers })
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  // Modificar la fecha de un movimiento de gasto
+  modificarFechaGasto(pagoGastoId: number, nuevaFecha: string): Observable<string> {
+    const headers = this.getHeaders();
+    const requestBody = { nuevaFecha };
+    return this.http.put<string>(`${this.apiUrl}/modificarFecha/${pagoGastoId}`, requestBody, { headers })
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
 
   // Manejo de errores
   private handleError(error: any) {
