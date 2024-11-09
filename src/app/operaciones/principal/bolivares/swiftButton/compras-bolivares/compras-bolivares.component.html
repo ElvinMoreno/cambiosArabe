@@ -9,8 +9,8 @@
   </div>
 </div>
 
-<!-- Table view for desktop -->
-<div class="table-container centered-table" *ngIf="!isMobile">
+<!-- Table view for desktop and mobile -->
+<div class="table-container centered-table">
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 custom-table">
     <!-- Proveedor Column -->
     <ng-container matColumnDef="proveedorId">
@@ -48,14 +48,6 @@
       <td mat-cell *matCellDef="let element" data-title="Tasa"> {{element.tasaCompra}} </td>
     </ng-container>
 
-    <!-- Detalles Column -->
-    <ng-container matColumnDef="detalles">
-      <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Detalles </th>
-      <td mat-cell *matCellDef="let element" class="centered-cell" data-title="Detalles">
-        <mat-icon class="icon" (click)="openDetallesDialog(element.id)">remove_red_eye</mat-icon>
-      </td>
-    </ng-container>
-
     <!-- Acciones Column -->
     <ng-container matColumnDef="acciones">
       <th mat-header-cell *matHeaderCellDef class="custom-header-cell"> Acciones </th>
@@ -65,18 +57,7 @@
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    <!-- Añade un (click) en el <tr mat-row> para abrir los detalles al hacer clic en cualquier parte de la fila -->
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="openDetallesDialog(row.id)"></tr>
   </table>
-</div>
-
-<!-- Cards view for mobile -->
-<div class="cards-container" *ngIf="isMobile">
-  <mat-card *ngFor="let element of dataSource" class="card"  (click)="openDetallesDialog(element.id)">
-    <mat-card-content>
-      <h4>Proveedor: {{element.proveedor}}</h4>
-      <p>Referencia: {{element.referencia}}</p>
-      <p>Cantidad Bs: {{element.montoBs}}</p>
-      <p>Tasa: {{element.tasaCompra}}</p>
-    </mat-card-content>
-  </mat-card>
 </div>

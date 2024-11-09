@@ -60,9 +60,9 @@ export class WebSocketService {
       this.notificationSubject.next(receivedMessage);
 
       // Recarga la página después de 3 segundos
-      setTimeout(() => {
-        window.location.reload();
-      }, 3000);
+      // setTimeout(() => {
+      //   window.location.reload();
+      // }, 3000);
     });
   }
 

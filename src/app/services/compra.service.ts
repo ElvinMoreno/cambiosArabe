@@ -82,13 +82,15 @@ export class CompraService {
   }
 
   // Método para confirmar la entrada de una compra
+
   confirmarVentaEntrada(compra: CompraBsDTO): Observable<string> {
     const headers = this.getHeaders();
-    return this.http.post<string>(`${this.apiUrl}/entrada`, compra, { headers })
+    return this.http.post<string>(`${this.apiUrl}/entrada`, compra, { headers, responseType: 'text' as 'json' })
       .pipe(
         catchError(this.handleError)
       );
   }
+
 
   private handleError(error: any) {
     console.error('An error occurred:', error);

@@ -5,7 +5,6 @@ import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { MatCardModule } from '@angular/material/card';
 
 import { CompraBsDTO } from '../../../../../interfaces/compra-bs-dto';
 import { CompraService } from '../../../../../services/compra.service';
@@ -20,17 +19,15 @@ import { ActualizarCompraComponent } from './actualizar-compra/actualizar-compra
     MatButtonModule,
     MatTableModule,
     CommonModule,
-    MatIconModule,
-    MatCardModule
+    MatIconModule
   ],
   templateUrl: './compras-bolivares.component.html',
   styleUrls: ['./compras-bolivares.component.css']
 })
 export class ComprasBolivaresComponent implements OnInit {
   ELEMENT_DATA: CompraBsDTO[] = [];
-  displayedColumns: string[] = ['proveedorId', 'fechaCompra', 'referencia', 'montoBs', 'precio', 'tasaCompra', 'detalles', 'acciones'];
   dataSource = this.ELEMENT_DATA;
-  isMobile = false;
+  displayedColumns: string[] = [];
 
   constructor(
     private compraService: CompraService,
@@ -40,13 +37,7 @@ export class ComprasBolivaresComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCompras();
-    this.detectMobileView();
-  }
-
-  private detectMobileView(): void {
-    this.breakpointObserver.observe([Breakpoints.Handset]).subscribe(result => {
-      this.isMobile = result.matches;
-    });
+    this.setTableColumns();
   }
 
   private loadCompras(): void {
@@ -54,12 +45,23 @@ export class ComprasBolivaresComponent implements OnInit {
       (data: CompraBsDTO[]) => {
         this.ELEMENT_DATA = data;
         this.dataSource = [...this.ELEMENT_DATA];
-        console.log(data);
       },
       (error) => {
         console.error('Error al obtener las compras:', error);
       }
     );
+  }
+
+  private setTableColumns(): void {
+    this.breakpointObserver.observe([Breakpoints.Handset]).subscribe(result => {
+      if (result.matches) {
+        // Vista móvil: excluir las columnas 'proveedorId' y 'precio'
+        this.displayedColumns = ['fechaCompra', 'referencia', 'montoBs', 'tasaCompra', 'acciones'];
+      } else {
+        // Vista de escritorio: mostrar todas las columnas
+        this.displayedColumns = ['proveedorId', 'fechaCompra', 'referencia', 'montoBs', 'precio', 'tasaCompra', 'acciones'];
+      }
+    });
   }
 
   openDialog(): void {
