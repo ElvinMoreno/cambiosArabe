@@ -41,6 +41,7 @@ export class CuentaBancariaComponent implements OnInit {
   movimientos: MovimientoDiaDTO[] = [];
   mostrandoMovimientos: boolean = false;
   nombreCuentaBancaria: string = '';
+  cuentaId: number = 9; // Especificar el ID de la cuenta activa
 
   constructor(
     private route: ActivatedRoute,
@@ -58,7 +59,9 @@ export class CuentaBancariaComponent implements OnInit {
 
     this.cargarTotalCreditos();
     this.cargarTotalDeudasProveedores();
-    this.mostrarMovimientosDeCuenta(9);
+    this.mostrarMovimientosDeCuenta(this.cuentaId);
+    console.log(this.mostrarMovimientosDeCuenta(1)) ;
+
   }
 
   actualizarEquivalenteEnPesos(equivalente: number) {

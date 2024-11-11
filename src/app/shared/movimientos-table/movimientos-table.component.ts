@@ -107,9 +107,9 @@ export class MovimientosTableComponent implements OnChanges {
       Fecha: this.isToday(mov.fecha)
         ? new Date(mov.fecha).toLocaleTimeString()
         : new Date(mov.fecha).toLocaleDateString(),
-      Monto: this.formatMonto(mov.monto), // Formatear el monto con prefijos + o -
+      Monto: mov.monto % 1 !== 0 ? -Math.abs(mov.monto) : Math.abs(mov.monto), // Prefijo - para decimales y + para enteros
       TipoMovimiento: mov.tipoMovimiento,
-      SaldoActual: mov.saldoActual.toFixed(2), // Redondear SaldoActual a 2 decimales
+      SaldoActual: parseFloat(mov.saldoActual.toFixed(2)), // Redondear sin convertir a string
     }));
 
     const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
@@ -131,18 +131,6 @@ export class MovimientosTableComponent implements OnChanges {
     anchor.click();
 
     window.URL.revokeObjectURL(url);
-  }
-
-  private formatMonto(monto: number): string {
-    if (monto < 0) {
-      return `-${Math.abs(monto).toFixed(2)}`;
-    } else if (monto % 1 !== 0) {
-      // Apply '-' for decimal values
-      return `-${monto.toFixed(2)}`;
-    } else {
-      // Positive value without decimals
-      return monto.toFixed(2);
-    }
   }
 
 

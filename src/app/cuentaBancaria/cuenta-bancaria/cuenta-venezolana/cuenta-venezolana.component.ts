@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
@@ -32,6 +32,12 @@ export class CuentaVenezolanaComponent implements OnInit {
   movimientos: MovimientoDiaDTO[] = [];
   nombreCuentaBancaria: string = ''; // Inicializado como una cadena vacía
   mostrandoMovimientos: boolean = false;
+
+  @Input() movimientosG: MovimientoDiaDTO[] = [];  // Recibe movimientos como entrada
+  @Input() cuentaId: number = 0;     // Recibe el nombre de la cuenta como entrada
+  movimientosFiltrados: MovimientoDiaDTO[] = []; // Movimientos filtrados para la cuenta específica
+
+
   @Output() equivalenteEnPesosEmitter = new EventEmitter<number>();
 
   constructor(
@@ -54,6 +60,9 @@ export class CuentaVenezolanaComponent implements OnInit {
       error => {
         console.error('Error al obtener las cuentas bancarias venezolanas:', error);
       }
+    );
+    this.movimientosFiltrados = this.movimientosG.filter(
+      movimiento => movimiento.id === this.cuentaId
     );
   }
 
