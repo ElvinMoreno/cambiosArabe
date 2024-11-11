@@ -174,7 +174,7 @@ export class ConfirmarSalidaComponent implements OnInit {
 
   confirmarVentaSalidaProceso(venta: CuentaDestinatario, nombreCuenta: string, copiadoExitoso: boolean): void {
     const ventasAConfirmar: CuentaDestinatario[] = [venta];
-
+    console.log(ventasAConfirmar)
     this.ventaBsService.confirmarVentaSalida(ventasAConfirmar).subscribe(
       response => {
         console.log('Venta confirmada', response);
