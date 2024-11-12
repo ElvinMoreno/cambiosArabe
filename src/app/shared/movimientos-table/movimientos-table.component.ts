@@ -105,14 +105,17 @@ export class MovimientosTableComponent implements OnChanges {
   exportarExcel(): void {
     const data = this.movimientosFiltrados.map((mov) => ({
       Fecha: this.isToday(mov.fecha)
-        ? new Date(mov.fecha).toLocaleTimeString()
-        : new Date(mov.fecha).toLocaleDateString(),
+        ? new Date(mov.fecha) // Mantener como objeto Date para la exportación
+        : new Date(mov.fecha), // Convertir a Date
       Monto: mov.monto % 1 !== 0 ? -Math.abs(mov.monto) : Math.abs(mov.monto), // Prefijo - para decimales y + para enteros
       TipoMovimiento: mov.tipoMovimiento,
       SaldoActual: parseFloat(mov.saldoActual.toFixed(2)), // Redondear sin convertir a string
     }));
 
-    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data, {
+      cellDates: true, // Opción para asegurar que las celdas se traten como fechas
+      dateNF: 'yyyy-mm-dd', // Formato de fecha deseado
+    });
     const workbook: XLSX.WorkBook = {
       Sheets: { data: worksheet },
       SheetNames: ['data'],
