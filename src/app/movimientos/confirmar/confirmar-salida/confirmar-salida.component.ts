@@ -6,17 +6,21 @@ import { MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
+import {MatMenuModule} from '@angular/material/menu';
 import { ModalBancosComponent } from './modal-bancos/modal-bancos.component';
 import { CuentaDestinatario } from '../../../interfaces/cuenta-destinatario';
 import { VentaBsService } from '../../../services/venta-bs.service';
 import { ConfirmarAccionComponent } from '../../../confirmar-accion/confirmar-accion.component';
 import { VentaBs } from '../../../interfaces/venta-bs';
 import Swal from 'sweetalert2';
+import { PagoParcialComponent } from './pago-parcial.component';
+import { CuentaDestinatarioService } from '../../../services/cuenta-destinatario.service';
 
 @Component({
   selector: 'app-confirmar-salida',
   standalone: true,
-  imports: [MatButtonModule, MatTableModule, CommonModule, MatDialogModule, MatIconModule, MatCardModule],
+  imports: [MatButtonModule, MatTableModule,
+     CommonModule, MatDialogModule, MatIconModule, MatCardModule, MatMenuModule],
   templateUrl: './confirmar-salida.component.html',
   styleUrls: ['./confirmar-salida.component.css']
 })
@@ -30,7 +34,8 @@ export class ConfirmarSalidaComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     private ventaBsService: VentaBsService,
-    private breakpointObserver: BreakpointObserver
+    private breakpointObserver: BreakpointObserver,
+    private cuentaDestinatarioService: CuentaDestinatarioService
   ) {}
 
   ngOnInit(): void {
@@ -208,7 +213,28 @@ export class ConfirmarSalidaComponent implements OnInit {
     );
   }
 
+  pagoParcial(element: CuentaDestinatario): void {
+    const dialogRef = this.dialog.open(PagoParcialComponent, {
+      width: '300px',
+      data: { cuenta: element }
+    });
 
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // result contiene el monto ingresado
+        this.cuentaDestinatarioService.pagoParcial(element.id!, result).subscribe(
+          response => {
+            console.log('Pago parcial realizado:', response);
+            alert('Pago parcial realizado con éxito.');
+          },
+          error => {
+            console.error('Error al realizar el pago parcial:', error);
+            alert('Ocurrió un error al realizar el pago parcial.');
+          }
+        );
+      }
+    });
+  }
   copyToClipboard(value: string | number, id: number, field: string): void {
     // Verificar si el ítem ya ha sido copiado completamente (valor de `copy` en `localStorage` es `1`)
     if (localStorage.getItem(`copy_${id}`) === '1') {
