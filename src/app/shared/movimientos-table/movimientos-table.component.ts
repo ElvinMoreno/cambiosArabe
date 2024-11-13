@@ -107,9 +107,10 @@ export class MovimientosTableComponent implements OnChanges {
       Fecha: this.isToday(mov.fecha)
         ? new Date(mov.fecha) // Mantener como objeto Date para la exportación
         : new Date(mov.fecha), // Convertir a Date
-      Monto: mov.monto % 1 !== 0 ? -Math.abs(mov.monto) : Math.abs(mov.monto), // Prefijo - para decimales y + para enteros
+      Monto: mov.descripcion === 'Compra Bs' ? Math.abs(mov.monto) : -Math.abs(mov.monto), // Asigna + para 'Compra Bs' y - para el resto
       TipoMovimiento: mov.tipoMovimiento,
       SaldoActual: parseFloat(mov.saldoActual.toFixed(2)), // Redondear sin convertir a string
+      Descripcion: mov.descripcion, // Agregar la columna de descripción
     }));
 
     const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data, {
@@ -135,6 +136,8 @@ export class MovimientosTableComponent implements OnChanges {
 
     window.URL.revokeObjectURL(url);
   }
+
+
 
 
 

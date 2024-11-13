@@ -224,33 +224,11 @@ export class AggSalidaComponent implements OnInit {
   }
 
   onConfirmar() {
-    console.log('Formulario valid:', this.form.valid);
+    console.log('Formulario válido:', this.form.valid);
     console.log('Valores del formulario:', this.form.value);
     if (this.form.valid) {
       const formValue = this.form.value;
-      const metodoPago = parseInt(formValue.metodoPago, 10);
-
-      // Verificar si el método de pago es 1 o 5 y el campo 'Gasto' está visible
-      if ((metodoPago === 1 || metodoPago === 5) && this.tipoSeleccion === 'gasto') {
-        const gastoId = parseInt(formValue.descripcionGasto, 10);
-        console.log(gastoId);
-        const cantidad = formValue.monto;
-
-        // Consumir el método aumentarSaldo antes de continuar con la confirmación
-        this.gastosService.aumentarSaldo(gastoId, cantidad).subscribe(
-          response => {
-            // Después de aumentar el saldo, procede con el resto de la confirmación
-            this.proceedWithConfirmation(formValue);
-          },
-          error => {
-            console.error('Error al aumentar el saldo', error);
-            this.errorMessage = 'Ocurrió un error al aumentar el saldo. Por favor, inténtalo de nuevo.';
-          }
-        );
-      } else {
-        // Si no se cumple la condición, proceder directamente con la confirmación
-        this.proceedWithConfirmation(formValue);
-      }
+      this.proceedWithConfirmation(formValue);
     }
   }
 
