@@ -107,7 +107,7 @@ export class MovimientosTableComponent implements OnChanges {
       Fecha: this.isToday(mov.fecha)
         ? new Date(mov.fecha) // Mantener como objeto Date para la exportación
         : new Date(mov.fecha), // Convertir a Date
-      Monto: mov.descripcion === 'Compra Bs' ? Math.abs(mov.monto) : -Math.abs(mov.monto), // Asigna + para 'Compra Bs' y - para el resto
+      Monto: mov.descripcion === 'Compra BS' ? Math.abs(mov.monto) : -Math.abs(mov.monto), // Asigna + para 'Compra Bs' y - para el resto
       TipoMovimiento: mov.tipoMovimiento,
       SaldoActual: parseFloat(mov.saldoActual.toFixed(2)), // Redondear sin convertir a string
       Descripcion: mov.descripcion, // Agregar la columna de descripción
