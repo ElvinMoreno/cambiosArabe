@@ -32,6 +32,7 @@ export class CuentaVenezolanaComponent implements OnInit {
   movimientos: MovimientoDiaDTO[] = [];
   nombreCuentaBancaria: string = ''; // Inicializado como una cadena vacía
   mostrandoMovimientos: boolean = false;
+  movimientosCache: { [key: number]: MovimientoDiaDTO[] } = {}; // Cache para almacenar movimientos por cuentaId
 
   @Input() movimientosG: MovimientoDiaDTO[] = [];  // Recibe movimientos como entrada
   @Input() cuentaId: number = 0;     // Recibe el ID de la cuenta como entrada
@@ -95,16 +96,27 @@ export class CuentaVenezolanaComponent implements OnInit {
 
   mostrarMovimientosDeCuenta(cuenta: CuentaBancaria): void {
     this.nombreCuentaBancaria = cuenta.nombreCuenta || '';
-    this.movimientoService.getMovimientos(cuenta.id).subscribe(
-      (data: MovimientoDiaDTO[]) => {
-        this.movimientos = data.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
-        this.mostrandoMovimientos = true;
-        console.log(data);
-      },
-      error => {
-        console.error('Error al obtener los movimientos:', error);
-      }
-    );
+
+    // Verificar si ya tenemos movimientos en el cache para esta cuenta
+    if (this.movimientosCache[cuenta.id]) {
+      // Si los movimientos están en cache, usarlos directamente
+      this.movimientos = this.movimientosCache[cuenta.id];
+      this.mostrandoMovimientos = true;
+      console.log('Movimientos cargados desde el cache:', this.movimientos);
+    } else {
+      // Si no están en cache, hacer la solicitud y almacenarlos
+      this.movimientoService.getMovimientos(cuenta.id).subscribe(
+        (data: MovimientoDiaDTO[]) => {
+          this.movimientos = data.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
+          this.movimientosCache[cuenta.id] = this.movimientos; // Guardar en cache
+          this.mostrandoMovimientos = true;
+          console.log('Movimientos cargados desde el servicio:', data);
+        },
+        error => {
+          console.error('Error al obtener los movimientos:', error);
+        }
+      );
+    }
   }
 
   regresarAListaDeCuentas(): void {
