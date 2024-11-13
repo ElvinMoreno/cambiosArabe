@@ -42,6 +42,7 @@ export class CuentaBancariaComponent implements OnInit {
   mostrandoMovimientos: boolean = false;
   nombreCuentaBancaria: string = '';
   cuentaId: number = 9; // Especificar el ID de la cuenta activa
+  movimientosCuenta9: MovimientoDiaDTO[] = []; // Variable para almacenar los movimientos de la cuenta con id === 9
 
   constructor(
     private route: ActivatedRoute,
@@ -61,7 +62,20 @@ export class CuentaBancariaComponent implements OnInit {
     this.cargarTotalDeudasProveedores();
     this.mostrarMovimientosDeCuenta(this.cuentaId);
     console.log(this.mostrarMovimientosDeCuenta(1)) ;
+     // Cargar los movimientos de la cuenta con id === 9
+     this.cargarMovimientosCuenta9();
 
+  }
+  cargarMovimientosCuenta9() {
+    this.movimientoService.getMovimientos(9).subscribe(
+      (data: MovimientoDiaDTO[]) => {
+        this.movimientosCuenta9 = data.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
+        console.log('Movimientos de cuenta 9 cargados:', this.movimientosCuenta9);
+      },
+      error => {
+        console.error('Error al obtener los movimientos de la cuenta 9:', error);
+      }
+    );
   }
 
   actualizarEquivalenteEnPesos(equivalente: number) {

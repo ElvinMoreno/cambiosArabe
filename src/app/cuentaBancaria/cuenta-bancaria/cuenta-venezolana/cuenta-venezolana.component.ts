@@ -34,7 +34,7 @@ export class CuentaVenezolanaComponent implements OnInit {
   mostrandoMovimientos: boolean = false;
 
   @Input() movimientosG: MovimientoDiaDTO[] = [];  // Recibe movimientos como entrada
-  @Input() cuentaId: number = 0;     // Recibe el nombre de la cuenta como entrada
+  @Input() cuentaId: number = 0;     // Recibe el ID de la cuenta como entrada
   movimientosFiltrados: MovimientoDiaDTO[] = []; // Movimientos filtrados para la cuenta específica
 
 
@@ -64,6 +64,10 @@ export class CuentaVenezolanaComponent implements OnInit {
     this.movimientosFiltrados = this.movimientosG.filter(
       movimiento => movimiento.id === this.cuentaId
     );
+       // Filtrar los movimientos pre-cargados para la cuenta con ID específico
+    if (this.cuentaId === 9) {
+      this.movimientos = this.movimientosG; // Usa los movimientos pre-cargados si la cuenta es la de ID 9
+    }
   }
 
   loadCuentasVenezolanas(): void {
