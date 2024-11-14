@@ -221,27 +221,27 @@ export class BancolombiaComponent implements OnInit, OnDestroy {
     let inputValue = inputElement.value;
 
     // Allow only one decimal point and digits
-    inputValue = inputValue.replace(/[^\d.]/g, '');
-    const parts = inputValue.split('.');
-    if (parts.length > 2) {
-      parts[1] = parts.slice(1).join('');
-      inputValue = parts.slice(0, 2).join('.');
-    }
+    // inputValue = inputValue.replace(/[^\d.]/g, '');
+    // const parts = inputValue.split('.');
+    // if (parts.length > 2) {
+    //   parts[1] = parts.slice(1).join('');
+    //   inputValue = parts.slice(0, 2).join('.');
+    // }
 
-    const control = this.cuentasDestinatarioArray.controls[index];
-    const currencyControl = control.get('currency');
-    const bolivaresControl = control.get('bolivares');
-    const pesosControl = control.get('pesos');
+    // const control = this.cuentasDestinatarioArray.controls[index];
+    // const currencyControl = control.get('currency');
+    // const bolivaresControl = control.get('bolivares');
+    // const pesosControl = control.get('pesos');
 
-    if (currencyControl && bolivaresControl && pesosControl) {
-      const numericValue = inputValue === '' ? null : parseFloat(inputValue);
+    // if (currencyControl && bolivaresControl && pesosControl) {
+    //   const numericValue = inputValue === '' ? null : parseFloat(inputValue);
 
-      if (currencyControl.value === 'bolivares') {
-        bolivaresControl.setValue(numericValue);
-      } else if (currencyControl.value === 'pesos') {
-        pesosControl.setValue(numericValue);
-      }
-    }
+    //   if (currencyControl.value === 'bolivares') {
+    //     bolivaresControl.setValue(numericValue);
+    //   } else if (currencyControl.value === 'pesos') {
+    //     pesosControl.setValue(numericValue);
+    //   }
+    // }
 
     this.updateLabelsBasedOnInputs();
   }
@@ -641,24 +641,33 @@ toggleCantidad(): void {
       salida: !!formValues.salida
     };
 
-    // Construir el objeto CuentasDestinatario
-    const cuentasDestinatario: CuentaDestinatario[] = (formValues.cuentasDestinatario || []).map((cd: any) => {
-      // Determinar el valor de precioVentaBs basado en currentLabel
-    let monto: number;
-    if (currentLabel === 'Cantidad pesos') {
-      monto = formValues.precioVentaBs / this.tasaActual!;
-    } else {
-      monto = formValues.precioVentaBs;
-    }
+    const cuentasDestinatario: CuentaDestinatario[] = (formValues.cuentasDestinatario || []).map((cd: any, i: number) => {
+      let bolivares = cd.bolivares ? parseFloat(cd.bolivares) : 0;
+
+      // Validar el valor de `currency` y asignar `bolivares` según corresponda
+      if (cd.currency === 'bolivares' && cd.bolivares) {
+          bolivares = cd.bolivares;
+      } else if (cd.currency === 'pesos' && cd.bolivares) {
+          bolivares = cd.bolivares / this.tasaActual!;
+      }
+
+      // Si bolivares sigue siendo 0, calcular el monto en bolivares según `currentLabel`
+      if (bolivares === 0) {
+          if (currentLabel === 'Cantidad pesos') {
+              bolivares = formValues.precioVentaBs / this.tasaActual!;
+          } else {
+              bolivares = formValues.precioVentaBs;
+          }
+      }
 
       return {
-        nombreCuentaDestinatario: cd.nombreCuenta,
-        cedula: cd.cedula ? +cd.cedula : null,
-        numeroCuenta: cd.numeroCuenta,
-        bolivares: monto,
-        banco: cd.banco ? { id: cd.banco.id } : null
+          nombreCuentaDestinatario: cd.nombreCuenta,
+          cedula: cd.cedula ? +cd.cedula : null,
+          numeroCuenta: cd.numeroCuenta,
+          bolivares: bolivares,  // Asigna el valor calculado o ingresado para bolivares
+          banco: cd.banco ? { id: cd.banco.id } : null
       };
-    });
+  });
 
     // Construir el objeto CuentasBancariasPesos (si aplica)
     const ventaBsCuentaBancaria: VentaBsCuentaBancaria[] = [];
