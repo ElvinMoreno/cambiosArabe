@@ -24,10 +24,15 @@ export class MovimientoService {
     });
   }
 
-  /**
-   * Método para obtener todos los movimientos de cuentas colombianas.
-   * @returns Observable<MovimientoDiaDTO[]> - Lista de movimientos de cuentas colombianas.
-   */
+  getAllMovimientos(): Observable<MovimientoDiaDTO[]> {
+    const headers = this.getHeaders(); // Obtener los encabezados con el token
+    return this.http.get<MovimientoDiaDTO[]>(`${this.apiUrl}`, { headers }) // Realizar la solicitud GET
+      .pipe(
+        catchError(this.handleError) // Manejar errores
+      );
+  }
+
+
   getMovimientosColombianas(): Observable<MovimientoDiaDTO[]> {
     const headers = this.getHeaders();
     return this.http.get<MovimientoDiaDTO[]>(`${this.apiUrl}/colombianos`, { headers }) // URL correcta
@@ -43,11 +48,6 @@ export class MovimientoService {
   }
 
 
-  /**
-   * Método para obtener los movimientos de una cuenta venezolana y colombiana específica.
-   * @param cuentaId - ID de la cuenta venezolana.
-   * @returns Observable<MovimientoDiaDTO[]> - Lista de movimientos de la cuenta venezolana.
-   */
   getMovimientos(cuentaId: number): Observable<MovimientoDiaDTO[]> {
     const headers = this.getHeaders();
     return this.http.get<MovimientoDiaDTO[]>(`${this.apiUrl}/cuentas/${cuentaId}`, { headers })
@@ -56,11 +56,6 @@ export class MovimientoService {
       );
   }
 
-  /**
-   * Manejo de errores para solicitudes HTTP.
-   * @param error - Error recibido.
-   * @returns Observable<Error> - Error procesado.
-   */
   private handleError(error: any) {
     console.error('An error occurred:', error);
     return throwError(() => new Error('Ocurrió un error en la solicitud. Por favor, inténtalo de nuevo.'));
@@ -75,11 +70,4 @@ export class MovimientoService {
       catchError(this.handleError)
     );
   }
-
-
-  /**
-   * Manejo de errores para solicitudes HTTP.
-   * @param error - Error recibido.
-   * @returns Observable<Error> - Error procesado.
-   */
 }

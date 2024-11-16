@@ -1,6 +1,6 @@
 import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle } from '@angular/material/dialog';
-import { GemeniService } from '../../../../services/gemini.service';
+import { GeminiService } from '../../../../services/gemini.service';
 import * as Tesseract from 'tesseract.js';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
@@ -28,7 +28,7 @@ export class ModalContentComponent {
   constructor(
     public dialogRef: MatDialogRef<ModalContentComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private gemeniService: GemeniService // Inyectar el servicio Gemeni
+    private gemeniService: GeminiService // Inyectar el servicio Gemeni
   ) {}
 
   // Función para manejar la selección de archivos
@@ -84,31 +84,45 @@ export class ModalContentComponent {
       nota: solo retornar el valor
        El texto es el siguiente: ${this.pastedData}
     `;
-
-    this.gemeniService.generateAnswer(prompt).subscribe(
+    this.isLoading = true; // Mostrar indicador de carga
+    this.gemeniService.generateContent(prompt).subscribe(
       (response: any) => {
-        const resultText: string = response.candidates[0].content.parts[0].text;
-        const lines: string[] = resultText.split('\n').map((line: string) => line.trim());
+        this.isLoading = false;
+        if (
+          response?.candidates?.[0]?.content?.parts?.[0]?.text
+        ) {
+          const resultText = response.candidates[0].content.parts[0].text;
+          const lines: string[] = resultText.split('\n').map((line: string) => line.trim());
 
-        let nombreCuenta: string = '';
-        let numeroCuenta: string = '';
-        let cedula: string = '';
+          let nombreCuenta: string = '';
+          let numeroCuenta: string = '';
+          let cedula: string = '';
 
-        if (lines.length >= 3) {
-          nombreCuenta = lines[0];
-          numeroCuenta = lines[1];
-          cedula = lines[2];
+          if (lines.length >= 3) {
+            nombreCuenta = lines[0];
+            numeroCuenta = lines[1];
+            cedula = lines[2];
+          }
+
+          this.dialogRef.close({ nombreCuenta, numeroCuenta, cedula });
+        } else {
+          console.error('Respuesta inesperada de la API:', response);
+          this.dialogRef.close({
+            nombreCuenta: '',
+            numeroCuenta: '',
+            cedula: '',
+            error: 'Respuesta inesperada de la API.',
+          });
         }
-
-        this.dialogRef.close({ nombreCuenta, numeroCuenta, cedula });
       },
       (error: any) => {
+        this.isLoading = false;
         console.error('Error al obtener la respuesta:', error);
         this.dialogRef.close({
           nombreCuenta: '',
           numeroCuenta: '',
           cedula: '',
-          error: 'Error al procesar los datos.',
+          error: 'No se pudo procesar la solicitud. Intenta más tarde.',
         });
       }
     );

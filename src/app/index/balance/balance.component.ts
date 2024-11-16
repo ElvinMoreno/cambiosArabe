@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { Chart, registerables } from 'chart.js';
 import { BalanceDTO } from '../../interfaces/balance-dto';
 import { BalanceService } from '../../services/balance.service';
+import { AllMovimientosComponent } from "./all-movimientos.component";
 
 
 @Component({
@@ -15,8 +16,9 @@ import { BalanceService } from '../../services/balance.service';
     CommonModule,
     MatTabsModule,
     MatIconModule,
-    MatButtonModule
-  ],
+    MatButtonModule,
+    AllMovimientosComponent
+],
   templateUrl: './balance.component.html',
   styleUrls: ['./balance.component.css']
 })

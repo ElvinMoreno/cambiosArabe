@@ -34,9 +34,25 @@ export class CuentaVenezolanaComponent implements OnInit {
   mostrandoMovimientos: boolean = false;
   movimientosCache: { [key: number]: MovimientoDiaDTO[] } = {}; // Cache para almacenar movimientos por cuentaId
 
-  @Input() movimientosG: MovimientoDiaDTO[] = [];  // Recibe movimientos como entrada
+  private _movimientosG: MovimientoDiaDTO[] = [];
+
+@Input()
+set movimientosG(value: MovimientoDiaDTO[]) {
+  this._movimientosG = value;
+  this.filtrarMovimientos();
+}
+
+get movimientosG(): MovimientoDiaDTO[] {
+  return this._movimientosG;
+}
+ // Recibe movimientos como entrada
   @Input() cuentaId: number = 0;     // Recibe el ID de la cuenta como entrada
   movimientosFiltrados: MovimientoDiaDTO[] = []; // Movimientos filtrados para la cuenta específica
+
+  filtrarMovimientos(): void {
+    this.movimientos = this.movimientosG.filter(movimiento => movimiento.id === this.cuentaId);
+    console.log('Movimientos filtrados para la cuenta:', this.movimientos);
+  }
 
 
   @Output() equivalenteEnPesosEmitter = new EventEmitter<number>();
@@ -97,18 +113,17 @@ export class CuentaVenezolanaComponent implements OnInit {
   mostrarMovimientosDeCuenta(cuenta: CuentaBancaria): void {
     this.nombreCuentaBancaria = cuenta.nombreCuenta || '';
 
-    // Verificar si ya tenemos movimientos en el cache para esta cuenta
+    // Verificar si los movimientos ya están en el cache
     if (this.movimientosCache[cuenta.id]) {
-      // Si los movimientos están en cache, usarlos directamente
       this.movimientos = this.movimientosCache[cuenta.id];
       this.mostrandoMovimientos = true;
       console.log('Movimientos cargados desde el cache:', this.movimientos);
     } else {
-      // Si no están en cache, hacer la solicitud y almacenarlos
+      // Si no están en el cache, cargarlos desde el servicio
       this.movimientoService.getMovimientos(cuenta.id).subscribe(
         (data: MovimientoDiaDTO[]) => {
           this.movimientos = data.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
-          this.movimientosCache[cuenta.id] = this.movimientos; // Guardar en cache
+          this.movimientosCache[cuenta.id] = this.movimientos; // Guardar en el cache
           this.mostrandoMovimientos = true;
           console.log('Movimientos cargados desde el servicio:', data);
         },
@@ -118,6 +133,7 @@ export class CuentaVenezolanaComponent implements OnInit {
       );
     }
   }
+
 
   regresarAListaDeCuentas(): void {
     this.mostrandoMovimientos = false;
