@@ -1,0 +1,16 @@
+.button-section{
+ margin-bottom: 1rem;
+ padding: .7rem 2.5rem;
+ border: 1px solid #6200EE;
+ border-radius: 5px;
+ color: #6200EE;
+ box-shadow:  2px 2px 2px 1px rgb(0 0 0 / 30%);
+}
+.button-container{
+  text-align: right
+}
+
+
+.datepicker-container{
+  text-align: right
+}

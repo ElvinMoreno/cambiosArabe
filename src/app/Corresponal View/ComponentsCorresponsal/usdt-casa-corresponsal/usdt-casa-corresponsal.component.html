@@ -1,0 +1,29 @@
+<div class="button-position">
+  <button
+    id="button-ventas"
+    class="button-up"
+    [ngClass]="{ 'button-clicked': activeButton === 'ventas' }"
+    (click)="setActiveButton('ventas')"
+  >
+    Ventas
+  </button>
+  <button
+    id="button-compras"
+    class="button-up"
+    [ngClass]="{ 'button-clicked': activeButton === 'compras' }"
+    (click)="setActiveButton('compras')"
+  >
+    Compras
+  </button>
+</div>
+
+
+<!-- Mostrar el componente después del delay -->
+<div *ngIf="showTable">
+  <app-content-button-table
+    [columnas]="columnas"
+    [datos]="datos"
+    [botones]="botones"
+    [fechaSeleccionada]="fechaSeleccionada"
+  ></app-content-button-table>
+</div>

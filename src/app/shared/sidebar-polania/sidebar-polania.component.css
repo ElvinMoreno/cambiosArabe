@@ -106,20 +106,7 @@
   width: 100%;
 }
 
-.btn-close {
-  margin-left: auto;
-  cursor: pointer;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 50%;
-  background-color: transparent;
-  border: none;
-  transition: transform 0.3s ease;
-}
 
-.btn-close:hover {
-  transform: rotate(90deg);
-}
 
 .fal.fa-times {
   color: #e65959;
@@ -202,7 +189,8 @@
   border-radius: 50%; /* Bordes redondeados para que coincidan con el icono */
   padding: 0.4rem; /* Añadir un poco de padding para que el icono no se pegue al borde */
   transition: color 0.3s ease, box-shadow 0.3s ease; /* Animaciones suaves para el color y la sombra */
-  
+  align-items: center;
+  align-self: center
 }
 
 .btn-logout mat-icon {
