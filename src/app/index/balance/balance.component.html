@@ -21,18 +21,18 @@
             <thead>
               <tr>
                 <th>Fecha</th>
-                <th>Ingreso</th>
-                <th>Egreso</th>
                 <th>Saldo</th>
+                <th>Utilidad</th>
+                <th>Utilidad segun bolivares</th>
                 <!-- <th>Tasa Promedio</th> -->
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let balance of balances">
                 <td>{{ balance.fecha | date: 'dd/MM/yyyy' }}</td>
-                <td [ngStyle]="{'color': 'green'}">{{ balance.ingresos | number:'1.2-2' }}</td>
-                <td [ngStyle]="{'color': 'red'}">{{ balance.egresos | number:'1.2-2' }}</td>
-                <td [ngStyle]="{'color': balance.saldo >= 0 ? 'green' : 'red'}">{{ balance.saldo | number:'1.2-2' }}</td>
+                <td [ngStyle]="{'color': 'green'}">{{ balance.saldo | number:'1.2-2' }}</td>
+                <td [ngStyle]="{'color': 'red'}">{{ balance.utilidad | number:'1.2-2' }}</td>
+                <td [ngStyle]="{'color': balance.saldo >= 0 ? 'green' : 'red'}">{{ balance.utilidadBolivares | number:'1.2-2' }}</td>
                 <!-- <td>{{ balance.tasaPromedio | number:'1.2-2' }}</td> -->
               </tr>
             </tbody>
