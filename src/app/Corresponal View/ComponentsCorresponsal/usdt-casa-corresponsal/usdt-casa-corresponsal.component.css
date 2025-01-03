@@ -1,0 +1,27 @@
+.button-position{
+  margin: 1rem;
+  align-items: center;
+  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 1rem;
+}
+.button-up{
+  padding: .5rem 3.5rem;
+  background-color: #ffff;
+  color: blue;
+  border: .5px solid black;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow:  2px 2px 2px 1px rgb(0 0 0 / 20%);
+}
+
+.button-up.button-clicked{
+  padding: .5rem 3.5rem;
+  background-color: #1B1A26;
+  color: #ffff;
+  border: .5px solid black;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow:  2px 2px 2px 1px rgb(0 0 0 / 20%);;
+}

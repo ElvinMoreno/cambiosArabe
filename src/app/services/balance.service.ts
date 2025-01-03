@@ -37,7 +37,7 @@ export class BalanceService {
     // Nuevo método para generar el balance
     obtenerBalance(): Observable<BalanceDTO[]> {
       const headers = this.getHeaders();
-      return this.http.get<BalanceDTO[]>(`${this.apiUrl}/generar`, { headers })
+      return this.http.get<BalanceDTO[]>(`${this.apiUrl}/caja/mes`, { headers })
         .pipe(
           catchError(this.handleError)
         );

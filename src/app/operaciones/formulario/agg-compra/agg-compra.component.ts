@@ -80,12 +80,18 @@ export class AggCompraComponent implements OnInit {
 
   cargarDatos(): void {
     const responseAcceso = { statusCode: 200, token: 'your-token-here' };
-    this.token = responseAcceso.token;
 
+    this.token = responseAcceso.token;
     this.metodoPagoService.getAllMetodosPago().subscribe({
       next: (data: any[]) => {
-        this.metodosPago = data;
-        this.form.patchValue({ metodoPagoId: 3 }); // Establecer método de pago predeterminado
+        // Filtra los métodos de pago para incluir solo los con id 3 y 5
+        this.metodosPago = data.filter(metodo => metodo.id === 3 || metodo.id === 5);
+
+        // Establece el valor predeterminado del método de pago en 3 si está disponible
+        const metodoPorDefecto = this.metodosPago.find(metodo => metodo.id === 3);
+        if (metodoPorDefecto) {
+          this.form.patchValue({ metodoPagoId: metodoPorDefecto.id });
+        }
       },
       error: (error) => console.error('Error al cargar los métodos de pago', error)
     });

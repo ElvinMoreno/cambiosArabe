@@ -1,7 +1,7 @@
 export interface BalanceDTO {
-fecha: string;
-ingresos: number;
-egresos: number;
+fecha: Date;
 saldo: number;
-tasaPromedio: number;
+utilidad: number;
+utilidadBolivares: number;
+
 }

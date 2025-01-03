@@ -102,18 +102,21 @@ export class MovimientosTableComponent implements OnChanges {
     this.pageIndex = event.pageIndex;
     this.actualizarPaginacion(); // Actualizar movimientos por página
   }
-
   exportarExcel(): void {
     const data = this.movimientosFiltrados.map((mov) => ({
       Fecha: this.isToday(mov.fecha)
-        ? new Date(mov.fecha).toLocaleTimeString()
-        : new Date(mov.fecha).toLocaleDateString(),
-      Monto: mov.monto.toFixed(2), // Redondear Monto a 2 decimales
+        ? new Date(mov.fecha) // Mantener como objeto Date para la exportación
+        : new Date(mov.fecha), // Convertir a Date
+      Monto: mov.descripcion === 'Compra BS' ? Math.abs(mov.monto) : -Math.abs(mov.monto), // Asigna + para 'Compra Bs' y - para el resto
       TipoMovimiento: mov.tipoMovimiento,
-      SaldoActual: mov.saldoActual.toFixed(2), // Redondear SaldoActual a 2 decimales
+      SaldoActual: parseFloat(mov.saldoActual.toFixed(2)), // Redondear sin convertir a string
+      Descripcion: mov.descripcion, // Agregar la columna de descripción
     }));
 
-    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data, {
+      cellDates: true, // Opción para asegurar que las celdas se traten como fechas
+      dateNF: 'yyyy-mm-dd', // Formato de fecha deseado
+    });
     const workbook: XLSX.WorkBook = {
       Sheets: { data: worksheet },
       SheetNames: ['data'],
@@ -133,4 +136,9 @@ export class MovimientosTableComponent implements OnChanges {
 
     window.URL.revokeObjectURL(url);
   }
+
+
+
+
+
 }

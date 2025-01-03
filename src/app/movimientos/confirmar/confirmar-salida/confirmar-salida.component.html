@@ -70,9 +70,13 @@
         <button mat-raised-button class="balance-button" (click)="openBancosDialog(element)">
           <mat-icon>account_balance</mat-icon>
         </button>&nbsp;&nbsp;
-        <button mat-raised-button color="primary" class="check-button" (click)="openConfirmDialog(element)">
+        <button mat-raised-button [matMenuTriggerFor]="menu">
           <mat-icon>check</mat-icon>
         </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="confirmarVentaSalida(element)">Confirmar salida</button>
+          <button mat-menu-item (click)="pagoParcial(element)">Pago parcial</button>
+        </mat-menu>
       </td>
     </ng-container>
 
@@ -121,13 +125,18 @@
       <button mat-raised-button class="balance-button" (click)="openBancosDialog(element)">
         <mat-icon>account_balance</mat-icon>
       </button>
-      <button mat-raised-button color="primary" class="check-button" (click)="openConfirmDialog(element)">
+      <button mat-raised-button [matMenuTriggerFor]="menu" >
         <mat-icon>check</mat-icon>
       </button>
       <button mat-raised-button color="accent" class="copy-button" (click)="copyDetailsToClipboard(element)">
         <mat-icon>content_paste</mat-icon>
       </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="confirmarVentaSalida(element)">Confirmar salida</button>
+        <button mat-menu-item (click)="pagoParcial(element)">Pago parcial</button>
+      </mat-menu>
     </mat-card-actions>
+
   </mat-card>
 </div>
 

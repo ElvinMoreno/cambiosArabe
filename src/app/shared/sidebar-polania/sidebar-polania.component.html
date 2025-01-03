@@ -7,21 +7,36 @@
       <button class="logo" (click)="toggleCollapse()">
         <img [src]="logoUrl" alt="Logo">
       </button>
-    <div class="logo-text" *ngIf="collapsad">CAMBIOS ARABES</div>
-
+      <div class="logo-text" *ngIf="collapsad">CAMBIOS ÁRABES</div>
     </div>
     <ul class="sidenav-nav">
       <li class="sidenav-nav-item" *ngFor="let data of navData">
-        <a class="sidenav-nav-link" [routerLink]="[data.routerLink]" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeOnSelect()">
+        <a class="sidenav-nav-link" [routerLink]="[data.routerLink]" routerLinkActive="active"
+          [routerLinkActiveOptions]="{exact: true}" (click)="closeOnSelect()">
           <i class="sidenav-link-icon" [class]="data.icon"></i>
           <span class="sidenav-link-text" *ngIf="collapsad">{{ data.label }}</span>
         </a>
       </li>
     </ul>
-    <!-- Botón para cerrar sesión al final del sidenav -->
-    <button mat-icon-button class="btn-logout" (click)="logout()" aria-label="Cerrar sesión">
-      <mat-icon>power_settings_new</mat-icon> <!-- Icono de apagar -->
+    <!-- Botón para menú -->
+    <button
+    class="btn-logout"
+    [matMenuTriggerFor]="menu"
+    aria-label="Menú">
+      <mat-icon>menu</mat-icon>
     </button>
   </div>
   <div class="overlay" *ngIf="showOverlay" (click)="handleOverlayClick()"></div>
+  <mat-menu #menu="matMenu">
+    <!-- Opción para cambiar a corresponsal -->
+    <button mat-menu-item
+    (click)="toggleMenu()">
+      {{ toggleMenuText }}
+    </button>
+    <!-- Opción para cerrar sesión -->
+    <button mat-menu-item
+    (click)="logout()">
+    Cerrar Sesión
+  </button>
+  </mat-menu>
 </div>

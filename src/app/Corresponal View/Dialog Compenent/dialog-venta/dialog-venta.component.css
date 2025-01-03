@@ -1,0 +1,89 @@
+.formulario{
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+}
+form{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.select-usdt{
+  display: block;
+  box-sizing: border-box
+}
+.select-usdt select {
+  width: 95%;
+}
+.input-cantidad{
+  width: 80%;
+}
+mat-icon{
+  cursor: pointer;
+}
+
+.input-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.input-icon-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.input-icon-container input {
+  flex: 1;
+  margin-right: 10px;
+}
+.input-tasa{
+  width: 95%;
+}
+
+
+/* Pantallas medianas (tablet) */
+@media (max-width: 768px) {
+  .formulario {
+    grid-template-columns: 1fr; /* Cambiar a una columna */
+  }
+
+  form {
+    grid-template-columns: 1fr; /* Cambiar a una columna */
+  }
+
+  .select-usdt,
+  .input-container {
+    width: 100%; /* Asegurarse de que llenen el ancho disponible */
+  }
+
+  .input-icon-container {
+    flex-direction: column; /* Ícono y campo apilados verticalmente */
+    gap: 8px; /* Espaciado entre el input y el ícono */
+  }
+}
+
+/* Pantallas pequeñas (móviles) */
+@media (max-width: 480px) {
+  .formulario {
+    grid-template-columns: 1fr; /* Una columna para móviles */
+  }
+
+  form {
+    grid-template-columns: 1fr; /* Una columna */
+    gap: 12px; /* Menor espaciado */
+  }
+
+  .select-usdt select {
+    font-size: 14px; /* Reducir el tamaño de fuente */
+  }
+
+  .input-icon-container {
+    gap: 6px; /* Espaciado reducido */
+  }
+
+  .input-tasa,
+  .input-cantidad {
+    font-size: 14px; /* Reducir el tamaño de fuente */
+    padding: 6px; /* Menor padding */
+  }
+}

@@ -17,7 +17,11 @@
           <span>{{ equivalenteEnPesosLabel }}</span>
         </div>
       </ng-template>
-      <app-cuenta-venezolana (equivalenteEnPesosEmitter)="actualizarEquivalenteEnPesos($event)"></app-cuenta-venezolana>
+      <app-cuenta-venezolana
+      [movimientosG]="movimientosCuenta9"
+      [cuentaId]="9">
+    </app-cuenta-venezolana>
+
     </mat-tab>
 
     <mat-tab>
@@ -30,6 +34,7 @@
       </ng-template>
       <app-creditos></app-creditos>
     </mat-tab>
-    
+
   </mat-tab-group>
 </div>
+

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
@@ -32,6 +32,29 @@ export class CuentaVenezolanaComponent implements OnInit {
   movimientos: MovimientoDiaDTO[] = [];
   nombreCuentaBancaria: string = ''; // Inicializado como una cadena vacía
   mostrandoMovimientos: boolean = false;
+  movimientosCache: { [key: number]: MovimientoDiaDTO[] } = {}; // Cache para almacenar movimientos por cuentaId
+
+  private _movimientosG: MovimientoDiaDTO[] = [];
+
+@Input()
+set movimientosG(value: MovimientoDiaDTO[]) {
+  this._movimientosG = value;
+  this.filtrarMovimientos();
+}
+
+get movimientosG(): MovimientoDiaDTO[] {
+  return this._movimientosG;
+}
+ // Recibe movimientos como entrada
+  @Input() cuentaId: number = 0;     // Recibe el ID de la cuenta como entrada
+  movimientosFiltrados: MovimientoDiaDTO[] = []; // Movimientos filtrados para la cuenta específica
+
+  filtrarMovimientos(): void {
+    this.movimientos = this.movimientosG.filter(movimiento => movimiento.id === this.cuentaId);
+    console.log('Movimientos filtrados para la cuenta:', this.movimientos);
+  }
+
+
   @Output() equivalenteEnPesosEmitter = new EventEmitter<number>();
 
   constructor(
@@ -55,6 +78,13 @@ export class CuentaVenezolanaComponent implements OnInit {
         console.error('Error al obtener las cuentas bancarias venezolanas:', error);
       }
     );
+    this.movimientosFiltrados = this.movimientosG.filter(
+      movimiento => movimiento.id === this.cuentaId
+    );
+       // Filtrar los movimientos pre-cargados para la cuenta con ID específico
+    if (this.cuentaId === 9) {
+      this.movimientos = this.movimientosG; // Usa los movimientos pre-cargados si la cuenta es la de ID 9
+    }
   }
 
   loadCuentasVenezolanas(): void {
@@ -82,17 +112,28 @@ export class CuentaVenezolanaComponent implements OnInit {
 
   mostrarMovimientosDeCuenta(cuenta: CuentaBancaria): void {
     this.nombreCuentaBancaria = cuenta.nombreCuenta || '';
-    this.movimientoService.getMovimientos(cuenta.id).subscribe(
-      (data: MovimientoDiaDTO[]) => {
-        this.movimientos = data.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
-        this.mostrandoMovimientos = true;
-        console.log(data);
-      },
-      error => {
-        console.error('Error al obtener los movimientos:', error);
-      }
-    );
+
+    // Verificar si los movimientos ya están en el cache
+    if (this.movimientosCache[cuenta.id]) {
+      this.movimientos = this.movimientosCache[cuenta.id];
+      this.mostrandoMovimientos = true;
+      console.log('Movimientos cargados desde el cache:', this.movimientos);
+    } else {
+      // Si no están en el cache, cargarlos desde el servicio
+      this.movimientoService.getMovimientos(cuenta.id).subscribe(
+        (data: MovimientoDiaDTO[]) => {
+          this.movimientos = data.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
+          this.movimientosCache[cuenta.id] = this.movimientos; // Guardar en el cache
+          this.mostrandoMovimientos = true;
+          console.log('Movimientos cargados desde el servicio:', data);
+        },
+        error => {
+          console.error('Error al obtener los movimientos:', error);
+        }
+      );
+    }
   }
+
 
   regresarAListaDeCuentas(): void {
     this.mostrandoMovimientos = false;
