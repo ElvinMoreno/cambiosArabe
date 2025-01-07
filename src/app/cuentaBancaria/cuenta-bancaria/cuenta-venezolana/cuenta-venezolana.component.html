@@ -50,10 +50,17 @@
     <mat-icon>arrow_back</mat-icon> {{ nombreCuentaBancaria }}
   </button>
 
-  <div class="center-container">
+  <!-- Indicador de carga -->
+  <div *ngIf="cargandoMovimientos" class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>Cargando movimientos...</p>
+  </div>
+
+  <!-- Tabla de movimientos -->
+  <div *ngIf="!cargandoMovimientos">
     <app-movimientos-table
-    [movimientos]="movimientos"
-    [fromVenezolana]="true"> <!-- Indicamos que los movimientos son de cuentas venezolanas -->
-  </app-movimientos-table>
-    </div>
+      [movimientos]="movimientos"
+      [fromVenezolana]="true">
+    </app-movimientos-table>
+  </div>
 </ng-template>

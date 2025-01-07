@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError, tap, finalize } from 'rxjs/operators';
+import { from, Observable, throwError } from 'rxjs';
+import { catchError, tap, finalize, map, mergeMap } from 'rxjs/operators';
 import { VentaBs } from '../interfaces/venta-bs';
 import { appsetting } from '../settings/appsetting';
 import { VentaPagos } from '../interfaces/venta-pagos';
@@ -29,11 +29,22 @@ export class VentaBsService {
     });
   }
 
-  getAllVentasBs(): Observable<VentaBs[]> {
+  getAllVentasBs(): Observable<VentaBs> {
     const headers = this.getHeaders();
-    return this.http.get<VentaBs[]>(this.apiUrl, { headers })
-      .pipe(catchError(this.handleError));
+    return this.http.get(this.apiUrl, {
+      headers,
+      responseType: 'text', // Recibir como texto para procesar NDJSON
+    }).pipe(
+      mergeMap(response => {
+        // Dividir la respuesta en líneas (cada línea es un JSON)
+        const lines = response.split('\n').filter(line => line.trim() !== '');
+        return from(lines); // Emitir cada línea como un Observable individual
+      }),
+      map(line => JSON.parse(line) as VentaBs), // Convertir cada línea JSON a VentaBs
+      catchError(this.handleError)
+    );
   }
+  
   getVentaBsById(id: number): Observable<VentaBs> {
     const headers = this.getHeaders();
     return this.http.get<VentaBs>(`${this.apiUrl}/${id}`, { headers })

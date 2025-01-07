@@ -56,16 +56,29 @@ export class ListarCuentasColombianasComponent implements OnInit {
 
   mostrarMovimientosDeCuenta(cuenta: CuentaBancaria): void {
     this.nombreCuentaBancaria = cuenta.nombreCuenta || ''; // Asigna una cadena vacía si es null
-    this.movimientoService.getMovimientos(cuenta.id).subscribe(
-      (data: MovimientoDiaDTO[]) => {
-        this.movimientos = data.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
-        this.mostrandoMovimientos = true;
+    this.movimientos = []; // Reinicia la lista de movimientos antes de cargar nuevos
+    this.mostrandoMovimientos = false; // Asegurarse de ocultar movimientos previos durante la carga
+  
+    this.movimientoService.getMovimientosStream(cuenta.id).subscribe({
+      next: (movimiento: MovimientoDiaDTO) => {
+        // Agregar cada movimiento recibido al array
+        this.movimientos.push(movimiento);
+  
+        // Ordenar los movimientos en tiempo real
+        this.movimientos.sort(
+          (a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
+        );
       },
-      (error) => {
+      error: (error) => {
         console.error('Error al obtener los movimientos:', error);
+      },
+      complete: () => {
+        // Mostrar movimientos cuando todos se han recibido
+        this.mostrandoMovimientos = true;
       }
-    );
+    });
   }
+  
 
 
   regresarAListaDeCuentas(): void {

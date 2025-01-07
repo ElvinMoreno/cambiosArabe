@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { from, Observable, throwError } from 'rxjs';
+import { catchError, map, mergeMap } from 'rxjs/operators';
 import { CuentaBancaria } from '../interfaces/cuenta-bancaria';
 import { MovimientoDiaDTO} from '../interfaces/MovimientoDiaDTO';
 import { appsetting } from '../settings/appsetting';
@@ -33,13 +33,22 @@ export class CajaService {
       );
   }
 
-  getMovimientosCaja(): Observable<MovimientoDiaDTO[]> {
+  getMovimientosCaja(): Observable<MovimientoDiaDTO> {
     const headers = this.getHeaders();
-    return this.http.get<MovimientoDiaDTO[]>(`${this.apiUrl}/movimientos`, { headers })
-      .pipe(
-        catchError(this.handleError)
-      );
+    return this.http.get(`${this.apiUrl}/movimientos`, {
+      headers,
+      responseType: 'text' // Recibir como texto para procesar NDJSON
+    }).pipe(
+      mergeMap(response => {
+        const lines = response.split('\n').filter(line => line.trim() !== '');
+        return from(lines); // Emitir cada línea como un Observable individual
+      }),
+      map(line => JSON.parse(line) as MovimientoDiaDTO), // Convertir cada línea JSON a MovimientoDiaDTO
+      catchError(this.handleError)
+    );
   }
+  
+  
 
   modificarFechaMovimiento(movimientoId: number, nuevaFecha: string): Observable<any> {
     const headers = this.getHeaders();

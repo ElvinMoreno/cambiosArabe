@@ -12,6 +12,7 @@ import { MovimientoDiaDTO } from '../../../interfaces/MovimientoDiaDTO';
 import { MovimientosTableComponent } from '../../../shared/movimientos-table/movimientos-table.component';
 import { CrearCuentaBancariaVComponent } from '../crear-cuenta-bancaria-v/crear-cuenta-bancaria-v.component';
 import { ActualizarCuentaBancariaComponent } from '../../../shared/actualizar-cuenta-bancaria/actualizar-cuenta-bancaria.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-cuenta-venezolana',
@@ -22,7 +23,8 @@ import { ActualizarCuentaBancariaComponent } from '../../../shared/actualizar-cu
     MatIconModule,
     MatDividerModule,
     MatDialogModule,
-    MovimientosTableComponent
+    MovimientosTableComponent,
+    MatProgressSpinnerModule // Importa el módulo aquí
   ],
   templateUrl: './cuenta-venezolana.component.html',
   styleUrls: ['./cuenta-venezolana.component.css']
@@ -30,30 +32,17 @@ import { ActualizarCuentaBancariaComponent } from '../../../shared/actualizar-cu
 export class CuentaVenezolanaComponent implements OnInit {
   cuentasBancarias: CuentaBancaria[] = [];
   movimientos: MovimientoDiaDTO[] = [];
-  nombreCuentaBancaria: string = ''; // Inicializado como una cadena vacía
+  nombreCuentaBancaria: string = '';
   mostrandoMovimientos: boolean = false;
-  movimientosCache: { [key: number]: MovimientoDiaDTO[] } = {}; // Cache para almacenar movimientos por cuentaId
+  movimientosCache: { [key: number]: MovimientoDiaDTO[] } = {}; // Cache para movimientos
+  movimientosFiltrados: MovimientoDiaDTO[] = []; // Movimientos filtrados para la cuenta seleccionada
+  cargandoMovimientos: boolean = false; // Indicador de carga
 
-  private _movimientosG: MovimientoDiaDTO[] = [];
-
-@Input()
-set movimientosG(value: MovimientoDiaDTO[]) {
-  this._movimientosG = value;
-  this.filtrarMovimientos();
-}
-
-get movimientosG(): MovimientoDiaDTO[] {
-  return this._movimientosG;
-}
- // Recibe movimientos como entrada
-  @Input() cuentaId: number = 0;     // Recibe el ID de la cuenta como entrada
-  movimientosFiltrados: MovimientoDiaDTO[] = []; // Movimientos filtrados para la cuenta específica
-
-  filtrarMovimientos(): void {
-    this.movimientos = this.movimientosG.filter(movimiento => movimiento.id === this.cuentaId);
-    console.log('Movimientos filtrados para la cuenta:', this.movimientos);
+  @Input() cuentaId: number = 0;
+  @Input() set movimientosG(value: MovimientoDiaDTO[]) {
+    this.movimientos = value || [];
+    this.filtrarMovimientos();
   }
-
 
   @Output() equivalenteEnPesosEmitter = new EventEmitter<number>();
 
@@ -67,23 +56,8 @@ get movimientosG(): MovimientoDiaDTO[] {
   ngOnInit(): void {
     this.loadCuentasVenezolanas();
 
-    this.cuentaBancariaService.getCuentasVenezolanas().subscribe(
-      (data: CuentaBancaria[]) => {
-        if (data.length > 0) {
-          const cuentaId = data[0].id; // Usando la primera cuenta bancaria como ejemplo
-          this.calcularEquivalenteEnPesos(cuentaId);
-        }
-      },
-      error => {
-        console.error('Error al obtener las cuentas bancarias venezolanas:', error);
-      }
-    );
-    this.movimientosFiltrados = this.movimientosG.filter(
-      movimiento => movimiento.id === this.cuentaId
-    );
-       // Filtrar los movimientos pre-cargados para la cuenta con ID específico
-    if (this.cuentaId === 9) {
-      this.movimientos = this.movimientosG; // Usa los movimientos pre-cargados si la cuenta es la de ID 9
+    if (this.cuentaId && this.movimientos.length > 0) {
+      this.filtrarMovimientos();
     }
   }
 
@@ -98,6 +72,61 @@ get movimientosG(): MovimientoDiaDTO[] {
     );
   }
 
+  filtrarMovimientos(): void {
+    if (this.cuentaId) {
+      this.movimientosFiltrados = this.movimientos.filter(
+        movimiento => movimiento.id === this.cuentaId
+      );
+    } else {
+      this.movimientosFiltrados = this.movimientos;
+    }
+    console.log('Movimientos filtrados:', this.movimientosFiltrados);
+  }
+
+  mostrarMovimientosDeCuenta(cuenta: CuentaBancaria): void {
+    this.nombreCuentaBancaria = cuenta.nombreCuenta || '';
+    this.cargandoMovimientos = true; // Mostrar indicador de carga
+
+    // Verificar si los movimientos ya están en el cache
+    if (this.movimientosCache[cuenta.id]) {
+      this.movimientos = this.movimientosCache[cuenta.id];
+      this.mostrandoMovimientos = true;
+      this.cargandoMovimientos = false; // Ocultar indicador de carga
+      console.log('Movimientos cargados desde el cache:', this.movimientos);
+    } else {
+      // Si no están en el cache, cargarlos desde el servicio
+      this.movimientoService.getMovimientosStream(cuenta.id).subscribe({
+        next: (movimiento: MovimientoDiaDTO) => {
+          // Agregar cada movimiento al array mientras llegan
+          if (!this.movimientosCache[cuenta.id]) {
+            this.movimientosCache[cuenta.id] = []; // Inicializar si no existe en el caché
+          }
+      
+          this.movimientosCache[cuenta.id].push(movimiento);
+      
+          // Ordenar los movimientos en tiempo real si es necesario
+          this.movimientos = this.movimientosCache[cuenta.id].sort(
+            (a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
+          );
+      
+          this.mostrandoMovimientos = true;
+        },
+        error: error => {
+          console.error('Error al obtener los movimientos:', error);
+          this.cargandoMovimientos = false; // Ocultar indicador en caso de error
+        },
+        complete: () => {
+          this.cargandoMovimientos = false; // Ocultar indicador al finalizar
+        }
+      });
+    }
+  }
+
+  regresarAListaDeCuentas(): void {
+    this.mostrandoMovimientos = false;
+    this.movimientosFiltrados = [];
+  }
+
   calcularEquivalenteEnPesos(cuentaBancariaBsId: number): void {
     this.compraService.calcularEquivalenteEnPesos(cuentaBancariaBsId).subscribe(
       (equivalente: number) => {
@@ -110,40 +139,8 @@ get movimientosG(): MovimientoDiaDTO[] {
     );
   }
 
-  mostrarMovimientosDeCuenta(cuenta: CuentaBancaria): void {
-    this.nombreCuentaBancaria = cuenta.nombreCuenta || '';
-
-    // Verificar si los movimientos ya están en el cache
-    if (this.movimientosCache[cuenta.id]) {
-      this.movimientos = this.movimientosCache[cuenta.id];
-      this.mostrandoMovimientos = true;
-      console.log('Movimientos cargados desde el cache:', this.movimientos);
-    } else {
-      // Si no están en el cache, cargarlos desde el servicio
-      this.movimientoService.getMovimientos(cuenta.id).subscribe(
-        (data: MovimientoDiaDTO[]) => {
-          this.movimientos = data.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
-          this.movimientosCache[cuenta.id] = this.movimientos; // Guardar en el cache
-          this.mostrandoMovimientos = true;
-          console.log('Movimientos cargados desde el servicio:', data);
-        },
-        error => {
-          console.error('Error al obtener los movimientos:', error);
-        }
-      );
-    }
-  }
-
-
-  regresarAListaDeCuentas(): void {
-    this.mostrandoMovimientos = false;
-  }
-
   openCrearCuentaBancaria(): void {
-    const dialogRef = this.dialog.open(CrearCuentaBancariaVComponent, {
-      width: '600px',
-    });
-
+    const dialogRef = this.dialog.open(CrearCuentaBancariaVComponent, { width: '600px' });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.loadCuentasVenezolanas();
@@ -156,7 +153,6 @@ get movimientosG(): MovimientoDiaDTO[] {
       width: '600px',
       data: { cuentaBancaria: cuenta }
     });
-
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.loadCuentasVenezolanas();

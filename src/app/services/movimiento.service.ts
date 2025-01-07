@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { from, Observable, throwError } from 'rxjs';
+import { catchError, map, mergeMap } from 'rxjs/operators';
 import { MovimientoDiaDTO } from '../interfaces/MovimientoDiaDTO';
 import { appsetting } from '../settings/appsetting';
 
@@ -33,27 +33,54 @@ export class MovimientoService {
   }
 
 
-  getMovimientosColombianas(): Observable<MovimientoDiaDTO[]> {
+  getMovimientosColombianas(): Observable<MovimientoDiaDTO> {
     const headers = this.getHeaders();
-    return this.http.get<MovimientoDiaDTO[]>(`${this.apiUrl}/colombianos`, { headers }) // URL correcta
-      .pipe(
-        catchError(this.handleError)
-      );
+    return this.http.get(`${this.apiUrl}/colombianos`, {
+      headers,
+      responseType: 'text', // Recibir como texto para procesar NDJSON
+    }).pipe(
+      mergeMap(response => {
+        // Dividir la respuesta en líneas (cada línea es un JSON)
+        const lines = response.split('\n').filter(line => line.trim() !== '');
+        return from(lines); // Emitir cada línea como un Observable individual
+      }),
+      map(line => JSON.parse(line) as MovimientoDiaDTO), // Convertir cada línea JSON a MovimientoDiaDTO
+      catchError(this.handleError)
+    );
   }
-
-  getMovimientosVenezolanas(): Observable<MovimientoDiaDTO[]> {
+  
+  getMovimientosVenezolanas(): Observable<MovimientoDiaDTO> {
     const headers = this.getHeaders();
-    return this.http.get<MovimientoDiaDTO[]>(`${this.apiUrl}/venezolanos`, { headers })
-      .pipe(catchError(this.handleError));
+    return this.http.get(`${this.apiUrl}/venezolanos`, {
+      headers,
+      responseType: 'text', // Recibir como texto para procesar NDJSON
+    }).pipe(
+      mergeMap(response => {
+        // Dividir la respuesta en líneas (cada línea es un JSON)
+        const lines = response.split('\n').filter(line => line.trim() !== '');
+        return from(lines); // Emitir cada línea como un Observable individual
+      }),
+      map(line => JSON.parse(line) as MovimientoDiaDTO), // Convertir cada línea JSON a MovimientoDiaDTO
+      catchError(this.handleError)
+    );
   }
+  
 
 
-  getMovimientos(cuentaId: number): Observable<MovimientoDiaDTO[]> {
+  getMovimientosStream(cuentaId: number): Observable<MovimientoDiaDTO> {
     const headers = this.getHeaders();
-    return this.http.get<MovimientoDiaDTO[]>(`${this.apiUrl}/cuentas/${cuentaId}`, { headers })
-      .pipe(
-        catchError(this.handleError)
-      );
+    return this.http.get(`${this.apiUrl}/cuentas/${cuentaId}`, {
+      headers,
+      responseType: 'text' // Recibir el flujo como texto
+    }).pipe(
+      mergeMap(response => {
+        // Dividir la respuesta en líneas (cada línea es un JSON)
+        const lines = response.split('\n').filter(line => line.trim() !== '');
+        return from(lines); // Emitir cada línea como un Observable individual
+      }),
+      map(line => JSON.parse(line) as MovimientoDiaDTO), // Convertir cada línea JSON a MovimientoDiaDTO
+      catchError(this.handleError) // Manejo de errores
+    );
   }
 
   private handleError(error: any) {

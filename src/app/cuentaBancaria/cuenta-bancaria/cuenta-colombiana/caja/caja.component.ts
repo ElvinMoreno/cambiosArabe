@@ -5,7 +5,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { CajaService } from '../../../../services/caja.service';
 import { MovimientoDiaDTO } from '../../../../interfaces/MovimientoDiaDTO';
-import { catchError, of } from 'rxjs';
+import { catchError, EMPTY, of } from 'rxjs';
 import { MovimientosTableComponent } from '../../../../shared/movimientos-table/movimientos-table.component'; // Importar el componente
 
 @Component({
@@ -39,18 +39,27 @@ export class CajaComponent implements OnInit {
         }
       });
 
-    this.cajaService.getMovimientosCaja()
+      this.cajaService.getMovimientosCaja()
       .pipe(
         catchError(error => {
           console.error('Error al obtener movimientos de la caja:', error);
           this.errorMessage = 'Ocurrió un error al obtener los movimientos de la caja. Por favor, inténtalo de nuevo.';
-          return of([]);
+          return EMPTY; // Detener el flujo sin emitir valores
         })
       )
-      .subscribe(data => {
-        // Ordenar los movimientos por fecha, mostrando los más recientes primero
-        this.movimientos = data.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
+      .subscribe({
+        next: (movimiento: MovimientoDiaDTO) => {
+          // Agregar el movimiento recibido a la lista
+          this.movimientos.push(movimiento);
+    
+          // Ordenar los movimientos por fecha en tiempo real
+          this.movimientos = [...this.movimientos.sort(
+            (a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
+          )]; // Forzar el cambio de referencia para que Angular detecte cambios
+        },
+      
       });
+    
   }
 
   @HostListener('window:resize', ['$event'])

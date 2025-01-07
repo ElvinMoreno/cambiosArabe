@@ -66,16 +66,23 @@ export class CuentaBancariaComponent implements OnInit {
      this.cargarMovimientosCuenta9();
 
   }
-  cargarMovimientosCuenta9() {
-    this.movimientoService.getMovimientos(9).subscribe(
-      (data: MovimientoDiaDTO[]) => {
-        this.movimientosCuenta9 = data.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
-        console.log('Movimientos de cuenta 9 cargados:', this.movimientosCuenta9);
+  cargarMovimientosCuenta9(): void {
+    this.movimientosCuenta9 = []; // Reiniciar movimientos de la cuenta 9
+  
+    this.movimientoService.getMovimientosStream(9).subscribe({
+      next: (movimiento: MovimientoDiaDTO) => {
+        // Agregar cada movimiento recibido al array
+        this.movimientosCuenta9.push(movimiento);
+  
+        // Ordenar los movimientos en tiempo real
+        this.movimientosCuenta9.sort(
+          (a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
+        );
       },
-      error => {
+      error: (error) => {
         console.error('Error al obtener los movimientos de la cuenta 9:', error);
-      }
-    );
+      },
+    });
   }
 
   actualizarEquivalenteEnPesos(equivalente: number) {
@@ -100,7 +107,6 @@ export class CuentaBancariaComponent implements OnInit {
           .filter(cliente => cliente.permitirCredito)
           .reduce((total, cliente) => total + cliente.creditos.reduce((sum, credito) => sum + credito.precio, 0), 0);
 
-        console.log('Total Créditos Calculado:', this.totalCreditos);
         this.calcularBalanceDeudas();
       });
   }
@@ -120,30 +126,37 @@ export class CuentaBancariaComponent implements OnInit {
           return total + (proveedor.total || 0);  // Usamos el campo `total` del proveedor
         }, 0);
 
-        console.log('Total Deudas Proveedores Calculado:', this.totalDeudasProveedores);
         this.calcularBalanceDeudas();
       });
   }
 
   mostrarMovimientosDeCuenta(cuentaId: number): void {
     this.nombreCuentaBancaria = `Cuenta con ID ${cuentaId}`;
-    this.movimientoService.getMovimientos(cuentaId).subscribe(
-      (data: MovimientoDiaDTO[]) => {
-        this.movimientos = data.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
-        this.mostrandoMovimientos = true;
-        console.log('Movimientos cargados:', data);
+    this.movimientos = []; // Reinicia la lista de movimientos antes de cargar nuevos
+    this.mostrandoMovimientos = false; 
+    this.movimientoService.getMovimientosStream(cuentaId).subscribe({
+      next: (movimiento: MovimientoDiaDTO) => {
+        // Agregar cada movimiento recibido al array
+        this.movimientos.push(movimiento);
+  
+        // Ordenar los movimientos en tiempo real
+        this.movimientos.sort(
+          (a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
+        );
       },
-      error => {
+      error: (error) => {
         console.error('Error al obtener los movimientos:', error);
+      },
+      complete: () => {
+        // Mostrar movimientos cuando todos se han recibido
+        this.mostrandoMovimientos = true;
       }
-    );
+    });
   }
 
 
 
   calcularBalanceDeudas() {
-    console.log('Total Créditos:', this.totalCreditos);
-    console.log('Total Deudas Proveedores:', this.totalDeudasProveedores);
 
     if (this.totalCreditos !== null && this.totalDeudasProveedores !== null) {
       this.balanceDeudas = this.totalCreditos - this.totalDeudasProveedores;

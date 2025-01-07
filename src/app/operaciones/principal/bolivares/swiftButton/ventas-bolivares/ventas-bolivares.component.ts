@@ -80,15 +80,19 @@ export class VentasBolivaresComponent implements OnInit, AfterViewInit {
   }
 
   loadVentas(): void {
-    this.ventaBsService.getAllVentasBs().subscribe(
-      (data: VentaBs[]) => {
-        this.dataSource.data = data;
-        this.applyDateFilter(); // Aplicar el filtro de fecha si existe
+    this.ventaBsService.getAllVentasBs().subscribe({
+      next: (venta: VentaBs) => {
+        // Agregar cada venta al dataSource
+        this.dataSource.data = [...this.dataSource.data, venta]; // Actualizar referencia para detección de cambios
+        this.applyDateFilter(); // Aplicar filtro de fecha si existe
       },
-      (error) => {
+      error: (error) => {
         console.error('Error al cargar las ventas:', error);
+      },
+      complete: () => {
+        console.log('Todas las ventas fueron cargadas.');
       }
-    );
+    });
   }
 
   ngAfterViewInit(): void {
