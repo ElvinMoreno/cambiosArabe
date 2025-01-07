@@ -53,9 +53,9 @@ export class CajaComponent implements OnInit {
           this.movimientos.push(movimiento);
     
           // Ordenar los movimientos por fecha en tiempo real
-          this.movimientos = [...this.movimientos.sort(
-            (a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
-          )]; // Forzar el cambio de referencia para que Angular detecte cambios
+          if (this.movimientos.length > 1) {
+            this.movimientos.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
+          } // Forzar el cambio de referencia para que Angular detecte cambios
         },
       
       });
