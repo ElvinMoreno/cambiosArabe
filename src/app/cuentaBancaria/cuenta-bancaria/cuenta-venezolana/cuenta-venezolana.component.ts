@@ -1,49 +1,45 @@
-import { CommonModule } from '@angular/common';
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
-import { MatCardModule } from '@angular/material/card';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { CommonModule } from '@angular/common';
 import { CuentaBancariaService } from '../../../services/cuenta-bancaria.service';
 import { CompraService } from '../../../services/compra.service';
-import { CuentaBancaria } from '../../../interfaces/cuenta-bancaria';
 import { MovimientoService } from '../../../services/movimiento.service';
+import { CuentaBancaria } from '../../../interfaces/cuenta-bancaria';
 import { MovimientoDiaDTO } from '../../../interfaces/MovimientoDiaDTO';
-import { MovimientosTableComponent } from '../../../shared/movimientos-table/movimientos-table.component';
 import { CrearCuentaBancariaVComponent } from '../crear-cuenta-bancaria-v/crear-cuenta-bancaria-v.component';
 import { ActualizarCuentaBancariaComponent } from '../../../shared/actualizar-cuenta-bancaria/actualizar-cuenta-bancaria.component';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MovimientosTableComponent } from '../../../shared/movimientos-table/movimientos-table.component';
 
 @Component({
   selector: 'app-cuenta-venezolana',
   standalone: true,
+  templateUrl: './cuenta-venezolana.component.html',
+  styleUrls: ['./cuenta-venezolana.component.css'],
   imports: [
     CommonModule,
-    MatCardModule,
-    MatIconModule,
-    MatDividerModule,
     MatDialogModule,
-    MovimientosTableComponent,
-    MatProgressSpinnerModule // Importa el módulo aquí
+    MatButtonModule,
+    MatIconModule,
+    MatCardModule,
+    MatProgressSpinnerModule,
+    MovimientosTableComponent, // Importar la tabla de movimientos
   ],
-  templateUrl: './cuenta-venezolana.component.html',
-  styleUrls: ['./cuenta-venezolana.component.css']
 })
 export class CuentaVenezolanaComponent implements OnInit {
   cuentasBancarias: CuentaBancaria[] = [];
   movimientos: MovimientoDiaDTO[] = [];
+  movimientosFiltrados: MovimientoDiaDTO[] = [];
+  movimientosCache: { [key: number]: MovimientoDiaDTO[] } = {};
   nombreCuentaBancaria: string = '';
   mostrandoMovimientos: boolean = false;
-  movimientosCache: { [key: number]: MovimientoDiaDTO[] } = {}; // Cache para movimientos
-  movimientosFiltrados: MovimientoDiaDTO[] = []; // Movimientos filtrados para la cuenta seleccionada
-  cargandoMovimientos: boolean = false; // Indicador de carga
-
+  cargandoMovimientos: boolean = false;
+  
+  @Input() movimientosG: MovimientoDiaDTO[] = [];
   @Input() cuentaId: number = 0;
-  @Input() set movimientosG(value: MovimientoDiaDTO[]) {
-    this.movimientos = value || [];
-    this.filtrarMovimientos();
-  }
-
   @Output() equivalenteEnPesosEmitter = new EventEmitter<number>();
 
   constructor(
@@ -55,111 +51,92 @@ export class CuentaVenezolanaComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCuentasVenezolanas();
-
-    if (this.cuentaId && this.movimientos.length > 0) {
-      this.filtrarMovimientos();
-    }
   }
 
   loadCuentasVenezolanas(): void {
-    this.cuentaBancariaService.getCuentasVenezolanas().subscribe(
-      (data: CuentaBancaria[]) => {
+    this.cuentaBancariaService.getCuentasVenezolanas().subscribe({
+      next: (data: CuentaBancaria[]) => {
         this.cuentasBancarias = data;
       },
-      error => {
+      error: error => {
         console.error('Error al obtener las cuentas bancarias venezolanas:', error);
       }
-    );
-  }
-
-  filtrarMovimientos(): void {
-    if (this.cuentaId) {
-      this.movimientosFiltrados = this.movimientos.filter(
-        movimiento => movimiento.id === this.cuentaId
-      );
-    } else {
-      this.movimientosFiltrados = this.movimientos;
-    }
-    console.log('Movimientos filtrados:', this.movimientosFiltrados);
+    });
   }
 
   mostrarMovimientosDeCuenta(cuenta: CuentaBancaria): void {
     this.nombreCuentaBancaria = cuenta.nombreCuenta || '';
-    this.cargandoMovimientos = true; // Mostrar indicador de carga
 
-    // Verificar si los movimientos ya están en el cache
     if (this.movimientosCache[cuenta.id]) {
       this.movimientos = this.movimientosCache[cuenta.id];
       this.mostrandoMovimientos = true;
-      this.cargandoMovimientos = false; // Ocultar indicador de carga
-      console.log('Movimientos cargados desde el cache:', this.movimientos);
-    } else {
-      // Si no están en el cache, cargarlos desde el servicio
-      this.movimientoService.getMovimientosStream(cuenta.id).subscribe({
-        next: (movimiento: MovimientoDiaDTO) => {
-          // Agregar cada movimiento al array mientras llegan
-          if (!this.movimientosCache[cuenta.id]) {
-            this.movimientosCache[cuenta.id] = []; // Inicializar si no existe en el caché
-          }
-      
-          this.movimientosCache[cuenta.id].push(movimiento);
-      
-          // Ordenar los movimientos en tiempo real si es necesario
-          this.movimientos = this.movimientosCache[cuenta.id].sort(
-            (a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
-          );
-      
-          this.mostrandoMovimientos = true;
-        },
-        error: error => {
-          console.error('Error al obtener los movimientos:', error);
-          this.cargandoMovimientos = false; // Ocultar indicador en caso de error
-        },
-        complete: () => {
-          this.cargandoMovimientos = false; // Ocultar indicador al finalizar
-        }
-      });
+      return;
     }
+
+    this.cargandoMovimientos = true;
+    this.movimientos = [];
+
+    this.movimientoService.getMovimientosStream(cuenta.id).subscribe({
+      next: (movimiento: MovimientoDiaDTO) => {
+        this.movimientos.push(movimiento);
+        this.movimientosCache[cuenta.id] = [...this.movimientos].sort(
+          (a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
+        );
+      },
+      error: error => {
+        console.error('Error al obtener los movimientos:', error);
+        this.cargandoMovimientos = false;
+      },
+      complete: () => {
+        this.mostrandoMovimientos = true;
+        this.cargandoMovimientos = false;
+      }
+    });
   }
 
   regresarAListaDeCuentas(): void {
     this.mostrandoMovimientos = false;
-    this.movimientosFiltrados = [];
+    this.movimientos = [];
   }
 
   calcularEquivalenteEnPesos(cuentaBancariaBsId: number): void {
-    this.compraService.calcularEquivalenteEnPesos(cuentaBancariaBsId).subscribe(
-      (equivalente: number) => {
-        console.log('Equivalente en pesos recibido:', equivalente);
+    this.compraService.calcularEquivalenteEnPesos(cuentaBancariaBsId).subscribe({
+      next: equivalente => {
         this.equivalenteEnPesosEmitter.emit(equivalente);
       },
-      error => {
+      error: error => {
         console.error('Error al calcular el equivalente en pesos:', error);
-      }
-    );
-  }
-
-  openCrearCuentaBancaria(): void {
-    const dialogRef = this.dialog.open(CrearCuentaBancariaVComponent, { width: '600px' });
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.loadCuentasVenezolanas();
       }
     });
   }
 
+  // Método para abrir el diálogo de actualización
   openActualizarModal(cuenta: CuentaBancaria): void {
     const dialogRef = this.dialog.open(ActualizarCuentaBancariaComponent, {
       width: '600px',
-      data: { cuentaBancaria: cuenta }
+      data: { cuentaBancaria: cuenta },
     });
+
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.loadCuentasVenezolanas();
+        this.loadCuentasVenezolanas(); // Recargar la lista de cuentas al cerrar el diálogo
       }
     });
   }
 
+  openCrearCuentaBancaria(): void {
+    const dialogRef = this.dialog.open(CrearCuentaBancariaVComponent, {
+      width: '600px',
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadCuentasVenezolanas(); // Recargar las cuentas después de crear una nueva
+      }
+    });
+  }
+
+  // Método para asignar clases CSS según el banco
   getCardClass(nombreBanco: string): string {
     switch (nombreBanco) {
       case 'Banco de Venezuela':

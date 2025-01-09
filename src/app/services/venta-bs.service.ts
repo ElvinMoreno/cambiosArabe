@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
-import { from, Observable, throwError } from 'rxjs';
+import { EMPTY, from, Observable, throwError } from 'rxjs';
 import { catchError, tap, finalize, map, mergeMap } from 'rxjs/operators';
 import { VentaBs } from '../interfaces/venta-bs';
 import { appsetting } from '../settings/appsetting';
@@ -8,6 +8,7 @@ import { VentaPagos } from '../interfaces/venta-pagos';
 import { Crearventa } from '../interfaces/crearventa';
 import { CuentaDestinatario } from '../interfaces/cuenta-destinatario';
 import { TraerVenta } from '../interfaces/traer-venta';
+import { VentaAllDTO } from '../interfaces/VentaAllDTO';
 
 @Injectable({
   providedIn: 'root'
@@ -29,21 +30,33 @@ export class VentaBsService {
     });
   }
 
-  getAllVentasBs(): Observable<VentaBs> {
+  getAllVentasBs(): Observable<VentaAllDTO> {
     const headers = this.getHeaders();
+  
     return this.http.get(this.apiUrl, {
       headers,
       responseType: 'text', // Recibir como texto para procesar NDJSON
     }).pipe(
       mergeMap(response => {
-        // Dividir la respuesta en líneas (cada línea es un JSON)
+        // Dividir la respuesta en líneas (cada línea es un JSON válido)
         const lines = response.split('\n').filter(line => line.trim() !== '');
         return from(lines); // Emitir cada línea como un Observable individual
       }),
-      map(line => JSON.parse(line) as VentaBs), // Convertir cada línea JSON a VentaBs
-      catchError(this.handleError)
+      map(line => {
+        try {
+          return JSON.parse(line) as VentaAllDTO; // Intentar parsear cada línea como JSON
+        } catch (error) {
+          console.error('Error al parsear la línea:', line, error);
+          throw error; // Lanzar error si el JSON es inválido
+        }
+      }),
+      catchError(error => {
+        console.error('Error al procesar las ventas:', error);
+        return EMPTY; // Detener el flujo en caso de error
+      })
     );
   }
+  
   
   getVentaBsById(id: number): Observable<VentaBs> {
     const headers = this.getHeaders();

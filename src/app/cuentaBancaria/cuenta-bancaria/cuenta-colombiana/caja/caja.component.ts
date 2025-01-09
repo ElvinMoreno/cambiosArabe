@@ -5,19 +5,19 @@ import { MatTableModule } from '@angular/material/table';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { CajaService } from '../../../../services/caja.service';
 import { MovimientoDiaDTO } from '../../../../interfaces/MovimientoDiaDTO';
-import { catchError, EMPTY, of } from 'rxjs';
-import { MovimientosTableComponent } from '../../../../shared/movimientos-table/movimientos-table.component'; // Importar el componente
+import { catchError, EMPTY, of, map } from 'rxjs';
+import { MovimientosTableComponent } from '../../../../shared/movimientos-table/movimientos-table.component';
 
 @Component({
   selector: 'app-caja',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatTableModule, MatDialogModule, MovimientosTableComponent], // Asegúrate de importar MovimientosTableComponent
+  imports: [CommonModule, MatCardModule, MatTableModule, MatDialogModule, MovimientosTableComponent],
   templateUrl: './caja.component.html',
   styleUrls: ['./caja.component.css']
 })
 export class CajaComponent implements OnInit {
   monto: number | null = null;
-  movimientos: MovimientoDiaDTO[] = []; // Inicializado como un array vacío
+  movimientos: MovimientoDiaDTO[] = [];
   errorMessage: string | null = null;
   isMobile: boolean = false;
 
@@ -25,6 +25,8 @@ export class CajaComponent implements OnInit {
 
   ngOnInit(): void {
     this.checkScreenSize();
+
+    // Obtener datos iniciales de la caja
     this.cajaService.getCajaDatos()
       .pipe(
         catchError(error => {
@@ -39,27 +41,25 @@ export class CajaComponent implements OnInit {
         }
       });
 
-      this.cajaService.getMovimientosCaja()
+    // Obtener movimientos en tiempo real
+    this.cajaService.getMovimientosCaja()
       .pipe(
         catchError(error => {
           console.error('Error al obtener movimientos de la caja:', error);
           this.errorMessage = 'Ocurrió un error al obtener los movimientos de la caja. Por favor, inténtalo de nuevo.';
           return EMPTY; // Detener el flujo sin emitir valores
-        })
+        }),
+        map((response: any) => Array.isArray(response) ? response : [response]) // Asegurar que sea un arreglo
       )
       .subscribe({
-        next: (movimiento: MovimientoDiaDTO) => {
-          // Agregar el movimiento recibido a la lista
-          this.movimientos.push(movimiento);
-    
-          // Ordenar los movimientos por fecha en tiempo real
-          if (this.movimientos.length > 1) {
+        next: (movimientos: MovimientoDiaDTO[]) => {
+          movimientos.forEach(movimiento => {
+            this.movimientos.push(movimiento);
+            // Ordenar los movimientos por fecha en tiempo real
             this.movimientos.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
-          } // Forzar el cambio de referencia para que Angular detecte cambios
-        },
-      
+          });
+        }
       });
-    
   }
 
   @HostListener('window:resize', ['$event'])

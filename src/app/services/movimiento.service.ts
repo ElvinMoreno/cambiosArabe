@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { from, Observable, throwError } from 'rxjs';
+import { EMPTY, from, Observable, throwError } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
 import { MovimientoDiaDTO } from '../interfaces/MovimientoDiaDTO';
 import { appsetting } from '../settings/appsetting';
@@ -66,22 +66,34 @@ export class MovimientoService {
   }
   
 
-
   getMovimientosStream(cuentaId: number): Observable<MovimientoDiaDTO> {
     const headers = this.getHeaders();
+  
     return this.http.get(`${this.apiUrl}/cuentas/${cuentaId}`, {
       headers,
-      responseType: 'text' // Recibir el flujo como texto
+      responseType: 'text', // Recibir como texto para procesar NDJSON
     }).pipe(
       mergeMap(response => {
-        // Dividir la respuesta en líneas (cada línea es un JSON)
         const lines = response.split('\n').filter(line => line.trim() !== '');
-        return from(lines); // Emitir cada línea como un Observable individual
+  
+        return from(lines).pipe(
+          map(line => {
+            try {
+              return JSON.parse(line) as MovimientoDiaDTO; // Convertir cada línea JSON a MovimientoDiaDTO
+            } catch (e) {
+              console.error('Error parsing line:', line, e);
+              throw new Error('Error al procesar una línea del flujo.');
+            }
+          })
+        );
       }),
-      map(line => JSON.parse(line) as MovimientoDiaDTO), // Convertir cada línea JSON a MovimientoDiaDTO
-      catchError(this.handleError) // Manejo de errores
+      catchError(error => {
+        console.error('Error en el stream de movimientos:', error);
+        return EMPTY; // Detener el flujo en caso de error
+      })
     );
   }
+  
 
   private handleError(error: any) {
     console.error('An error occurred:', error);

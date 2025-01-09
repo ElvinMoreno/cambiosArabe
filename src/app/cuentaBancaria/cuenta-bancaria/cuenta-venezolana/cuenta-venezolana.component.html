@@ -1,19 +1,26 @@
 <div *ngIf="!mostrandoMovimientos; else movimientosTemplate">
   <!-- Botón para agregar una nueva cuenta bancaria venezolana -->
   <div class="agregar-proveedor">
-    <button mat-flat-button class="btn2 btn-agregar" (click)="openCrearCuentaBancaria()">
+    <button
+      mat-flat-button
+      class="btn2 btn-agregar"
+      aria-label="Agregar nueva cuenta bancaria venezolana"
+      (click)="openCrearCuentaBancaria()">
       <mat-icon>add</mat-icon>
     </button>
   </div>
 
   <!-- Vista de cuentas venezolanas -->
   <div class="card-container">
-    <mat-card *ngFor="let cuenta of cuentasBancarias"
-              [ngClass]="getCardClass(cuenta.nombreBanco!)"
-              class="example-card" appearance="outlined"
-              (click)="mostrarMovimientosDeCuenta(cuenta)">
+    <mat-card
+      *ngFor="let cuenta of cuentasBancarias"
+      [ngClass]="getCardClass(cuenta.nombreBanco!)"
+      class="example-card"
+      appearance="outlined"
+      (click)="mostrarMovimientosDeCuenta(cuenta)">
       <mat-card-content>
         <div class="card-grid">
+          <!-- Información de la cuenta -->
           <div class="grid-item grid-item-1-1">
             <p>{{ cuenta.nombreCuenta }}</p>
           </div>
@@ -32,8 +39,13 @@
           <div class="grid-item grid-item-4-1">
             <p>{{ cuenta.nombreBanco }}</p>
           </div>
+
+          <!-- Icono de configuración -->
           <div class="grid-item grid-item-4-2">
-            <mat-icon class="settings-icon" (click)="openActualizarModal(cuenta); $event.stopPropagation()">settings</mat-icon>
+            <mat-icon
+              class="settings-icon"
+              aria-label="Actualizar cuenta bancaria"
+              (click)="openActualizarModal(cuenta); $event.stopPropagation()">settings</mat-icon>
           </div>
           <div class="grid-item grid-item-5-1-2">
             <p>Responsable: {{ cuenta.responsable }}</p>
@@ -44,23 +56,35 @@
   </div>
 </div>
 
-<!-- Mostrar la tabla de movimientos cuando se selecciona una cuenta -->
+<!-- Plantilla para movimientos -->
 <ng-template #movimientosTemplate>
-  <button mat-button (click)="regresarAListaDeCuentas()" class="back-button">
+  <!-- Botón para regresar -->
+  <button
+    mat-button
+    (click)="regresarAListaDeCuentas()"
+    class="back-button"
+    aria-label="Regresar a la lista de cuentas">
     <mat-icon>arrow_back</mat-icon> {{ nombreCuentaBancaria }}
   </button>
 
   <!-- Indicador de carga -->
-  <div *ngIf="cargandoMovimientos" class="loading-container">
+  <div *ngIf="cargandoMovimientos; else movimientosTableTemplate" class="loading-container">
     <mat-spinner></mat-spinner>
     <p>Cargando movimientos...</p>
   </div>
+</ng-template>
 
-  <!-- Tabla de movimientos -->
-  <div *ngIf="!cargandoMovimientos">
+<!-- Tabla de movimientos -->
+<ng-template #movimientosTableTemplate>
+  <div *ngIf="movimientos.length > 0; else noDataTemplate">
     <app-movimientos-table
       [movimientos]="movimientos"
       [fromVenezolana]="true">
     </app-movimientos-table>
   </div>
+
+  <!-- Mensaje cuando no hay movimientos disponibles -->
+  <ng-template #noDataTemplate>
+    <p class="no-data-message">No hay movimientos disponibles para esta cuenta.</p>
+  </ng-template>
 </ng-template>

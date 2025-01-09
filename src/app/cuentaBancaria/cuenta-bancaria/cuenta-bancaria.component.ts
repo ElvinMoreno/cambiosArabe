@@ -5,7 +5,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { CuentaColombianaComponent } from './cuenta-colombiana/cuenta-colombiana.component';
 import { CuentaVenezolanaComponent } from './cuenta-venezolana/cuenta-venezolana.component';
 import { CajaComponent } from './cuenta-colombiana/caja/caja.component';
-import { ClientesCreditosComponent } from "../../saldos/creditos/clientes-creditos/clientes-creditos.component";
+import { ClientesCreditosComponent } from '../../saldos/creditos/clientes-creditos/clientes-creditos.component';
 import { CreditosComponent } from '../../saldos/creditos/creditos.component';
 import { ActivatedRoute } from '@angular/router';
 import { CompraService } from '../../services/compra.service';
@@ -23,16 +23,21 @@ import { MovimientoDiaDTO } from '../../interfaces/MovimientoDiaDTO';
     MatButtonModule,
     MatTabsModule,
     CuentaColombianaComponent,
-    CuentaVenezolanaComponent,
+    CuentaVenezolanaComponent, // Importar el componente
     CajaComponent,
     ClientesCreditosComponent,
-    CreditosComponent
+    CreditosComponent,
+    CommonModule,
+    MatButtonModule,
+    MatTabsModule
   ],
   templateUrl: './cuenta-bancaria.component.html',
-  styleUrls: ['./cuenta-bancaria.component.css']
+  styleUrls: ['./cuenta-bancaria.component.css'],
 })
 export class CuentaBancariaComponent implements OnInit {
   selectedTabIndex = 0;
+  cuentaId = 9; // Cuenta activa
+  movimientosCuenta9: MovimientoDiaDTO[] = [];
   totalPesos: number | null = null;
   equivalenteEnPesos: number | null = null;
   totalCreditos: number | null = null;
@@ -41,16 +46,15 @@ export class CuentaBancariaComponent implements OnInit {
   movimientos: MovimientoDiaDTO[] = [];
   mostrandoMovimientos: boolean = false;
   nombreCuentaBancaria: string = '';
-  cuentaId: number = 9; // Especificar el ID de la cuenta activa
-  movimientosCuenta9: MovimientoDiaDTO[] = []; // Variable para almacenar los movimientos de la cuenta con id === 9
 
   constructor(
     private route: ActivatedRoute,
+    private movimientoService: MovimientoService,
     private compraService: CompraService,
     private clienteService: ClienteService,
     private proveedorService: ProveedorService,
-    private movimientoService: MovimientoService
   ) {}
+
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
@@ -66,24 +70,21 @@ export class CuentaBancariaComponent implements OnInit {
      this.cargarMovimientosCuenta9();
 
   }
+
   cargarMovimientosCuenta9(): void {
-    this.movimientosCuenta9 = []; // Reiniciar movimientos de la cuenta 9
-  
-    this.movimientoService.getMovimientosStream(9).subscribe({
-      next: (movimiento: MovimientoDiaDTO) => {
-        // Agregar cada movimiento recibido al array
+    this.movimientosCuenta9 = [];
+    this.movimientoService.getMovimientosStream(this.cuentaId).subscribe({
+      next: movimiento => {
         this.movimientosCuenta9.push(movimiento);
-  
-        // Ordenar los movimientos en tiempo real
-        this.movimientosCuenta9.sort(
-          (a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
-        );
+        this.movimientosCuenta9.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
       },
-      error: (error) => {
+      error: error => {
         console.error('Error al obtener los movimientos de la cuenta 9:', error);
       },
     });
   }
+
+
 
   actualizarEquivalenteEnPesos(equivalente: number) {
     this.equivalenteEnPesos = equivalente;
@@ -198,4 +199,6 @@ export class CuentaBancariaComponent implements OnInit {
       return '';  // Retorna cadena vacía si el valor es nulo
     }
   }
+
 }
+

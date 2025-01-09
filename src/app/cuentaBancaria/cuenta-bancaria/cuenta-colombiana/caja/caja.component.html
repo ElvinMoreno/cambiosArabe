@@ -1,5 +1,7 @@
 <div class="center-container">
-  <app-movimientos-table [movimientos]="movimientos" [fromCaja]="true"></app-movimientos-table>
+  <ng-container *ngIf="movimientos.length > 0; else noDataTemplate">
+    <app-movimientos-table [movimientos]="movimientos" [fromCaja]="true"></app-movimientos-table>
+  </ng-container>
 
   <ng-template #noDataTemplate>
     <p>No hay movimientos disponibles.</p>
