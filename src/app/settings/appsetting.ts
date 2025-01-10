@@ -3,7 +3,7 @@
 // }
 
 export const appsetting={
- apiUrl: "https://44.210.131.250/"
+ apiUrl: "https://cambiosarabes.duckdns.org/"
 }
 
 //  export const appsetting={
